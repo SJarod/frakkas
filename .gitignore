@@ -27,6 +27,8 @@
 *.la
 *.a
 *.lib
+!lib/assimp/*/*.a
+!lib/assimp/*/*.lib
 
 # Executables
 *.exe
