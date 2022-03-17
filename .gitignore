@@ -130,3 +130,10 @@ fabric.properties
 
 # CodeStream plugin
 .idea/codestream.xml
+
+########################################
+
+# ignore specific project's files 
+
+lib/GameFrakkas.ilk
+lib/GameFrakkas.pdb
