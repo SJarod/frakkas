@@ -137,3 +137,5 @@ fabric.properties
 
 lib/GameFrakkas.ilk
 lib/GameFrakkas.pdb
+Launcher.pdb
+*.manifest
