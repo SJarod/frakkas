@@ -27,6 +27,8 @@
 *.la
 *.a
 *.lib
+!/lib/jolt/*/*.a
+!/lib/jolt/*/*.lib
 !lib/assimp/*/*.a
 !lib/assimp/*/*.lib
 
