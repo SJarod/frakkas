@@ -1,30 +1,47 @@
-cmake_minimum_required(VERSION 3.21)
-project(EngineFrakkas)
+cmake_minimum_required(VERSION 3.9...3.21)
 
-set(CMAKE_CXX_STANDARD 20)
+if(${CMAKE_VERSION} VERSION_LESS 3.12)
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+endif()
+
+set(CMAKE_CXX_STANDARD 20 CACHE STRING "Language standard" FORCE)
+set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "Use the C++ standard" FORCE)
+set(CMAKE_CXX_EXTENSIONS OFF CACHE BOOL "" FORCE)
+
+project(EngineFrakkas
+        VERSION 1.0
+        DESCRIPTION "Engine"
+)
 
 include(FetchContent)
+FetchContent_Declare(sdl
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG b424665 # release-2.0.20
+        )
+FetchContent_MakeAvailable(sdl)
 
-add_library(GameFrakkas SHARED game/src/behavior_base.cpp)
+# GAME
+add_subdirectory(game)
 
-target_include_directories(GameFrakkas PRIVATE game/include)
-set_target_properties(GameFrakkas
-        PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+# EDITOR
+add_subdirectory(editor)
 
-add_library(EditorFrakkas STATIC editor/src/editor_render.cpp)
+# ENGINE
+add_subdirectory(engine)
 
-target_include_directories(EditorFrakkas PRIVATE editor/include)
-set_target_properties(EditorFrakkas
-        PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+# LAUNCHER
+add_subdirectory(launcher)
 
-add_executable(EngineFrakkas engine/src/main.cpp editor/include/Editor/editor_render.hpp engine/src/foo.cpp)
+add_dependencies(EngineFrakkas
+                 GameFrakkas
+)
 
-add_dependencies(EngineFrakkas EditorFrakkas GameFrakkas)
-target_include_directories(EngineFrakkas PRIVATE engine/include editor/include game/include)
-target_link_directories(EngineFrakkas PRIVATE lib)
+add_dependencies(EditorFrakkas
+                 EngineFrakkas
+)
 
-target_link_libraries(EngineFrakkas EditorFrakkas)
-
+add_dependencies(Launcher
+                 EngineFrakkas)
 
 
 #add_library(GameFrakkas SHARED game/src/game.cpp)

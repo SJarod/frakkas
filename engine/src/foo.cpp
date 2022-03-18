@@ -5,7 +5,9 @@
 
 #include "Engine/foo.hpp"
 
-void SayHello()
+using namespace Engine;
+
+void Engine::SayHello()
 {
     std::cout << "Hello, World!" << std::endl;
 }

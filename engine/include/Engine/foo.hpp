@@ -4,4 +4,8 @@
 
 #pragma once  
 
-void SayHello();
+namespace Engine
+{
+    void SayHello();
+
+}
