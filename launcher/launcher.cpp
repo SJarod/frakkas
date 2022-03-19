@@ -4,21 +4,26 @@
 
 #include <iostream>
 
+#include "entity.hpp"
+#include "Engine/entity_manager.hpp"
+
 int main()
 {
+    Engine::EntityManager::Init();
 
     bool running = true;
+    int foo = 1;
     while(running)
     {
         /// NEW FRAME
 
         /// UPDATE
-        // Engine::EntityManager::UpdateAndRender()
+        Engine::EntityManager::UpdateAndRender();
 
         /// ENDFRAME
 
-        getchar();
-        running = false;
+        if (foo++ == 3)
+            running = false;
     }
     return 0;
 }

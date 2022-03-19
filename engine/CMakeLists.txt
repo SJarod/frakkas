@@ -1,10 +1,13 @@
 add_library(EngineFrakkas STATIC
-            src/foo.cpp
-)
+            src/entity_manager.cpp
+            ../common/src/component.cpp
+            ../common/src/entity.cpp
+        )
 
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/common/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
 )
 
