@@ -20,6 +20,8 @@ FetchContent_Declare(sdl
         )
 FetchContent_MakeAvailable(sdl)
 
+set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common)
+
 # GAME
 add_subdirectory(game)
 
