@@ -11,7 +11,9 @@ target_include_directories(EngineFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
 )
 
+# Include jolt and assimp libraries
 include(${PROJECT_SOURCE_DIR}/jolt.cmake)
+include(${PROJECT_SOURCE_DIR}/assimp.cmake)
 
 target_link_libraries(EngineFrakkas
                       PRIVATE SDL2-static
