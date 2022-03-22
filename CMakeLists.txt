@@ -22,6 +22,10 @@ FetchContent_MakeAvailable(sdl)
 
 set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common)
 
+# MATHS
+set(MATHS_BUILD_EXECUTABLE OFF) 
+add_subdirectory(maths)
+
 # GAME
 add_subdirectory(game)
 

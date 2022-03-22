@@ -7,6 +7,8 @@ add_library(GameFrakkas SHARED
 target_include_directories(GameFrakkas
                            PRIVATE include
                            PRIVATE ${PROJECT_SOURCE_DIR}/common/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
 
 set_target_properties(GameFrakkas

@@ -31,6 +31,8 @@ target_include_directories(EditorFrakkas
                            PRIVATE include
                            PRIVATE ../common/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/engine/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends

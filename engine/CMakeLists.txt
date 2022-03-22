@@ -9,6 +9,8 @@ target_include_directories(EngineFrakkas
                            PRIVATE include
                            PRIVATE ${PROJECT_SOURCE_DIR}/common/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
 
 # Include jolt and assimp libraries
