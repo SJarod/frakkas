@@ -48,3 +48,6 @@ target_include_directories(EditorFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
 
+set_target_properties(EditorFrakkas PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
+		VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
