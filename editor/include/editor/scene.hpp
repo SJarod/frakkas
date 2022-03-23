@@ -4,6 +4,8 @@
 
 #pragma once
 
+typedef void* ImTextureID;
+
 namespace Editor
 {
     class Scene
@@ -15,6 +17,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender();
+        void OnImGuiRender(ImTextureID i_tex);
     };
 }

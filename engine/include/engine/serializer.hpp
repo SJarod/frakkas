@@ -29,7 +29,7 @@ namespace Engine
          * @param i_filePath the path to the scene file
          * @param o_scene an empty scene to fill/build
          */
-        void ReadScene(const char* i_filePath, Scene& o_scene);
+        void ReadScene(const std::string &i_filePath, Scene& o_scene);
         /**
          * @brief example of entity loading
          * @param i_file the opened input file
@@ -66,7 +66,7 @@ namespace Engine
          * @param i_filePath the path to the file to create and write in. If the file exists, it will override it
          * @param i_scene the scene to write
          */
-        void WriteScene(const char* i_filePath, const Scene& i_scene);
+        void WriteScene(const std::string &i_filePath, const Scene& i_scene);
         /**
          * @brief Write an exemple entity in frakkas text format
          * @param io_file the opened output file to write in
