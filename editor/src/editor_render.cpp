@@ -31,6 +31,20 @@ void EditorRender::InitImGui()
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
     io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
 
+    io.Fonts->AddFontFromFileTTF("editor/assets/Louis_George_Cafe_Bold.ttf", 15.f);
+
+    m_menuBar.FrakkasColors();
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 6.0f;
+        style.ChildRounding = 6.0f;
+        style.FrameRounding = 3.0f;
+        style.GrabRounding = 12.0f;
+        style.TabRounding = 6.0f;
+    }
+
     ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
     ImGui_ImplOpenGL3_Init("#version 450");
 }
