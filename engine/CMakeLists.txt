@@ -6,6 +6,7 @@ add_library(EngineFrakkas STATIC
 			src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
+		    src/resources/resources_manager.cpp
 			${COMMON_SOURCE_DIR}/component.cpp
 			${COMMON_SOURCE_DIR}/entity.cpp
 		    ${PROJECT_SOURCE_DIR}/lib/stb_image.c

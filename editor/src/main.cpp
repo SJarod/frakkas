@@ -90,6 +90,7 @@ int main()
 
 	bool running = true;
 	SDL_Event evt;
+    int x, y;
 
 	while (running)
 	{

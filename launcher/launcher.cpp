@@ -5,12 +5,9 @@
 #include <iostream>
 
 #include "entity.hpp"
-#include "engine/entity_manager.hpp"
 
 int main()
 {
-    Engine::EntityManager entityManager;
-
     bool running = true;
     int foo = 1;
     while(running)
@@ -18,7 +15,6 @@ int main()
         /// NEW FRAME
 
         /// UPDATE
-        entityManager.Update();
 
         /// ENDFRAME
 

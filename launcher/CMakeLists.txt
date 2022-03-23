@@ -6,3 +6,5 @@ target_include_directories(Launcher
 )
 
 target_link_libraries(Launcher PRIVATE EngineFrakkas)
+
+set_target_properties(Launcher PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
