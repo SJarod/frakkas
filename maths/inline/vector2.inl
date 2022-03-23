@@ -1,4 +1,3 @@
-#include "vector2.hpp"
 #include "utils.hpp"
 
 ////////////////////////////// CONSTRUCTORS
@@ -56,14 +55,14 @@ inline Vector2 Vector2::operator+(const T& k) const
             k + x,
             k + y
     };
-};
+}
 inline Vector2 Vector2::operator+(const Vector2& vec) const
 {
     return {
             x + vec.x,
             y + vec.y
     };
-};
+}
 
 inline Vector2 Vector2::operator-(const Vector2& vec) const
 {
@@ -71,21 +70,21 @@ inline Vector2 Vector2::operator-(const Vector2& vec) const
             x - vec.x,
             y - vec.y
     };
-};
+}
 inline Vector2 Vector2::operator-(const float& k) const
 {
     return {
             k - x,
             k - y
     };
-};
+}
 inline Vector2 Vector2::operator-() const
 {
     return {
             -x,
             -y
     };
-};
+}
 
 inline Vector2 Vector2::operator+=(Vector2& vec)
 {
@@ -93,7 +92,7 @@ inline Vector2 Vector2::operator+=(Vector2& vec)
             x += vec.x,
             y += vec.y
     };
-};
+}
 
 inline Vector2 Vector2::operator-=(Vector2& vec)
 {
@@ -101,7 +100,7 @@ inline Vector2 Vector2::operator-=(Vector2& vec)
             x -= vec.x,
             y -= vec.y
     };
-};
+}
 
 inline bool Vector2::operator==(Vector2& vec) const
 {

@@ -56,8 +56,6 @@ inline Quaternion Quaternion::operator-(const Quaternion& q) const
 template<typename T>
 inline Quaternion Quaternion::operator*(const T& k) const
 {
-    Quaternion result = { 0.f, 0.f, 0.f, 0.f };
-
     float qax = x, qay = y, qaz = z, qaw = w;
 
     return {
@@ -116,13 +114,12 @@ inline Quaternion Quaternion::Identity()
 
 inline Quaternion Quaternion::Normalize() const
 {
-    float length = 0.f, ilength = 0.f;
-    length = this->Length();
+    float length = this->Length();
 
     if (length == 0.0f)
         length = 1.0f;
 
-    ilength = 1.0f / length;
+    float ilength = 1.0f / length;
 
     return {
             x * ilength,

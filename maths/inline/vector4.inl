@@ -69,7 +69,7 @@ inline Vector4 Vector4::operator+(const T& k) const
             k + z,
             k + w
     };
-};
+}
 inline Vector4 Vector4::operator+(const Vector4& vec) const
 {
     return {
@@ -78,7 +78,7 @@ inline Vector4 Vector4::operator+(const Vector4& vec) const
             z + vec.z,
             w + vec.w
     };
-};
+}
 
 inline Vector4 Vector4::operator-(const Vector4& vec) const
 {
@@ -88,7 +88,7 @@ inline Vector4 Vector4::operator-(const Vector4& vec) const
             z - vec.z,
             w - vec.w
     };
-};
+}
 inline Vector4 Vector4::operator-(const float& k) const
 {
     return {
@@ -97,7 +97,7 @@ inline Vector4 Vector4::operator-(const float& k) const
             k - z,
             k - w
     };
-};
+}
 inline Vector4 Vector4::operator-() const
 {
     return {
@@ -106,7 +106,7 @@ inline Vector4 Vector4::operator-() const
             -z,
             -w
     };
-};
+}
 
 inline Vector4 Vector4::operator+=(Vector4& vec)
 {
@@ -116,7 +116,7 @@ inline Vector4 Vector4::operator+=(Vector4& vec)
             z += vec.z,
             w += vec.w
     };
-};
+}
 
 inline Vector4 Vector4::operator-=(Vector4& vec)
 {
@@ -126,7 +126,7 @@ inline Vector4 Vector4::operator-=(Vector4& vec)
             z -= vec.z,
             w -= vec.w
     };
-};
+}
 
 inline bool Vector4::operator==(Vector4& vec) const
 {

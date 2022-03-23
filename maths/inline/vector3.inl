@@ -75,7 +75,7 @@ inline Vector3 Vector3::operator+(const T& k) const
             k + y,
             k + z
     };
-};
+}
 inline Vector3 Vector3::operator+(const Vector3& vec) const
 {
     return {
@@ -83,7 +83,7 @@ inline Vector3 Vector3::operator+(const Vector3& vec) const
             y + vec.y,
             z + vec.z
     };
-};
+}
 
 inline Vector3 Vector3::operator-(const Vector3& vec) const
 {
@@ -92,7 +92,7 @@ inline Vector3 Vector3::operator-(const Vector3& vec) const
             y - vec.y,
             z - vec.z
     };
-};
+}
 inline Vector3 Vector3::operator-(const float& k) const
 {
     return {
@@ -100,7 +100,7 @@ inline Vector3 Vector3::operator-(const float& k) const
             k - y,
             k - z
     };
-};
+}
 inline Vector3 Vector3::operator-() const
 {
     return {
@@ -108,7 +108,7 @@ inline Vector3 Vector3::operator-() const
             -y,
             -z
     };
-};
+}
 
 inline Vector3 Vector3::operator^(const Vector3& vec) const // Cross product
 {
@@ -127,7 +127,7 @@ inline Vector3 Vector3::operator+=(Vector3& vec)
             y += vec.y,
             z += vec.z
     };
-};
+}
 
 inline Vector3 Vector3::operator-=(Vector3& vec)
 {
@@ -136,7 +136,7 @@ inline Vector3 Vector3::operator-=(Vector3& vec)
             y -= vec.y,
             z -= vec.z
     };
-};
+}
 
 inline bool Vector3::operator==(const Vector3& vec) const
 {
@@ -183,7 +183,7 @@ inline float Vector3::Length() const
 inline float Vector3::DotProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
     return i_vecA.x * i_vecB.x + i_vecA.y * i_vecB.y + i_vecA.z * i_vecB.z;
-};
+}
 
 inline Vector3 Vector3::CrossProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {

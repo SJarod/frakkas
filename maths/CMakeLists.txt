@@ -22,8 +22,7 @@ target_include_directories(Mathlib
                            INTERFACE include
                            INTERFACE inline)
 
-set_target_properties(Mathlib
-                      PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set_target_properties(Mathlib PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 if(MATHS_BUILD_EXECUTABLE)
     add_executable(Maths main.cpp)

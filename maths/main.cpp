@@ -231,8 +231,8 @@ void TestMatrix4()
 
     float fov = 90.f; // WARNING: The fov should be in radians, but for tests we don't take care about it
 
-    Matrix4 projection = Matrix4::Perspective(fov, 16/9, 0.001f, 1000.f, false);
-    Matrix4 orthographic = Matrix4::Perspective(fov, 16/9, 0.001f, 1000.f, true);
+    Matrix4 projection = Matrix4::Perspective(fov, 16.f/9.f, 0.001f, 1000.f, false);
+    Matrix4 orthographic = Matrix4::Perspective(fov, 16.f/9.f, 0.001f, 1000.f, true);
 
 #ifdef LOG_TEST
     std::cout << "test_identity : \n" << mat << '\n';

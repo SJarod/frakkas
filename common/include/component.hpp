@@ -47,7 +47,7 @@ public:
     /**
      * @return the enable state of the component
      */
-    bool IsEnabled();
+    bool IsEnabled() const;
 
     /**
      * Set or replace the current entity which hold the component. You can unset the owner by sending nullptr.

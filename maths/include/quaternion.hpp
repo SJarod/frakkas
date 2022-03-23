@@ -11,7 +11,7 @@ struct Quaternion {
     union {
         struct { float x; float y; float z; float w; };
 
-        float element[4];
+        float element[4]{};
     };
 
 ////////////////////////////// CONSTRUCTORS

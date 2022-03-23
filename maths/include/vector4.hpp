@@ -11,7 +11,7 @@ struct Vector4 {
         struct { float x; float y; float z; float w; };
         struct { float r; float g; float b; float a; };
 
-        float element[4];
+        float element[4]{};
     };
 
 ////////////////////////////// CONSTRUCTORS

@@ -2,28 +2,17 @@
 // Created by f.marcellot on 16/02/2022.
 //
 
-#define SCRN_WIDTH 1366
-#define SCRN_HEIGHT 768
-
 #include <iostream>
-#include <cstdlib>
-#include <crtdbg.h>
-
 #include <glad/glad.h>
 #include <SDL.h>
-
 #include <backends/imgui_impl_sdl.h>
-
-#include "maths.hpp"
 
 #include "engine/entity_manager.hpp"
 #include "engine/engine_entity.hpp"
 #include "editor/editor_render.hpp"
-#include "maths.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
-#include "engine/model.hpp"
 
 SDL_Window* window = nullptr;
 SDL_GLContext glContext;
@@ -36,7 +25,6 @@ bool InitSDL()
 		return false;
 	}
 
-	const char* glsl_version = "#version 450";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -84,7 +72,6 @@ int main()
 	editorRender.InitImGui();
 
 	ImGuiIO io = ImGui::GetIO();
-	ImGuiViewport* viewport = ImGui::GetMainViewport();
 
 
 	Renderer::LowLevel::LowRenderer rdr("basic");
@@ -101,7 +88,6 @@ int main()
         entityManager.AddEntity(std::move(entity));
     }
 
-	bool ShowDemoWindow = true;
 	bool running = true;
 	SDL_Event evt;
 	int x, y;
