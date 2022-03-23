@@ -1,12 +1,13 @@
 add_library(EngineFrakkas STATIC
-        src/engine/entity_manager.cpp
-        src/engine/serializer.cpp
-            src/engine/model.cpp
-            src/renderer/lowlevel/camera.cpp
-    		src/renderer/lowlevel/lowrenderer.cpp
-    		src/resources/program_shader.cpp
-            ../common/src/component.cpp
-            ../common/src/entity.cpp
+        	src/engine/entity_manager.cpp
+        	src/engine/serializer.cpp
+			src/engine/model.cpp
+			src/engine/engine_entity.cpp
+			src/renderer/lowlevel/camera.cpp
+			src/renderer/lowlevel/lowrenderer.cpp
+			src/resources/program_shader.cpp
+			../common/src/component.cpp
+			../common/src/entity.cpp
         )
 target_include_directories(EngineFrakkas
                            PRIVATE include

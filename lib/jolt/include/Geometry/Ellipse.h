@@ -23,7 +23,7 @@ public:
 
 	/// Get the closest point on the ellipse to inPoint
 	/// Assumes inPoint is outside the ellipse
-	/// @see Rotation Joint Limits in Quaterion Space by Gino van den Bergen, section 10.1 in Game Engine Gems 3.
+	/// @see Rotation Joint Limits in Quaterion Space by Gino van den Bergen, section 10.1 in Game engine Gems 3.
 	Float2			GetClosestPoint(const Float2 &inPoint) const
 	{
 		float a_sq = Square(mA);

@@ -7,40 +7,43 @@
 #include <vector>
 #include <memory>
 
-class Entity;
+namespace Renderer::LowLevel
+{
+    class LowRenderer;
+    class Camera;
+}
 
 namespace Engine
 {
+    class EngineEntity;
+
     class EntityManager
     {
     public:
+        EntityManager() = default;
         ~EntityManager() = default;
-
-        /**
-         * The fundamental function of singleton class. Construct the instance when called for the first time.
-         * @return The unique instance of EntityManager.
-         */
-        static EntityManager& GetInstance();
-        static void Init();
 
         /**
          * Update every entities
          */
-        static void UpdateAndRender();
+        void Update();
+
+        /**
+         * @brief Render each entity
+         * @param i_renderer the renderer that will draw the entities
+         * @param i_camera the camera to render, in other words the source view to look at the world
+         */
+        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::LowLevel::Camera& i_camera);
 
         /**
          * @summary move an entity pointer into the entity manager's array,
          * the function also call the Start() method of the input entity
-         * @param i_entity the constructed entity to add, it is an unique pointer so use std::move()
+         * @param i_entity the fully constructed entity to add, it is an unique pointer so use std::move()
          */
-        static void AddEntity(std::unique_ptr<Entity> i_entity);
+        void AddEntity(std::unique_ptr<EngineEntity> i_entity);
 
     private:
-        EntityManager() = default;
 
-        static std::shared_ptr<EntityManager> instance;
-
-        std::vector<std::unique_ptr<Entity>> entities;
-
+        std::vector<std::unique_ptr<EngineEntity>> entities;
     };
 }

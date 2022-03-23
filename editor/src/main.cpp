@@ -6,7 +6,7 @@
 #define SCRN_HEIGHT 768
 
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <crtdbg.h>
 
 #include <glad/glad.h>
@@ -17,14 +17,13 @@
 #include "maths.hpp"
 
 #include "engine/entity_manager.hpp"
+#include "engine/engine_entity.hpp"
 #include "editor/editor_render.hpp"
 #include "maths.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
 #include "engine/model.hpp"
-
-#define PROCESS_EDITOR
 
 SDL_Window* window = nullptr;
 SDL_GLContext glContext;
@@ -81,9 +80,7 @@ int main()
 {
 	InitSDL();
 
-	Engine::EntityManager::Init();
-
-	Editor::EditorRender editorRender;
+	Editor::EditorRender editorRender{};
 	editorRender.InitImGui();
 
 	ImGuiIO io = ImGui::GetIO();
@@ -94,7 +91,15 @@ int main()
 	Renderer::LowLevel::Framebuffer fbo(1000, 1000);
 	Renderer::LowLevel::Camera camera;
 	camera.transform.position = { 0.f, 0.f, 2.f };
-	Engine::Model model;
+
+    Engine::EntityManager entityManager{};
+    // Create 5 entities for example
+    for (int i = 0; i < 5; i++)
+    {
+        std::unique_ptr<Engine::EngineEntity> entity = std::make_unique<Engine::EngineEntity>();
+        entity->GetTransform().position.x = i * 2.f;
+        entityManager.AddEntity(std::move(entity));
+    }
 
 	bool ShowDemoWindow = true;
 	bool running = true;
@@ -103,26 +108,64 @@ int main()
 
 	while (running)
 	{
+        float xSpeed, ySpeed, zSpeed = 0;
+        /// INPTUS EVENT
 		while (SDL_PollEvent(&evt))
 		{
+
 			ImGui_ImplSDL2_ProcessEvent(&evt);
-			if (evt.type == SDL_QUIT)
-				running = false;
-			else if (evt.type == SDL_KEYDOWN)
-				std::cout << "down !" << std::endl;
-			else if (evt.type == SDL_MOUSEMOTION)
-				SDL_GetMouseState(&x, &y);
+            switch(evt.type)
+            {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+                case SDL_KEYDOWN:
+                    switch(evt.key.keysym.sym)
+                    {
+                        case SDLK_RIGHT: xSpeed = 0.064f; break;
+                        case SDLK_LEFT: xSpeed = -0.064f; break;
+                        case SDLK_UP: zSpeed = -0.064f; break;
+                        case SDLK_DOWN: zSpeed = 0.064f; break;
+                        case SDLK_SPACE: ySpeed = 0.064f; break;
+                        case SDLK_LCTRL: ySpeed = -0.064f; break;
+                        default: break;
+                    }
+                    break;
+                case SDL_KEYUP:
+                    switch(evt.key.keysym.sym)
+                    {
+                        case SDLK_RIGHT: xSpeed = 0.f; break;
+                        case SDLK_LEFT: xSpeed = 0.f; break;
+                        case SDLK_UP: zSpeed = 0.f; break;
+                        case SDLK_DOWN: zSpeed = 0.f; break;
+                        case SDLK_SPACE: ySpeed = 0.f; break;
+                        case SDLK_LCTRL: ySpeed = 0.f; break;
+                        default: break;
+                    }
+                    break;
+                case SDL_MOUSEMOTION:
+				    SDL_GetMouseState(&x, &y);
+                    break;
+                default:
+                    break;
+            }
 		}
 
-		fbo.Bind();
-		glViewport(0, 0, 1000, 1000);
+        camera.transform.position.x += xSpeed;
+        camera.transform.position.y += ySpeed;
+        camera.transform.position.z += zSpeed;
 
-		rdr.RenderModelOnce(model, camera.GetViewMatrix(), camera.GetProjectionMatrix(1000 / 1000));
-		fbo.Unbind();
-
-		/// NEW FRAME
+        /// NEW FRAME
 
 		editorRender.UpdateAndRender(fbo);
+
+        /// DRAW
+
+		rdr.BeginDraw(fbo);
+
+		entityManager.Render(rdr, camera);
+
+        rdr.EndDraw();
 
 		/// ENDFRAME
 

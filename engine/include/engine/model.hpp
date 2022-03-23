@@ -29,6 +29,6 @@ namespace Engine
 		 * 
 		 * @return 
 		 */
-		bool IsDrawable() const;
+		[[nodiscard]] bool IsDrawable() const;
 	};
 };

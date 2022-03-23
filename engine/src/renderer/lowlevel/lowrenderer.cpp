@@ -1,5 +1,15 @@
 #include "renderer/lowlevel/lowrenderer.hpp"
 
+void Renderer::LowLevel::Framebuffer::Bind() const
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+}
+
+void Renderer::LowLevel::Framebuffer::Unbind()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 Renderer::LowLevel::LowRenderer::LowRenderer(const std::string &i_shaderName)
 	: shader(i_shaderName)
 {
@@ -10,10 +20,7 @@ void Renderer::LowLevel::LowRenderer::RenderModelOnce(const Engine::Model& i_mod
 	if (!i_model.IsDrawable())
 		return;
 
-	glEnable(GL_DEPTH_TEST);
-
-	glClearColor(0.f, 0.f, 0.f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
 	shader.Use();
 	shader.UniformMatrix4("uProjection", i_projection, false);
@@ -33,7 +40,19 @@ void Renderer::LowLevel::LowRenderer::RenderModelOnce(const Engine::Model& i_mod
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	glDisable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
+}
+
+void LowRenderer::BeginDraw(const Framebuffer &i_fbo) const {
+    i_fbo.Bind();
+    glViewport(0, 0, 1000, 1000);
+
+    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void LowRenderer::EndDraw() const {
+    Framebuffer::Unbind();
 }
 
 Renderer::LowLevel::Framebuffer::Framebuffer(const int i_width, const int i_height)
@@ -67,12 +86,4 @@ Renderer::LowLevel::Framebuffer::Framebuffer(const int i_width, const int i_heig
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Renderer::LowLevel::Framebuffer::Bind() const
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-}
 
-void Renderer::LowLevel::Framebuffer::Unbind() const
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}

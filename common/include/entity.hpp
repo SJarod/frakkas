@@ -16,7 +16,7 @@ public:
     ~Entity();
 
     /**
-     * @summary Called when the entity is included into the Engine's EntityManager,
+     * @summary Called when the entity is included into the engine's EntityManager,
      * so it is called once, and beware that other entities may not be set at this moment.
      * Process the Start function of all entity's components
      */
@@ -34,7 +34,7 @@ public:
      */
     void AddComponent(const std::shared_ptr<Component>& comp);
 
-private:
+protected:
 
     std::vector<std::shared_ptr<Component>> components;
 };

@@ -14,14 +14,14 @@ namespace Renderer
 			 * Get camera's view matrix.
 			 * 
 			 */
-			Matrix4 GetViewMatrix() const;
+			[[nodiscard]] Matrix4 GetViewMatrix() const;
 
 			/**
 			 * Get camera's projection matrix.
 			 * 
 			 * @param i_aspectRatio
 			 */
-			Matrix4 GetProjectionMatrix(float i_aspectRatio) const;
+			[[nodiscard]] Matrix4 GetProjectionMatrix(float i_aspectRatio) const;
 
 			/**
 			 * Create an ImGui window to change camera's values.
