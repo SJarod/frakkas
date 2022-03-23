@@ -9,7 +9,7 @@
 
 int main()
 {
-    Engine::EntityManager::Init();
+    Engine::EntityManager entityManager;
 
     bool running = true;
     int foo = 1;
@@ -18,7 +18,7 @@ int main()
         /// NEW FRAME
 
         /// UPDATE
-        Engine::EntityManager::Update();
+        entityManager.Update();
 
         /// ENDFRAME
 

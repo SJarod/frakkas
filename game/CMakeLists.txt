@@ -10,7 +10,3 @@ target_include_directories(GameFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
-
-set_target_properties(GameFrakkas
-                      PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib
-)

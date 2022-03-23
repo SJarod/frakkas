@@ -24,6 +24,6 @@ void Component::SetOwner(Entity *owner) {
     this->owner = owner;
 }
 
-bool Component::IsEnabled() {
+bool Component::IsEnabled() const {
     return enabled;
 }

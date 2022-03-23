@@ -6,13 +6,11 @@
 #define SCRN_HEIGHT 768
 
 #include <iostream>
-#include <stdlib.h>
 #include <crtdbg.h>
 
 #include <glad/glad.h>
 #include <SDL.h>
 
-#include "maths.hpp"
 #include "resources/program_shader.hpp"
 #include "engine/model.hpp"
 #include "renderer/lowlevel/camera.hpp"
@@ -32,7 +30,6 @@ bool InitSDL()
 		return false;
 	}
 
-	const char* glsl_version = "#version 330";
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -84,23 +81,15 @@ int main()
 	Engine::Model model;
 
 
-	bool ShowDemoWindow = false;
 	bool running = true;
 	SDL_Event evt;
-	int x, y;
+
 	while (running)
 	{
 		while (SDL_PollEvent(&evt))
 		{
 			if (evt.type == SDL_QUIT)
 				running = false;
-			//else if (evt.type == SDL_KEYDOWN)
-			//	std::cout << "down !" << std::endl;
-			//else if (evt.type == SDL_MOUSEMOTION)
-			//{
-			//	SDL_GetMouseState(&x, &y);
-			//	std::cout << x << ", " << y << std::endl;
-			//}
 		}
 
 		camera.InspectorUpdate();

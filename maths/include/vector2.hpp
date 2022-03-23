@@ -8,7 +8,7 @@ struct Vector2 {
     union {
         struct { float x; float y; };
 
-        float element[2];
+        float element[2]{};
     };
 
 ////////////////////////////// CONSTRUCTORS

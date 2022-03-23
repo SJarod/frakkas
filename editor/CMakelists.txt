@@ -16,7 +16,6 @@ set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
                        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
-
 add_executable(EditorFrakkas
                src/main.cpp
                ${PROJECT_SOURCE_DIR}/lib/glad.c
@@ -50,5 +49,6 @@ target_include_directories(EditorFrakkas
 )
 
 set_target_properties(EditorFrakkas PROPERTIES
-		RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
-		VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
+					  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build
+					  VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)

@@ -1,5 +1,3 @@
-#include <cassert>
-
 #include <glad/glad.h>
 
 #include "engine/model.hpp"
