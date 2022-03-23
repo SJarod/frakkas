@@ -16,25 +16,35 @@ set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
                        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
+
 add_executable(EditorFrakkas
                src/main.cpp
-               src/editor_render.cpp)
-
-target_link_directories(EditorFrakkas
-                        PRIVATE ${PROJECT_SOURCE_DIR}/lib)
+               ${PROJECT_SOURCE_DIR}/lib/glad.c
+               ${IMGUI_SOURCE_FILES}
+               src/editor_render.cpp
+               src/hierarchy.cpp
+               src/menu_bar.cpp
+               src/resource_viewer.cpp
+        	   src/console.cpp
+			   src/inspector.cpp
+			   src/scene.cpp
+			   src/game.cpp
+)
 
 target_link_libraries(EditorFrakkas
                       PRIVATE EngineFrakkas
-                      PRIVATE SDL2-static)
+                      PRIVATE SDL2-static
+)
 
 target_include_directories(EditorFrakkas
                            PRIVATE include
-                           PRIVATE ../common/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/engine/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
+                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
 

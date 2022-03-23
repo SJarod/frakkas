@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "entity.hpp"
-#include "Engine/entity_manager.hpp"
+#include "engine/entity_manager.hpp"
 
 int main()
 {
