@@ -17,6 +17,7 @@ set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
 )
 
 add_executable(EditorFrakkas
+			   ${PROJECT_SOURCE_DIR}/appicon.rc
                src/main.cpp
                ${PROJECT_SOURCE_DIR}/lib/glad.c
                ${IMGUI_SOURCE_FILES}

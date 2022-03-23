@@ -16,5 +16,11 @@ namespace Editor
         * @summary Display the ImGui panel
         */
         void OnImGuiRender();
+        void FrakkasColors();
+
+    private:
+        void FileField();
+        void EditField();
+        void OptionsField();
     };
 }
