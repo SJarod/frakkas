@@ -8,7 +8,7 @@
 #include "editor/hierarchy.hpp"
 #include "editor/console.hpp"
 #include "editor/inspector.hpp"
-#include "editor/resource_viewer.hpp"
+#include "editor/file_browser.hpp"
 #include "editor/scene.hpp"
 #include "editor/game.hpp"
 
@@ -31,7 +31,7 @@ namespace Editor
         Hierarchy m_hierarchy;
         Console m_console;
         Inspector m_inspector;
-        ResourceViewer m_resourceViewer;
+        FileBrowser m_fileBrowser;
         Scene m_scene;
         Game m_game;
 

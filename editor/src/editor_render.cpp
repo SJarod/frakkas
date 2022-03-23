@@ -64,11 +64,15 @@ void EditorRender::UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+    // TODO Remove if no longer needed
+    bool ShowDemoWindow = true;
+    ImGui::ShowDemoWindow(&ShowDemoWindow);
+
     m_menuBar.OnImGuiRender();
     m_hierarchy.OnImGuiRender();
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender();
-    m_resourceViewer.OnImGuiRender();
+    m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender();
     m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.color));
 

@@ -24,7 +24,7 @@ add_executable(EditorFrakkas
                src/editor_render.cpp
                src/hierarchy.cpp
                src/menu_bar.cpp
-               src/resource_viewer.cpp
+               src/file_browser.cpp
         	   src/console.cpp
 			   src/inspector.cpp
 			   src/scene.cpp
