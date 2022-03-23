@@ -12,7 +12,7 @@ public:
     virtual ~Component() = default;
 
     /**
-     * @summary Called when the owner is included into the Engine's EntityManager,
+     * @summary Called when the owner is included into the engine's EntityManager,
      * so it is called once, and beware that other entities may not be set at this moment.
      */
     virtual void Start() = 0;

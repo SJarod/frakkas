@@ -9,6 +9,8 @@ namespace Renderer
 {
 	namespace LowLevel
 	{
+        class Framebuffer;
+
 		class LowRenderer
 		{
 		public:
@@ -24,6 +26,9 @@ namespace Renderer
 			 */
 			void RenderModelOnce(const Engine::Model& i_model, const Matrix4& i_view, const Matrix4& i_projection);
 
+            void BeginDraw(const Framebuffer& i_fbo) const;
+            void EndDraw() const;
+
 		private:
 			Resources::Shader shader;
 		};
@@ -38,7 +43,7 @@ namespace Renderer
 			Framebuffer(const int i_width, const int i_height);
 
 			void Bind() const;
-			void Unbind() const;
+			static void Unbind();
 		};
 	}
 }

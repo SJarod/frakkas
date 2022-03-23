@@ -18,7 +18,7 @@ int main()
         /// NEW FRAME
 
         /// UPDATE
-        Engine::EntityManager::UpdateAndRender();
+        Engine::EntityManager::Update();
 
         /// ENDFRAME
 

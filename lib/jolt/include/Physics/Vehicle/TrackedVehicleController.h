@@ -130,7 +130,7 @@ protected:
 	float						mBrakeInput = 0.0f;							///< Value between 0 and 1 indicating how strong the brake pedal is pressed
 
 	// Simluation information
-	VehicleEngine				mEngine;									///< Engine state of the vehicle
+	VehicleEngine				mEngine;									///< engine state of the vehicle
 	VehicleTransmission			mTransmission;								///< Transmission state of the vehicle
 	VehicleTracks				mTracks;									///< Tracks of the vehicle
 

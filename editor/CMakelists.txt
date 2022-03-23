@@ -38,6 +38,7 @@ target_link_libraries(EditorFrakkas
 
 target_include_directories(EditorFrakkas
                            PRIVATE include
+						   PRIVATE ${PROJECT_SOURCE_DIR}/common/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/engine/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
