@@ -20,7 +20,8 @@ FetchContent_Declare(sdl
         )
 FetchContent_MakeAvailable(sdl)
 
-set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common)
+set(COMMON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/common/include)
+set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common/src)
 
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 
@@ -29,11 +30,11 @@ add_subdirectory(maths)
 # GAME
 add_subdirectory(game)
 
-# EDITOR
-add_subdirectory(editor)
-
 # ENGINE
 add_subdirectory(engine)
+
+# EDITOR
+add_subdirectory(editor)
 
 # LAUNCHER
 add_subdirectory(launcher)

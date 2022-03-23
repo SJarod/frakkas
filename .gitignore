@@ -27,8 +27,6 @@
 *.la
 *.a
 *.lib
-!/lib/jolt/*/*.a
-!/lib/jolt/*/*.lib
 !lib/assimp/*/*.a
 !lib/assimp/*/*.lib
 
@@ -148,4 +146,3 @@ Launcher.pdb
 *.manifest
 **/.vs
 EditorFrakkas.pdb
-imgui.ini

@@ -1,11 +1,13 @@
 add_library(EngineFrakkas STATIC
-            src/entity_manager.cpp
-            src/serializer.cpp
+        src/engine/entity_manager.cpp
+        src/engine/serializer.cpp
+            src/engine/model.cpp
+            src/renderer/lowlevel/camera.cpp
+    		src/renderer/lowlevel/lowrenderer.cpp
+    		src/resources/program_shader.cpp
             ../common/src/component.cpp
             ../common/src/entity.cpp
         )
-
-
 target_include_directories(EngineFrakkas
                            PRIVATE include
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
@@ -28,4 +30,5 @@ target_link_libraries(EngineFrakkas
                       PRIVATE optimized zlibstatic
 )
 
-set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set_target_properties(GameFrakkas PROPERTIES
+ 					  ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)

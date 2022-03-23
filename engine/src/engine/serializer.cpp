@@ -19,7 +19,7 @@ std::string& Engine::Serializer::GetAttribute(std::ifstream &i_file, std::string
     return o_attribute;
 }
 
-void Engine::Serializer::ReadScene(const char *i_filePath, Scene& o_scene) {
+void Engine::Serializer::ReadScene(const std::string &i_filePath, Scene& o_scene) {
     std::ifstream inFile(i_filePath);
 
     if (inFile.fail())
@@ -78,7 +78,7 @@ void Serializer::ReadString(std::ifstream& i_file, std::string& o_string) {
 
 ///////////////////////// WRITE FUNCTIONS
 
-void Engine::Serializer::WriteScene(const char *i_filePath, const Scene &i_scene) {
+void Engine::Serializer::WriteScene(const std::string &i_filePath, const Scene &i_scene) {
     std::ofstream outFile(i_filePath);
     if (outFile.fail())
     {

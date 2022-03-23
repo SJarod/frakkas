@@ -12,6 +12,10 @@
 #include "editor/scene.hpp"
 #include "editor/game.hpp"
 
+namespace Renderer::LowLevel
+{
+    class Framebuffer;
+}
 
 namespace Editor
 {
@@ -20,7 +24,7 @@ namespace Editor
     public:
         void InitImGui();
         void QuitImGui();
-        void UpdateAndRender(bool ShowDemoWindow);
+        void UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo);
 
     private:
         MenuBar m_menuBar;

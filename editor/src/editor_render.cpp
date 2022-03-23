@@ -9,10 +9,11 @@
 #include <SDL.h>
 #include <glad/glad.h>
 
+#include "renderer/lowlevel/lowrenderer.hpp"
+
 #include "editor/editor_render.hpp"
 
 using namespace Editor;
-
 
 void EditorRender::InitImGui()
 {
@@ -41,7 +42,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(bool ShowDemoWindow)
+void EditorRender::UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -54,8 +55,8 @@ void EditorRender::UpdateAndRender(bool ShowDemoWindow)
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender();
     m_resourceViewer.OnImGuiRender();
-    m_scene.OnImGuiRender();
     m_game.OnImGuiRender();
+    m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.color));
 
     UpdateImGui();
 }
