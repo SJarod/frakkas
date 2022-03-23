@@ -39,6 +39,7 @@
 
 # ImGui file
 *.ini
+imgui.ini
 
 ########################################
 
@@ -146,3 +147,5 @@ lib/GameFrakkas.pdb
 Launcher.pdb
 *.manifest
 **/.vs
+EditorFrakkas.pdb
+imgui.ini

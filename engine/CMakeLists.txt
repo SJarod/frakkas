@@ -1,4 +1,10 @@
-add_library(EngineFrakkas STATIC src/foo.cpp)
+add_library(EngineFrakkas STATIC
+            src/entity_manager.cpp
+            src/serializer.cpp
+            ../common/src/component.cpp
+            ../common/src/entity.cpp
+        )
+
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
