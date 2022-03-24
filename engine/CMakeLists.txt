@@ -26,4 +26,14 @@ include(${PROJECT_SOURCE_DIR}/assimp.cmake)
 
 target_link_libraries(EngineFrakkas PRIVATE SDL2-static)
 
-set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+
+add_custom_command(TARGET EngineFrakkas POST_BUILD
+				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+				   ${PROJECT_SOURCE_DIR}/engine/shaders
+				   ${PROJECT_SOURCE_DIR}/build/debug/engine/shaders
+
+				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+				   ${PROJECT_SOURCE_DIR}/engine/shaders
+				   ${PROJECT_SOURCE_DIR}/build/release/engine/shaders
+)

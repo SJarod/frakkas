@@ -50,6 +50,23 @@ target_include_directories(EditorFrakkas
 )
 
 set_target_properties(EditorFrakkas PROPERTIES
-					  RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build
+					  RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/build/debug
+					  RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/build/release
 					  VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+add_custom_command(TARGET EditorFrakkas POST_BUILD
+		 		   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+				   ${PROJECT_SOURCE_DIR}/editor/assets
+		 		   ${PROJECT_SOURCE_DIR}/build/debug/editor/assets
+				   COMMAND ${CMAKE_COMMAND} -E copy
+				   ${PROJECT_SOURCE_DIR}/imgui.ini
+				   ${PROJECT_SOURCE_DIR}/build/debug
+
+				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+				   ${PROJECT_SOURCE_DIR}/editor/assets
+				   ${PROJECT_SOURCE_DIR}/build/release/editor/assets
+				   COMMAND ${CMAKE_COMMAND} -E copy
+				   ${PROJECT_SOURCE_DIR}/imgui.ini
+				   ${PROJECT_SOURCE_DIR}/build/release
 )

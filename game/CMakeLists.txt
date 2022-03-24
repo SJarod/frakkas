@@ -10,3 +10,13 @@ target_include_directories(GameFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
+
+add_custom_command(TARGET GameFrakkas POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+                   ${PROJECT_SOURCE_DIR}/game/assets
+                   ${PROJECT_SOURCE_DIR}/build/debug/game/assets
+
+                   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+                   ${PROJECT_SOURCE_DIR}/game/assets
+                   ${PROJECT_SOURCE_DIR}/build/release/game/assets
+)
