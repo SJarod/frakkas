@@ -6,7 +6,7 @@
 
 #include "bar.hpp"
 
-void Bar::Start() {
+void Game::Bar::Start() {
 
     std::cout << "Bar component started" << std::endl;
 }

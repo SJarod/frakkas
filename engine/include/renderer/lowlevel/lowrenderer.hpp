@@ -3,7 +3,7 @@
 #include "maths.hpp"
 
 #include "resources/program_shader.hpp"
-#include "engine/model.hpp"
+#include "renderer/model.hpp"
 
 namespace Renderer
 {
@@ -24,7 +24,7 @@ namespace Renderer
 			 * @param i_view matrix
 			 * @param i_projection matrix
 			 */
-			void RenderModelOnce(const Engine::Model& i_model, const Matrix4& i_view, const Matrix4& i_projection);
+			void RenderModelOnce(const Model& i_model, const Matrix4& i_view, const Matrix4& i_projection);
 
             void BeginDraw(const Framebuffer& i_fbo) const;
             void EndDraw() const;

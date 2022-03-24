@@ -2,13 +2,13 @@
 // Created by flory on 3/17/2022.
 //
 
-#include "engine/engine_entity.hpp"
+#include "game/engine_entity.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
-#include "engine/entity_manager.hpp"
+#include "game/entity_manager.hpp"
 
-using namespace Engine;
+using namespace Game;
 
 void EntityManager::Update() {
 

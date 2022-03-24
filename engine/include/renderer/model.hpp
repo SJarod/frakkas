@@ -6,9 +6,9 @@
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"
 #include "resources/program_shader.hpp"
-#include "physics/transform.hpp"
+#include "../../../physics/include/transform.hpp"
 
-namespace Engine
+namespace Renderer
 {
 	class Model
 	{

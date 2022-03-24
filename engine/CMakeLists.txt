@@ -1,14 +1,14 @@
 add_library(EngineFrakkas STATIC
-        	src/engine/entity_manager.cpp
-        	src/engine/serializer.cpp
-			src/engine/model.cpp
-			src/engine/engine_entity.cpp
+		src/game/entity_manager.cpp
+		src/resources/serializer.cpp
+		src/renderer/model.cpp
+		src/game/engine_entity.cpp
 			src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
 		    src/resources/resources_manager.cpp
-			${COMMON_SOURCE_DIR}/component.cpp
-			${COMMON_SOURCE_DIR}/entity.cpp
+			${COMMON_SOURCE_DIR}/game/component.cpp
+			${COMMON_SOURCE_DIR}/game/entity.cpp
 		    ${PROJECT_SOURCE_DIR}/lib/stb_image.c
 )
 

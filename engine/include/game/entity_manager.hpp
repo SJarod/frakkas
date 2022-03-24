@@ -13,7 +13,7 @@ namespace Renderer::LowLevel
     class Camera;
 }
 
-namespace Engine
+namespace Game
 {
     class EngineEntity;
 

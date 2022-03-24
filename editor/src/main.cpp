@@ -7,12 +7,15 @@
 #include <SDL.h>
 #include <backends/imgui_impl_sdl.h>
 
-#include "engine/entity_manager.hpp"
-#include "engine/engine_entity.hpp"
+#include "maths.hpp"
+
+#include "game/entity_manager.hpp"
+#include "game/engine_entity.hpp"
 #include "editor/editor_render.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
+#include "renderer/model.hpp"
 
 SDL_Window* window = nullptr;
 SDL_GLContext glContext;
@@ -78,11 +81,11 @@ int main()
 	Renderer::LowLevel::Camera camera;
 	camera.transform.position = { 0.f, 0.f, 2.f };
 
-    Engine::EntityManager entityManager{};
+    Game::EntityManager entityManager{};
     // Create 5 entities for example
     for (int i = 0; i < 5; i++)
     {
-        std::unique_ptr<Engine::EngineEntity> entity = std::make_unique<Engine::EngineEntity>();
+        std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
         entity->GetTransform().position.x = i * 2.f;
         entityManager.AddEntity(std::move(entity));
     }

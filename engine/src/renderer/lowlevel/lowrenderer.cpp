@@ -15,7 +15,7 @@ Renderer::LowLevel::LowRenderer::LowRenderer(const std::string &i_shaderName)
 {
 }
 
-void Renderer::LowLevel::LowRenderer::RenderModelOnce(const Engine::Model& i_model, const Matrix4& i_view, const Matrix4& i_projection)
+void Renderer::LowLevel::LowRenderer::RenderModelOnce(const Model& i_model, const Matrix4& i_view, const Matrix4& i_projection)
 {
 	if (!i_model.IsDrawable())
 		return;

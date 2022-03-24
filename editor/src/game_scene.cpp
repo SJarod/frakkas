@@ -4,14 +4,14 @@
 
 #include <imgui.h>
 
-#include "editor/game.hpp"
+#include "editor/game_scene.hpp"
 
 using namespace Editor;
 
 
-void Game::OnImGuiRender()
+void GameScene::OnImGuiRender()
 {
-    ImGui::Begin("Game");
+    ImGui::Begin("GameScene");
 
     ImGui::End();
 }

@@ -6,11 +6,11 @@
 
 namespace Editor
 {
-    class Game
+    class GameScene
     {
     public:
-        Game() = default;
-        ~Game() = default;
+        GameScene() = default;
+        ~GameScene() = default;
 
         /**
         * @summary Display the ImGui panel
