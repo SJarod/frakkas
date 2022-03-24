@@ -11,7 +11,7 @@
 
 #include "scene.hpp"
 
-namespace Engine
+namespace Resources
 {
     class Serializer
     {

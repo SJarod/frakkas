@@ -4,26 +4,26 @@
 
 #pragma once
 
-#include "entity.hpp"
-#include "engine/model.hpp"
+#include "game/entity.hpp"
+#include "renderer/model.hpp"
 #include "maths.hpp"
-#include "../../../common/include/entity.hpp"
+#include "game/entity.hpp"
 
 namespace Physics
 {
     class Transform;
 }
 
-namespace Engine
+namespace Game
 {
     class EngineEntity : public Entity
     {
     public:
-        [[nodiscard]] const Engine::Model& GetModel() const;
+        [[nodiscard]] const Renderer::Model& GetModel() const;
 
         Physics::Transform& GetTransform();
 
     private:
-        Engine::Model model;
+        Renderer::Model model;
     };
 }

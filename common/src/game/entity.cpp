@@ -4,7 +4,9 @@
 
 #include <iostream>
 
-#include "entity.hpp"
+#include "game/entity.hpp"
+
+using namespace Game;
 
 Entity::~Entity() {
     for(const std::shared_ptr<Component>& comp : components)

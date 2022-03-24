@@ -2,13 +2,13 @@
 // Created by f.marcellot on 21/03/2022.
 //
 
-#include "engine/serializer.hpp"
+#include "resources/serializer.hpp"
 
-using namespace Engine;
+using namespace Resources;
 
 ///////////////////////// READ FUNCTIONS
 
-std::string& Engine::Serializer::GetAttribute(std::ifstream &i_file, std::string &o_attribute) {
+std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::string &o_attribute) {
     std::getline(i_file, o_attribute);
     if (o_attribute.length() == 0)
     {
@@ -19,7 +19,7 @@ std::string& Engine::Serializer::GetAttribute(std::ifstream &i_file, std::string
     return o_attribute;
 }
 
-void Engine::Serializer::ReadScene(const std::string &i_filePath, Scene& o_scene) {
+void Resources::Serializer::ReadScene(const std::string &i_filePath, Scene& o_scene) {
     std::ifstream inFile(i_filePath);
 
     if (inFile.fail())
@@ -45,7 +45,7 @@ void Engine::Serializer::ReadScene(const std::string &i_filePath, Scene& o_scene
     inFile.close();
 }
 
-std::string Engine::Serializer::ReadExemple(std::ifstream &i_file, Exemple& o_exemple) {
+std::string Resources::Serializer::ReadExemple(std::ifstream &i_file, Exemple& o_exemple) {
 
     std::string attribute;
     while(!i_file.eof())
@@ -78,7 +78,7 @@ void Serializer::ReadString(std::ifstream& i_file, std::string& o_string) {
 
 ///////////////////////// WRITE FUNCTIONS
 
-void Engine::Serializer::WriteScene(const std::string &i_filePath, const Scene &i_scene) {
+void Resources::Serializer::WriteScene(const std::string &i_filePath, const Scene &i_scene) {
     std::ofstream outFile(i_filePath);
     if (outFile.fail())
     {
@@ -94,7 +94,7 @@ void Engine::Serializer::WriteScene(const std::string &i_filePath, const Scene &
     outFile.close();
 }
 
-void Engine::Serializer::WriteExemple(std::ofstream &io_file, const Exemple &i_exemple) {
+void Resources::Serializer::WriteExemple(std::ofstream &io_file, const Exemple &i_exemple) {
     WriteAttribute(io_file, "exemple");
 
     WriteAttribute(io_file, "position");

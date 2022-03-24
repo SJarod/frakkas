@@ -1,6 +1,6 @@
 #include <glad/glad.h>
 
-#include "engine/model.hpp"
+#include "renderer/model.hpp"
 
 void ParseMesh(Resources::Mesh& io_mesh)
 {
@@ -36,7 +36,7 @@ void CreateGPUMesh(Resources::Mesh& io_mesh)
 	glBindVertexArray(0);
 }
 
-Engine::Model::Model()
+Renderer::Model::Model()
 {
 	Resources::Mesh mesh;
 	mesh.vertices = {
@@ -51,7 +51,7 @@ Engine::Model::Model()
 	CreateGPUMesh(*meshes.back());
 }
 
-bool Engine::Model::IsDrawable() const
+bool Renderer::Model::IsDrawable() const
 {
 	return !meshes.empty();
 }

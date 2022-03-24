@@ -28,7 +28,7 @@ add_executable(EditorFrakkas
         	   src/console.cpp
 			   src/inspector.cpp
 			   src/scene.cpp
-			   src/game.cpp
+		src/game_scene.cpp
 )
 
 target_link_libraries(EditorFrakkas

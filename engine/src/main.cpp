@@ -12,7 +12,7 @@
 #include <SDL.h>
 
 #include "resources/program_shader.hpp"
-#include "engine/model.hpp"
+#include "renderer/model.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
 

@@ -10,7 +10,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
-#include "engine/singleton.hpp"
+#include "singleton.hpp"
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"
 

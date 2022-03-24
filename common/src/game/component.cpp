@@ -2,7 +2,9 @@
 // Created by flori on 3/17/2022.
 //
 
-#include "component.hpp"
+#include "game/component.hpp"
+
+using namespace Game;
 
 void Component::Enable() {
     if (!enabled)

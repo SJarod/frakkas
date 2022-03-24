@@ -10,7 +10,7 @@
 #include "editor/inspector.hpp"
 #include "editor/file_browser.hpp"
 #include "editor/scene.hpp"
-#include "editor/game.hpp"
+#include "editor/game_scene.hpp"
 
 namespace Renderer::LowLevel
 {
@@ -33,7 +33,7 @@ namespace Editor
         Inspector m_inspector;
         FileBrowser m_fileBrowser;
         Scene m_scene;
-        Game m_game;
+        GameScene m_game;
 
         void UpdateImGui();
     };
