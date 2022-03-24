@@ -73,7 +73,6 @@ int main()
 
 	ImGuiIO io = ImGui::GetIO();
 
-
 	Renderer::LowLevel::LowRenderer rdr("basic");
 	Renderer::LowLevel::Framebuffer fbo(1000, 1000);
 	Renderer::LowLevel::Camera camera;
@@ -90,15 +89,14 @@ int main()
 
 	bool running = true;
 	SDL_Event evt;
-    int x, y;
+    int x = 0, y = 0;
 
 	while (running)
 	{
-        float xSpeed, ySpeed, zSpeed = 0;
+        float xSpeed = 0, ySpeed = 0, zSpeed = 0;
         /// INPTUS EVENT
 		while (SDL_PollEvent(&evt))
 		{
-
 			ImGui_ImplSDL2_ProcessEvent(&evt);
             switch(evt.type)
             {

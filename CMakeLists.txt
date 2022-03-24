@@ -40,5 +40,4 @@ add_dependencies(EngineFrakkas GameFrakkas)
 add_dependencies(EditorFrakkas EngineFrakkas)
 add_dependencies(Launcher EngineFrakkas)
 
-
 #add_library(GameFrakkas SHARED game/src/game.cpp)
