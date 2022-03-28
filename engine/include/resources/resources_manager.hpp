@@ -23,7 +23,6 @@ namespace Resources
         friend class Singleton<ResourcesManager>;
 
     public:
-        ResourcesManager() = default;
         ~ResourcesManager();
 
         /**
@@ -35,7 +34,7 @@ namespace Resources
          *
          * @return Array of std::shared_ptr<Mesh>
          */
-        static std::vector<std::shared_ptr<Mesh>> LoadModel(const char* i_filename, const bool i_embeddedTexture);
+        static std::vector<std::shared_ptr<Mesh>> LoadModel(const std::string& i_filename, const bool i_embeddedTexture);
 
         /**
          * Procedurally load a cube.
@@ -63,7 +62,7 @@ namespace Resources
          *
          * @return std::shared_ptr<Texture>
          */
-        static std::shared_ptr<Texture> LoadTexture(const char* i_filename, const bool i_flip);
+        static std::shared_ptr<Texture> LoadTexture(const std::string& i_filename, const bool i_flip);
 
         /**
          * Get the number of loaded mesh.
@@ -78,6 +77,14 @@ namespace Resources
         static unsigned int GetLoadedTextureCount();
 
     private:
+        // Array of every loaded mesh.
+        std::vector<std::shared_ptr<Mesh>> meshes;
+
+        // Array of every loaded textures.
+        std::vector<std::shared_ptr<Texture>> textures;
+
+        ResourcesManager() = default;
+
         /**
          * Extrat Assimp's mesh data (vertices and textures).
          * Load mesh's textures if it has embedded textures (specify with a bool).
@@ -107,7 +114,7 @@ namespace Resources
          *
          * @return Success
          */
-        int LoadCPUModel(Assimp::Importer& io_importer, const char* i_path);
+        int LoadCPUModel(Assimp::Importer& io_importer, const std::string& i_path);
 
         /**
          * Reorder mesh's vertices with its stored indices.
@@ -130,7 +137,7 @@ namespace Resources
          * @param i_flip
          * @param i_type
          */
-        void LoadCPUTexture(const char* i_filename, const bool i_flip, const TextureType i_type = TextureType::TEXTURE_DIFFUSE);
+        void LoadCPUTexture(const std::string& i_filename, const bool i_flip, const TextureType i_type = TextureType::TEXTURE_DIFFUSE);
 
         /**
          * Create a texture GPU side with OpenGL.
@@ -150,11 +157,5 @@ namespace Resources
          * @param i_type
          */
         void LoadEmbeddedTexture(const aiMaterial& i_mat, const aiScene& i_scene, const aiTextureType i_aiType, const TextureType i_type);
-
-        // Array of every loaded mesh.
-        std::vector<std::shared_ptr<Mesh>> meshes;
-
-        // Array of every loaded textures.
-        std::vector<std::shared_ptr<Texture>> textures;
     };
 }

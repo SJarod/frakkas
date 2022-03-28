@@ -24,15 +24,21 @@ namespace Renderer
 			[[nodiscard]] Matrix4 GetProjectionMatrix(float i_aspectRatio) const;
 
 			/**
-			 * Create an ImGui window to change camera's values.
+			 * Change the camera's field of view.
 			 * 
+			 * @param i_fovY vertical field of view
 			 */
-			void InspectorUpdate();
+			void SetFieldOfView(const float i_fovY);
 
 			Physics::Transform transform;
-		private:
 
-			float fovY = Maths::Constants::piHalf;
+			//target vertical field of view
+			float targetFovY = Maths::Constants::piHalf;
+
+		private:
+			//vertical field of view
+			float fovY = 0.f;
+
 			float near = 0.001f;
 			float far = 1000.f;
 		};

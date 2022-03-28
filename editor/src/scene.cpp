@@ -9,13 +9,14 @@
 using namespace Editor;
 
 
-void Scene::OnImGuiRender(ImTextureID i_tex)
+Vector2 Scene::OnImGuiRender(ImTextureID i_tex)
 {
     ImGui::Begin("Scene");
 
-	ImVec2 windowSize = ImGui::GetWindowSize();
-    windowSize.y *= 0.9f;
+	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	ImGui::Image(i_tex, windowSize, ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
+
+	return { windowSize.x, windowSize.y };
 }

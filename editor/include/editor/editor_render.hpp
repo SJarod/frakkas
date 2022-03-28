@@ -24,7 +24,7 @@ namespace Editor
     public:
         void InitImGui();
         void QuitImGui();
-        void UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo);
+        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera);
 
     private:
         MenuBar m_menuBar;

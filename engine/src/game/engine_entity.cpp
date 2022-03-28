@@ -8,7 +8,7 @@
 
 using namespace Game;
 
-const Renderer::Model &EngineEntity::GetModel() const {
+Renderer::Model &EngineEntity::GetModel() {
     return model;
 }
 

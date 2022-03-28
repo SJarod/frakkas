@@ -77,7 +77,7 @@ int main()
 	ImGuiIO io = ImGui::GetIO();
 
 	Renderer::LowLevel::LowRenderer rdr("basic");
-	Renderer::LowLevel::Framebuffer fbo(1000, 1000);
+	Renderer::LowLevel::Framebuffer fbo(1920, 1080);
 	Renderer::LowLevel::Camera camera;
 	camera.transform.position = { 0.f, 0.f, 2.f };
 
@@ -87,6 +87,8 @@ int main()
     {
         std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
         entity->GetTransform().position.x = i * 2.f;
+		entity->GetTransform().scale = { 0.01f, 0.01f, 0.01f };
+		entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
         entityManager.AddEntity(std::move(entity));
     }
 
@@ -144,15 +146,11 @@ int main()
 
         /// NEW FRAME
 
-		editorRender.UpdateAndRender(fbo);
+		rdr.BeginFrame(fbo);
+		entityManager.Render(rdr, camera, fbo.aspectRatio);
+        rdr.EndFrame();
 
-        /// DRAW
-
-		rdr.BeginDraw(fbo);
-
-		entityManager.Render(rdr, camera);
-
-        rdr.EndDraw();
+		editorRender.UpdateAndRender(fbo, camera);
 
 		/// ENDFRAME
 

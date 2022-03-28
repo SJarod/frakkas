@@ -33,6 +33,8 @@ namespace Resources
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 
+		Matrix4 localTransform = Matrix4::Identity();
+
 		GPUMesh gpu;
 
 		// TODO : vector of GPUTexture
