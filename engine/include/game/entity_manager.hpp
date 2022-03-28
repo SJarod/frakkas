@@ -32,8 +32,9 @@ namespace Game
          * @brief Render each entity
          * @param i_renderer the renderer that will draw the entities
          * @param i_camera the camera to render, in other words the source view to look at the world
+         * @param i_aspectRatio the render's aspect ratio
          */
-        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::LowLevel::Camera& i_camera);
+        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::LowLevel::Camera& i_camera, const float i_aspectRatio);
 
         /**
          * @summary move an entity pointer into the entity manager's array,

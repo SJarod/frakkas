@@ -10,6 +10,7 @@
 #include <glad/glad.h>
 
 #include "renderer/lowlevel/lowrenderer.hpp"
+#include "renderer/lowlevel/camera.hpp"
 
 #include "editor/editor_render.hpp"
 
@@ -56,7 +57,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -74,7 +75,12 @@ void EditorRender::UpdateAndRender(const Renderer::LowLevel::Framebuffer& io_fbo
     m_inspector.OnImGuiRender();
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender();
-    m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.color));
+    Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
+    io_fbo.aspectRatio = windowSize.x / windowSize.y;
+
+    float newFovY = 2.f * Maths::Atan(Maths::Tan(io_camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
+    if (io_fbo.aspectRatio > 1.f)
+        io_camera.SetFieldOfView(newFovY);
 
     UpdateImGui();
 }

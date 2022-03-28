@@ -1,7 +1,3 @@
-//
-// Created by m.mehalin on 23/03/2022.
-//
-
 #include <stb_image.h>
 #include <assimp/postprocess.h>
 
@@ -70,6 +66,13 @@ void Resources::ResourcesManager::ProcessAiNode(const aiNode& i_node, const aiSc
         Mesh mesh;
         ProcessAiMesh(*aim, i_scene, mesh, i_embeddedTexture);
 
+        // load the transposed mesh matrix : (i % 4 * 4) + (i / 4)
+        for (int i = 0; i < 16; ++i)
+        {
+            int j = (i % 4 * 4) + (i / 4);
+            mesh.localTransform.element[i] = *(&i_node.mTransformation.a1 + j);
+        }
+
         meshes.push_back(std::make_shared<Mesh>(mesh));
     }
     // then do the same for each of its children
@@ -79,7 +82,7 @@ void Resources::ResourcesManager::ProcessAiNode(const aiNode& i_node, const aiSc
     }
 }
 
-int Resources::ResourcesManager::LoadCPUModel(Assimp::Importer& io_importer, const char* i_path)
+int Resources::ResourcesManager::LoadCPUModel(Assimp::Importer& io_importer, const std::string& i_path)
 {
     io_importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
     const aiScene* scene = io_importer.ReadFile(i_path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
@@ -127,17 +130,14 @@ void Resources::ResourcesManager::CreateGPUMesh(Mesh& io_mesh)
     glBindVertexArray(0);
 }
 
-std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const char* i_filename, const bool i_embeddedTexture)
+std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const std::string& i_filename, const bool i_embeddedTexture)
 {
-    std::string f = i_filename;
-    f = "../assets/" + f;
-
     ResourcesManager rm = ResourcesManager::Instance();
 
     int meshOffset = rm.meshes.size();
 
     Assimp::Importer importer;
-    if (rm.LoadCPUModel(importer, f.c_str()) == 0)
+    if (rm.LoadCPUModel(importer, i_filename.c_str()) == 0)
     {
         const aiScene* scene = importer.GetScene();
         rm.ProcessAiNode(*scene->mRootNode, *scene, i_embeddedTexture);
@@ -265,22 +265,20 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadSphere(const float i_radi
     return *(rm.meshes.end() - 1);
 }
 
-void Resources::ResourcesManager::LoadCPUTexture(const char* i_filename, const bool i_flip, const TextureType i_type)
+void Resources::ResourcesManager::LoadCPUTexture(const std::string& i_filename, const bool i_flip, const TextureType i_type)
 {
-    std::string f = i_filename;
-
     Texture texture;
     stbi_set_flip_vertically_on_load(i_flip);
-    texture.data = stbi_load(f.c_str(), &texture.width, &texture.height, &texture.bpp, 0);
+    texture.data = stbi_load(i_filename.c_str(), &texture.width, &texture.height, &texture.bpp, 0);
     texture.type = i_type;
 
     if (texture.data)
     {
         textures.push_back(std::make_shared<Texture>(texture));
-        std::cout << "Successfully loaded texture file : " << f << std::endl;
+        std::cout << "Successfully loaded texture file : " << i_filename << std::endl;
     }
     else
-        std::cout << "Could not load texture file : " << f << std::endl;
+        std::cout << "Could not load texture file : " << i_filename << std::endl;
 }
 
 void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
@@ -317,7 +315,7 @@ void Resources::ResourcesManager::LoadEmbeddedTexture(const aiMaterial& i_mat, c
     }
 }
 
-std::shared_ptr<Texture> Resources::ResourcesManager::LoadTexture(const char* i_filename, const bool i_flip)
+std::shared_ptr<Texture> Resources::ResourcesManager::LoadTexture(const std::string& i_filename, const bool i_flip)
 {
     ResourcesManager rm = ResourcesManager::Instance();
 

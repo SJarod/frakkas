@@ -10,26 +10,36 @@
 
 using namespace Game;
 
-void EntityManager::Update() {
-
+void EntityManager::Update()
+{
     for (const auto& entity : entities)
     {
         entity->Update();
     }
 }
 
-void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const Renderer::LowLevel::Camera &i_camera) {
+void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const Renderer::LowLevel::Camera &i_camera, const float i_aspectRatio)
+{
+    i_renderer.SetProjection(i_camera.GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetView(i_camera.GetViewMatrix());
 
     for (const auto& entity : entities)
     {
-        i_renderer.RenderModelOnce(entity->GetModel(),
-                                   i_camera.GetViewMatrix(),
-                                   i_camera.GetProjectionMatrix(1000.f / 1000.f));
-    }
+        const Renderer::Model& model = entity->GetModel();
 
+        for (const std::shared_ptr<Resources::Mesh> mesh : model.meshes)
+        {
+            i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
+                                      mesh->gpu.VAO,
+                                      mesh->vertices.size(),
+                                      mesh->diffuseTex.data,
+                                      true);
+        }
+    }
 }
 
-void EntityManager::AddEntity(std::unique_ptr<EngineEntity> i_entity) {
+void EntityManager::AddEntity(std::unique_ptr<EngineEntity> i_entity)
+{
     i_entity->Start();
     entities.push_back(std::move(i_entity));
 }

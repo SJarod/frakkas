@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "maths.hpp"
+
 typedef void* ImTextureID;
 
 namespace Editor
@@ -17,6 +19,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(ImTextureID i_tex);
+        Vector2 OnImGuiRender(ImTextureID i_tex);
     };
 }

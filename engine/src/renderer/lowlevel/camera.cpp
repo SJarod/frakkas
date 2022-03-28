@@ -13,13 +13,7 @@ Matrix4 Renderer::LowLevel::Camera::GetProjectionMatrix(float i_aspectRatio) con
 	return Matrix4::Perspective(fovY, i_aspectRatio, near, far, false);
 }
 
-void Renderer::LowLevel::Camera::InspectorUpdate()
+void Renderer::LowLevel::Camera::SetFieldOfView(const float i_fovY)
 {
-	//ImGui::Begin("Camera");
-	//ImGui::DragFloat3("camera position", transform.position.element, 1.f);
-	//ImGui::DragFloat3("camera rotation", transform.rotation.element, 0.1f, -180.f, 180.f);
-	//ImGui::SliderAngle("fov", &fovY, 0.f, 180.f);
-	//ImGui::DragFloat("near", &near, 0.01f);
-	//ImGui::DragFloat("far", &far, 0.01f);
-	//ImGui::End();
+	fovY = i_fovY;
 }

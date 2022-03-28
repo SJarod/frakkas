@@ -19,7 +19,7 @@ namespace Game
     class EngineEntity : public Entity
     {
     public:
-        [[nodiscard]] const Renderer::Model& GetModel() const;
+        [[nodiscard]] Renderer::Model& GetModel();
 
         Physics::Transform& GetTransform();
 
