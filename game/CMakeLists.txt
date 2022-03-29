@@ -1,19 +1,17 @@
-add_library(GameFrakkas SHARED
+add_library(GameFrakkas
             src/bar.cpp
-            ${COMMON_SOURCE_DIR}/game/component.cpp
-            ${COMMON_SOURCE_DIR}/game/entity.cpp
-            ${COMMON_SOURCE_DIR}/game/transform.cpp
-            ${COMMON_SOURCE_DIR}/resources/serializer.cpp
-            ${IMGUI_SOURCE_FILES}
 )
 
 target_include_directories(GameFrakkas
                            PRIVATE include
-                           PRIVATE ${COMMON_INCLUDE_DIR}
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
+                           PRIVATE ${ENGINE_INCLUDE_DIR}
+                           PRIVATE ${MATHS_INCLUDE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}
 )
+
+target_link_directories(GameFrakkas PRIVATE EngineFrakkas)
+
+set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_custom_command(TARGET GameFrakkas POST_BUILD
                    COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
