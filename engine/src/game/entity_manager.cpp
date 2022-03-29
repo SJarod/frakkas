@@ -2,9 +2,13 @@
 // Created by flory on 3/17/2022.
 //
 
+#include <imgui.h>
+
 #include "game/engine_entity.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
+
+#include "resources/mesh.hpp"
 
 #include "game/entity_manager.hpp"
 
@@ -43,3 +47,9 @@ void EntityManager::AddEntity(std::unique_ptr<EngineEntity> i_entity)
     i_entity->Start();
     entities.push_back(std::move(i_entity));
 }
+
+const std::vector<std::unique_ptr<EngineEntity>> &EntityManager::GetEntities() const {
+    return entities;
+}
+
+

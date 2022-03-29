@@ -24,6 +24,23 @@ FetchContent_Declare(sdl
 )
 FetchContent_MakeAvailable(sdl)
 
+# ImGui
+FetchContent_Declare(imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG docking # branch name
+        )
+FetchContent_MakeAvailable(imgui)
+
+set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_demo.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        )
+
+set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+
 set(COMMON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/common/include)
 set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common/src)
 

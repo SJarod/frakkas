@@ -3,10 +3,12 @@
 #include <memory>
 #include <vector>
 
-#include "resources/mesh.hpp"
-#include "resources/texture.hpp"
-#include "resources/program_shader.hpp"
 #include "game/transform.hpp"
+
+namespace Resources{
+    class Mesh;
+    class Serializer;
+}
 
 namespace Renderer
 {
@@ -72,5 +74,22 @@ namespace Renderer
 		 * @param i_meshIndex
 		 */
 		void AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex);
+
+        /**
+         * ImGui editing function. Set which parameters can be modified in run time.
+         */
+        void Edit();
+
+        /**
+         * Setup entity components from input file.
+         * @param i_file the opened input file.
+         */
+        void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
+
+        /**
+         * Write the entity components in scene text format.
+         * @param o_file the opened output file.
+         */
+        void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 	};
 };

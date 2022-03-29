@@ -24,6 +24,20 @@ namespace Maths{
     float ToDegrees(float i_radAngle);
 
     /**
+     *
+     * @param i_degAngles three angles in degrees
+     * @return the angles converted from degrees to radians
+     */
+    Vector3 ToRadians(const Vector3& i_degAngles);
+
+    /**
+     *
+     * @param i_radAngles three angles in radians
+     * @return the angles converted from radians to degrees
+     */
+    Vector3 ToDegrees(const Vector3& i_radAngles);
+
+    /**
  * @summary Return minimum between two values, negative numbers accepted
  */
     template<typename T>

@@ -17,6 +17,11 @@ namespace Renderer::LowLevel
     class Framebuffer;
 }
 
+namespace Game
+{
+    class EntityManager;
+}
+
 namespace Editor
 {
     class EditorRender
@@ -24,7 +29,7 @@ namespace Editor
     public:
         void InitImGui();
         void QuitImGui();
-        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera);
+        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera, Game::EntityManager& entityManager);
 
     private:
         MenuBar m_menuBar;

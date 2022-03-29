@@ -3,6 +3,8 @@
 
 #include "maths.hpp"
 
+
+
 #include "resources/resources_manager.hpp"
 
 Resources::ResourcesManager::~ResourcesManager()
