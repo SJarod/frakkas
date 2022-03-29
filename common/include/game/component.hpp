@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "resources/serializer.hpp"
 
 namespace Game
 {
@@ -50,7 +51,24 @@ namespace Game
         /**
          * @return the enable state of the component
          */
-        bool IsEnabled() const;
+        [[nodiscard]] bool IsEnabled() const;
+
+        /**
+         * ImGui editing function. Set which parameters can be modified in run time.
+         */
+        virtual void Edit() {};
+
+        /**
+         * Setup component parameters from input file.
+         * @param i_file the opened input file.
+         */
+        virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
+
+        /**
+         * Write the component parameters in scene text format.
+         * @param o_file teh opened output file.
+         */
+        virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
         /**
          * Set or replace the current entity which hold the component. You can unset the owner by sending nullptr.

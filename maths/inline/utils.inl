@@ -10,9 +10,19 @@ namespace Maths {
         return i_degAngle * (Constants::pi / 180.f);
     }
 
+    inline Vector3 ToRadians(const Vector3& i_degAngles)
+    {
+        return i_degAngles * (Constants::pi / 180.f);
+    }
+
     inline float ToDegrees(float i_radAngle)
     {
         return i_radAngle * (180.f / Constants::pi);
+    }
+
+    inline Vector3 ToDegrees(const Vector3& i_radAngles)
+    {
+        return i_radAngles * (180.f / Constants::pi);
     }
 
     template<typename T>

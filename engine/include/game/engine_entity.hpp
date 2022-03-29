@@ -20,7 +20,9 @@ namespace Game
 
         [[nodiscard]] Renderer::Model& GetModel();
 
-        Game::Transform& GetTransform();
+        Game::Transform& GetModelTransform();
+
+        void Edit() override;
 
     private:
         Renderer::Model model;

@@ -4,6 +4,11 @@
 
 #pragma once
 
+namespace Game
+{
+    class EngineEntity;
+}
+
 namespace Editor
 {
     class Inspector
@@ -15,6 +20,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender();
+        void OnImGuiRender(Game::EngineEntity *selectedEntity);
     };
 }

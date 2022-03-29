@@ -58,7 +58,7 @@ void FileBrowser::OnImGuiRender()
         // Add button texture
         std::shared_ptr<Resources::Texture> icon = entry.is_directory() ? m_directoryIcon : m_fileIcon;
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-        ImGui::ImageButton((ImTextureID)icon->gpu.data, {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+        ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->gpu.data), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
         ImGui::PopStyleColor();
 
         if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))

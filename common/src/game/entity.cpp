@@ -3,6 +3,9 @@
 //
 
 #include <iostream>
+#include <imgui.h>
+
+#include "resources/serializer.hpp"
 
 #include "game/entity.hpp"
 
@@ -34,5 +37,17 @@ void Entity::Update() {
 
 void Entity::AddComponent(const std::shared_ptr<Component>& comp) {
     components.push_back(comp);
+}
+
+void Entity::Edit() {
+
+    ImGui::Text("Entity");
+
+    ImGui::Separator();
+
+    transform.Edit();
+
+    for (const std::shared_ptr<Component>& comp : components)
+        comp->Edit();
 }
 

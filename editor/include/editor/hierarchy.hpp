@@ -4,6 +4,12 @@
 
 #pragma once
 
+namespace Game
+{
+    class EngineEntity;
+    class EntityManager;
+}
+
 namespace Editor
 {
     class Hierarchy
@@ -15,6 +21,9 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender();
+        void OnImGuiRender(Game::EntityManager &entityManager);
+
+        Game::EngineEntity* selected = nullptr;
+        std::string selectedLabel;
     };
 }

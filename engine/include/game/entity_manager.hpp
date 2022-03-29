@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 
+#include "resources/serializer.hpp"
+
 namespace Renderer::LowLevel
 {
     class LowRenderer;
@@ -42,6 +44,20 @@ namespace Game
          * @param i_entity the fully constructed entity to add, it is an unique pointer so use std::move()
          */
         void AddEntity(std::unique_ptr<EngineEntity> i_entity);
+
+        [[nodiscard]] const std::vector<std::unique_ptr<EngineEntity>>& GetEntities() const;
+
+        /**
+         * Create entity from a scene input file.
+         * @param i_file the opened input file.
+         */
+        void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
+
+        /**
+         * Write all the entities in a scene output file.
+         * @param o_file the opened output file.
+         */
+        void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) {};
 
     private:
 

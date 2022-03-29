@@ -1,4 +1,10 @@
+#include "resources/mesh.hpp"
+#include "resources/program_shader.hpp"
+#include "resources/texture.hpp"
 #include "game/transform.hpp"
+#include "resources/mesh.hpp"
+#include "resources/program_shader.hpp"
+#include "resources/texture.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 

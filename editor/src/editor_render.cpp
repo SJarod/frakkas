@@ -57,7 +57,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera, Game::EntityManager& entityManager)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -70,9 +70,9 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Rend
     ImGui::ShowDemoWindow(&ShowDemoWindow);
 
     m_menuBar.OnImGuiRender();
-    m_hierarchy.OnImGuiRender();
+    m_hierarchy.OnImGuiRender(entityManager);
     m_console.OnImGuiRender();
-    m_inspector.OnImGuiRender();
+    m_inspector.OnImGuiRender(m_hierarchy.selected);
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender();
     Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));

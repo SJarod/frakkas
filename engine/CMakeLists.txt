@@ -1,16 +1,18 @@
 add_library(EngineFrakkas STATIC
 		src/game/entity_manager.cpp
-		src/resources/serializer.cpp
 		src/renderer/model.cpp
 		src/game/engine_entity.cpp
-			src/renderer/lowlevel/camera.cpp
-			src/renderer/lowlevel/lowrenderer.cpp
-			src/resources/program_shader.cpp
-		    src/resources/resources_manager.cpp
-			${COMMON_SOURCE_DIR}/game/component.cpp
-			${COMMON_SOURCE_DIR}/game/entity.cpp
-		    ${PROJECT_SOURCE_DIR}/lib/stb_image.c
-        ${COMMON_SOURCE_DIR}/game/transform.cpp)
+		src/renderer/lowlevel/camera.cpp
+		src/renderer/lowlevel/lowrenderer.cpp
+		src/resources/program_shader.cpp
+		src/resources/resources_manager.cpp
+		${COMMON_SOURCE_DIR}/game/component.cpp
+		${COMMON_SOURCE_DIR}/game/entity.cpp
+		${COMMON_SOURCE_DIR}/resources/serializer.cpp
+		${PROJECT_SOURCE_DIR}/lib/stb_image.c
+        ${COMMON_SOURCE_DIR}/game/transform.cpp
+		${IMGUI_SOURCE_FILES}
+		${COMMON_SOURCE_DIR}/game/transform.cpp)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
@@ -18,6 +20,7 @@ target_include_directories(EngineFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
                            PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 						   PRIVATE ${PROJECT_SOURCE_DIR}/common/include
+						   PRIVATE ${imgui_SOURCE_DIR}
 )
 
 # Include jolt and assimp libraries

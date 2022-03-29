@@ -8,7 +8,13 @@
 #include <memory>
 
 #include "transform.hpp"
+#include "resources/serializer.hpp"
 #include "component.hpp"
+
+namespace Resources
+{
+    class Serializer;
+}
 
 namespace Game
 {
@@ -38,6 +44,24 @@ namespace Game
          * @param comp the component to add. The shared_ptr instance will be copied.
          */
         void AddComponent(const std::shared_ptr<Component>& comp);
+
+        /**
+         * ImGui editing function. Set which parameters can be modified in run time.
+         */
+        virtual void Edit();
+
+        /**
+         * Setup entity components from input file.
+         * @param i_file the opened input file.
+         */
+        virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
+
+        /**
+         * Write the entity components in scene text format.
+         * @param o_file the opened output file.
+         */
+        virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
+
 
     protected:
 

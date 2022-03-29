@@ -86,10 +86,10 @@ int main()
     for (int i = 0; i < 5; i++)
     {
         std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
-        entity->GetTransform().position = Vector3(i * 2.f, 0.f, 0.f);
-		entity->GetTransform().scale = { 0.01f, 0.01f, 0.01f };
-		entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
-        
+        entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
+        entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
+        entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", true);
+        entity->GetModel().transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         entityManager.AddEntity(std::move(entity));
     }
 
@@ -150,7 +150,7 @@ int main()
 		entityManager.Render(rdr, camera, fbo.aspectRatio);
         rdr.EndFrame();
 
-		editorRender.UpdateAndRender(fbo, camera);
+		editorRender.UpdateAndRender(fbo, camera, entityManager);
 
 		/// ENDFRAME
 
