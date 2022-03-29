@@ -1,7 +1,7 @@
 #pragma once
 
 #include "maths.hpp"
-#include "../../../../physics/include/transform.hpp"
+#include "game/transform.hpp"
 
 namespace Renderer
 {
@@ -30,7 +30,7 @@ namespace Renderer
 			 */
 			void SetFieldOfView(const float i_fovY);
 
-			Physics::Transform transform;
+			Game::Transform transform;
 
 			//target vertical field of view
 			float targetFovY = Maths::Constants::piHalf;

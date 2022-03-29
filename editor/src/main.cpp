@@ -86,9 +86,10 @@ int main()
     for (int i = 0; i < 5; i++)
     {
         std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
-        entity->GetTransform().position.x = i * 2.f;
+        entity->GetTransform().position = Vector3(i * 2.f, 0.f, 0.f);
 		entity->GetTransform().scale = { 0.01f, 0.01f, 0.01f };
 		entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
+        
         entityManager.AddEntity(std::move(entity));
     }
 
@@ -140,9 +141,8 @@ int main()
             }
 		}
 
-        camera.transform.position.x += xSpeed;
-        camera.transform.position.y += ySpeed;
-        camera.transform.position.z += zSpeed;
+        Game::Transform& trs = camera.transform;
+        trs.position = Vector3(trs.position.x + xSpeed, trs.position.y + ySpeed, trs.position.z + zSpeed);
 
         /// NEW FRAME
 

@@ -2,7 +2,7 @@ add_library(GameFrakkas SHARED
             src/bar.cpp
             ${COMMON_SOURCE_DIR}/game/component.cpp
             ${COMMON_SOURCE_DIR}/game/entity.cpp
-)
+            ${COMMON_SOURCE_DIR}/game/transform.cpp)
 
 target_include_directories(GameFrakkas
                            PRIVATE include

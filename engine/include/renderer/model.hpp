@@ -6,7 +6,7 @@
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"
 #include "resources/program_shader.hpp"
-#include "../../../physics/include/transform.hpp"
+#include "game/transform.hpp"
 
 namespace Renderer
 {
@@ -16,7 +16,7 @@ namespace Renderer
 		// Every meshes that this model posseses.
 		std::vector<std::shared_ptr<Resources::Mesh>> meshes;
 
-		Physics::Transform transform;
+		Game::Transform transform;
 
 		Model() = default;
 
