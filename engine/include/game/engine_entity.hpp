@@ -9,19 +9,18 @@
 #include "maths.hpp"
 #include "game/entity.hpp"
 
-namespace Physics
-{
-    class Transform;
-}
-
 namespace Game
 {
+    class Transform;
+
     class EngineEntity : public Entity
     {
     public:
+        EngineEntity();
+
         [[nodiscard]] Renderer::Model& GetModel();
 
-        Physics::Transform& GetTransform();
+        Game::Transform& GetTransform();
 
     private:
         Renderer::Model model;

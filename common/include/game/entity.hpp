@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 
+#include "transform.hpp"
 #include "component.hpp"
 
 namespace Game
@@ -16,6 +17,8 @@ namespace Game
     public:
         Entity() = default;
         ~Entity();
+
+        Transform transform;
 
         /**
          * @summary Called when the entity is included into the engine's EntityManager,

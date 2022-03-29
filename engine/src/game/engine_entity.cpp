@@ -2,7 +2,7 @@
 // Created by flori on 3/23/2022.
 //
 
-#include "../../../physics/include/transform.hpp"
+#include "game/transform.hpp"
 
 #include "game/engine_entity.hpp"
 
@@ -12,6 +12,10 @@ Renderer::Model &EngineEntity::GetModel() {
     return model;
 }
 
-Physics::Transform &EngineEntity::GetTransform() {
+Game::Transform &EngineEntity::GetTransform() {
     return model.transform;
+}
+
+EngineEntity::EngineEntity() {
+    transform.parent = &model.transform;
 }

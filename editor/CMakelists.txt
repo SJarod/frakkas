@@ -28,8 +28,8 @@ add_executable(EditorFrakkas
         	   src/console.cpp
 			   src/inspector.cpp
 			   src/scene.cpp
-		src/game_scene.cpp
-)
+			   src/game_scene.cpp
+        	   ${COMMON_SOURCE_DIR}/game/transform.cpp)
 
 target_link_libraries(EditorFrakkas
                       PRIVATE EngineFrakkas

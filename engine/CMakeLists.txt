@@ -10,7 +10,7 @@ add_library(EngineFrakkas STATIC
 			${COMMON_SOURCE_DIR}/game/component.cpp
 			${COMMON_SOURCE_DIR}/game/entity.cpp
 		    ${PROJECT_SOURCE_DIR}/lib/stb_image.c
-)
+        ${COMMON_SOURCE_DIR}/game/transform.cpp)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
