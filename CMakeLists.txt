@@ -41,20 +41,21 @@ set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
 set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
 
-set(COMMON_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/common/include)
-set(COMMON_SOURCE_DIR ${PROJECT_SOURCE_DIR}/common/src)
+set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include)
+set(GAME_INCLUDE_DIRE ${PROJECT_SOURCE_DIR}/game/include)
+set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include ${PROJECT_SOURCE_DIR}/maths/inline)
 
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 
 add_subdirectory(maths)
 
-add_subdirectory(game)
 add_subdirectory(engine)
+add_subdirectory(game)
 add_subdirectory(editor)
 add_subdirectory(launcher)
 
-add_dependencies(EngineFrakkas GameFrakkas)
+add_dependencies(GameFrakkas EngineFrakkas)
 add_dependencies(EditorFrakkas EngineFrakkas)
-add_dependencies(Launcher EngineFrakkas)
+add_dependencies(Launcher GameFrakkas)
 
 #add_library(GameFrakkas SHARED game/src/game.cpp)

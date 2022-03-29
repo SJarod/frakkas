@@ -6,20 +6,20 @@ add_library(EngineFrakkas STATIC
 		src/renderer/lowlevel/lowrenderer.cpp
 		src/resources/program_shader.cpp
 		src/resources/resources_manager.cpp
-		${COMMON_SOURCE_DIR}/game/component.cpp
-		${COMMON_SOURCE_DIR}/game/entity.cpp
-		${COMMON_SOURCE_DIR}/resources/serializer.cpp
+		src/game/component.cpp
+		src/game/entity.cpp
+		src/resources/serializer.cpp
+        src/game/transform.cpp
 		${PROJECT_SOURCE_DIR}/lib/stb_image.c
-        ${COMMON_SOURCE_DIR}/game/transform.cpp
 		${IMGUI_SOURCE_FILES}
-		${COMMON_SOURCE_DIR}/game/transform.cpp)
+		src/game/transform.cpp
+)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
-						   PRIVATE ${PROJECT_SOURCE_DIR}/common/include
+                           PRIVATE ${MATHS_INCLUDE_DIR}
+						   PRIVATE ${GAME_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
 )
 

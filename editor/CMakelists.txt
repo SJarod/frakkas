@@ -1,9 +1,8 @@
 add_executable(EditorFrakkas
 			   ${PROJECT_SOURCE_DIR}/appicon.rc
-               src/main.cpp
                ${PROJECT_SOURCE_DIR}/lib/glad.c
-			   ${IMGUI_SOURCE_FILES}
 			   ${IMGUI_BACKENDS_FILES}
+               src/main.cpp
                src/editor_render.cpp
                src/hierarchy.cpp
                src/menu_bar.cpp
@@ -12,7 +11,6 @@ add_executable(EditorFrakkas
 			   src/inspector.cpp
 			   src/scene.cpp
 			   src/game_scene.cpp
-        	   ${COMMON_SOURCE_DIR}/game/transform.cpp
 )
 
 target_link_libraries(EditorFrakkas
@@ -22,15 +20,11 @@ target_link_libraries(EditorFrakkas
 
 target_include_directories(EditorFrakkas
                            PRIVATE include
-						   PRIVATE ${PROJECT_SOURCE_DIR}/common/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/engine/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
+                           PRIVATE ${ENGINE_INCLUDE_DIR}
+                           PRIVATE ${MATHS_INCLUDE_DIR}
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/include
-                           PRIVATE ${PROJECT_SOURCE_DIR}/maths/inline
 )
 
 set_target_properties(EditorFrakkas PROPERTIES

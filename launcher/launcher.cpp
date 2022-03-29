@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "entity.hpp"
+#include "game/entity.hpp"
 
 int main()
 {

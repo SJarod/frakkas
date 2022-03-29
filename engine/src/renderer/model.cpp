@@ -64,7 +64,7 @@ void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename, const
 
 void Renderer::Model::AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex)
 {
-	assert((i_meshIndex < meshes.size(), "out of range"));
+	assert(i_meshIndex < meshes.size() && "out of range");
 
 	std::shared_ptr<Texture> tex = ResourcesManager::LoadTexture(i_textureFilename, i_flipTexture);
 

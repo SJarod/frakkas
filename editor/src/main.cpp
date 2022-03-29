@@ -88,7 +88,7 @@ int main()
         std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
-        entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", true);
+        entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
         entity->GetModel().transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         entityManager.AddEntity(std::move(entity));
     }
