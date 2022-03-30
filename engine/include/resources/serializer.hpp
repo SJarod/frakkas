@@ -11,6 +11,11 @@
 
 #include "maths.hpp"
 
+namespace Game
+{
+    struct Transform;
+}
+
 namespace Resources
 {
     class Serializer
@@ -36,6 +41,12 @@ namespace Resources
          * @param o_string the string to build
          */
         void ReadString(std::ifstream& i_file, std::string& o_string);
+        /**
+         * @brief read a transform in the next line of i_file
+         * @param i_file the opened input file
+         * @param o_transform the transform to build
+         */
+        void ReadTransform(std::ifstream& i_file, Game::Transform& o_transform);
 
 
     public: /// WRITE FUNCTIONS
@@ -58,6 +69,12 @@ namespace Resources
          * @param i_vector the string to write
          */
         void WriteString(std::ofstream& io_file, const std::string& i_string);
+        /**
+         * @brief Write a transform in frakkas text format
+         * @param io_file the opened output file to write in
+         * @param i_transform the transform to write
+         */
+        void WriteTransform(std::ofstream& io_file, const Game::Transform& i_transform);
 
     private:
 

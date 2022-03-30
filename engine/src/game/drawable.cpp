@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include "helpers/editor_helpers.hpp"
 
 #include "game/entity.hpp"
 
@@ -12,7 +13,7 @@ void Drawable::Edit() {
     if(ImGui::TreeNodeEx("Drawable", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Spacing();
-        model.Edit();
+        Helpers::EditTransform(model.transform);
         ImGui::TreePop();
     }
 }

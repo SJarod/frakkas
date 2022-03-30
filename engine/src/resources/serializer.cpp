@@ -32,6 +32,10 @@ void Serializer::ReadString(std::ifstream& i_file, std::string& o_string) {
     std::getline(i_file, o_string);
 }
 
+void Serializer::ReadTransform(std::ifstream &i_file, Game::Transform &o_transform) {
+    //TODO
+}
+
 ///////////////////////// WRITE FUNCTIONS
 
 void Serializer::WriteAttribute(std::ofstream &io_file, const std::string &i_attribute) {
@@ -48,6 +52,10 @@ void Serializer::WriteVector3(std::ofstream &io_file, const Vector3& i_vector) {
 
 void Serializer::WriteString(std::ofstream &io_file, const std::string &i_string) {
     io_file << Tab() << i_string << std::endl;
+}
+
+void Serializer::WriteTransform(std::ofstream &io_file, const Game::Transform &i_transform) {
+    //TODO
 }
 
 

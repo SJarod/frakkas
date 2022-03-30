@@ -2,6 +2,8 @@
 // Created by flori on 3/17/2022.
 //
 
+#include <imgui.h>
+
 #include "game/component.hpp"
 
 using namespace Game;

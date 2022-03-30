@@ -1,6 +1,7 @@
 #include <iostream>
 #include <imgui.h>
 
+#include "helpers/editor_helpers.hpp"
 #include "log.hpp"
 
 #include "resources/serializer.hpp"
@@ -29,7 +30,7 @@ void Entity::Edit() {
 
     ImGui::Separator();
 
-    transform.Edit();
+    Helpers::EditTransform(transform);
 
     for (const std::shared_ptr<Component>& comp : components)
         comp->Edit();

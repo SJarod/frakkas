@@ -11,6 +11,7 @@
 
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
+#include "game/camera_component.hpp"
 #include "game/entity_manager.hpp"
 
 using namespace Game;
@@ -25,10 +26,14 @@ void EntityManager::Update()
     }
 }
 
-void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const Renderer::LowLevel::Camera &i_camera, const float i_aspectRatio)
+void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const float i_aspectRatio)
 {
-    i_renderer.SetProjection(i_camera.GetProjectionMatrix(i_aspectRatio));
-    i_renderer.SetView(i_camera.GetViewMatrix());
+    // An entity with CameraComponent should be added to render
+    if (!camera)
+        return;
+
+    i_renderer.SetProjection(camera->GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetView(camera->GetViewMatrix());
 
     for (const auto& entity : entities)
     {
@@ -51,7 +56,14 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const Re
 void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
 {
     for (const std::shared_ptr<Component>& comp : i_entity->components)
+    {
         comp->Start();
+        if (!camera)
+        {
+            if (std::shared_ptr<CameraComponent> cameraEntity = std::dynamic_pointer_cast<CameraComponent>(comp))
+                camera = &cameraEntity->camera;
+        }
+    }
 
     entities.push_back(std::move(i_entity));
 }

@@ -12,6 +12,21 @@ namespace Resources
 
 namespace Game
 {
+    /**
+     * @brief ScaleLockParams is a struct containing parameters about transform scale when scale is locked.
+     * In this case, the scale vector must keep the same direction.
+     * It is used only for editing, so this structure is a bit odd but necessary.
+     * @param isLock indicate if scale is locked
+     * @param ratio the ratio between the current coordinate value and the origin coordinate value
+     * @param origScale the origin scale coordinates values. Useful for ratio computing
+     */
+    struct ScaleLockParams
+    {
+        bool isLock = true;
+        float ratio = 1.f;
+        Vector3 origScale = {1.f, 1.f, 1.f };
+    };
+
 	struct Transform
 	{
 	public:
@@ -44,8 +59,8 @@ namespace Game
             if (_scale != value)
                 needUpdate = true;
             _scale = value;
-            scaleLockOrig = _scale;
-            scaleRatio = 1.f;
+            scaleLockParams.origScale = _scale;
+            scaleLockParams.ratio = 1.f;
         }
 
         WRITEONLY_PROPERTY(Transform*, parent);
@@ -64,26 +79,9 @@ namespace Game
         void RemoveChild(Transform* childToRemove);
 
         /**
-         * ImGui editing function. Set which parameters can be modified in run time.
+         * @return the ScaleLockParameters struct of this transform
          */
-        void Edit();
-
-        /**
-         * ImGui editing function for scale, with special calcul to scale proportion
-         */
-        void ScaleEdit(Vector3 &sc);
-
-        /**
-         * Setup transform values from input file.
-         * @param i_file the opened input file.
-         */
-        void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
-
-        /**
-         * Write transform value in scene text format.
-         * @param o_file the opened output file.
-         */
-        void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
+        [[nodiscard]] ScaleLockParams& GetScaleLockParameters() { return scaleLockParams; }
 
     private:
         mutable bool needUpdate = true;
@@ -92,9 +90,7 @@ namespace Game
 		Vector3 _rotation = Vector3::zero;
 		Vector3 _scale = { 1.f, 1.f, 1.f };
 
-		bool scalePropLock = true;
-        float scaleRatio = 1.f;
-        Vector3 scaleLockOrig = { 1.f, 1.f, 1.f };
+        ScaleLockParams scaleLockParams;
 
         mutable Matrix4 modelMatrix = Matrix4::Identity();
 

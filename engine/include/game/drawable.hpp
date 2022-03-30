@@ -17,10 +17,9 @@ namespace Game
 
         void Edit() override;
 
-
         Renderer::Model model;
 
     protected:
-        virtual void SetOwner(Entity* owner) override;
+        void SetOwner(Entity* owner) override;
     };
 }

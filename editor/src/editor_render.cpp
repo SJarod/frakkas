@@ -12,6 +12,8 @@
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
+#include "game/entity_manager.hpp"
+
 #include "editor/editor_render.hpp"
 
 using namespace Editor;
@@ -57,7 +59,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& io_camera, Game::EntityManager& entityManager)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer &io_fbo, Game::EntityManager &entityManager)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -78,9 +80,10 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Rend
     Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
     io_fbo.aspectRatio = windowSize.x / windowSize.y;
 
-    float newFovY = 2.f * Maths::Atan(Maths::Tan(io_camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
+    Renderer::LowLevel::Camera& camera = *entityManager.camera;
+    float newFovY = 2.f * Maths::Atan(Maths::Tan(camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
     if (io_fbo.aspectRatio > 1.f)
-        io_camera.SetFieldOfView(newFovY);
+        camera.SetFieldOfView(newFovY);
 
     UpdateImGui();
 }
