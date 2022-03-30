@@ -70,11 +70,3 @@ void Renderer::Model::AddTextureToMesh(const std::string& i_textureFilename, con
 
 	meshes[i_meshIndex].get()->diffuseTex = tex.get()->gpu;
 }
-
-void Renderer::Model::Edit() {
-
-    ImGui::Text("Model");
-    ImGui::Separator();
-    transform.Edit();
-
-}

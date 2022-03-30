@@ -34,13 +34,13 @@ namespace Renderer
 
 			//target vertical field of view
 			float targetFovY = Maths::Constants::piHalf;
+			float near = 0.001f;
+			float far = 1000.f;
 
 		private:
 			//vertical field of view
 			float fovY = 0.f;
 
-			float near = 0.001f;
-			float far = 1000.f;
 		};
 	};
 };

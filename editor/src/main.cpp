@@ -11,6 +11,7 @@
 
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
+#include "game/camera_component.hpp"
 #include "game/entity_manager.hpp"
 #include "editor/editor_render.hpp"
 
@@ -79,8 +80,6 @@ int main()
 
 	Renderer::LowLevel::LowRenderer rdr("basic");
 	Renderer::LowLevel::Framebuffer fbo(1920, 1080);
-	Renderer::LowLevel::Camera camera;
-	camera.transform.position = { 0.f, 0.f, 2.f };
 
     Game::EntityManager entityManager{};
     // Create 5 entities for example
@@ -96,6 +95,12 @@ int main()
             auto& model = entity->GetComponent<Game::Drawable>("drawable")->model;
             model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
+        }
+        else
+        {
+            entity->AddComponent(std::make_shared<Game::CameraComponent>());
+            auto& camera = entity->GetComponent<Game::CameraComponent>("camera")->camera;
+            camera.transform.position = { 0.f, 0.f, 2.f };
         }
 
         entityManager.AddEntity(std::move(entity));
@@ -149,16 +154,16 @@ int main()
             }
 		}
 
-        Game::Transform& trs = camera.transform;
-        trs.position = Vector3(trs.position.x + xSpeed, trs.position.y + ySpeed, trs.position.z + zSpeed);
+        //Game::Transform& trs = camera.transform;
+        //trs.position = Vector3(trs.position.x + xSpeed, trs.position.y + ySpeed, trs.position.z + zSpeed);
 
         /// NEW FRAME
 
 		rdr.BeginFrame(fbo);
-		entityManager.Render(rdr, camera, fbo.aspectRatio);
+        entityManager.Render(rdr, fbo.aspectRatio);
         rdr.EndFrame();
 
-		editorRender.UpdateAndRender(fbo, camera, entityManager);
+        editorRender.UpdateAndRender(fbo, entityManager);
 
 		/// ENDFRAME
 

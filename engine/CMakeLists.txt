@@ -9,10 +9,13 @@ add_library(EngineFrakkas STATIC
 		src/game/entity.cpp
 		src/resources/serializer.cpp
         src/game/transform.cpp
+        src/game/drawable.cpp
+		src/game/camera_component.cpp
+		src/helpers/editor_helpers.cpp
+        src/log.cpp
 		${PROJECT_SOURCE_DIR}/lib/stb_image.c
 		${IMGUI_SOURCE_FILES}
-		src/log.cpp
-        src/game/drawable.cpp)
+)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include

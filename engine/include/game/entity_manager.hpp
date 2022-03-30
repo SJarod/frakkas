@@ -25,6 +25,8 @@ namespace Game
         EntityManager() = default;
         ~EntityManager() = default;
 
+        Renderer::LowLevel::Camera* camera = nullptr;
+
         /**
          * Update every entities
          */
@@ -36,7 +38,7 @@ namespace Game
          * @param i_camera the camera to render, in other words the source view to look at the world
          * @param i_aspectRatio the render's aspect ratio
          */
-        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::LowLevel::Camera& i_camera, const float i_aspectRatio);
+        void Render(Renderer::LowLevel::LowRenderer &i_renderer, const float i_aspectRatio);
 
         /**
          * @summary move an entity pointer into the entity manager's array,

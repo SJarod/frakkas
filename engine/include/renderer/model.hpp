@@ -76,11 +76,6 @@ namespace Renderer
 		void AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex);
 
         /**
-         * ImGui editing function. Set which parameters can be modified in run time.
-         */
-        void Edit();
-
-        /**
          * Setup entity components from input file.
          * @param i_file the opened input file.
          */
