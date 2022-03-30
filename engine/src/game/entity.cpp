@@ -1,15 +1,20 @@
-//
-// Created by flori on 3/17/2022.
-//
-
 #include <iostream>
-#include "imgui.h"
+#include <imgui.h>
+
+#include "log.hpp"
 
 #include "resources/serializer.hpp"
 
 #include "game/entity.hpp"
 
 using namespace Game;
+
+
+Entity::~Entity()
+{
+    for(const std::shared_ptr<Component>& comp : components)
+        comp->OnDestroy();
+}
 
 void Entity::AddComponent(const std::shared_ptr<Component>& comp) {
     comp->owner = this;

@@ -1,7 +1,3 @@
-//
-// Created by m.mehalin on 22/03/2022.
-//
-
 #pragma once
 
 namespace Editor
@@ -16,5 +12,14 @@ namespace Editor
         * @summary Display the ImGui panel
         */
         void OnImGuiRender();
+
+    private:
+        ImVector<char*>       items;
+        ImGuiTextFilter       filter;
+        bool                  autoScroll = true;
+
+        void AddLog(const char* fmt, ...) IM_FMTARGS(2);
+        void ClearLog();
+        void DisplayLogList();
     };
 }

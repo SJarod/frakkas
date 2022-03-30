@@ -22,7 +22,7 @@ namespace Game
     {
     public:
         Entity() = default;
-        ~Entity() = default;
+        ~Entity();
 
         std::vector<std::shared_ptr<Component>> components;
         Transform transform;

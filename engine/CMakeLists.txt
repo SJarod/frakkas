@@ -11,7 +11,7 @@ add_library(EngineFrakkas STATIC
         src/game/transform.cpp
 		${PROJECT_SOURCE_DIR}/lib/stb_image.c
 		${IMGUI_SOURCE_FILES}
-		src/game/transform.cpp
+		src/log.cpp
         src/game/drawable.cpp)
 
 target_include_directories(EngineFrakkas

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "log.hpp"
+
 #include "resources/program_shader.hpp"
 
 const std::string Resources::Shader::pathToShaders = "engine/shaders/";
@@ -15,7 +17,7 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 
 	if (!vsStream.is_open() || !fsStream.is_open())
 	{
-		std::cout << "could not open shader files : " << filename << std::endl;
+        Log::Warning("Couldn't open shader files: \"" + filename + ".vs\" and \"" + filename + ".fs\"");
 		return;
 	}
 
@@ -42,7 +44,7 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 	if (!success[0])
 	{
 		glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog[0]);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED : " << filename << ".vs\n" << infoLog[0] << std::endl;
+        Log::Error("VERTEX SHADER: \"" + filename + ".vs\" - " + infoLog[0]);
 	}
 
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success[1]);
@@ -50,12 +52,12 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 	if (!success[1])
 	{
 		glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog[1]);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED : " << filename << ".fs\n" << infoLog[1] << std::endl;
+        Log::Error("FRAGMENT SHADER: \"" + filename + ".fs\" - " + infoLog[1]);
 	}
 
 	if (success[0] && success[1])
 	{
-		std::cout << "successfully loaded shader files : " << filename << std::endl;
+        Log::Info("Successfully loaded shader files: \"" + filename + ".vs\" and \"" + filename + ".fs\"");
 		program = glCreateProgram();
 		glAttachShader(program, vertexShader);
 		glAttachShader(program, fragmentShader);

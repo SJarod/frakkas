@@ -1,6 +1,7 @@
 #include <stb_image.h>
 #include <assimp/postprocess.h>
 
+#include "log.hpp"
 #include "maths.hpp"
 
 
@@ -10,9 +11,7 @@
 Resources::ResourcesManager::~ResourcesManager()
 {
     for (auto& texture : textures)
-    {
         stbi_image_free(texture.get()->data);
-    }
 }
 
 void Resources::ResourcesManager::ProcessAiMesh(const aiMesh& i_aim, const aiScene& i_scene, Mesh& o_mesh, const bool i_embeddedTexture)
@@ -91,7 +90,7 @@ int Resources::ResourcesManager::LoadCPUModel(Assimp::Importer& io_importer, con
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "ERROR::ASSIMP::" << io_importer.GetErrorString() << std::endl;
+        Log::Error("ASSIMP: " + (std::string)io_importer.GetErrorString());
         return -1;
     }
 
@@ -149,12 +148,10 @@ std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const 
             rm.CreateGPUMesh(*rm.meshes[i].get());
         }
 
-        std::cout << "Successfully loaded model file : " << i_filename << std::endl;
+        Log::Info("Successfully loaded model file: \"" + (std::string)i_filename + "\"");
     }
     else
-    {
-        std::cout << "Could not load model file : " << i_filename << std::endl;
-    }
+        Log::Warning("Couldn't load model file: \"" + (std::string)i_filename + "\"");
 
     std::vector<std::shared_ptr<Mesh>> out;
     for (int i = meshOffset; i < rm.meshes.size(); ++i)
@@ -277,10 +274,10 @@ void Resources::ResourcesManager::LoadCPUTexture(const std::string& i_filename, 
     if (texture.data)
     {
         textures.push_back(std::make_shared<Texture>(texture));
-        std::cout << "Successfully loaded texture file : " << i_filename << std::endl;
+        Log::Info("Successfully loaded texture file: \"" + i_filename + "\"");
     }
     else
-        std::cout << "Could not load texture file : " << i_filename << std::endl;
+        Log::Warning("Couldn't load texture file: \"" + i_filename + "\"");
 }
 
 void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
