@@ -78,7 +78,7 @@ int main()
 	Renderer::LowLevel::Camera camera;
 
 	Resources::Shader sh("basic");
-	Engine::Model model;
+	Renderer::Model model;
 
 
 	bool running = true;

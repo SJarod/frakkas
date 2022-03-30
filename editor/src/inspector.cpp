@@ -4,14 +4,14 @@
 
 #include <imgui.h>
 
-#include "game/engine_entity.hpp"
+#include "game/entity.hpp"
 
 #include "editor/inspector.hpp"
 
 using namespace Editor;
 
 
-void Inspector::OnImGuiRender(Game::EngineEntity *selectedEntity)
+void Inspector::OnImGuiRender(Game::Entity *selectedEntity)
 {
     ImGui::Begin("Inspector");
 

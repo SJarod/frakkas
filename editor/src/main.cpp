@@ -9,8 +9,9 @@
 
 #include "maths.hpp"
 
+#include "game/entity.hpp"
+#include "game/drawable.hpp"
 #include "game/entity_manager.hpp"
-#include "game/engine_entity.hpp"
 #include "editor/editor_render.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -85,11 +86,18 @@ int main()
     // Create 5 entities for example
     for (int i = 0; i < 5; i++)
     {
-        std::unique_ptr<Game::EngineEntity> entity = std::make_unique<Game::EngineEntity>();
+        std::unique_ptr<Game::Entity> entity = std::make_unique<Game::Entity>();
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
-        entity->GetModel().AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
-        entity->GetModel().transform.scale = Vector3(0.01f, 0.01f, 0.01f);
+
+        if( i >= 1)
+        {
+            entity->AddComponent(std::make_shared<Game::Drawable>());
+            auto& model = entity->GetComponent<Game::Drawable>("drawable")->model;
+            model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
+            model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
+        }
+
         entityManager.AddEntity(std::move(entity));
     }
 

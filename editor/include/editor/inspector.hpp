@@ -6,7 +6,7 @@
 
 namespace Game
 {
-    class EngineEntity;
+    class Entity;
 }
 
 namespace Editor
@@ -20,6 +20,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Game::EngineEntity *selectedEntity);
+        void OnImGuiRender(Game::Entity *selectedEntity);
     };
 }

@@ -72,13 +72,9 @@ void Renderer::Model::AddTextureToMesh(const std::string& i_textureFilename, con
 }
 
 void Renderer::Model::Edit() {
-    if (ImGui::TreeNodeEx("Model", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        ImGui::Spacing();
 
-        transform.Edit();
-
-        ImGui::TreePop();
-    }
+    ImGui::Text("Model");
+    ImGui::Separator();
+    transform.Edit();
 
 }

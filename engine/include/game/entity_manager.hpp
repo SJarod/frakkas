@@ -17,7 +17,7 @@ namespace Renderer::LowLevel
 
 namespace Game
 {
-    class EngineEntity;
+    class Entity;
 
     class EntityManager
     {
@@ -43,9 +43,9 @@ namespace Game
          * the function also call the Start() method of the input entity
          * @param i_entity the fully constructed entity to add, it is an unique pointer so use std::move()
          */
-        void AddEntity(std::unique_ptr<EngineEntity> i_entity);
+        void AddEntity(std::unique_ptr<Entity> i_entity);
 
-        [[nodiscard]] const std::vector<std::unique_ptr<EngineEntity>>& GetEntities() const;
+        [[nodiscard]] const std::list<std::unique_ptr<Entity>> & GetEntities() const;
 
         /**
          * Create entity from a scene input file.
@@ -61,6 +61,6 @@ namespace Game
 
     private:
 
-        std::vector<std::unique_ptr<EngineEntity>> entities;
+        std::list<std::unique_ptr<Entity>> entities;
     };
 }
