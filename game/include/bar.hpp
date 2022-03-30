@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "game/component.hpp"
+#include "../../engine/include/game/component.hpp"
 
 namespace Game
 {

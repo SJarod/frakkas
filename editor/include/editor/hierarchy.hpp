@@ -6,7 +6,7 @@
 
 namespace Game
 {
-    class EngineEntity;
+    class Entity;
     class EntityManager;
 }
 
@@ -23,7 +23,7 @@ namespace Editor
         */
         void OnImGuiRender(Game::EntityManager &entityManager);
 
-        Game::EngineEntity* selected = nullptr;
+        Game::Entity* selected = nullptr;
         std::string selectedLabel;
     };
 }

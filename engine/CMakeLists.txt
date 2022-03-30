@@ -1,8 +1,7 @@
 add_library(EngineFrakkas STATIC
 		src/game/entity_manager.cpp
 		src/renderer/model.cpp
-		src/game/engine_entity.cpp
-		src/renderer/lowlevel/camera.cpp
+        src/renderer/lowlevel/camera.cpp
 		src/renderer/lowlevel/lowrenderer.cpp
 		src/resources/program_shader.cpp
 		src/resources/resources_manager.cpp
@@ -13,7 +12,7 @@ add_library(EngineFrakkas STATIC
 		${PROJECT_SOURCE_DIR}/lib/stb_image.c
 		${IMGUI_SOURCE_FILES}
 		src/game/transform.cpp
-)
+        src/game/drawable.cpp)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include

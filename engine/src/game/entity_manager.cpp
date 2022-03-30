@@ -4,12 +4,13 @@
 
 #include <imgui.h>
 
-#include "game/engine_entity.hpp"
+#include "resources/mesh.hpp"
+
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
-#include "resources/mesh.hpp"
-
+#include "game/entity.hpp"
+#include "game/drawable.hpp"
 #include "game/entity_manager.hpp"
 
 using namespace Game;
@@ -18,7 +19,9 @@ void EntityManager::Update()
 {
     for (const auto& entity : entities)
     {
-        entity->Update();
+        for (const std::shared_ptr<Component>& comp : entity->components)
+            if (comp->IsEnabled())
+                comp->Update();
     }
 }
 
@@ -29,26 +32,31 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const Re
 
     for (const auto& entity : entities)
     {
-        const Renderer::Model& model = entity->GetModel();
-
-        for (const std::shared_ptr<Resources::Mesh> mesh : model.meshes)
+        auto drawable = entity->GetComponent<Drawable>("drawable");
+        if (drawable)
         {
-            i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
-                                      mesh->gpu.VAO,
-                                      mesh->vertices.size(),
-                                      mesh->diffuseTex.data,
-                                      true);
+            for (const std::shared_ptr<Resources::Mesh> mesh : drawable->model.meshes)
+            {
+                i_renderer.RenderMeshOnce(mesh->localTransform * drawable->model.transform.GetModelMatrix(),
+                                          mesh->gpu.VAO,
+                                          mesh->vertices.size(),
+                                          mesh->diffuseTex.data,
+                                          true);
+            }
         }
+
     }
 }
 
-void EntityManager::AddEntity(std::unique_ptr<EngineEntity> i_entity)
+void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
 {
-    i_entity->Start();
+    for (const std::shared_ptr<Component>& comp : i_entity->components)
+        comp->Start();
+
     entities.push_back(std::move(i_entity));
 }
 
-const std::vector<std::unique_ptr<EngineEntity>> &EntityManager::GetEntities() const {
+const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const {
     return entities;
 }
 

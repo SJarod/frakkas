@@ -23,7 +23,7 @@ void Component::Disable() {
 }
 
 void Component::SetOwner(Entity *owner) {
-    this->owner = owner;
+    this->_owner = owner;
 }
 
 bool Component::IsEnabled() const {
