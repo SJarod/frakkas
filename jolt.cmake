@@ -6,7 +6,8 @@ if(WIN32)
 
     target_link_libraries(EngineFrakkas
                           PRIVATE debug ${JOLT_LIB_DEBUG}
-                          PRIVATE optimized ${JOLT_LIB_RELEASE})
+                          PRIVATE optimized ${JOLT_LIB_RELEASE}
+    )
 
 elseif(UNIX)
     find_library(JOLT_LIB Jolt ${PROJECT_SOURCE_DIR}/lib/jolt/linux)

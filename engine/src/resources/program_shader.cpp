@@ -5,6 +5,7 @@
 
 #include "resources/program_shader.hpp"
 
+
 const std::string Resources::Shader::pathToShaders = "engine/shaders/";
 
 Resources::Shader::Shader(const std::string &i_shaderName)

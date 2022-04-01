@@ -1,7 +1,3 @@
-//
-// Created by m.mehalin on 16/03/2022.
-//
-
 #pragma once
 
 namespace Game
@@ -21,7 +17,7 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Game::EntityManager &entityManager);
+        void OnImGuiRender(Game::EntityManager& i_entityManager);
 
         Game::Entity* selected = nullptr;
         std::string selectedLabel;

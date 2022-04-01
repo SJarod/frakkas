@@ -1,11 +1,9 @@
-//
-// Created by m.mehalin on 14/03/2022.
-//
-
 #pragma once
 
-struct Vector2 {
-    union {
+struct Vector2
+{
+    union
+    {
         struct { float x; float y; };
 
         float element[2]{};

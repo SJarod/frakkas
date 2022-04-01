@@ -20,6 +20,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Game::Entity *selectedEntity);
+        void OnImGuiRender(Game::Entity* io_selectedEntity);
     };
 }

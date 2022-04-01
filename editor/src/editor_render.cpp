@@ -1,7 +1,3 @@
-//
-// Created by f.marcellot on 16/03/2022.
-//
-
 #include <imgui.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl.h>
@@ -11,10 +7,10 @@
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
-
 #include "game/entity_manager.hpp"
 
 #include "editor/editor_render.hpp"
+
 
 using namespace Editor;
 
@@ -59,7 +55,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer &io_fbo, Game::EntityManager &entityManager)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& i_entityManager)
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
@@ -72,7 +68,7 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer &io_fbo, Game
     ImGui::ShowDemoWindow(&ShowDemoWindow);
 
     m_menuBar.OnImGuiRender();
-    m_hierarchy.OnImGuiRender(entityManager);
+    m_hierarchy.OnImGuiRender(i_entityManager);
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender(m_hierarchy.selected);
     m_fileBrowser.OnImGuiRender();
@@ -80,7 +76,7 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer &io_fbo, Game
     Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
     io_fbo.aspectRatio = windowSize.x / windowSize.y;
 
-    Renderer::LowLevel::Camera& camera = *entityManager.camera;
+    Renderer::LowLevel::Camera& camera = *i_entityManager.camera;
     float newFovY = 2.f * Maths::Atan(Maths::Tan(camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
     if (io_fbo.aspectRatio > 1.f)
         camera.SetFieldOfView(newFovY);

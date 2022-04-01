@@ -14,6 +14,7 @@ project(EngineFrakkas
 )
 
 include(FetchContent)
+# SDL2
 FetchContent_Declare(sdl
                      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
                      GIT_TAG b424665 # release-2.0.20
@@ -22,24 +23,27 @@ FetchContent_MakeAvailable(sdl)
 
 # ImGui
 FetchContent_Declare(imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG docking # branch name
-        )
+                     GIT_REPOSITORY https://github.com/ocornut/imgui.git
+                     GIT_TAG docking # branch name
+)
 FetchContent_MakeAvailable(imgui)
 
 set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
-        ${imgui_SOURCE_DIR}/imgui_demo.cpp
-        ${imgui_SOURCE_DIR}/imgui_draw.cpp
-        ${imgui_SOURCE_DIR}/imgui_tables.cpp
-        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-        )
+                       ${imgui_SOURCE_DIR}/imgui_demo.cpp
+                       ${imgui_SOURCE_DIR}/imgui_draw.cpp
+                       ${imgui_SOURCE_DIR}/imgui_tables.cpp
+                       ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+)
 
 set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+                         ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+)
 
 set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include)
 set(GAME_INCLUDE_DIRE ${PROJECT_SOURCE_DIR}/game/include)
-set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include ${PROJECT_SOURCE_DIR}/maths/inline)
+set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
+                      ${PROJECT_SOURCE_DIR}/maths/inline
+)
 
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 
@@ -53,5 +57,3 @@ add_subdirectory(launcher)
 add_dependencies(GameFrakkas EngineFrakkas)
 add_dependencies(EditorFrakkas EngineFrakkas)
 add_dependencies(Launcher GameFrakkas)
-
-#add_library(GameFrakkas SHARED game/src/game.cpp)

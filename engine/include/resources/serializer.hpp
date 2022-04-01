@@ -1,7 +1,3 @@
-//
-// Created by f.marcellot on 21/03/2022.
-//
-
 #pragma once
 
 #include <fstream>
@@ -10,6 +6,7 @@
 #include <string>
 
 #include "maths.hpp"
+
 
 namespace Game
 {

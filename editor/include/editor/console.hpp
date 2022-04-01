@@ -18,7 +18,7 @@ namespace Editor
         ImGuiTextFilter       filter;
         bool                  autoScroll = true;
 
-        void AddLog(const char* fmt, ...) IM_FMTARGS(2);
+        void AddLog(const char* i_fmt, ...);
         void ClearLog();
         void DisplayLogList();
     };

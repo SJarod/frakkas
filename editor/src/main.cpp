@@ -1,7 +1,3 @@
-//
-// Created by f.marcellot on 16/02/2022.
-//
-
 #include <iostream>
 #include <glad/glad.h>
 #include <SDL.h>
@@ -16,8 +12,7 @@
 #include "editor/editor_render.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
-#include "renderer/lowlevel/camera.hpp"
-#include "renderer/model.hpp"
+
 
 SDL_Window* window = nullptr;
 SDL_GLContext glContext;

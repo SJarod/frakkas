@@ -1,12 +1,8 @@
-#include "resources/mesh.hpp"
-#include "resources/program_shader.hpp"
 #include "resources/texture.hpp"
 #include "game/transform.hpp"
-#include "resources/mesh.hpp"
-#include "resources/program_shader.hpp"
-#include "resources/texture.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
+
 
 using namespace Renderer::LowLevel;
 
@@ -74,8 +70,7 @@ int Framebuffer::GetHeight() const
 
 LowRenderer::LowRenderer(const std::string &i_shaderName)
 	: shader(i_shaderName)
-{
-}
+{}
 
 void LowRenderer::BeginFrame(const Framebuffer &i_fbo) const
 {

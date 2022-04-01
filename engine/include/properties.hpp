@@ -1,7 +1,3 @@
-//
-// Created by flori on 3/27/2022.
-//
-
 #pragma once
 
 // Define found on internet : https://www.codeproject.com/articles/118921/c-properties

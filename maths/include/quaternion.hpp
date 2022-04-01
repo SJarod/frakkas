@@ -1,14 +1,12 @@
-//
-// Created by m.mehalin on 22/02/2022.
-//
-
 #pragma once
 
 struct Vector3;
 struct Matrix4;
 
-struct Quaternion {
-    union {
+struct Quaternion
+{
+    union
+    {
         struct { float x; float y; float z; float w; };
 
         float element[4]{};

@@ -1,7 +1,3 @@
-//
-// Created by f.marcellot on 16/03/2022.
-//
-
 #pragma once
 
 #include "editor/menu_bar.hpp"
@@ -11,6 +7,7 @@
 #include "editor/file_browser.hpp"
 #include "editor/scene.hpp"
 #include "editor/game_scene.hpp"
+
 
 namespace Renderer::LowLevel
 {
@@ -29,7 +26,7 @@ namespace Editor
     public:
         void InitImGui();
         void QuitImGui();
-        void UpdateAndRender(Renderer::LowLevel::Framebuffer &io_fbo, Game::EntityManager &entityManager);
+        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& i_entityManager);
 
     private:
         MenuBar m_menuBar;

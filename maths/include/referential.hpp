@@ -1,13 +1,10 @@
-//
-// Created by m.mehalin on 23/02/2022.
-//
-
 #pragma once
 
 struct Vector3;
 struct Quaternion;
 
-struct Referential {
+struct Referential
+{
     Vector3 origin;
     Vector3 i, j, k;
     float angle;

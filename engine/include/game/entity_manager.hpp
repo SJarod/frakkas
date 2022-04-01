@@ -1,13 +1,10 @@
-//
-// Created by flori on 3/17/2022.
-//
-
 #pragma once
 
 #include <vector>
 #include <memory>
 
 #include "resources/serializer.hpp"
+
 
 namespace Renderer::LowLevel
 {

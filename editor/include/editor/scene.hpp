@@ -1,7 +1,3 @@
-//
-// Created by m.mehalin on 22/03/2022.
-//
-
 #pragma once
 
 #include "maths.hpp"

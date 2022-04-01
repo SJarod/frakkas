@@ -4,11 +4,14 @@
 
 #include "game/camera_component.hpp"
 
+
 using namespace Game;
 
-CameraComponent::CameraComponent() :Component("camera"){}
+CameraComponent::CameraComponent() :Component("camera")
+{}
 
-void CameraComponent::Edit() {
+void CameraComponent::Edit()
+{
     if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen))
     {
         Helpers::EditTransform(camera.transform);
@@ -24,5 +27,3 @@ void CameraComponent::Edit() {
         ImGui::TreePop();
     }
 }
-
-

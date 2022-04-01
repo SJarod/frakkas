@@ -1,12 +1,9 @@
-//
-// Created by manon on 17/03/2022.
-//
-
 #include <imgui.h>
 
 #include "resources/resources_manager.hpp"
 
 #include "editor/file_browser.hpp"
+
 
 using namespace Editor;
 
@@ -80,15 +77,15 @@ void FileBrowser::OnImGuiRender()
     ImGui::End();
 }
 
-void FileBrowser::OptionsField(float* padding, float* thumbnailSize)
+void FileBrowser::OptionsField(float* io_padding, float* io_thumbnailSize)
 {
     ImGui::BeginMainMenuBar();
     if (ImGui::BeginMenu("Options"))
     {
         if (ImGui::BeginMenu("File Browser"))
         {
-            ImGui::SliderFloat("Thumbnail Size", thumbnailSize, 50, 160);
-            ImGui::SliderFloat("Padding", padding, 0, 64);
+            ImGui::SliderFloat("Thumbnail Size", io_thumbnailSize, 50, 160);
+            ImGui::SliderFloat("Padding", io_padding, 0, 64);
 
             ImGui::EndMenu();
         }

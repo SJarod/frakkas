@@ -1,10 +1,10 @@
 #pragma once
 
-#include "singleton.hpp"
-
 #include <chrono>
 #include <ctime>
 #include <iostream>
+
+#include "singleton.hpp"
 
 
 enum class ELogType
@@ -58,7 +58,9 @@ private:
 
     static void SaveToFile();
 
-    // Output the casted log
+    /**
+    * @Summary Output the casted log
+    */
     static void Out(const std::string& i_log);
 };
 

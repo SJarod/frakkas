@@ -12,7 +12,7 @@ if(WIN32)
                           PRIVATE optimized ${ASSIMP_LIB_RELEASE}
                           PRIVATE debug ${ZLIB_LIB_DEBUG}
                           PRIVATE optimized ${ZLIB_LIB_RELEASE}
-)
+    )
 
 elseif(UNIX)
     find_library(ASSIMP_LIB_DEBUG libassimp ${PROJECT_SOURCE_DIR}/lib/assimp/linux)
@@ -20,5 +20,6 @@ elseif(UNIX)
 
     target_link_libraries(EngineFrakkas
                           PRIVATE debug ${ASSIMP_LIB_DEBUG}
-                          PRIVATE optimized ${ASSIMP_LIB_RELEASE})
+                          PRIVATE optimized ${ASSIMP_LIB_RELEASE}
+    )
 endif()
