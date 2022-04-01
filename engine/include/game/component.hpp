@@ -11,7 +11,7 @@ namespace Game
     class Component
     {
     public:
-        Component(const std::string& id) : id(id) {};
+        explicit Component(const std::string& id);
         virtual ~Component() = default;
 
         std::string id = "None";
@@ -75,11 +75,7 @@ namespace Game
          */
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
-        WRITEONLY_PROPERTY(Entity*, owner);
-        SET(owner)
-        {
-            SetOwner(value);
-        }
+        Property<Entity*> owner;
 
     protected:
         /**
@@ -89,8 +85,5 @@ namespace Game
         virtual void SetOwner(Entity* owner);
 
         bool enabled = true;
-
-    private:
-        Entity* _owner = nullptr;
     };
 }

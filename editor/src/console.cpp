@@ -82,7 +82,7 @@ void Console::AddLog(const char* i_fmt, ...)
     vsnprintf(buf, IM_ARRAYSIZE(buf), i_fmt, args);
     buf[IM_ARRAYSIZE(buf)-1] = 0;
     va_end(args);
-    items.push_back(_strdup(buf));
+    items.push_back(strdup(buf));
 }
 
 void Console::ClearLog()

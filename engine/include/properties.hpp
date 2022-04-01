@@ -1,13 +1,51 @@
 #pragma once
 
-// Define found on internet : https://www.codeproject.com/articles/118921/c-properties
+#include <functional>
+// Define found on internet : https://stackoverflow.com/questions/58040401/is-there-an-alternative-for-visual-c-declspec-property-declaration-attribut
 
-#define PROPERTY(t, n) __declspec( property \
-(put = property_set_##n, get = property_get_##n )) t n; \
-typedef t property_tmp_type_##n
-#define READONLY_PROPERTY(t, n) __declspec( property (get = property_get_##n )) t n; \
-typedef t property_tmp_type_##n
-#define WRITEONLY_PROPERTY(t, n) __declspec( property (put = property_set_##n )) t n; \
-typedef t property_tmp_type_##n
-#define GET(n) property_tmp_type_##n property_get_##n() const
-#define SET(n) void property_set_##n(const property_tmp_type_##n& value)
+template<typename T>
+class Property
+{
+public:
+    Property() = default;
+
+    operator const T&() const
+    {
+        // Call override getter if defined
+        if (getter) return getter();
+        return get();
+    }
+
+    void operator = (const T& value)
+    {
+        // Call override setter if defined
+        if (setter) setter(value);
+        set(value);
+    }
+
+    bool operator == (const T& value) const
+    {
+        return static_cast<const T&>(*this) == value;
+    }
+
+    const T* operator -> () const
+    {
+        return &t;
+    }
+
+    const T& get() const
+    {
+        return t;
+    }
+
+    void set(const T& value)
+    {
+        t = value;
+    }
+
+    std::function<const T&()> getter;
+    std::function<void(const T&)> setter;
+
+private:
+    T t;
+};

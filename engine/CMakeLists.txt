@@ -23,6 +23,7 @@ target_include_directories(EngineFrakkas
                            PRIVATE ${MATHS_INCLUDE_DIR}
 						   PRIVATE ${GAME_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
+						   PRIVATE ${sdl_INCLUDE_DIR}
 )
 
 # Include jolt and assimp libraries

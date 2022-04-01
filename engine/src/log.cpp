@@ -1,5 +1,8 @@
 #include <fstream>
 
+#include <ctime>
+#include <chrono>
+
 #include "log.hpp"
 
 
@@ -29,7 +32,9 @@ void Log::Out(const std::string& i_log)
     // Get the current time as a char*
     std::time_t currentTime = std::time(nullptr);
 
+    // TODO verify if ctime_r is working
     char timeString[26];
+    //ctime_r(&currentTime, timeString);
     ctime_s(timeString, sizeof(timeString), &currentTime);
     timeString[24] = '\0';
 

@@ -1,8 +1,11 @@
 #pragma once
 
+#include "singleton.hpp"
+
 #include <chrono>
 #include <ctime>
 #include <iostream>
+#include <vector>
 
 #include "singleton.hpp"
 
