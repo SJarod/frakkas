@@ -5,6 +5,7 @@
 #include "properties.hpp"
 #include "maths.hpp"
 
+
 namespace Resources
 {
     class Serializer;
@@ -42,10 +43,12 @@ namespace Game
         }
 
         PROPERTY(Vector3, rotation);
-        GET(rotation){
+        GET(rotation)
+        {
             return _rotation;
         }
-        SET(rotation){
+        SET(rotation)
+        {
             if (_rotation != value)
                 needUpdate = true;
             _rotation = value;
@@ -55,7 +58,8 @@ namespace Game
         GET(scale){
             return _scale;
         }
-        SET(scale){
+        SET(scale)
+        {
             if (_scale != value)
                 needUpdate = true;
             _scale = value;
@@ -64,7 +68,8 @@ namespace Game
         }
 
         WRITEONLY_PROPERTY(Transform*, parent);
-        SET(parent){
+        SET(parent)
+        {
             _parent = value;
             if (value)
                 value->childs.emplace_back(this);

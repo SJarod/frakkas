@@ -1,14 +1,10 @@
-//
-// Created by flori on 3/17/2022.
-//
-
-#include <imgui.h>
-
 #include "game/component.hpp"
+
 
 using namespace Game;
 
-void Component::Enable() {
+void Component::Enable()
+{
     if (!enabled)
     {
         enabled = true;
@@ -16,7 +12,8 @@ void Component::Enable() {
     }
 }
 
-void Component::Disable() {
+void Component::Disable()
+{
     if (enabled)
     {
         enabled = false;
@@ -24,10 +21,12 @@ void Component::Disable() {
     }
 }
 
-void Component::SetOwner(Entity *owner) {
+void Component::SetOwner(Entity *owner)
+{
     this->_owner = owner;
 }
 
-bool Component::IsEnabled() const {
+bool Component::IsEnabled() const
+{
     return enabled;
 }

@@ -1,18 +1,16 @@
-//
-// Created by m.mehalin on 16/03/2022.
-//
-
 #include <imgui.h>
 
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/entity_manager.hpp"
+
 #include "editor/hierarchy.hpp"
+
 
 using namespace Editor;
 
 
-void Hierarchy::OnImGuiRender(Game::EntityManager &entityManager)
+void Hierarchy::OnImGuiRender(Game::EntityManager& i_entityManager)
 {
     ImGui::Begin("Hierarchy");
 
@@ -22,11 +20,11 @@ void Hierarchy::OnImGuiRender(Game::EntityManager &entityManager)
         entity->AddComponent(std::make_shared<Game::Drawable>());
         entity->GetComponent<Game::Drawable>("drawable")->model.AddSphereMesh();
         entity->GetComponent<Game::Drawable>("drawable")->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
-        entityManager.AddEntity(std::move(entity));
+        i_entityManager.AddEntity(std::move(entity));
     }
 
     int id = 0;
-    auto& entities = entityManager.GetEntities();
+    auto& entities = i_entityManager.GetEntities();
     for (const std::unique_ptr<Game::Entity>& entity : entities)
     {
         ImGui::PushID(id);

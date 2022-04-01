@@ -1,11 +1,8 @@
-//
-// Created by m.mehalin on 16/03/2022.
-//
-
 #include <imgui.h>
 #include <cstdlib>
 
 #include "editor/menu_bar.hpp"
+
 
 using namespace Editor;
 

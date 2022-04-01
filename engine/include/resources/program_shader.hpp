@@ -1,33 +1,32 @@
 #pragma once
 
 #include <glad/glad.h>
-
 #include <string>
 
 #include "maths.hpp"
+
 
 namespace Resources
 {
 	class Shader
 	{
 	public:
-
         static const std::string pathToShaders;
+
 		/**
-		 * Create a shader from a shader file.
-		 * 
-		 * @param i_shaderName
+		 * @Summary Create a shader from a shader file.
+		 * @param i_shaderName : Shader name
 		 */
 		Shader(const std::string &i_shaderName);
 		~Shader();
 
 		/**
-		 * Use shader program.
+		 * @Summary Use shader program.
 		 */
 		void Use() const;
 
 		/**
-		 * Pass a bool to the shader as uniform.
+		 * @Summary Pass a bool to the shader as uniform.
 		 * 
 		 * @param i_uniform : uniform name
 		 * @param i_b
@@ -35,7 +34,7 @@ namespace Resources
 		void UniformBool(const std::string &i_uniform, const bool i_b) const;
 
 		/**
-		 * Pass a Matrix4 to the shader as uniform.
+		 * @Summary Pass a Matrix4 to the shader as uniform.
 		 * 
 		 * @param i_uniform : uniform name
 		 * @param i_mat

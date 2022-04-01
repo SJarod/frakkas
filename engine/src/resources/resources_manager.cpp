@@ -4,9 +4,8 @@
 #include "log.hpp"
 #include "maths.hpp"
 
-
-
 #include "resources/resources_manager.hpp"
+
 
 Resources::ResourcesManager::~ResourcesManager()
 {
@@ -78,9 +77,7 @@ void Resources::ResourcesManager::ProcessAiNode(const aiNode& i_node, const aiSc
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < i_node.mNumChildren; ++i)
-    {
         ProcessAiNode(*i_node.mChildren[i], i_scene, i_embeddedTexture);
-    }
 }
 
 int Resources::ResourcesManager::LoadCPUModel(Assimp::Importer& io_importer, const std::string& i_path)
@@ -104,10 +101,9 @@ void Resources::ResourcesManager::ParseMesh(Mesh& io_mesh)
 
     // process indices
     int meshNumFaces = io_mesh.indices.size();
+
     for (unsigned int i = 0; i < meshNumFaces; ++i)
-    {
         io_mesh.vertices.push_back(rawVertices[io_mesh.indices[i]]);
-    }
 }
 
 void Resources::ResourcesManager::CreateGPUMesh(Mesh& io_mesh)
@@ -138,15 +134,14 @@ std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const 
     int meshOffset = rm.meshes.size();
 
     Assimp::Importer importer;
+
     if (rm.LoadCPUModel(importer, i_filename.c_str()) == 0)
     {
         const aiScene* scene = importer.GetScene();
         rm.ProcessAiNode(*scene->mRootNode, *scene, i_embeddedTexture);
 
         for (int i = meshOffset; i < rm.meshes.size(); ++i)
-        {
             rm.CreateGPUMesh(*rm.meshes[i].get());
-        }
 
         Log::Info("Successfully loaded model file: \"" + (std::string)i_filename + "\"");
     }
@@ -154,10 +149,10 @@ std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const 
         Log::Warning("Couldn't load model file: \"" + (std::string)i_filename + "\"");
 
     std::vector<std::shared_ptr<Mesh>> out;
+
     for (int i = meshOffset; i < rm.meshes.size(); ++i)
-    {
         out.push_back(rm.meshes[i]);
-    }
+
     return out;
 }
 
@@ -202,9 +197,7 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadCube()
     };
 
     for (int i = 0; i < 36; ++i)
-    {
         mesh.indices.push_back(ind[i]);
-    }
 
     mesh.diffuseTex.data = 0;
     rm.meshes.push_back(std::make_shared<Mesh>(mesh));
@@ -289,6 +282,7 @@ void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     if (io_texture.data)
     {
         GLint bpp = io_texture.bpp == 1 ? GL_RED : io_texture.bpp == 2 ? GL_RG : io_texture.bpp == 3 ? GL_RGB : GL_RGBA;
@@ -308,9 +302,7 @@ void Resources::ResourcesManager::LoadEmbeddedTexture(const aiMaterial& i_mat, c
         LoadCPUTexture(str.C_Str(), false, i_type);
 
         for (int j = textureOffset; j < textures.size(); ++j)
-        {
             CreateGPUTexture(*textures[j].get());
-        }
     }
 }
 

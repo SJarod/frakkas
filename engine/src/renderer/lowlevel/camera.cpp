@@ -1,10 +1,10 @@
 #include "renderer/lowlevel/camera.hpp"
 
+
 Matrix4 Renderer::LowLevel::Camera::GetViewMatrix() const
 {
-	Vector3 rotation = { transform.rotation.x,
-						 -transform.rotation.y,
-						 transform.rotation.z };
+	Vector3 rotation = { transform.rotation.x, -transform.rotation.y, transform.rotation.z };
+
 	return Matrix4::Translate(-transform.position) * Matrix4::RotateXYZ(rotation);
 }
 

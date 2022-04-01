@@ -1,13 +1,10 @@
-//
-// Created by f.marcellot on 22/03/2022.
-//
-
 #pragma once
 
 struct Vector3;
 struct Vector4;
 
-namespace Maths{
+namespace Maths
+{
 
     /**
      *

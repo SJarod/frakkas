@@ -1,16 +1,15 @@
-#include "imgui.h"
-
-#include "resources/serializer.hpp"
-
 #include "game/transform.hpp"
+
 
 using namespace Game;
 
 Matrix4 Transform::GetModelMatrix() const
 {
     bool parentUpdate = (_parent && _parent->needUpdate);
+
     if (needUpdate || parentUpdate)
         UpdateModelMatrix();
+
     return modelMatrix;
 }
 
@@ -23,7 +22,8 @@ void Transform::RemoveChild(Transform* childToRemove)
         childs.erase(it);
 }
 
-void Transform::UpdateModelMatrix() const {
+void Transform::UpdateModelMatrix() const
+{
     modelMatrix =  Matrix4::Scale(scale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
     if (_parent)
         modelMatrix = modelMatrix * _parent->GetModelMatrix();

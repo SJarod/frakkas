@@ -1,10 +1,7 @@
-//
-// Created by f.marcellot on 21/03/2022.
-//
-
-#pragma once  
+#pragma once
 
 #include <string>
+
 
 namespace Resources
 {

@@ -1,14 +1,12 @@
-//
-// Created by m.mehalin on 22/02/2022.
-//
-
 #pragma once
 
 struct Vector3;
 struct Vector4;
 
-struct Matrix4 {
-    union {
+struct Matrix4
+{
+    union
+    {
         float element[16]{};
 
         Vector4 line[4];

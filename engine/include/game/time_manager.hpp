@@ -1,12 +1,10 @@
-//
-// Created by f.marcellot on 24/03/2022.
-//
+#pragma once
 
-#pragma once  
+namespace Game
+{
 
-namespace Game{
-
-    class Time{
+    class Time
+    {
     public:
         static float time;
         static float deltaTime;

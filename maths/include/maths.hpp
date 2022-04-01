@@ -1,7 +1,3 @@
-//
-// Created by f.marcellot on 11/03/2022.
-//
-
 #pragma once
 
 #include <iostream> // used for '<<' operator overload
@@ -16,4 +12,3 @@
 #include "quaternion.hpp"
 
 #include "utils.hpp"
-

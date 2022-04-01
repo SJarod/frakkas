@@ -1,10 +1,7 @@
-//
-// Created by m.mehalin on 18/03/2022.
-//
-
 #pragma once
 
 #include <memory>
+
 
 template <class T>
 class Singleton

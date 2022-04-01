@@ -1,12 +1,8 @@
-//
-// Created by f.marcellot on 28/03/2022.
-//
-
-#pragma once  
+#pragma once
 
 #include "renderer/model.hpp"
-
 #include "component.hpp"
+
 
 namespace Game
 {

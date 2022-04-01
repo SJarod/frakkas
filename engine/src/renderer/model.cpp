@@ -1,13 +1,10 @@
 #include <cassert>
 
-#include <glad/glad.h>
-#include <imgui.h>
-
 #include "resources/mesh.hpp"
-
 #include "resources/resources_manager.hpp"
 
 #include "renderer/model.hpp"
+
 
 Renderer::Model::Model(const std::string& i_meshFilename)
 {
@@ -20,9 +17,7 @@ Renderer::Model::Model(const std::string& i_meshFilename, const std::string& i_t
 	std::shared_ptr<Texture> tex = ResourcesManager::LoadTexture(i_textureFilename, i_flipTexture);
 
 	for (int i = 0; i < meshes.size(); ++i)
-	{
 		meshes[i].get()->diffuseTex = tex.get()->gpu;
-	}
 }
 
 void Renderer::Model::AddCubeMesh()
@@ -40,9 +35,7 @@ void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename)
 	std::vector<std::shared_ptr<Resources::Mesh>> loaded = ResourcesManager::LoadModel(i_meshFilename, true);
 
 	for (const auto& mesh : loaded)
-	{
 		meshes.push_back(mesh);
-	}
 }
 
 void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
@@ -50,16 +43,12 @@ void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename, const
 	std::vector<std::shared_ptr<Resources::Mesh>> loaded = ResourcesManager::LoadModel(i_meshFilename, false);
 
 	for (const auto& mesh : loaded)
-	{
 		meshes.push_back(mesh);
-	}
 
 	std::shared_ptr<Texture> tex = ResourcesManager::LoadTexture(i_textureFilename, i_flipTexture);
 
 	for (int i = 0; i < meshes.size(); ++i)
-	{
 		meshes[i].get()->diffuseTex = tex.get()->gpu;
-	}
 }
 
 void Renderer::Model::AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex)

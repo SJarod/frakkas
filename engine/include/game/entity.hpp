@@ -1,7 +1,3 @@
-//
-// Created by flori on 3/17/2022.
-//
-
 #pragma once
 
 #include <vector>
@@ -10,6 +6,7 @@
 #include "transform.hpp"
 #include "resources/serializer.hpp"
 #include "component.hpp"
+
 
 namespace Resources
 {
@@ -72,7 +69,8 @@ namespace Game
 }
 
 template<typename T>
-std::shared_ptr<T> Game::Entity::GetComponent(const std::string &id) {
+std::shared_ptr<T> Game::Entity::GetComponent(const std::string &id)
+{
     std::vector<std::shared_ptr<Component>>::iterator it;
     it = std::find_if(components.begin(), components.end(), [&id](const std::shared_ptr<Component> c){
         return c->id == id;
@@ -88,7 +86,8 @@ std::shared_ptr<T> Game::Entity::GetComponent(const std::string &id) {
 }
 
 template<typename T>
-std::vector<std::shared_ptr<T>> Game::Entity::GetComponents(const std::string &id) {
+std::vector<std::shared_ptr<T>> Game::Entity::GetComponents(const std::string &id)
+{
     std::vector<std::shared_ptr<T>> comps;
     for(std::vector<std::shared_ptr<Component>>::iterator it = components.begin(); it != components.end(); it++)
     {

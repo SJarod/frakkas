@@ -1,6 +1,4 @@
-add_library(GameFrakkas
-            src/bar.cpp
-)
+add_library(GameFrakkas src/bar.cpp)
 
 target_include_directories(GameFrakkas
                            PRIVATE include

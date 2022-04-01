@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
-
 #include <glad/glad.h>
 
 #include "renderer/lowlevel/vertex.hpp"
 #include "resources/texture.hpp"
+
 
 using namespace Renderer::LowLevel;
 
@@ -16,10 +16,6 @@ namespace Resources
 		GLuint VBO;
 		GLuint VAO;
 
-		/**
-		 * Free OpenGL buffers.
-		 * 
-		 */
 		~GPUMesh()
 		{
 			glDeleteBuffers(1, &VBO);

@@ -1,18 +1,13 @@
-//
-// Created by flory on 3/17/2022.
-//
-
-#include <imgui.h>
-
 #include "resources/mesh.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
-
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
+
 #include "game/entity_manager.hpp"
+
 
 using namespace Game;
 
@@ -21,8 +16,10 @@ void EntityManager::Update()
     for (const auto& entity : entities)
     {
         for (const std::shared_ptr<Component>& comp : entity->components)
+        {
             if (comp->IsEnabled())
                 comp->Update();
+        }
     }
 }
 
@@ -68,8 +65,7 @@ void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
     entities.push_back(std::move(i_entity));
 }
 
-const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const {
+const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
+{
     return entities;
 }
-
-

@@ -1,4 +1,3 @@
-
 #include <imgui.h>
 
 #include "game/transform.hpp"
@@ -15,14 +14,15 @@ void Helpers::EditTransform(Game::Transform &io_transform)
     ImGui::Spacing();
 
     Vector3 pos = trs.position, rot = Maths::ToDegrees(trs.rotation), sc = trs.scale;
-#pragma region Position edit
+
+// Position edit
     ImGui::DragFloat3("Position", pos.element, 0.1f);
-#pragma endregion
-#pragma region Rotation edit
+
+// Rotation edit
     ImGui::DragFloat3("Rotation", rot.element, 1.f);
     for (float & coord : rot.element)
         coord = Maths::Abs(coord) >= 360.f ? 0.f : coord;
-#pragma endregion
+
 #pragma region Scale edit
     if(scParams.isLock && scParams.origScale == Vector3::zero)
         scParams.ratio = 0.f;

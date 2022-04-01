@@ -1,12 +1,9 @@
-//
-// Created by manon on 17/03/2022.
-//
-
 #pragma once
 
 #include <filesystem>
 
 #include "resources/texture.hpp"
+
 
 namespace Editor
 {
@@ -30,6 +27,6 @@ namespace Editor
         /**
         * @summary Add "Options" field to Main menu bar to modify buttons size and padding
         */
-        void OptionsField(float* padding, float* thumbnailSize);
+        void OptionsField(float* io_padding, float* io_thumbnailSize);
     };
 }

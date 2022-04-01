@@ -1,18 +1,14 @@
-//
-// Created by m.mehalin on 23/03/2022.
-//
-
 #pragma once
 
 #include <vector>
 #include <memory>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
 #include "singleton.hpp"
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"
+
 
 using namespace Resources;
 
@@ -23,10 +19,11 @@ namespace Resources
         friend class Singleton<ResourcesManager>;
 
     public:
+        ResourcesManager() = default;
         ~ResourcesManager();
 
         /**
-         * Load a model from a 3D model file.
+         * @Summary Load a model from a 3D model file.
          * Tell Assimp to load embedded textures if the 3D model file has.
          *
          * @param i_filename
@@ -37,14 +34,13 @@ namespace Resources
         static std::vector<std::shared_ptr<Mesh>> LoadModel(const std::string& i_filename, const bool i_embeddedTexture);
 
         /**
-         * Procedurally load a cube.
-         *
+         * @Summary Procedurally load a cube.
          * @return std::shared_ptr<Mesh>
          */
         static std::shared_ptr<Mesh> LoadCube();
 
         /**
-         * Procedurally load a sphere.
+         * @Summary Procedurally load a sphere.
          *
          * @param i_radius
          * @param i_lon
@@ -55,24 +51,21 @@ namespace Resources
         static std::shared_ptr<Mesh> LoadSphere(const float i_radius = 1.f, const int i_lon = 50, const int i_lat = 25);
 
         /**
-         * Load a texture from texture file.
+         * @Summary Load a texture from texture file.
          *
          * @param i_filename
          * @param i_flip
-         *
          * @return std::shared_ptr<Texture>
          */
         static std::shared_ptr<Texture> LoadTexture(const std::string& i_filename, const bool i_flip);
 
         /**
-         * Get the number of loaded mesh.
-         *
+         * @Summary Get the number of loaded mesh.
          */
         static unsigned int GetLoadedMeshCount();
 
         /**
-         * Get the number of loaded texture.
-         *
+         * @Summary Get the number of loaded texture.
          */
         static unsigned int GetLoadedTextureCount();
 
@@ -83,10 +76,8 @@ namespace Resources
         // Array of every loaded textures.
         std::vector<std::shared_ptr<Texture>> textures;
 
-        ResourcesManager() = default;
-
         /**
-         * Extrat Assimp's mesh data (vertices and textures).
+         * @Summary Extract Assimp's mesh data (vertices and textures).
          * Load mesh's textures if it has embedded textures (specify with a bool).
          *
          * @param i_aiMesh (from Assimp)
@@ -97,7 +88,7 @@ namespace Resources
         void ProcessAiMesh(const aiMesh& i_aim, const aiScene& i_scene, Mesh& o_mesh, const bool i_embeddedTexture);
 
         /**
-         * Go through every Assimp node to extract data (meshes).
+         * @Summary Go through every Assimp node to extract data (meshes).
          * Tell ProcessAiMesh() to load embedded textures or not.
          *
          * @param i_node
@@ -107,7 +98,7 @@ namespace Resources
         void ProcessAiNode(const aiNode& i_node, const aiScene& i_scene, const bool i_embeddedTexture);
 
         /**
-         * Load a model from a file (group of meshes) into Assimp's importer.
+         * @Summary Load a model from a file (group of meshes) into Assimp's importer.
          *
          * @param io_importer
          * @param i_path
@@ -117,21 +108,19 @@ namespace Resources
         int LoadCPUModel(Assimp::Importer& io_importer, const std::string& i_path);
 
         /**
-         * Reorder mesh's vertices with its stored indices.
-         *
+         * @Summary Reorder mesh's vertices with its stored indices.
          * @param io_mesh
          */
         void ParseMesh(Mesh& io_mesh);
 
         /**
-         * Create a mesh GPU side with OpenGL.
-         *
+         * @Summary Create a mesh GPU side with OpenGL.
          * @param io_mesh
          */
         void CreateGPUMesh(Mesh& io_mesh);
 
         /**
-         * Load texture data with stb_image.
+         * @Summary Load texture data with stb_image.
          *
          * @param i_filename
          * @param i_flip
@@ -140,8 +129,7 @@ namespace Resources
         void LoadCPUTexture(const std::string& i_filename, const bool i_flip, const TextureType i_type = TextureType::TEXTURE_DIFFUSE);
 
         /**
-         * Create a texture GPU side with OpenGL.
-         *
+         * @Summary Create a texture GPU side with OpenGL.
          * @param io_texture
          */
         void CreateGPUTexture(Texture& io_texture);
@@ -149,7 +137,7 @@ namespace Resources
         // TODO : textures are not taken
         // TODO : return vector of textures
         /**
-         * Load texture from Assimp's meshes.
+         * @Summary Load texture from Assimp's meshes.
          *
          * @param i_aiMaterial
          * @param i_aiScene

@@ -1,7 +1,3 @@
-//
-// Created by manon on 21/02/2022.
-//
-
 #pragma once
 
 #include "constants.hpp"
@@ -9,8 +5,10 @@
 struct Vector4;
 struct Quaternion;
 
-struct Vector3 {
-    union {
+struct Vector3
+{
+    union
+    {
         struct { float x; float y; float z; };
         struct { float r; float g; float b; };
 
