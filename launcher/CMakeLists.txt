@@ -8,4 +8,7 @@ target_include_directories(Launcher
 
 target_link_libraries(Launcher PRIVATE GameFrakkas)
 
-set_target_properties(Launcher PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+set_target_properties(Launcher PROPERTIES
+                               RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/build/debug
+                               RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/build/release
+)

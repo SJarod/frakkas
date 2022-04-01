@@ -31,9 +31,9 @@ void Helpers::EditTransform(Game::Transform &io_transform)
     {
         if (scParams.isLock)
         {
-            if (sc.x != trs.scale.x && scParams.origScale.x != 0.f)
+            if (sc.x != trs.scale->x && scParams.origScale.x != 0.f)
                 scParams.ratio = sc.x / scParams.origScale.x;
-            else if (sc.y != trs.scale.y && scParams.origScale.y != 0.f)
+            else if (sc.y != trs.scale->y && scParams.origScale.y != 0.f)
                 scParams.ratio = sc.y / scParams.origScale.y;
             else if (scParams.origScale.z != 0.f)
                 scParams.ratio = sc.z / scParams.origScale.z;

@@ -21,12 +21,16 @@ void Component::Disable()
     }
 }
 
-void Component::SetOwner(Entity *owner)
-{
-    this->_owner = owner;
+void Component::SetOwner(Entity *owner) {
+    this->owner.set(owner);
 }
 
 bool Component::IsEnabled() const
 {
     return enabled;
+}
+
+Component::Component(const std::string &id)  : id(id)
+{
+    owner.setter = std::bind(&Component::SetOwner, this, std::placeholders::_1);
 }

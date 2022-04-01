@@ -31,49 +31,14 @@ namespace Game
 	struct Transform
 	{
 	public:
+        Transform();
 
-        PROPERTY(Vector3, position);
-        GET(position){
-            return _position;
-        }
-        SET(position){
-            if (_position != value)
-                needUpdate = true;
-            _position = value;
-        }
 
-        PROPERTY(Vector3, rotation);
-        GET(rotation)
-        {
-            return _rotation;
-        }
-        SET(rotation)
-        {
-            if (_rotation != value)
-                needUpdate = true;
-            _rotation = value;
-        }
+        Property<Vector3> position;
+        Property<Vector3> rotation;
+        Property<Vector3> scale;
 
-        PROPERTY(Vector3, scale);
-        GET(scale){
-            return _scale;
-        }
-        SET(scale)
-        {
-            if (_scale != value)
-                needUpdate = true;
-            _scale = value;
-            scaleLockParams.origScale = _scale;
-            scaleLockParams.ratio = 1.f;
-        }
-
-        WRITEONLY_PROPERTY(Transform*, parent);
-        SET(parent)
-        {
-            _parent = value;
-            if (value)
-                value->childs.emplace_back(this);
-        }
+        Property<Transform*> parent;
 
 		/**
 		 * @brief Get a model matrix from a transform. If model matrix not update, compute the matrix.
@@ -90,10 +55,6 @@ namespace Game
 
     private:
         mutable bool needUpdate = true;
-
-		Vector3 _position = Vector3::zero;
-		Vector3 _rotation = Vector3::zero;
-		Vector3 _scale = { 1.f, 1.f, 1.f };
 
         ScaleLockParams scaleLockParams;
 
