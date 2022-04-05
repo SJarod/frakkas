@@ -15,7 +15,9 @@ add_library(EngineFrakkas STATIC
         	src/log.cpp
 			${PROJECT_SOURCE_DIR}/lib/stb_image.c
 			${IMGUI_SOURCE_FILES}
-        src/game/time_manager.cpp)
+            src/engine.cpp
+            src/game/time_manager.cpp
+)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include

@@ -55,8 +55,10 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& i_entityManager)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager &i_entityManager)
 {
+    //Renderer::LowLevel::Framebuffer& io_fbo = *pio_fbo;
+    //Game::EntityManager& i_entityManager = *pi_entityManager;
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();

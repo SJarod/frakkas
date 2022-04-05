@@ -1,4 +1,5 @@
 #include "resources/mesh.hpp"
+#include "resources/serializer.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
@@ -15,7 +16,7 @@ void EntityManager::Update()
 {
     for (const auto& entity : entities)
     {
-        for (const std::shared_ptr<Component>& comp : entity->components)
+        for (const std::unique_ptr<Component>& comp : entity->components)
         {
             if (comp->IsEnabled())
                 comp->Update();
@@ -23,7 +24,7 @@ void EntityManager::Update()
     }
 }
 
-void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const float i_aspectRatio)
+void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio)
 {
     // An entity with CameraComponent should be added to render
     if (!camera)
@@ -52,12 +53,12 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer &i_renderer, const fl
 
 void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
 {
-    for (const std::shared_ptr<Component>& comp : i_entity->components)
+    for (const std::unique_ptr<Component>& comp : i_entity->components)
     {
         comp->Start();
         if (!camera)
         {
-            if (std::shared_ptr<CameraComponent> cameraEntity = std::dynamic_pointer_cast<CameraComponent>(comp))
+            if (CameraComponent* cameraEntity = reinterpret_cast<CameraComponent*>(comp.get()))
                 camera = &cameraEntity->camera;
         }
     }
@@ -65,7 +66,7 @@ void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
     entities.push_back(std::move(i_entity));
 }
 
-const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
+const std::list<std::unique_ptr<Entity>>& EntityManager::GetEntities() const
 {
     return entities;
 }

@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <string>
 
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
@@ -17,7 +18,7 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& i_entityManager)
     if(ImGui::Button("Add entity"))
     {
         std::unique_ptr<Game::Entity> entity = std::make_unique<Game::Entity>();
-        entity->AddComponent(std::make_shared<Game::Drawable>());
+        entity->AddComponent(std::unique_ptr<Game::Drawable>());
         entity->GetComponent<Game::Drawable>("drawable")->model.AddSphereMesh();
         entity->GetComponent<Game::Drawable>("drawable")->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
         i_entityManager.AddEntity(std::move(entity));

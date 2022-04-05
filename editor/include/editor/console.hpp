@@ -1,5 +1,7 @@
 #pragma once
 
+#include <imgui.h>
+
 namespace Editor
 {
     class Console
