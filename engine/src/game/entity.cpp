@@ -10,14 +10,14 @@ using namespace Game;
 
 Entity::~Entity()
 {
-    for(const std::shared_ptr<Component>& comp : components)
+    for(const std::unique_ptr<Component>& comp : components)
         comp->OnDestroy();
 }
 
-void Entity::AddComponent(const std::shared_ptr<Component>& comp)
+void Entity::AddComponent(std::unique_ptr<Component> comp)
 {
     comp->owner = this;
-    components.push_back(comp);
+    components.emplace_back(std::move(comp));
 }
 
 void Entity::Edit()
@@ -28,6 +28,6 @@ void Entity::Edit()
 
     Helpers::EditTransform(transform);
 
-    for (const std::shared_ptr<Component>& comp : components)
+    for (const std::unique_ptr<Component>& comp : components)
         comp->Edit();
 }

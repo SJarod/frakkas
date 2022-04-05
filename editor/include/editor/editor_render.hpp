@@ -27,7 +27,7 @@ namespace Editor
     public:
         void InitImGui();
         void QuitImGui();
-        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& i_entityManager);
+        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager &i_entityManager);
 
     private:
         MenuBar m_menuBar;

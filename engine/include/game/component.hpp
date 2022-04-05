@@ -1,8 +1,11 @@
 #pragma once
 
 #include "properties.hpp"
-#include "resources/serializer.hpp"
 
+namespace Resources
+{
+    class Serializer;
+}
 
 namespace Game
 {

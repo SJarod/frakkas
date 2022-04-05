@@ -3,13 +3,15 @@
 #include <vector>
 #include <memory>
 
-#include "resources/serializer.hpp"
-
-
 namespace Renderer::LowLevel
 {
     class LowRenderer;
     class Camera;
+}
+
+namespace Resources
+{
+    class Serializer;
 }
 
 namespace Game
@@ -20,6 +22,8 @@ namespace Game
     {
     public:
         EntityManager() = default;
+        //EntityManager(const EntityManager& c) = delete;
+        //EntityManager
         ~EntityManager() = default;
 
         Renderer::LowLevel::Camera* camera = nullptr;
@@ -35,7 +39,7 @@ namespace Game
          * @param i_camera the camera to render, in other words the source view to look at the world
          * @param i_aspectRatio the render's aspect ratio
          */
-        void Render(Renderer::LowLevel::LowRenderer &i_renderer, const float i_aspectRatio);
+        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio);
 
         /**
          * @summary move an entity pointer into the entity manager's array,
@@ -44,7 +48,7 @@ namespace Game
          */
         void AddEntity(std::unique_ptr<Entity> i_entity);
 
-        [[nodiscard]] const std::list<std::unique_ptr<Entity>> & GetEntities() const;
+        [[nodiscard]] const std::list<std::unique_ptr<Entity>>& GetEntities() const;
 
         /**
          * Create entity from a scene input file.
@@ -59,7 +63,6 @@ namespace Game
         void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) {};
 
     private:
-
-        std::list<std::unique_ptr<Entity>> entities;
+        std::list<std::unique_ptr<Entity>> entities{};
     };
 }
