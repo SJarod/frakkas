@@ -7,6 +7,7 @@
 #include "editor/file_browser.hpp"
 #include "editor/scene.hpp"
 #include "editor/game_scene.hpp"
+#include "editor/debugger.hpp"
 
 
 namespace Renderer::LowLevel
@@ -36,6 +37,7 @@ namespace Editor
         FileBrowser m_fileBrowser;
         Scene m_scene;
         GameScene m_game;
+        Debugger m_debugger;
 
         void UpdateImGui();
     };
