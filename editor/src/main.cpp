@@ -4,11 +4,13 @@
 #include <backends/imgui_impl_sdl.h>
 
 #include "maths.hpp"
+#include "log.hpp"
 
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
 #include "game/entity_manager.hpp"
+#include "game/time_manager.hpp"
 #include "editor/editor_render.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -101,6 +103,8 @@ int main()
         entityManager.AddEntity(std::move(entity));
     }
 
+    Game::Time time;
+
 	bool running = true;
 	SDL_Event evt;
     int x = 0, y = 0;
@@ -153,6 +157,8 @@ int main()
         //trs.position = Vector3(trs.position.x + xSpeed, trs.position.y + ySpeed, trs.position.z + zSpeed);
 
         /// NEW FRAME
+
+        time.NewFrame();
 
 		rdr.BeginFrame(fbo);
         entityManager.Render(rdr, fbo.aspectRatio);

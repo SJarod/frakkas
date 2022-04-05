@@ -73,6 +73,7 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game
     m_inspector.OnImGuiRender(m_hierarchy.selected);
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender();
+    m_debugger.OnImGuiRender();
     Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
     io_fbo.aspectRatio = windowSize.x / windowSize.y;
 

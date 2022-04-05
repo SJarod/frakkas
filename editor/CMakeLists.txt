@@ -11,7 +11,7 @@ add_executable(EditorFrakkas
 			   src/inspector.cpp
 			   src/scene.cpp
 			   src/game_scene.cpp
-)
+        src/debugger.cpp)
 
 target_link_libraries(EditorFrakkas
                       PRIVATE EngineFrakkas
