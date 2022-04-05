@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <SDL.h>
 #include <backends/imgui_impl_sdl.h>
+#include <Tracy.hpp>
 
 #include "maths.hpp"
 #include "log.hpp"
