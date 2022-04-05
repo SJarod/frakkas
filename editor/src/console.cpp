@@ -1,5 +1,6 @@
 #include <imgui.h>
 #include <fstream>
+#include <Tracy.hpp>
 
 #include "log.hpp"
 

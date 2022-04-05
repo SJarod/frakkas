@@ -2,6 +2,7 @@ add_executable(EditorFrakkas
 			   ${PROJECT_SOURCE_DIR}/appicon.rc
                ${PROJECT_SOURCE_DIR}/lib/glad.c
 			   ${IMGUI_BACKENDS_FILES}
+			   ${tracy_SOURCE_DIR}/TracyClient.cpp
                src/main.cpp
                src/editor_render.cpp
                src/hierarchy.cpp
@@ -16,6 +17,7 @@ add_executable(EditorFrakkas
 target_link_libraries(EditorFrakkas
                       PRIVATE EngineFrakkas
                       PRIVATE SDL2-static
+					  PUBLIC TracyClient
 )
 
 target_include_directories(EditorFrakkas
@@ -25,6 +27,7 @@ target_include_directories(EditorFrakkas
                            PRIVATE ${PROJECT_SOURCE_DIR}/lib
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends
+						   PRIVATE ${tracy_SOURCE_DIR}
 )
 
 set_target_properties(EditorFrakkas PROPERTIES

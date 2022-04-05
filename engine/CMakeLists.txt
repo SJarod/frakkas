@@ -23,14 +23,18 @@ target_include_directories(EngineFrakkas
                            PRIVATE ${MATHS_INCLUDE_DIR}
 						   PRIVATE ${GAME_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
-						   PRIVATE ${sdl_INCLUDE_DIR}
+						   PRIVATE ${sdl_SOURCE_DIR}
+						   PRIVATE ${tracy_SOURCE_DIR}
 )
 
 # Include jolt and assimp libraries
 include(${PROJECT_SOURCE_DIR}/jolt.cmake)
 include(${PROJECT_SOURCE_DIR}/assimp.cmake)
 
-target_link_libraries(EngineFrakkas PRIVATE SDL2-static)
+target_link_libraries(EngineFrakkas
+					  PRIVATE SDL2-static
+					  PUBLIC TracyClient
+)
 
 set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 

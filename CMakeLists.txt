@@ -14,6 +14,20 @@ project(EngineFrakkas
 )
 
 include(FetchContent)
+
+# Tracy
+FetchContent_Declare(tracy
+                     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+                     GIT_TAG 9ba7171 # v0.8
+                     GIT_SHALLOW TRUE
+                     GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(tracy)
+
+file(ARCHIVE_EXTRACT INPUT ${PROJECT_SOURCE_DIR}/lib/tracy_executables.7z
+                     DESTINATION ${PROJECT_SOURCE_DIR}/lib
+)
+
 # SDL2
 FetchContent_Declare(sdl
                      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
