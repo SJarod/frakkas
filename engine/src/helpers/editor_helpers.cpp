@@ -1,6 +1,8 @@
 #include <imgui.h>
 
 #include "game/transform.hpp"
+#include "game/component.hpp"
+
 #include "helpers/editor_helpers.hpp"
 
 
@@ -54,4 +56,20 @@ void Helpers::EditTransform(Game::Transform &io_transform)
     trs.position = pos;
     trs.rotation = Maths::ToRadians(rot);
     trs.scale = sc;
+}
+
+bool Helpers::ComponentBeginEdit(Game::Component *comp) {
+    if(ImGui::TreeNodeEx(comp->id.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        bool checkEnabled = comp->enabled;
+        ImGui::Checkbox("Enabled", &checkEnabled);
+        comp->enabled = checkEnabled;
+        ImGui::Spacing();
+        return true;
+    }
+    return false;
+}
+
+void Helpers::ComponentEndEdit() {
+    ImGui::TreePop();
 }

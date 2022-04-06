@@ -18,10 +18,13 @@ namespace Game
         virtual ~Component() = default;
 
         std::string id = "None";
+        Property<bool> enabled;
+        Property<Entity*> owner;
 
         /**
-         * @Summary Called when the owner is included into the engine's EntityManager,
-         * so it is called once, and beware that other entities may not be set at this moment.
+         * @summary Called when the owner is included into the engine's EntityManager,
+         * so it is called once even if component should be disabled,
+         * and beware that other entities may not be set at this moment.
          */
         virtual void Start() {};
 
@@ -32,34 +35,12 @@ namespace Game
         virtual void Update() {};
 
         /**
-         * @Summary Called every time the component is enabled (no longer disabled).
+         * Called when component is removed, or when owner is deleted.
+         * Called even if component is disabled.
          */
-        virtual void OnEnable() {};
+        virtual void OnDestroy(){};
 
-        /**
-         * @Summary Called every time the component is disabled (no longer enabled).
-         */
-        virtual void OnDisable() {};
 
-        /**
-         * @Summary Called when component is removed, or when owner is deleted
-         */
-        virtual void OnDestroy() {};
-
-        /**
-         * @Summary Enable/Activate the component if it is disabled. Call OnEnable() too.
-         */
-        void Enable();
-
-        /**
-         * @Summary Disable/Deactivate the component if it is enabled. Call OnEnable() too.
-         */
-        void Disable();
-
-        /**
-         * @return the enable state of the component
-         */
-        [[nodiscard]] bool IsEnabled() const;
 
         /**
          * @Summary ImGui editing function. Set which parameters can be modified in run time.
@@ -78,15 +59,28 @@ namespace Game
          */
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
-        Property<Entity*> owner;
 
     protected:
         /**
-         * @Summary Set or replace the current entity which hold the component. You can unset the owner by sending nullptr.
-         * @param owner an entity floating pointer, should be store somewhere else as smart pointer.
+         * @Summary Set or replace the current entity which hold the component. You can unset the entity by sending nullptr.
+         * @param entity an entity floating pointer, should be store somewhere else as smart pointer.
          */
-        virtual void SetOwner(Entity* owner);
+        virtual void SetOwner(Entity* entity);
 
-        bool enabled = true;
+        /**
+         * @brief Called when change enabled state. Could be consider as a Start() but can be call many times.
+         * Not called when entity started
+         */
+        virtual void OnEnable() {};
+        /**
+         * @brief Call when change enabled state. Could be consider as a OnDestroy() but can be call many times.
+         * Not called when entity destroyed
+         */
+        virtual void OnDisable() {};
+
+    private:
+        Entity* _owner = nullptr;
+        bool _enabled = true;
+
     };
 }

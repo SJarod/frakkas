@@ -1,6 +1,7 @@
 #include <imgui.h>
 
 #include "helpers/editor_helpers.hpp"
+#include "game/entity.hpp"
 
 #include "game/camera_component.hpp"
 
@@ -12,7 +13,7 @@ CameraComponent::CameraComponent() :Component("camera")
 
 void CameraComponent::Edit()
 {
-    if (ImGui::TreeNodeEx("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+   if (Helpers::ComponentBeginEdit(this))
     {
         Helpers::EditTransform(camera.transform);
         ImGui::Spacing();
@@ -23,7 +24,12 @@ void CameraComponent::Edit()
 
         ImGui::DragFloat("Near", &camera.near, 0.01f, 0.001f);
         ImGui::DragFloat("Far", &camera.far, 10.f, 100.f, 5000.f);
-
-        ImGui::TreePop();
+        Helpers::ComponentEndEdit();
     }
 }
+
+void CameraComponent::SetOwner(Entity *owner) {
+    camera.transform.parent = &owner->transform;
+    Component::SetOwner(owner);
+}
+
