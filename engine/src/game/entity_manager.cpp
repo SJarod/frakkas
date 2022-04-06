@@ -18,7 +18,7 @@ void EntityManager::Update()
     {
         for (const std::unique_ptr<Component>& comp : entity->components)
         {
-            if (comp->IsEnabled())
+            if (comp->enabled)
                 comp->Update();
         }
     }
@@ -36,7 +36,7 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const fl
     for (const auto& entity : entities)
     {
         auto drawable = entity->GetComponent<Drawable>("drawable");
-        if (drawable)
+        if (drawable && drawable->enabled)
         {
             for (const std::shared_ptr<Resources::Mesh> mesh : drawable->model.meshes)
             {

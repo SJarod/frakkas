@@ -3,6 +3,7 @@
 namespace Game
 {
     struct Transform;
+    class Component;
 }
 
 namespace Helpers
@@ -12,4 +13,7 @@ namespace Helpers
      * @param io_transform the transform to edit
      */
     void EditTransform(Game::Transform& io_transform);
+
+    bool ComponentBeginEdit(Game::Component* comp);
+    void ComponentEndEdit();
 }

@@ -3,34 +3,23 @@
 
 using namespace Game;
 
-void Component::Enable()
+void Component::SetOwner(Entity *entity) {
+    owner.set(entity);
+}
+
+Component::Component(const std::string &id) : id(id)
 {
-    if (!enabled)
+    enabled.setter = [&](const bool& value)
     {
-        enabled = true;
-        OnEnable();
-    }
-}
+        if (value && enabled == false)
+            OnEnable();
+        else if (!value && enabled == true)
+            OnDisable();
+        enabled.set(value);
+    };
 
-void Component::Disable()
-{
-    if (enabled)
+    owner.setter = [&](Entity* value)
     {
-        enabled = false;
-        OnDisable();
-    }
-}
-
-void Component::SetOwner(Entity *owner) {
-    this->owner.set(owner);
-}
-
-bool Component::IsEnabled() const
-{
-    return enabled;
-}
-
-Component::Component(const std::string &id)  : id(id)
-{
-    owner.setter = std::bind(&Component::SetOwner, this, std::placeholders::_1);
+        SetOwner(value);
+    };
 }

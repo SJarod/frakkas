@@ -11,13 +11,11 @@ using namespace Game;
 Drawable::Drawable() : Component("drawable")
 {}
 
-void Drawable::Edit()
-{
-    if(ImGui::TreeNodeEx("Drawable", ImGuiTreeNodeFlags_DefaultOpen))
+void Drawable::Edit() {
+    if (Helpers::ComponentBeginEdit(this))
     {
-        ImGui::Spacing();
         Helpers::EditTransform(model.transform);
-        ImGui::TreePop();
+        Helpers::ComponentEndEdit();
     }
 }
 

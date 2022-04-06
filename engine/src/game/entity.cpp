@@ -28,6 +28,12 @@ void Entity::Edit()
 
     Helpers::EditTransform(transform);
 
+    int index = 0;
     for (const std::unique_ptr<Component>& comp : components)
+    {
+        ImGui::PushID(index++);
         comp->Edit();
+        ImGui::PopID();
+    }
 }
+
