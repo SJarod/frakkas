@@ -1,3 +1,5 @@
+#include "log.hpp"
+
 #include "resources/serializer.hpp"
 
 
@@ -11,7 +13,7 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::str
 
     if (o_attribute.length() == 0)
     {
-        std::cerr << "A scene attribute is not valid" << std::endl;
+        Log::Error("A scene attribute is not valid");
         return o_attribute;
     }
 

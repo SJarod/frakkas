@@ -6,7 +6,7 @@
 #include <Tracy.hpp>
 
 #include "maths.hpp"
-
+#include "log.hpp"
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
@@ -18,6 +18,8 @@
 
 Engine::Engine()
 {
+    Log::Init();
+
     InitSDL();
 
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
@@ -38,7 +40,7 @@ void Engine::InitSDL()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
     {
-        std::cout << "ERROR: Can't init SDL - " << SDL_GetError() << std::endl;
+        Log::Error("SDL: Can't init SDL - " + static_cast<std::string>(SDL_GetError()));
         exit(1);
     }
 
@@ -52,11 +54,11 @@ void Engine::InitSDL()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_SHOWN);
-    window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL4 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    window = SDL_CreateWindow("Frakkas", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
 
     if (!window)
     {
-        std::cout << "ERROR: Can't create window - " << SDL_GetError() << std::endl;
+        Log::Error("SDL: Can't create window - " + static_cast<std::string>(SDL_GetError()));
         exit(1);
     }
 
@@ -65,8 +67,9 @@ void Engine::InitSDL()
     SDL_GL_SetSwapInterval(1);
 
     // Load GL extensions using glad
-    if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-        std::cerr << "Failed to initialize the OpenGL context." << std::endl;
+    if (!gladLoadGLLoader(static_cast<GLADloadproc>(SDL_GL_GetProcAddress)))
+    {
+        Log::Error("OPENGL: Failed to initialize the OpenGL context");
         exit(1);
     }
 }
