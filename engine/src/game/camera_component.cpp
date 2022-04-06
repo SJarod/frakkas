@@ -3,6 +3,7 @@
 #include "helpers/editor_helpers.hpp"
 #include "game/entity.hpp"
 
+#include "game/entity.hpp"
 #include "game/camera_component.hpp"
 
 
@@ -28,8 +29,8 @@ void CameraComponent::Edit()
     }
 }
 
-void CameraComponent::SetOwner(Entity *owner) {
+void CameraComponent::SetOwner(Entity* owner)
+{
     camera.transform.parent = &owner->transform;
     Component::SetOwner(owner);
 }
-

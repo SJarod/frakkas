@@ -12,7 +12,6 @@ namespace Game
         CameraComponent();
 
         void Edit() override;
-
         void SetOwner(Entity* owner) override;
 
         Renderer::LowLevel::Camera camera;

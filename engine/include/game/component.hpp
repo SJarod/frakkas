@@ -78,9 +78,5 @@ namespace Game
          */
         virtual void OnDisable() {};
 
-    private:
-        Entity* _owner = nullptr;
-        bool _enabled = true;
-
     };
 }

@@ -28,11 +28,6 @@ public:
         return static_cast<const T&>(*this) == value;
     }
 
-    const T* operator -> () const
-    {
-        return &t;
-    }
-
     const T& get() const
     {
         return t;
