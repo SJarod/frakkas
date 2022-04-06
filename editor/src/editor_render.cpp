@@ -55,7 +55,8 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager &i_entityManager)
+void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& i_entityManager,
+                                   Renderer::LowLevel::Framebuffer& io_gameFbo)
 {
     //Renderer::LowLevel::Framebuffer& io_fbo = *pio_fbo;
     //Game::EntityManager& i_entityManager = *pi_entityManager;
@@ -74,12 +75,12 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender(m_hierarchy.selected);
     m_fileBrowser.OnImGuiRender();
-    m_game.OnImGuiRender();
+    m_game.OnImGuiRender(reinterpret_cast<ImTextureID>(io_gameFbo.GetColor0()));
     m_debugger.OnImGuiRender();
     Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
     io_fbo.aspectRatio = windowSize.x / windowSize.y;
 
-    Renderer::LowLevel::Camera& camera = *i_entityManager.camera;
+    Renderer::LowLevel::Camera& camera = i_entityManager.editorCamera;
     float newFovY = 2.f * Maths::Atan(Maths::Tan(camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
     if (io_fbo.aspectRatio > 1.f)
         camera.SetFieldOfView(newFovY);

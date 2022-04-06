@@ -3,8 +3,10 @@
 
 using namespace Game;
 
-Transform::Transform() {
-
+Transform::Transform()
+{
+    position = Vector3::zero;
+    rotation = Vector3::zero;
     scale = Vector3(1.f, 1.f, 1.f);
     position.setter = [&](const Vector3& value)
     {

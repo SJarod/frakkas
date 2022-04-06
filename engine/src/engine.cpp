@@ -21,7 +21,8 @@ Engine::Engine()
     InitSDL();
 
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
-    defaultFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+    editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+    gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
 
     CreateTestEntities();
 }
@@ -75,7 +76,7 @@ void Engine::CreateTestEntities()
 // Create 5 entities for example
     for (int i = 0; i < 5; i++)
     {
-        std::unique_ptr<Game::Entity> entity = std::make_unique<Game::Entity>();
+        Game::Entity* entity = entityManager.CreateEntity();
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
 
@@ -89,11 +90,7 @@ void Engine::CreateTestEntities()
         else
         {
             entity->AddComponent(std::make_unique<Game::CameraComponent>());
-            auto& camera = entity->GetComponent<Game::CameraComponent>("camera")->camera;
-            camera.transform.position = { 0.f, 0.f, 2.f };
         }
-
-        entityManager.AddEntity(std::move(entity));
     }
 }
 
@@ -106,8 +103,12 @@ void Engine::Run()
         /// NEW FRAME
         timeManager.NewFrame();
 
-        renderer->BeginFrame(*defaultFBO);
-        entityManager.Render(*renderer, defaultFBO->aspectRatio);
+        renderer->BeginFrame(*editorFBO);
+        entityManager.Render(*renderer, editorFBO->aspectRatio);
+
+        renderer->BeginFrame(*gameFBO);
+        entityManager.UpdateAndRender(*renderer, gameFBO->aspectRatio);
+
         renderer->EndFrame();
 
         for (const UpdateEvent& updateEvent : updateEventsHandler)

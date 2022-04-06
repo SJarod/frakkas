@@ -9,10 +9,9 @@ Matrix4 Renderer::LowLevel::Camera::GetViewMatrix() const
         pos = pos + transform.parent.get()->position.get();
         rot = rot + transform.parent.get()->rotation.get();
     }
-	Vector3 rotation = { rot.x,
-						 -rot.y,
-						 rot.z };
-	return Matrix4::Translate(-pos) * Matrix4::RotateXYZ(rot);
+
+	Vector3 invertRot = { rot.x, -rot.y, rot.z };
+	return Matrix4::Translate(-pos) * Matrix4::RotateXYZ(invertRot);
 }
 
 Matrix4 Renderer::LowLevel::Camera::GetProjectionMatrix(float i_aspectRatio) const
