@@ -2,9 +2,7 @@
 
 #include "singleton.hpp"
 
-#include <chrono>
-#include <ctime>
-#include <iostream>
+#include <fstream>
 #include <vector>
 
 #include "singleton.hpp"
@@ -15,7 +13,6 @@ enum class ELogType
     INFO,
     WARNING,
     ERROR,
-    CRASH
 };
 
 class Log : public Singleton<Log>
@@ -26,28 +23,24 @@ public:
     Log() = default;
     ~Log();
 
-    template <typename T>
-    static void Info(const T& i_log)
+    static void Init()
     {
-        Out(std::string("[INFO] ") + i_log);
+        Instance().logFile.open("build/FrakkasLog.log", std::ios::out);
     }
 
-    template <typename T>
-    static void Warning(const T& i_log)
+    static void Info(const std::string& i_log)
     {
-        Out(std::string("[WARNING] ") + i_log);
+        Out("[INFO] " + i_log);
     }
 
-    template <typename T>
-    static void Error(const T& i_log)
+    static void Warning(const std::string& i_log)
     {
-        Out(std::string("[ERROR] ") + i_log);
+        Out("[WARNING] " + i_log);
     }
 
-    template <typename T>
-    static void Crash(const T& i_log)
+    static void Error(const std::string& i_log)
     {
-        Out(std::string("[CRASH] ") + i_log);
+        Out("[ERROR] " + i_log);
     }
 
     static std::vector<std::string>& GetLogList()
@@ -56,10 +49,8 @@ public:
     }
 
 private:
+    std::ofstream logFile;
     std::vector<std::string> logList;
-    std::string logs;
-
-    static void SaveToFile();
 
     /**
     * @Summary Output the casted log

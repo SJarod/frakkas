@@ -24,9 +24,11 @@ FetchContent_Declare(tracy
 )
 FetchContent_MakeAvailable(tracy)
 
+if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/tracy)
 file(ARCHIVE_EXTRACT INPUT ${PROJECT_SOURCE_DIR}/lib/tracy_executables.7z
                      DESTINATION ${PROJECT_SOURCE_DIR}/lib
 )
+endif()
 
 # SDL2
 FetchContent_Declare(sdl
