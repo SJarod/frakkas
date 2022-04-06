@@ -44,14 +44,14 @@ namespace Game
 		 * @brief Get a model matrix from a transform. If model matrix not update, compute the matrix.
 		 * @return Matrix4 model
 		 */
-		[[nodiscard]] Matrix4 GetModelMatrix() const;
+		Matrix4 GetModelMatrix() const;
 
         void RemoveChild(Transform* childToRemove);
 
         /**
          * @return the ScaleLockParameters struct of this transform
          */
-        [[nodiscard]] ScaleLockParams& GetScaleLockParameters() { return scaleLockParams; }
+        ScaleLockParams& GetScaleLockParameters() { return scaleLockParams; }
 
     private:
         mutable bool needUpdate = true;
@@ -60,7 +60,6 @@ namespace Game
 
         mutable Matrix4 modelMatrix = Matrix4::Identity();
 
-        Transform* _parent = nullptr;
         std::list<Transform*> childs;
 
         /**

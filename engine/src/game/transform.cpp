@@ -32,6 +32,7 @@ Transform::Transform() {
         if (value)
             value->childs.emplace_back(parent.get());
     };
+    parent = nullptr;
 }
 
 Matrix4 Transform::GetModelMatrix() const
@@ -56,7 +57,7 @@ void Transform::RemoveChild(Transform* childToRemove)
 void Transform::UpdateModelMatrix() const
 {
     modelMatrix =  Matrix4::Scale(scale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
-    if (parent.get())
+    if (parent)
         modelMatrix = modelMatrix * parent.get()->GetModelMatrix();
 
     needUpdate = false;
