@@ -14,13 +14,13 @@ namespace Renderer
 			/**
 			 * @Summary Get camera's view matrix.
 			 */
-			[[nodiscard]] Matrix4 GetViewMatrix() const;
+			Matrix4 GetViewMatrix() const;
 
 			/**
 			 * @Summary Get camera's projection matrix.
 			 * @param i_aspectRatio
 			 */
-			[[nodiscard]] Matrix4 GetProjectionMatrix(float i_aspectRatio) const;
+			Matrix4 GetProjectionMatrix(float i_aspectRatio) const;
 
 			/**
 			 * @Summary Change the camera's field of view.
@@ -35,7 +35,9 @@ namespace Renderer
 			float far = 1000.f;
 
 		private:
-			float fovY = 0.f; //vertical field of view
+			//vertical field of view
+			float fovY = Maths::Constants::piHalf;
+
 		};
 	};
 };

@@ -40,8 +40,6 @@ namespace Game
          */
         virtual void OnDestroy(){};
 
-
-
         /**
          * @Summary ImGui editing function. Set which parameters can be modified in run time.
          */

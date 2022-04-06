@@ -18,7 +18,7 @@ int main()
 
 	ImGuiIO io = ImGui::GetIO();
 
-    UpdateEvent editorUpdateEvent = [&](){editorRender.UpdateAndRender(*engine.defaultFBO, engine.entityManager);};
+    UpdateEvent editorUpdateEvent = [&](){editorRender.UpdateAndRender(*engine.editorFBO, engine.entityManager, *engine.gameFBO);};
     engine.updateEventsHandler.emplace_back(editorUpdateEvent);
 
     engine.Run();

@@ -19,7 +19,7 @@ void Drawable::Edit() {
     }
 }
 
-void Drawable::SetOwner(Entity *owner)
+void Drawable::SetOwner(Entity* owner)
 {
     model.transform.parent = &owner->transform;
     Component::SetOwner(owner);

@@ -38,7 +38,8 @@ public:
     Game::EntityManager entityManager;
 
     std::unique_ptr<Renderer::LowLevel::LowRenderer> renderer;
-    std::unique_ptr<Renderer::LowLevel::Framebuffer> defaultFBO;
+    std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;
+    std::unique_ptr<Renderer::LowLevel::Framebuffer> gameFBO;
 
     /**
      * Engine main loop. Manage frames and Render entities.
