@@ -35,9 +35,9 @@ namespace Renderer
 			GLuint GetColor0() const;
 
 			/**
-			 * @Summary Get framebuffer's depth map.
+			 * @Summary Get framebuffer's depthStencil map.
 			 */
-			GLuint GetDepthMap() const;
+			GLuint GetDepthStencilMap() const;
 
 			/**
 			 * @Summary Get framebuffer's width.
@@ -52,7 +52,7 @@ namespace Renderer
 		private:
 			GLuint FBO = 0;
 			GLuint color0 = 0;
-			GLuint depth = 0;
+			GLuint depthStencil = 0;
 
 			//framebuffer's dimensions (width)
 			int width = 0;

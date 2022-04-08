@@ -84,10 +84,12 @@ void Resources::Shader::Use() const
 
 void Resources::Shader::UniformBool(const std::string &i_uniform, const bool i_b) const
 {
+    // TODO: glGetUniformLocation(program, i_uniform.c_str()) compute it once
 	glUniform1i(glGetUniformLocation(program, i_uniform.c_str()), i_b);
 }
 
 void Resources::Shader::UniformMatrix4(const std::string &i_uniform, const Matrix4& i_mat, const bool i_transpose) const
 {
+    Use(); // TODO: Must be called before any glUniformMatrix4fv
 	glUniformMatrix4fv(glGetUniformLocation(program, i_uniform.c_str()), 1, (GLboolean)i_transpose, i_mat.element);
 }
