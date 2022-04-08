@@ -110,19 +110,24 @@ void Resources::ResourcesManager::CreateGPUMesh(Mesh& io_mesh)
 {
     ParseMesh(io_mesh);
 
-    glGenBuffers(1, &io_mesh.gpu.VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, io_mesh.gpu.VBO);
-    glBufferData(GL_ARRAY_BUFFER, io_mesh.vertices.size() * sizeof(Vertex), io_mesh.vertices.data(), GL_STATIC_DRAW);
+    glCreateVertexArrays(1, &io_mesh.gpu.VAO);
+    glCreateBuffers(1, &io_mesh.gpu.VBO);
 
-    glGenVertexArrays(1, &io_mesh.gpu.VAO);
-    glBindVertexArray(io_mesh.gpu.VAO);
+    glNamedBufferData(io_mesh.gpu.VBO, io_mesh.vertices.size() * sizeof(Vertex), io_mesh.vertices.data(), GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+    glEnableVertexArrayAttrib(io_mesh.gpu.VAO, 0);
+    glVertexArrayAttribBinding(io_mesh.gpu.VAO, 0, 0);
+    glVertexArrayAttribFormat(io_mesh.gpu.VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+
+    glEnableVertexArrayAttrib(io_mesh.gpu.VAO, 1);
+    glVertexArrayAttribBinding(io_mesh.gpu.VAO, 1, 0);
+    glVertexArrayAttribFormat(io_mesh.gpu.VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+
+    glEnableVertexArrayAttrib(io_mesh.gpu.VAO, 2);
+    glVertexArrayAttribBinding(io_mesh.gpu.VAO, 2, 0);
+    glVertexArrayAttribFormat(io_mesh.gpu.VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uv));
+
+    glVertexArrayVertexBuffer(io_mesh.gpu.VAO, 0, io_mesh.gpu.VBO, 0, sizeof(Vertex));
 
     glBindVertexArray(0);
 }
@@ -275,19 +280,22 @@ void Resources::ResourcesManager::LoadCPUTexture(const std::string& i_filename, 
 
 void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
 {
-    glGenTextures(1, &io_texture.gpu.data);
+    glCreateTextures(GL_TEXTURE_2D, 1, &io_texture.gpu.data);
 
-    glBindTexture(GL_TEXTURE_2D, io_texture.gpu.data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTextureParameteri(io_texture.gpu.data, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTextureParameteri(io_texture.gpu.data, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTextureParameteri(io_texture.gpu.data, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTextureParameteri(io_texture.gpu.data, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     if (io_texture.data)
     {
-        GLint bpp = io_texture.bpp == 1 ? GL_RED : io_texture.bpp == 2 ? GL_RG : io_texture.bpp == 3 ? GL_RGB : GL_RGBA;
-        glTexImage2D(GL_TEXTURE_2D, 0, bpp, io_texture.width, io_texture.height, 0, bpp, GL_UNSIGNED_BYTE, io_texture.data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        GLint internalFormat = io_texture.bpp == 1 ? GL_R8 : io_texture.bpp == 2 ? GL_RG8 : io_texture.bpp == 3 ? GL_RGB8 : GL_RGBA8;
+        GLint format = io_texture.bpp == 1 ? GL_RED : io_texture.bpp == 2 ? GL_RG : io_texture.bpp == 3 ? GL_RGB : GL_RGBA;
+
+        glTextureStorage2D(io_texture.gpu.data, 1, internalFormat, io_texture.width, io_texture.height);
+        glTextureSubImage2D(io_texture.gpu.data, 0, 0, 0, io_texture.width, io_texture.height, format, GL_UNSIGNED_BYTE, io_texture.data);
+
+        glGenerateTextureMipmap(io_texture.gpu.data);
     }
 }
 

@@ -8,34 +8,35 @@ using namespace Renderer::LowLevel;
 
 Framebuffer::Framebuffer(const int i_width, const int i_height)
 {
-	width = i_width;
-	height = i_height;
+    width = i_width;
+    height = i_height;
 
-	glGenFramebuffers(1, &FBO);
+    glCreateFramebuffers(1, &FBO);
 
-	glGenTextures(1, &color0);
-	glBindTexture(GL_TEXTURE_2D, color0);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                 i_width, i_height, 0, GL_RGB, GL_UNSIGNED_BYTE, (void*)0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glCreateTextures(GL_TEXTURE_2D, 1, &color0);
 
-	glGenTextures(1, &depth);
-	glBindTexture(GL_TEXTURE_2D, depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-                 i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (void*)0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTextureParameteri(color0, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(color0, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(color0, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTextureParameteri(color0, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTextureStorage2D(color0, 1, GL_RGBA8, width, height);
 
-	// attaching textures to the framebuffer's corresponding department
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color0, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    glCreateTextures(GL_TEXTURE_2D, 1, &depthStencil);
+
+    glTextureParameteri(depthStencil, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(depthStencil, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    glTextureStorage2D(depthStencil, 1, GL_DEPTH24_STENCIL8, width, height);
+
+
+    // attaching textures to the framebuffer's corresponding department
+    glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, color0, 0);
+    glNamedFramebufferTexture(FBO, GL_DEPTH_STENCIL_ATTACHMENT, depthStencil, 0);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Framebuffer::Bind() const
@@ -53,9 +54,9 @@ GLuint Framebuffer::GetColor0() const
 	return color0;
 }
 
-GLuint Framebuffer::GetDepthMap() const
+GLuint Framebuffer::GetDepthStencilMap() const
 {
-	return depth;
+	return depthStencil;
 }
 
 int Framebuffer::GetWidth() const
@@ -102,18 +103,18 @@ void LowRenderer::SetView(const Matrix4& i_view) const
 
 void LowRenderer::RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture)
 {
-	shader.Use();
 	shader.UniformMatrix4("uModel", i_model, false);
 
 	if (i_hasTexture)
 	{
-		shader.UniformBool("hasTexture", true);
-		glBindTexture(GL_TEXTURE_2D, i_texture);
+		glBindTextureUnit(0, i_texture);
+        shader.UniformBool("hasTexture", true);
 	}
 
 	glBindVertexArray(i_VAO);
-	glDrawArrays(GL_TRIANGLES, 0, i_count);
-	glBindVertexArray(0);
+    glDrawArrays(GL_TRIANGLES, 0, i_count);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+    // unbind
+	glBindTextureUnit(0, 0);
+    glBindVertexArray(0);
 }

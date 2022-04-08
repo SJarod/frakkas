@@ -36,6 +36,27 @@ Engine::~Engine()
     SDL_Quit();
 }
 
+static void DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+{
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+        return;
+
+    switch (severity)
+    {
+        case GL_DEBUG_SEVERITY_HIGH:
+            Log::Error("[HIGH] OPENGL: " + std::string(message));
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            Log::Warning("[MEDIUM] OPENGL: " + std::string(message));
+            break;
+        case GL_DEBUG_SEVERITY_LOW:
+            Log::Warning("[LOW] OPENGL: " + std::string(message));
+            break;
+        default:
+            Log::Warning("[UNKNOWN] OPENGL: " + std::string(message));
+    }
+}
+
 void Engine::InitSDL()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
@@ -72,6 +93,12 @@ void Engine::InitSDL()
         Log::Error("OPENGL: Failed to initialize the OpenGL context");
         exit(1);
     }
+
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(DebugCallback, nullptr);
+    }
 }
 
 void Engine::CreateTestEntities()
@@ -91,9 +118,7 @@ void Engine::CreateTestEntities()
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         }
         else
-        {
             entity->AddComponent(std::make_unique<Game::CameraComponent>());
-        }
     }
 }
 
