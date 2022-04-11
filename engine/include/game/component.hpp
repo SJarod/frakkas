@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "properties.hpp"
 
 namespace Resources
@@ -14,13 +16,17 @@ namespace Game
     class Component
     {
     public:
-        explicit Component(const std::string& id);
+        Component();
         virtual ~Component() = default;
 
-        std::string id = "None";
         Property<bool> enabled;
         Property<Entity*> owner;
-
+        
+        /**
+         * @return an ID that identify the component. Useful to find a specific component in a bunch of another components.
+         */
+        virtual const std::string& GetID() const { return "None"; };
+        
         /**
          * @summary Called when the owner is included into the engine's EntityManager,
          * so it is called once even if component should be disabled,
@@ -59,6 +65,7 @@ namespace Game
 
 
     protected:
+
         /**
          * @Summary Set or replace the current entity which hold the component. You can unset the entity by sending nullptr.
          * @param entity an entity floating pointer, should be store somewhere else as smart pointer.
@@ -75,6 +82,21 @@ namespace Game
          * Not called when entity destroyed
          */
         virtual void OnDisable() {};
+    };
 
+    /**
+     * BaseComponent is the base of every game's component. It simply inherits from Component
+     * and add a static string id. Thanks to that, every game's component will have an id and we will be able to identify them properly.
+     */
+    template<const char* TComponentID>
+    class BaseComponent : public Component
+    {
+    public:
+        static std::string id;
+
+        const std::string& GetID() const override { return this->id; }
     };
 }
+
+template<const char* TComponentID>
+std::string Game::BaseComponent<TComponentID>::id = std::string(TComponentID);

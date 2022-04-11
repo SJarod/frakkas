@@ -9,9 +9,6 @@
 
 using namespace Game;
 
-CameraComponent::CameraComponent() :Component("camera")
-{}
-
 void CameraComponent::Edit()
 {
    if (Helpers::ComponentBeginEdit(this))

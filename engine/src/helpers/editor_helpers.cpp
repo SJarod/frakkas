@@ -59,7 +59,7 @@ void Helpers::EditTransform(Game::Transform &io_transform)
 }
 
 bool Helpers::ComponentBeginEdit(Game::Component *comp) {
-    if(ImGui::TreeNodeEx(comp->id.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+    if(ImGui::TreeNodeEx(comp->GetID().c_str(), ImGuiTreeNodeFlags_DefaultOpen))
     {
         bool checkEnabled = comp->enabled;
         ImGui::Checkbox("Enabled", &checkEnabled);

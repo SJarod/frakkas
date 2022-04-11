@@ -31,23 +31,24 @@ namespace Game
          */
         void AddComponent(std::unique_ptr<Component> comp);
 
-        /**
-         * @brief Find a component by its name id
-         * @tparam T the class type of the component
-         * @param id the name id of the component
-         * @return the first T-type component if found, else nullptr
-         */
         template<typename T>
-        T* GetComponent(const std::string& id);
+        T* AddComponent();
 
         /**
-         * @brief Find all components with the same name id
+         * @brief Find a component by its id
+         * @tparam T the class type of the component
+         * @return the pointer of first T-type component if found, else nullptr
+         */
+        template<typename T>
+        T* GetComponent();
+
+        /**
+         * @brief Find all components with the same id
          * @tparam T the class type of the components
-         * @param id the name id of the components
          * @return all T-type components in a list, list is empty if not found
          */
         template<typename T>
-        std::vector<T*> GetComponents(const std::string& id);
+        std::vector<T*> GetComponents();
 
         /**
          * ImGui editing function. Set which parameters can be modified in run time.
@@ -69,11 +70,19 @@ namespace Game
 }
 
 template<typename T>
-T* Game::Entity::GetComponent(const std::string &id)
+T* Game::Entity::AddComponent()
+{
+    components.emplace_back(std::make_unique<T>());
+    components.back()->owner = this;
+    return reinterpret_cast<T*>(components.back().get());
+}
+
+template<typename T>
+T* Game::Entity::GetComponent() 
 {
     std::vector<std::unique_ptr<Component>>::iterator it;
-    it = std::find_if(components.begin(), components.end(), [&id](const std::unique_ptr<Component>& c){
-        return c->id == id;
+    it = std::find_if(components.begin(), components.end(), [&](const std::unique_ptr<Component>& c){
+        return c->GetID() == T::id;
     });
 
     if (it != components.end())
@@ -86,15 +95,15 @@ T* Game::Entity::GetComponent(const std::string &id)
 }
 
 template<typename T>
-std::vector<T*> Game::Entity::GetComponents(const std::string &id)
+std::vector<T*> Game::Entity::GetComponents()
 {
     std::vector<std::unique_ptr<T>> comps;
     for(std::vector<std::unique_ptr<Component>>::iterator it = components.begin(); it != components.end(); it++)
     {
-        if (it->get()->id == id)
+        if (it->get()->GetID() == T::id)
         {
             if (T* comp = reinterpret_cast<T*>(it->get()))
-                comps.push_back(comp);
+                comps.emplace_back(comp);
         }
     }
 
