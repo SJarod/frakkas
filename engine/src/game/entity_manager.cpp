@@ -36,7 +36,7 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const fl
 
     for (const auto& entity : entities)
     {
-        auto drawable = entity->GetComponent<Drawable>("drawable");
+        auto drawable = entity->GetComponent<Drawable>();
         if (drawable && drawable->enabled)
         {
             for (const std::shared_ptr<Resources::Mesh> mesh : drawable->model.meshes)
@@ -92,7 +92,7 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
 
             comp->Update();
 
-            if (comp->id == "drawable")
+            if (comp->GetID() == Drawable::id)
             {
                 Drawable* drawable = reinterpret_cast<Drawable*>(comp.get());
                 for (const std::shared_ptr<Resources::Mesh>& mesh : drawable->model.meshes)
@@ -112,7 +112,7 @@ void EntityManager::FindGameCamera() noexcept
 {
     for (std::unique_ptr<Entity>& entity: entities)
     {
-        if (CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>("camera"))
+        if (CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>())
         {
             if (cameraComponent->enabled)
             {

@@ -112,13 +112,13 @@ void Engine::CreateTestEntities()
 
         if( i >= 1)
         {
-            entity->AddComponent(std::make_unique<Game::Drawable>());
-            auto& model = entity->GetComponent<Game::Drawable>("drawable")->model;
+            auto drawable = entity->AddComponent<Game::Drawable>();
+            auto& model = drawable->model;
             model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         }
         else
-            entity->AddComponent(std::make_unique<Game::CameraComponent>());
+            entity->AddComponent<Game::CameraComponent>();
     }
 }
 

@@ -8,9 +8,6 @@
 
 using namespace Game;
 
-Drawable::Drawable() : Component("drawable")
-{}
-
 void Drawable::Edit() {
     if (Helpers::ComponentBeginEdit(this))
     {

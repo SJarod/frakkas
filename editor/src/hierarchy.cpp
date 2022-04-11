@@ -17,11 +17,10 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& i_entityManager)
 
     if(ImGui::Button("Add entity"))
     {
-        std::unique_ptr<Game::Entity> entity = std::make_unique<Game::Entity>();
-        entity->AddComponent(std::unique_ptr<Game::Drawable>());
-        entity->GetComponent<Game::Drawable>("drawable")->model.AddSphereMesh();
-        entity->GetComponent<Game::Drawable>("drawable")->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
-        i_entityManager.AddEntity(std::move(entity));
+        Game::Entity* entity = i_entityManager.CreateEntity();
+        auto drawable = entity->AddComponent<Game::Drawable>();
+        drawable->model.AddSphereMesh();
+        drawable->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
     }
 
     int id = 0;

@@ -3,12 +3,9 @@
 
 using namespace Game;
 
-void Component::SetOwner(Entity* entity) 
-{
-    owner.set(entity);
-}
 
-Component::Component(const std::string &id) : id(id)
+
+Component::Component()
 {
     enabled.setter = [&](const bool& value)
     {
@@ -19,6 +16,10 @@ Component::Component(const std::string &id) : id(id)
         enabled.set(value);
     };
     owner.setter = std::bind(&Component::SetOwner, this, std::placeholders::_1);
+    enabled = true;
 }
 
-
+void Component::SetOwner(Entity* entity) 
+{
+    owner.set(entity);
+}

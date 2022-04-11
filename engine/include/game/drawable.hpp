@@ -6,11 +6,10 @@
 
 namespace Game
 {
-    class Drawable : public Component
+    static const char drawable[] = "Drawable";
+    class Drawable : public BaseComponent<drawable>
     {
     public:
-        Drawable();
-
         void Edit() override;
 
         Renderer::Model model;
