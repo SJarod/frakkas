@@ -19,6 +19,7 @@ namespace Editor
         ImVector<char*>       items;
         ImGuiTextFilter       filter;
         bool                  autoScroll = true;
+        bool                  scrollToBottom = true;
 
         void AddLog(const char* i_fmt, ...);
         void ClearLog();

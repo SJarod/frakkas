@@ -34,6 +34,7 @@ void Console::OnImGuiRender()
     filter.Draw("Filter (\".h\") (\"error\")", 180);
     ImGui::Separator();
 
+    // Reserve enough left-over height for 1 separator + 1 input text
     const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
 
@@ -65,8 +66,10 @@ void Console::OnImGuiRender()
             ImGui::PopStyleColor();
     }
 
-    if ((autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
+    if (scrollToBottom || (autoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY()))
         ImGui::SetScrollHereY(1.0f);
+
+    scrollToBottom = false;
 
     ImGui::PopStyleVar();
     ImGui::EndChild();
@@ -83,6 +86,8 @@ void Console::AddLog(const char* i_fmt, ...)
     buf[IM_ARRAYSIZE(buf)-1] = 0;
     va_end(args);
     items.push_back(strdup(buf));
+
+    scrollToBottom = true;
 }
 
 void Console::ClearLog()
