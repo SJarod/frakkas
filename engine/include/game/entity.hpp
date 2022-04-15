@@ -20,7 +20,6 @@ namespace Game
         Entity() = default;
         ~Entity();
 
-        // TODO: Make unique?
         std::vector<std::unique_ptr<Component>> components;
         Transform transform;
 

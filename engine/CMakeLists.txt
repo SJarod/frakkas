@@ -5,18 +5,20 @@ add_library(EngineFrakkas STATIC
 			src/game/camera_component.cpp
 			src/game/component.cpp
 			src/game/entity.cpp
+            src/game/time_manager.cpp
+			src/game/light_component.cpp
 			src/helpers/editor_helpers.cpp
 			src/renderer/model.cpp
+        	src/renderer/light.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
 			src/resources/resources_manager.cpp
 			src/resources/serializer.cpp
         	src/log.cpp
+            src/engine.cpp
 			${PROJECT_SOURCE_DIR}/lib/stb_image.c
 			${IMGUI_SOURCE_FILES}
-            src/engine.cpp
-            src/game/time_manager.cpp
 )
 
 target_include_directories(EngineFrakkas

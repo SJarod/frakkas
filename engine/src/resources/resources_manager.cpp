@@ -29,7 +29,7 @@ void Resources::ResourcesManager::ProcessAiMesh(const aiMesh& i_aim, const aiSce
         if (i_aim.mTextureCoords[0]) // does the mesh contain texture coordinates?
             vertex.uv = { i_aim.mTextureCoords[0][i].x, i_aim.mTextureCoords[0][i].y };
 
-        o_mesh.vertices.push_back(vertex);
+        o_mesh.vertices.emplace_back(vertex);
     }
 
     // process indices
@@ -37,7 +37,7 @@ void Resources::ResourcesManager::ProcessAiMesh(const aiMesh& i_aim, const aiSce
     {
         aiFace face = i_aim.mFaces[i];
         for (unsigned int j = 0; j < face.mNumIndices; ++j)
-            o_mesh.indices.push_back(face.mIndices[j]);
+            o_mesh.indices.emplace_back(face.mIndices[j]);
     }
 
     if (i_embeddedTexture)
@@ -73,7 +73,7 @@ void Resources::ResourcesManager::ProcessAiNode(const aiNode& i_node, const aiSc
             mesh.localTransform.element[i] = *(&i_node.mTransformation.a1 + j);
         }
 
-        meshes.push_back(std::make_shared<Mesh>(mesh));
+        meshes.emplace_back(std::make_shared<Mesh>(mesh));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < i_node.mNumChildren; ++i)
@@ -103,7 +103,7 @@ void Resources::ResourcesManager::ParseMesh(Mesh& io_mesh)
     int meshNumFaces = io_mesh.indices.size();
 
     for (unsigned int i = 0; i < meshNumFaces; ++i)
-        io_mesh.vertices.push_back(rawVertices[io_mesh.indices[i]]);
+        io_mesh.vertices.emplace_back(rawVertices[io_mesh.indices[i]]);
 }
 
 void Resources::ResourcesManager::CreateGPUMesh(Mesh& io_mesh)
@@ -156,7 +156,7 @@ std::vector<std::shared_ptr<Mesh>> Resources::ResourcesManager::LoadModel(const 
     std::vector<std::shared_ptr<Mesh>> out;
 
     for (int i = meshOffset; i < rm.meshes.size(); ++i)
-        out.push_back(rm.meshes[i]);
+        out.emplace_back(rm.meshes[i]);
 
     return out;
 }
@@ -183,7 +183,7 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadCube()
         Vertex v;
         v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
 
-        mesh.vertices.push_back(v);
+        mesh.vertices.emplace_back(v);
     }
 
     unsigned int ind[] = {
@@ -202,10 +202,10 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadCube()
     };
 
     for (int i = 0; i < 36; ++i)
-        mesh.indices.push_back(ind[i]);
+        mesh.indices.emplace_back(ind[i]);
 
     mesh.diffuseTex.data = 0;
-    rm.meshes.push_back(std::make_shared<Mesh>(mesh));
+    rm.meshes.emplace_back(std::make_shared<Mesh>(mesh));
     rm.CreateGPUMesh(*(rm.meshes.end() - 1)->get());
 
     return *(rm.meshes.end() - 1);
@@ -233,7 +233,7 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadSphere(const float i_radi
             v.normal = v.position;
             v.uv = { j / (float)i_lon, i / (float)i_lat };
 
-            mesh.vertices.push_back(v);
+            mesh.vertices.emplace_back(v);
         }
     }
 
@@ -243,20 +243,20 @@ std::shared_ptr<Mesh> Resources::ResourcesManager::LoadSphere(const float i_radi
         // i            i + 1
         // i + lon		i + lon + 1
 
-        mesh.indices.push_back(i);
-        mesh.indices.push_back(i + 1);
-        mesh.indices.push_back(i + i_lon);
+        mesh.indices.emplace_back(i);
+        mesh.indices.emplace_back(i + 1);
+        mesh.indices.emplace_back(i + i_lon);
 
         if (i == mesh.vertices.size() - i_lon - 1)
             continue;
 
-        mesh.indices.push_back(i + 1);
-        mesh.indices.push_back(i + i_lon);
-        mesh.indices.push_back(i + i_lon + 1);
+        mesh.indices.emplace_back(i + 1);
+        mesh.indices.emplace_back(i + i_lon);
+        mesh.indices.emplace_back(i + i_lon + 1);
     }
 
     mesh.diffuseTex.data = 0;
-    rm.meshes.push_back(std::make_shared<Mesh>(mesh));
+    rm.meshes.emplace_back(std::make_shared<Mesh>(mesh));
     rm.CreateGPUMesh(*(rm.meshes.end() - 1)->get());
 
     return *(rm.meshes.end() - 1);
@@ -271,7 +271,7 @@ void Resources::ResourcesManager::LoadCPUTexture(const std::string& i_filename, 
 
     if (texture.data)
     {
-        textures.push_back(std::make_shared<Texture>(texture));
+        textures.emplace_back(std::make_shared<Texture>(texture));
         Log::Info("Successfully loaded texture file: \"" + i_filename + "\"");
     }
     else

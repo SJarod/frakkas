@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <string>
+#include <type_traits>
 
 #include "maths.hpp"
 
@@ -25,22 +26,25 @@ namespace Resources
 		 */
 		void Use() const;
 
-		/**
-		 * @Summary Pass a bool to the shader as uniform.
-		 * 
-		 * @param i_uniform : uniform name
-		 * @param i_b
-		 */
-		void UniformBool(const std::string &i_uniform, const bool i_b) const;
+        /**
+        * @Summary Pass a bool to the shader as uniform.
+        */
+        void SetUniform(const std::string_view& i_uniformName, const bool& i_value) const;
 
-		/**
-		 * @Summary Pass a Matrix4 to the shader as uniform.
-		 * 
-		 * @param i_uniform : uniform name
-		 * @param i_mat
-		 * @param i_transpose
-		 */
-		void UniformMatrix4(const std::string &i_uniform, const Matrix4& i_mat, const bool i_transpose) const;
+        /**
+        * @Summary Pass a Matrix4 to the shader as uniform.
+        */
+        void SetUniform(const std::string_view& i_uniformName, const Matrix4& i_value) const;
+
+        /**
+        * @Summary Pass a Vector3 to the shader as uniform.
+        */
+        void SetUniform(const std::string_view& i_uniformName, const Vector3& i_value) const;
+
+        /**
+        * @Summary Pass a Vector4 to the shader as uniform.
+        */
+        void SetUniform(const std::string_view& i_uniformName, const Vector4& i_value) const;
 
 	private:
 		GLuint program = 0;

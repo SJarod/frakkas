@@ -12,7 +12,7 @@ Log::~Log()
 
 void Log::Out(const std::string& i_log)
 {
-    Instance().logList.push_back(i_log);
+    Instance().logList.emplace_back(i_log);
 
     std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 

@@ -91,25 +91,15 @@ void LowRenderer::EndFrame() const
 	Framebuffer::Unbind();
 }
 
-void LowRenderer::SetProjection(const Matrix4& i_projection) const
-{
-	shader.UniformMatrix4("uProjection", i_projection, false);
-}
-
-void LowRenderer::SetView(const Matrix4& i_view) const
-{
-	shader.UniformMatrix4("uView", i_view, false);
-}
-
 void LowRenderer::RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture)
 {
-	shader.UniformMatrix4("uModel", i_model, false);
+    shader.SetUniform("uModel", i_model);
 
 	if (i_hasTexture)
 	{
 		glBindTextureUnit(0, i_texture);
-        shader.UniformBool("hasTexture", true);
-	}
+        shader.SetUniform("hasTexture", true);
+    }
 
 	glBindVertexArray(i_VAO);
     glDrawArrays(GL_TRIANGLES, 0, i_count);

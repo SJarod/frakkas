@@ -3,6 +3,8 @@
 #include "maths.hpp"
 #include "resources/program_shader.hpp"
 #include "renderer/model.hpp"
+#include "renderer/lowlevel/camera.hpp"
+#include "game/light_component.hpp"
 
 
 namespace Renderer
@@ -79,17 +81,12 @@ namespace Renderer
 			 */
             void EndFrame() const;
 
-			/**
-			 * @Summary Set the projection matrix used by the shader to draw the models.
-			 */
-			void SetProjection(const Matrix4& i_projection) const;
+            /**
+            * @Summary Set the light and camera used by the shader.
+            */
+            //void SetUniform(const Renderer::LowLevel::Camera& i_camera, const float i_aspectRatio, const Game::LightComponent& i_light) const;
 
-			/**
-			 * @Summary Set the view matrix used by the shader to draw the models.
-			 */
-			void SetView(const Matrix4& i_view) const;
-
-			/**
+            /**
 			 * @Summary Render a mesh once.
 			 * Call this function in a loop to render a model in real time.
 			 * 
@@ -101,8 +98,22 @@ namespace Renderer
 			 */
 			void RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture);
 
-		private:
+            /**
+             * @Summary send value to the shader program
+             * @param i_uniformName name of the uniform, must exist in shader
+             * @param i_value templated value
+             */
+            template <typename T>
+            void SetUniform(const std::string_view& i_uniformName, const T& i_value) const;
+
 			Resources::Shader shader;
 		};
 	}
+}
+
+template <typename T>
+void Renderer::LowLevel::LowRenderer::SetUniform(const std::string_view &i_uniformName, const T &i_value) const
+{
+    shader.Use();
+    shader.SetUniform(i_uniformName, i_value);
 }

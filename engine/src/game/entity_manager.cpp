@@ -6,8 +6,10 @@
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
+#include "game/light_component.hpp"
 
 #include "game/entity_manager.hpp"
+
 
 using namespace Game;
 
@@ -31,8 +33,15 @@ void EntityManager::Update()
 void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio)
 {
     // An entity with CameraComponent should be added to render
-    i_renderer.SetProjection(editorCamera.GetProjectionMatrix(i_aspectRatio));
-    i_renderer.SetView(editorCamera.GetViewMatrix());
+    i_renderer.SetUniform("uProjection", editorCamera.GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetUniform("uView", editorCamera.GetViewMatrix());
+    i_renderer.SetUniform("uCameraView", editorCamera.transform.position.get());
+
+    i_renderer.SetUniform("uLight.enabled", lights.back()->enabled.get());
+    i_renderer.SetUniform("uLight.position", lights.back()->light.position);
+    i_renderer.SetUniform("uLight.ambient", lights.back()->light.ambient);
+    i_renderer.SetUniform("uLight.diffuse", lights.back()->light.diffuse);
+    i_renderer.SetUniform("uLight.specular", lights.back()->light.specular);
 
     for (const auto& entity : entities)
     {
@@ -64,7 +73,7 @@ void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
         }
     }
 
-    entities.push_back(std::move(i_entity));
+    entities.emplace_back(std::move(i_entity));
 }
 
 const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
@@ -80,8 +89,11 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
         return;
     }
 
-    i_renderer.SetProjection(gameCamera->camera.GetProjectionMatrix(i_aspectRatio));
-    i_renderer.SetView(gameCamera->camera.GetViewMatrix());
+    i_renderer.SetUniform("uProjection", gameCamera->camera.GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetUniform("uView", gameCamera->camera.GetViewMatrix());
+
+    //i_renderer.SetProjection(gameCamera->camera.GetProjectionMatrix(i_aspectRatio));
+    //i_renderer.SetView(gameCamera->camera.GetViewMatrix());
 
     for (const auto& entity : entities)
     {
@@ -125,9 +137,19 @@ void EntityManager::FindGameCamera() noexcept
     gameCamera = nullptr;
 }
 
-Entity* EntityManager::CreateEntity()
+void EntityManager::FindLight() noexcept
 {
-    entities.push_back(std::make_unique<Entity>());
-    return entities.back().get();
+    lights.clear();
+
+    for (std::unique_ptr<Entity>& entity: entities)
+    {
+        if (LightComponent* lightComponent = entity->GetComponent<LightComponent>())
+            lights.emplace_back(lightComponent);
+    }
 }
 
+Entity* EntityManager::CreateEntity()
+{
+    entities.emplace_back(std::make_unique<Entity>());
+    return entities.back().get();
+}

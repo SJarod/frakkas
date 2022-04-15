@@ -8,11 +8,13 @@ uniform mat4 uProjection;
 uniform mat4 uView;
 uniform mat4 uModel;
 
+out vec3 vPos;
 out vec3 vNormal;
 out vec2 vUV;
 
 void main()
 {
+    vPos = aPos;
 	vNormal = aNormal;
 	vUV = aUV;
 
