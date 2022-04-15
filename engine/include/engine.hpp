@@ -7,6 +7,7 @@
 #include <SDL.h>
 
 #include "game/time_manager.hpp"
+#include "game/inputs_manager.hpp"
 
 namespace Renderer::LowLevel
 {
@@ -21,13 +22,7 @@ namespace Game
     class EntityManager;
 }
 
-struct Inputs
-{
-    bool quit = false;
-    float horizontal = 0.f;
-    float vertical = 0.f;
-    float depth = 0.f;
-};
+
 
 class Engine
 {
@@ -52,7 +47,7 @@ public:
 private:
 
     Game::Time timeManager;
-    Inputs inputs;
+    Game::Inputs inputsManager;
 
     SDL_Window* window = nullptr;
     SDL_GLContext glContext;
@@ -66,9 +61,6 @@ private:
      */
     void CreateTestEntities();
 
-    /**
-     * Listen to SDL inputs Event, and set our Inputs structure to get inputs informations
-     */
-    void InputsPollEvent();
+
 
 };
