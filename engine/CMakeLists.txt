@@ -6,6 +6,7 @@ add_library(EngineFrakkas STATIC
 			src/game/component.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
+            src/game/inputs_manager.cpp
 			src/game/light_component.cpp
 			src/helpers/editor_helpers.cpp
 			src/renderer/model.cpp

@@ -129,10 +129,18 @@ void Engine::CreateTestEntities()
 
 void Engine::Run()
 {
+    Game::Inputs::SetButtonAction("quit", {Game::EButton::ESCAPE});
+
+    Game::Inputs::SetAxisAction("horizontal", {Game::EButton::ARROW_RIGHT, Game::EButton::D}, {Game::EButton::ARROW_LEFT, Game::EButton::A});
+
+    Game::Inputs::SetAxisAction("vertical", {Game::EButton::SPACE}, {Game::EButton::LEFT_CTRL});
+
+    Game::Inputs::SetAxisAction("forward", {Game::EButton::ARROW_UP, Game::EButton::W}, {Game::EButton::ARROW_DOWN, Game::EButton::S});
+
     bool running = true;
     while(running)
     {
-        InputsPollEvent();
+        inputsManager.PollEvent();
         /// NEW FRAME
         timeManager.NewFrame();
 
@@ -149,53 +157,13 @@ void Engine::Run()
 
         /// ENDFRAME
 
-        running  = !inputs.quit;
+        running  = Game::Inputs::IsReleased("quit") && !Game::Inputs::quit;
         SDL_GL_SwapWindow(window);
+
+        FrameMark
     }
 }
 
-void Engine::InputsPollEvent()
-{
-    SDL_Event evt;
-    /// INPTUS EVENT
-    while (SDL_PollEvent(&evt))
-    {
-        ImGui_ImplSDL2_ProcessEvent(&evt);
-        switch(evt.type)
-        {
-            case SDL_QUIT:
-                inputs.quit = true;
-                break;
-            case SDL_KEYDOWN:
-                switch(evt.key.keysym.sym)
-                {
-                    case SDLK_RIGHT: inputs.horizontal = 1.f; break;
-                    case SDLK_LEFT: inputs.horizontal = -1.f; break;
-                    case SDLK_UP: inputs.vertical = 1.f; break;
-                    case SDLK_DOWN: inputs.vertical = -1.f; break;
-                    case SDLK_SPACE: inputs.depth = 1.f; break;
-                    case SDLK_LCTRL: inputs.depth = -1.f; break;
-                    default: break;
-                }
-                break;
-            case SDL_KEYUP:
-                switch(evt.key.keysym.sym)
-                {
-                    case SDLK_RIGHT: inputs.horizontal = 0.f; break;
-                    case SDLK_LEFT: inputs.horizontal = 0.f; break;
-                    case SDLK_UP: inputs.vertical = 0.f; break;
-                    case SDLK_DOWN: inputs.vertical = 0.f; break;
-                    case SDLK_SPACE: inputs.depth = 0.f; break;
-                    case SDLK_LCTRL: inputs.depth = 0.f; break;
-                    default: break;
-                }
-                break;
-            case SDL_MOUSEMOTION:
-                break;
-            default:
-                break;
-        }
-    }
-}
+
 
 
