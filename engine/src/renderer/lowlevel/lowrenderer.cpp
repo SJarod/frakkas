@@ -78,22 +78,26 @@ void LowRenderer::BeginFrame(const Framebuffer &i_fbo) const
     i_fbo.Bind();
     glViewport(0, 0, i_fbo.GetWidth(), i_fbo.GetHeight());
 
-    glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClearColor(0.4f, 0.4f, 0.4f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void LowRenderer::EndFrame() const
 {
 	glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
 
 	Framebuffer::Unbind();
 }
 
-void LowRenderer::RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture)
+void LowRenderer::RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture, const bool i_outline)
 {
     shader.SetUniform("uModel", i_model);
+    Matrix4 modelNormal = (i_model.Inverse()).Transpose();
+    shader.SetUniform("uModelNormal", modelNormal);
 
 	if (i_hasTexture)
 	{
@@ -101,8 +105,35 @@ void LowRenderer::RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VA
         shader.SetUniform("hasTexture", true);
     }
 
-	glBindVertexArray(i_VAO);
-    glDrawArrays(GL_TRIANGLES, 0, i_count);
+    if (i_outline)
+    {
+        //DRAW MESH A FIRST TIME
+        glBindVertexArray(i_VAO);
+        glDrawArrays(GL_TRIANGLES, 0, i_count);
+
+        shader.SetUniform("uOutline", true);
+
+        glCullFace(GL_FRONT);
+        glDepthFunc(GL_LEQUAL);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glLineWidth(10);
+
+        //DRAW MESH A SECOND TIME
+        glBindVertexArray(i_VAO);
+        glDrawArrays(GL_TRIANGLES, 0, i_count);
+
+        shader.SetUniform("uOutline", false);
+
+        glCullFace(GL_BACK);
+        glDepthFunc(GL_LESS);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    else
+    {
+        glBindVertexArray(i_VAO);
+        glDrawArrays(GL_TRIANGLES, 0, i_count);
+    }
 
     // unbind
 	glBindTextureUnit(0, 0);

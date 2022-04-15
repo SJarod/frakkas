@@ -96,7 +96,7 @@ namespace Renderer
 			 * @param i_texture the texture index to draw on the mesh
 			 * @param i_hasTexture specify if a texture is to be drawn on this mesh
 			 */
-			void RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture);
+			void RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture, const bool i_outline);
 
             /**
              * @Summary send value to the shader program

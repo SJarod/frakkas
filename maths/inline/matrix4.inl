@@ -98,6 +98,52 @@ inline Matrix4 Matrix4::Transpose() const
     };
 }
 
+inline Matrix4 Matrix4::Inverse() const
+{
+    Matrix4 R = Identity();
+
+    float S[6];
+    S[0] = element[0] * element[5] - element[4] * element[1];
+    S[1] = element[0] * element[6] - element[4] * element[2];
+    S[2] = element[0] * element[7] - element[4] * element[3];
+    S[3] = element[1] * element[6] - element[5] * element[2];
+    S[4] = element[1] * element[7] - element[5] * element[3];
+    S[5] = element[2] * element[7] - element[6] * element[3];
+
+    float C[6];
+    C[0] = element[8] * element[13] - element[12] * element[9];
+    C[1] = element[8] * element[14] - element[12] * element[10];
+    C[2] = element[8] * element[15] - element[12] * element[11];
+    C[3] = element[9] * element[14] - element[13] * element[10];
+    C[4] = element[9] * element[15] - element[13] * element[11];
+    C[5] = element[10] * element[15] - element[14] * element[11];
+
+    // Assuming it is invertible
+    float InvDet = 1.0f / (S[0] * C[5] - S[1] * C[4] + S[2] * C[3] + S[3] * C[2] - S[4] * C[1] + S[5] * C[0]);
+
+    R.element[0] = +(element[5] * C[5] - element[5] * C[4] + element[7] * C[3]) * InvDet;
+    R.element[1] = -(element[1] * C[5] - element[2] * C[4] + element[3] * C[3]) * InvDet;
+    R.element[2] = +(element[13] * S[5] - element[14] * S[4] + element[15] * S[3]) * InvDet;
+    R.element[3] = -(element[9] * S[5] - element[10] * S[4] + element[11] * S[3]) * InvDet;
+
+    R.element[4] = -(element[4] * C[5] - element[6] * C[2] + element[7] * C[1]) * InvDet;
+    R.element[5] = +(element[0] * C[5] - element[2] * C[2] + element[3] * C[1]) * InvDet;
+    R.element[6] = -(element[12] * S[5] - element[14] * S[2] + element[15] * S[1]) * InvDet;
+    R.element[7] = +(element[8] * S[5] - element[10] * S[2] + element[11] * S[1]) * InvDet;
+
+    R.element[8] = +(element[4] * C[4] - element[5] * C[2] + element[7] * C[0]) * InvDet;
+    R.element[9] = -(element[0] * C[4] - element[1] * C[2] + element[3] * C[0]) * InvDet;
+    R.element[10] = +(element[12] * S[4] - element[13] * S[2] + element[15] * S[0]) * InvDet;
+    R.element[11] = -(element[8] * S[4] - element[9] * S[2] + element[11] * S[0]) * InvDet;
+
+    R.element[12] = -(element[4] * C[3] - element[5] * C[1] + element[6] * C[0]) * InvDet;
+    R.element[13] = +(element[0] * C[3] - element[1] * C[1] + element[2] * C[0]) * InvDet;
+    R.element[14] = -(element[12] * S[3] - element[13] * S[1] + element[14] * S[0]) * InvDet;
+    R.element[15] = +(element[8] * S[3] - element[9] * S[1] + element[10] * S[0]) * InvDet;
+
+    return R;
+}
+
 inline Matrix4 Matrix4::Frustum(float i_left, float i_right, float i_bottom, float i_top, float i_near, float i_far)
 {
     float rightMinusLeft = i_right - i_left;
