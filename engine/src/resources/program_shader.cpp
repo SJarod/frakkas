@@ -1,5 +1,4 @@
 #include <iostream>
-#include <fstream>
 
 #include "log.hpp"
 
@@ -82,14 +81,22 @@ void Resources::Shader::Use() const
     glUseProgram(program);
 }
 
-void Resources::Shader::UniformBool(const std::string &i_uniform, const bool i_b) const
+void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const bool& i_value) const
 {
-    // TODO: glGetUniformLocation(program, i_uniform.c_str()) compute it once
-	glUniform1i(glGetUniformLocation(program, i_uniform.c_str()), i_b);
+    glUniform1i(glGetUniformLocation(program, i_uniformName.data()), i_value);
 }
 
-void Resources::Shader::UniformMatrix4(const std::string &i_uniform, const Matrix4& i_mat, const bool i_transpose) const
+void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Matrix4& i_value) const
 {
-    Use(); // TODO: Must be called before any glUniformMatrix4fv
-	glUniformMatrix4fv(glGetUniformLocation(program, i_uniform.c_str()), 1, (GLboolean)i_transpose, i_mat.element);
+    glUniformMatrix4fv(glGetUniformLocation(program, i_uniformName.data()), 1, false, i_value.element);
+}
+
+void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Vector3& i_value) const
+{
+    glUniform3fv(glGetUniformLocation(program, i_uniformName.data()), 1, i_value.element);
+}
+
+void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Vector4& i_value) const
+{
+    glUniform4fv(glGetUniformLocation(program, i_uniformName.data()), 1, i_value.element);
 }

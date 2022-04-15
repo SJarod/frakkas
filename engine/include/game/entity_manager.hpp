@@ -5,6 +5,7 @@
 
 #include "renderer/lowlevel/camera.hpp"
 
+
 namespace Renderer::LowLevel
 {
     class LowRenderer;
@@ -19,6 +20,7 @@ namespace Game
 {
     class Entity;
     class CameraComponent;
+    class LightComponent;
 
     class EntityManager
     {
@@ -28,6 +30,8 @@ namespace Game
 
         Renderer::LowLevel::Camera editorCamera;
         CameraComponent* gameCamera = nullptr;
+
+        std::vector<LightComponent*> lights;
 
         /**
          * Update every entities
@@ -75,8 +79,12 @@ namespace Game
          */
         void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) {};
 
-    private:
+        /**
+        * Searches for all entities that owns a LightComponent enabled.
+        */
+        void FindLight() noexcept;
 
+    private:
         std::list<std::unique_ptr<Entity>> entities;
 
         /**

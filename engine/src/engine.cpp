@@ -10,6 +10,7 @@
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
+#include "game/light_component.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -110,16 +111,20 @@ void Engine::CreateTestEntities()
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
 
-        if( i >= 1)
+        if( i >= 2)
         {
             auto drawable = entity->AddComponent<Game::Drawable>();
             auto& model = drawable->model;
             model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         }
+        else if (i == 1)
+            entity->AddComponent<Game::LightComponent>();
         else
             entity->AddComponent<Game::CameraComponent>();
     }
+
+    entityManager.FindLight();
 }
 
 void Engine::Run()

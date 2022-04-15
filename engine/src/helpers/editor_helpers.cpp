@@ -2,6 +2,7 @@
 
 #include "game/transform.hpp"
 #include "game/component.hpp"
+#include "game/light_component.hpp"
 
 #include "helpers/editor_helpers.hpp"
 
@@ -58,7 +59,28 @@ void Helpers::EditTransform(Game::Transform &io_transform)
     trs.scale = sc;
 }
 
-bool Helpers::ComponentBeginEdit(Game::Component *comp) {
+void Helpers::EditLight(Renderer::Light &io_light)
+{
+    ImGui::Text("Light");
+
+    ImGui::Spacing();
+
+    ImGui::DragFloat4("Position", io_light.position.element);
+    ImGui::ColorEdit3("Ambient", io_light.ambient.element);
+    ImGui::ColorEdit3("Diffuse", io_light.diffuse.element);
+    ImGui::ColorEdit3("Specular", io_light.specular.element);
+
+    if (ImGui::Button("Reset light"))
+    {
+        io_light.position = {};
+        io_light.ambient = {1.0f, 1.0f, 1.0f};
+        io_light.diffuse = {};
+        io_light.specular = {};
+    }
+}
+
+bool Helpers::ComponentBeginEdit(Game::Component *comp)
+{
     if(ImGui::TreeNodeEx(comp->GetID().c_str(), ImGuiTreeNodeFlags_DefaultOpen))
     {
         bool checkEnabled = comp->enabled;
@@ -70,6 +92,7 @@ bool Helpers::ComponentBeginEdit(Game::Component *comp) {
     return false;
 }
 
-void Helpers::ComponentEndEdit() {
+void Helpers::ComponentEndEdit()
+{
     ImGui::TreePop();
 }

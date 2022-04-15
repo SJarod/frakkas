@@ -25,7 +25,7 @@ namespace Game
         /**
          * @return an ID that identify the component. Useful to find a specific component in a bunch of another components.
          */
-        virtual const std::string& GetID() const { return "None"; };
+        virtual const std::string& GetID() const = 0;
         
         /**
          * @summary Called when the owner is included into the engine's EntityManager,
