@@ -43,6 +43,9 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const fl
     i_renderer.SetUniform("uLight.diffuse", lights.back()->light.diffuse);
     i_renderer.SetUniform("uLight.specular", lights.back()->light.specular);
 
+    i_renderer.SetUniform("uToonShading", lights.back()->light.toonShading);
+    i_renderer.SetUniform("uFiveTone", lights.back()->light.fiveTone);
+
     for (const auto& entity : entities)
     {
         auto drawable = entity->GetComponent<Drawable>();
@@ -54,7 +57,8 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, const fl
                                           mesh->gpu.VAO,
                                           mesh->vertices.size(),
                                           mesh->diffuseTex.data,
-                                          true);
+                                          true,
+                                          lights.back()->light.outline);
             }
         }
 
@@ -113,7 +117,8 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
                                               mesh->gpu.VAO,
                                               mesh->vertices.size(),
                                               mesh->diffuseTex.data,
-                                              true);
+                                              true,
+                                              lights.back()->light.outline);
                 }
             }
         }

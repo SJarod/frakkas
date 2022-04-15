@@ -15,5 +15,9 @@ namespace Renderer
         Vector3 ambient = {1.f, 1.f, 1.f};
         Vector3 diffuse = {};
         Vector3 specular = {};
+
+        bool toonShading = false;
+        bool fiveTone = false;
+        bool outline = false;
     };
 }

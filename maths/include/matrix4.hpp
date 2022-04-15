@@ -41,6 +41,13 @@ struct Matrix4
     Matrix4 Transpose() const;
 
 /**
+ * @summary Compute the inverse matrix.
+ * Inverted matrix is such that if multiplied by the original would result in identity matrix
+ * @return the inverse of this matrix
+ */
+    Matrix4 Inverse() const;
+
+/**
  * @summary Calculate 3D world space frustum matrix
  * @param i_left Frustum's left view plane
  * @param i_right Frustum's right view plane

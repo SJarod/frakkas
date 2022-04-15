@@ -63,6 +63,19 @@ void Helpers::EditLight(Renderer::Light &io_light)
 {
     ImGui::Text("Light");
 
+    ImGui::Checkbox("ToonShading", &io_light.toonShading);
+
+    if (io_light.toonShading)
+    {
+        ImGui::Checkbox("Outline", &io_light.outline);
+        ImGui::Checkbox("FiveTone", &io_light.fiveTone);
+    }
+    else
+    {
+        io_light.outline = false;
+        io_light.fiveTone = false;
+    }
+
     ImGui::Spacing();
 
     ImGui::DragFloat4("Position", io_light.position.element);
