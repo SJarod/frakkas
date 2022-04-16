@@ -6,12 +6,9 @@
 
 namespace Game
 {
-    static const char lightcomponent[] = "LightComponent";
-    class LightComponent : public BaseComponent<lightcomponent>
-    {
-    public:
-        Renderer::Light light;
+    KK_COMPONENT(LightComponent)
 
-        void Edit() override;
-    };
+        KK_FIELD(Renderer::Light, light);
+
+    KK_COMPONENT_END
 };

@@ -23,3 +23,5 @@ void Component::SetOwner(Entity* entity)
 {
     owner.set(entity);
 }
+
+

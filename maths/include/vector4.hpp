@@ -31,6 +31,7 @@ struct Vector4
     template<typename T>
     Vector4 operator+(const T& i_k) const;
     Vector4 operator+(const Vector4& i_vec) const;
+    Vector4 operator+(const Vector3& i_vec) const;
 
     Vector4 operator-(const Vector4& i_vec) const;
     Vector4 operator-(const float& i_k) const;

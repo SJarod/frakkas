@@ -1,20 +1,10 @@
 #include <imgui.h>
 
-#include "helpers/editor_helpers.hpp"
 #include "game/entity.hpp"
 
 #include "game/drawable.hpp"
 
-
-using namespace Game;
-
-void Drawable::Edit() {
-    if (Helpers::ComponentBeginEdit(this))
-    {
-        Helpers::EditTransform(model.transform);
-        Helpers::ComponentEndEdit();
-    }
-}
+KK_COMPONENT_IMPL(Drawable)
 
 void Drawable::SetOwner(Entity* owner)
 {

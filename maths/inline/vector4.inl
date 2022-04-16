@@ -80,6 +80,11 @@ inline Vector4 Vector4::operator+(const Vector4& vec) const
     };
 }
 
+inline Vector4 Vector4::operator+(const Vector3& i_vec) const
+{
+    return Vector4(x + i_vec.x, y + i_vec.y, z + i_vec.z, w);
+}
+
 inline Vector4 Vector4::operator-(const Vector4& vec) const
 {
     return {

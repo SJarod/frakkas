@@ -43,7 +43,7 @@ namespace Game
          * @param i_renderer the renderer that will draw the entities
          * @param i_aspectRatio the render's aspect ratio
          */
-        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio);
+        void Render(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio);
 
         /**
          * @brief The game udpate and render called every frames
@@ -63,7 +63,7 @@ namespace Game
          * @summary Creates an unique-pointer-empty-entity and emplace it in entities array
          * @return the created entity, you can add component to it.
          */
-        Entity* CreateEntity();
+        Entity* CreateEntity(const std::string_view& i_name);
 
         const std::list<std::unique_ptr<Entity>>& GetEntities() const;
 
@@ -92,5 +92,12 @@ namespace Game
          * This function is used when the current game camera is disabled.
          */
         void FindGameCamera() noexcept;
+
+        /**
+        * @brief Update uniforms as light or camera's matrices before render entities.
+        * @param i_renderer The renderer who possesses the shader to set uniform.
+        * @param i_aspectRatio The aspect ratio of the screen to get camera projection matrix.
+        */
+        void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio) const noexcept;
     };
 }
