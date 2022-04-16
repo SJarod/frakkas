@@ -34,9 +34,9 @@ namespace Renderer
 			float near = 0.1f;
 			float far = 100.f;
 
-		private:
 			//vertical field of view
 			float fovY = Maths::Constants::piHalf;
+		private:
 
 		};
 	};

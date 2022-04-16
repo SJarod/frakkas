@@ -3,6 +3,7 @@
 #include <string>
 
 #include "properties.hpp"
+#include "data_descriptor.hpp"
 
 namespace Resources
 {
@@ -47,9 +48,10 @@ namespace Game
         virtual void OnDestroy(){};
 
         /**
-         * @Summary ImGui editing function. Set which parameters can be modified in run time.
+         * @brief an abstract function, every inheretid components should define this function with KK_GENERATE_COMPONENT
+         * @return the meta data of the class, in other words the list of member variable readable for the engine.
          */
-        virtual void Edit() {};
+        virtual const ClassMetaData& GetMetaData() const = 0;
 
         /**
          * @Summary Setup component parameters from input file.

@@ -1,17 +1,6 @@
 #include <imgui.h>
 
-#include "helpers/editor_helpers.hpp"
-
 #include "game/light_component.hpp"
 
-
-using namespace Game;
-
-void LightComponent::Edit()
-{
-    if (Helpers::ComponentBeginEdit(this))
-    {
-        Helpers::EditLight(light);
-        Helpers::ComponentEndEdit();
-    }
-}
+KK_COMPONENT_IMPL(LightComponent)
+KK_FIELD_IMPL(LightComponent, light, DataType::LIGHT, 1)

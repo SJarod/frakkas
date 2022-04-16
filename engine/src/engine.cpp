@@ -107,7 +107,7 @@ void Engine::CreateTestEntities()
 // Create 5 entities for example
     for (int i = 0; i < 5; i++)
     {
-        Game::Entity* entity = entityManager.CreateEntity();
+        Game::Entity* entity = entityManager.CreateEntity("entity_" + std::to_string(i));
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
 
@@ -119,9 +119,15 @@ void Engine::CreateTestEntities()
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
         }
         else if (i == 1)
+        {
+            entity->name = "Light";
             entity->AddComponent<Game::LightComponent>();
+        }
         else
+        {
             entity->AddComponent<Game::CameraComponent>();
+            entity->name = "Game Camera";
+        }
     }
 
     entityManager.FindLight();

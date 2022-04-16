@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "transform.hpp"
 #include "component.hpp"
@@ -17,8 +18,10 @@ namespace Game
     class Entity
     {
     public:
-        Entity() = default;
+        Entity(const std::string_view& i_name) : name(i_name) {};
         ~Entity();
+
+        std::string name;
 
         std::vector<std::unique_ptr<Component>> components;
         Transform transform;
@@ -48,11 +51,6 @@ namespace Game
          */
         template<typename T>
         std::vector<T*> GetComponents();
-
-        /**
-         * ImGui editing function. Set which parameters can be modified in run time.
-         */
-        virtual void Edit();
 
         /**
          * Setup entity components from input file.

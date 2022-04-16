@@ -17,7 +17,8 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& i_entityManager)
 
     if(ImGui::Button("Add entity"))
     {
-        Game::Entity* entity = i_entityManager.CreateEntity();
+        static int crID = 0;
+        Game::Entity* entity = i_entityManager.CreateEntity(std::string("new_"+std::to_string(crID++)));
         auto drawable = entity->AddComponent<Game::Drawable>();
         drawable->model.AddSphereMesh();
         drawable->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
@@ -29,8 +30,8 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& i_entityManager)
     {
         ImGui::PushID(id);
 
-        std::string label = std::string("Entity_") + std::to_string(id++);
-        if (ImGui::Selectable(label.c_str(), label == selectedLabel))
+        std::string_view label = entity->name;
+        if (ImGui::Selectable(label.data(), label == selectedLabel))
         {
             selected = entity.get();
             selectedLabel = label;
