@@ -1,25 +1,26 @@
 #pragma once
 
 #include <glad/glad.h>
+
 #include <string>
 #include <type_traits>
 
 #include "maths.hpp"
-
+#include "resources/resource.hpp"
 
 namespace Resources
 {
-	class Shader
+	class Shader : public Resource
 	{
 	public:
-        static const std::string pathToShaders;
-
 		/**
 		 * @Summary Create a shader from a shader file.
 		 * @param i_shaderName : Shader name
 		 */
 		Shader(const std::string &i_shaderName);
 		~Shader();
+
+		void LoadFromInfo() override;
 
 		/**
 		 * @Summary Use shader program.

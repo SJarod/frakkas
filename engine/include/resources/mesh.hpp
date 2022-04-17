@@ -3,6 +3,7 @@
 #include <vector>
 #include <glad/glad.h>
 
+#include "resources/resource.hpp"
 #include "renderer/lowlevel/vertex.hpp"
 #include "resources/texture.hpp"
 
@@ -13,8 +14,8 @@ namespace Resources
 {
 	struct GPUMesh
 	{
-		GLuint VBO;
-		GLuint VAO;
+		GLuint VBO = 0;
+		GLuint VAO = 0;
 
 		~GPUMesh()
 		{
@@ -23,7 +24,7 @@ namespace Resources
 		}
 	};
 
-	class Mesh
+	class Mesh : public Resource
 	{
 	public:
 		std::vector<Vertex> vertices;
@@ -33,7 +34,9 @@ namespace Resources
 
 		GPUMesh gpu;
 
-		// TODO : vector of GPUTexture
-		GPUTexture diffuseTex;
+		// TODO : vector of Texture
+		std::shared_ptr<Texture> diffuseTex;
+
+		void LoadFromInfo() override {};
 	};
 }

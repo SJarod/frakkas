@@ -1,5 +1,8 @@
+#include <cassert>
+
 #include "resources/mesh.hpp"
 #include "resources/serializer.hpp"
+#include "resources/resources_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/lowlevel/camera.hpp"
@@ -42,14 +45,27 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, float i_
         auto drawable = entity->GetComponent<Drawable>();
         if (drawable && drawable->enabled)
         {
-            for (const std::shared_ptr<Resources::Mesh> mesh : drawable->model.meshes)
+            const Renderer::Model& model = drawable->model;
+
+            for (auto& mesh : model.meshes)
             {
-                i_renderer.RenderMeshOnce(mesh->localTransform * drawable->model.transform.GetModelMatrix(),
-                                          mesh->gpu.VAO,
-                                          mesh->vertices.size(),
-                                          mesh->diffuseTex.data,
-                                          true,
-                                          lights.back()->light.outline);
+                if (mesh == nullptr || mesh->gpu.VAO == 0)
+                    continue;
+
+                GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+
+                Resources::Texture* diffuseTex = mesh->diffuseTex.get();
+                if (diffuseTex != nullptr)
+                    if (diffuseTex->gpu.get())
+                        texToBeBinded = diffuseTex->gpu->data;
+
+                assert(mesh->gpu.VAO != 0);
+                i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
+                    mesh->gpu.VAO,
+                    mesh->vertices.size(),
+                    texToBeBinded,
+                    true,
+                    lights.back()->light.outline);
             }
         }
 
@@ -104,14 +120,27 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
             if (comp->GetID() == Drawable::id)
             {
                 Drawable* drawable = reinterpret_cast<Drawable*>(comp.get());
-                for (const std::shared_ptr<Resources::Mesh>& mesh : drawable->model.meshes)
+                const Renderer::Model& model = drawable->model;
+
+                for (auto& mesh : model.meshes)
                 {
-                    i_renderer.RenderMeshOnce(mesh->localTransform * drawable->model.transform.GetModelMatrix(),
-                                              mesh->gpu.VAO,
-                                              mesh->vertices.size(),
-                                              mesh->diffuseTex.data,
-                                              true,
-                                              lights.back()->light.outline);
+                    if (mesh == nullptr || mesh->gpu.VAO == 0)
+                        continue;
+
+                    GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+
+                    Resources::Texture* diffuseTex = mesh->diffuseTex.get();
+                    if (diffuseTex != nullptr)
+                        if (diffuseTex->gpu.get())
+                            texToBeBinded = diffuseTex->gpu->data;
+
+                    assert(mesh->gpu.VAO != 0);
+                    i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
+                        mesh->gpu.VAO,
+                        mesh->vertices.size(),
+                        texToBeBinded,
+                        true,
+                        lights.back()->light.outline);
                 }
             }
         }

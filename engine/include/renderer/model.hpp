@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <vector>
+#include <list>
 
 #include "game/transform.hpp"
 
@@ -18,7 +18,7 @@ namespace Renderer
 	{
 	public:
 		// Every meshes that this model posseses.
-		std::vector<std::shared_ptr<Resources::Mesh>> meshes;
+		std::list<std::shared_ptr<Resources::Mesh>> meshes;
 
 		Game::Transform transform;
 

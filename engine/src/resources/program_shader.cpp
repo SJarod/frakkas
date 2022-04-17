@@ -1,23 +1,29 @@
 #include <iostream>
 
 #include "log.hpp"
+#include "resources/resources_manager.hpp"
 
 #include "resources/program_shader.hpp"
 
-
-const std::string Resources::Shader::pathToShaders = "engine/shaders/";
-
 Resources::Shader::Shader(const std::string &i_shaderName)
 {
-	std::string filename = pathToShaders + i_shaderName;
+	name = ResourcesManager::pathToShaders + i_shaderName;
+}
 
+Resources::Shader::~Shader()
+{
+    glDeleteShader(program);
+}
+
+void Resources::Shader::LoadFromInfo()
+{
 	//vertex shader
-	std::ifstream vsStream(filename + ".vs");
-	std::ifstream fsStream(filename + ".fs");
+	std::ifstream vsStream(name + ".vs");
+	std::ifstream fsStream(name + ".fs");
 
 	if (!vsStream.is_open() || !fsStream.is_open())
 	{
-        Log::Warning("Couldn't open shader files: \"" + filename + ".vs\" and \"" + filename + ".fs\"");
+		Log::Error("Could not open shader files : " + name);
 		return;
 	}
 
@@ -44,7 +50,7 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 	if (!success[0])
 	{
 		glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog[0]);
-        Log::Error("VERTEX SHADER: \"" + filename + ".vs\" - " + infoLog[0]);
+		Log::Error("ERROR::SHADER::VERTEX::COMPILATION_FAILED : " + name + ".vs\n" + infoLog[0]);
 	}
 
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success[1]);
@@ -52,12 +58,13 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 	if (!success[1])
 	{
 		glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog[1]);
-        Log::Error("FRAGMENT SHADER: \"" + filename + ".fs\" - " + infoLog[1]);
+		Log::Error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED : " + name + ".fs\n" + infoLog[1]);
 	}
 
 	if (success[0] && success[1])
 	{
-        Log::Info("Successfully loaded shader files: \"" + filename + ".vs\" and \"" + filename + ".fs\"");
+		Log::Info("Successfully loaded shader files : " + name);
+
 		program = glCreateProgram();
 		glAttachShader(program, vertexShader);
 		glAttachShader(program, fragmentShader);
@@ -69,11 +76,6 @@ Resources::Shader::Shader(const std::string &i_shaderName)
 
 	vsStream.close();
 	fsStream.close();
-}
-
-Resources::Shader::~Shader()
-{
-    glDeleteShader(program);
 }
 
 void Resources::Shader::Use() const
