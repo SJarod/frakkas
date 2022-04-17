@@ -13,6 +13,8 @@
 #include "game/light_component.hpp"
 #include "game/entity_manager.hpp"
 
+#include "resources/resources_manager.hpp"
+
 #include "renderer/lowlevel/lowrenderer.hpp"
 
 #include "engine.hpp"
@@ -146,6 +148,8 @@ void Engine::Run()
     bool running = true;
     while(running)
     {
+        ResourcesManager::PollGPULoad();
+
         inputsManager.PollEvent();
         /// NEW FRAME
         timeManager.NewFrame();

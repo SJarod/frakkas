@@ -106,7 +106,7 @@ namespace Renderer
             template <typename T>
             void SetUniform(const std::string_view& i_uniformName, const T& i_value) const;
 
-			Resources::Shader shader;
+	    std::shared_ptr<Resources::Shader> shader;
 		};
 	}
 }
@@ -114,6 +114,6 @@ namespace Renderer
 template <typename T>
 void Renderer::LowLevel::LowRenderer::SetUniform(const std::string_view &i_uniformName, const T &i_value) const
 {
-    shader.Use();
-    shader.SetUniform(i_uniformName, i_value);
+    shader->Use();
+    shader->SetUniform(i_uniformName, i_value);
 }

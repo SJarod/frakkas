@@ -15,8 +15,10 @@ add_library(EngineFrakkas STATIC
 			src/resources/program_shader.cpp
 			src/resources/resources_manager.cpp
 			src/resources/serializer.cpp
+			src/resources/texture.cpp
         	src/log.cpp
             src/engine.cpp
+	    src/threadpool.cpp
 			${PROJECT_SOURCE_DIR}/lib/stb_image.c
 			${IMGUI_SOURCE_FILES}
 )
