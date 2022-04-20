@@ -15,19 +15,20 @@ void Console::OnImGuiRender()
 
     DisplayLogList();
 
+    if (ImGui::IsWindowAppearing())
+        scrollToBottom = true;
+
+    if (ImGui::Button("AddLog"))
+        Log::Info("Add Log");
+    ImGui::SameLine();
+
     // clear console
     if (ImGui::Button("Clear"))
         ClearLog();
     ImGui::SameLine();
 
-    // Options menu
-    if (ImGui::BeginPopup("Options"))
-    {
-        ImGui::Checkbox("Auto-scroll", &autoScroll);
-        ImGui::EndPopup();
-    }
-    if (ImGui::Button("Options"))
-        ImGui::OpenPopup("Options");
+    // auto-scroll menu
+    ImGui::Checkbox("Auto-scroll", &autoScroll);
     ImGui::SameLine();
 
     // Filter bar
@@ -87,7 +88,8 @@ void Console::AddLog(const char* i_fmt, ...)
     va_end(args);
     items.push_back(strdup(buf));
 
-    scrollToBottom = true;
+    if (autoScroll == true)
+        scrollToBottom = true;
 }
 
 void Console::ClearLog()
