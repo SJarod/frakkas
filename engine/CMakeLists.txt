@@ -8,7 +8,7 @@ add_library(EngineFrakkas STATIC
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
 			src/game/light_component.cpp
-        src/renderer/model.cpp
+        	src/renderer/model.cpp
         	src/renderer/light.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
@@ -18,7 +18,7 @@ add_library(EngineFrakkas STATIC
 			src/resources/texture.cpp
         	src/log.cpp
             src/engine.cpp
-	    src/threadpool.cpp
+	    	src/threadpool.cpp
 			${PROJECT_SOURCE_DIR}/lib/stb_image.c
 			${IMGUI_SOURCE_FILES}
 )
@@ -44,12 +44,14 @@ target_link_libraries(EngineFrakkas
 
 set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-add_custom_command(TARGET EngineFrakkas POST_BUILD
-				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
-				   ${PROJECT_SOURCE_DIR}/engine/shaders
-				   ${PROJECT_SOURCE_DIR}/build/debug/engine/shaders
+add_custom_target(copy_shaders
+				  COMMAND ${CMAKE_COMMAND} -E copy_directory
+				  ${PROJECT_SOURCE_DIR}/engine/shaders
+				  ${PROJECT_SOURCE_DIR}/build/debug/engine/shaders
 
-				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
-				   ${PROJECT_SOURCE_DIR}/engine/shaders
-				   ${PROJECT_SOURCE_DIR}/build/release/engine/shaders
+				  COMMAND ${CMAKE_COMMAND} -E copy_directory
+				  ${PROJECT_SOURCE_DIR}/engine/shaders
+				  ${PROJECT_SOURCE_DIR}/build/release/engine/shaders
 )
+
+add_dependencies(EngineFrakkas copy_shaders)
