@@ -38,18 +38,20 @@ set_target_properties(EditorFrakkas PROPERTIES
 					  VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-add_custom_command(TARGET EditorFrakkas POST_BUILD
-		 		   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+add_custom_target(copy_editor_assets
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
 				   ${PROJECT_SOURCE_DIR}/editor/assets
 		 		   ${PROJECT_SOURCE_DIR}/build/debug/editor/assets
-				   COMMAND ${CMAKE_COMMAND} -E copy
+				   COMMAND ${CMAKE_COMMAND} -E copy_if_different
 				   ${PROJECT_SOURCE_DIR}/imgui.ini
 				   ${PROJECT_SOURCE_DIR}/build/debug
 
-				   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
 				   ${PROJECT_SOURCE_DIR}/editor/assets
 				   ${PROJECT_SOURCE_DIR}/build/release/editor/assets
-				   COMMAND ${CMAKE_COMMAND} -E copy
+				   COMMAND ${CMAKE_COMMAND} -E copy_if_different
 				   ${PROJECT_SOURCE_DIR}/imgui.ini
 				   ${PROJECT_SOURCE_DIR}/build/release
 )
+
+add_dependencies(EditorFrakkas copy_editor_assets)

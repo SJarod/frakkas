@@ -11,12 +11,14 @@ target_link_directories(GameFrakkas PRIVATE EngineFrakkas)
 
 set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-add_custom_command(TARGET GameFrakkas POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+add_custom_target(copy_game_assets
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
                    ${PROJECT_SOURCE_DIR}/game/assets
                    ${PROJECT_SOURCE_DIR}/build/debug/game/assets
 
-                   COMMAND ${CMAKE_COMMAND} ARGS -E copy_directory
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
                    ${PROJECT_SOURCE_DIR}/game/assets
                    ${PROJECT_SOURCE_DIR}/build/release/game/assets
 )
+
+add_dependencies(GameFrakkas copy_game_assets)
