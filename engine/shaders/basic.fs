@@ -26,8 +26,8 @@ struct material
 };
 
 uniform material gDefaultMaterial = material(
-    vec3(0.0, 0.0, 0.0),
     vec3(0.8, 0.8, 0.8),
+    vec3(1.0, 1.0, 1.0),
     vec3(1.0, 1.0, 1.0),
     vec3(0.0, 0.0, 0.0),
     32.0);
@@ -121,10 +121,10 @@ void main()
         // Compute phong shading
         light_shade_result lightResult = get_lights_shading();
 
-        vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient;
+        vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient * texture(uTexture, vUV).rgb;
         vec3 diffuseColor  = gDefaultMaterial.diffuse * lightResult.diffuse * texture(uTexture, vUV).rgb;
         vec3 specularColor = gDefaultMaterial.specular * lightResult.specular;
-        vec3 emissiveColor = gDefaultMaterial.emission + texture(uTexture, vUV).rgb;
+        vec3 emissiveColor = gDefaultMaterial.emission * texture(uTexture, vUV).rgb;
 
         // Apply light color
         oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), 1.0);
