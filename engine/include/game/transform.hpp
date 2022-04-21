@@ -67,4 +67,4 @@ namespace Game
          */
         void UpdateModelMatrix() const;
 	};
-};
+}

@@ -15,6 +15,11 @@ namespace Renderer
     }
 }
 
+namespace Resources
+{
+    class Sound;
+}
+
 struct ClassMetaData;
 
 namespace Helpers
@@ -42,6 +47,12 @@ namespace Helpers
      * @param io_light the light to edit
      */
     void EditLight(Renderer::Light& io_light);
+
+    /**
+    * @brief ImGui editing function. Allows the player to change sound parameters.
+    * @param io_sound the sound to edit
+    */
+    void EditSound(Resources::Sound& io_sound);
 
     /**
      * @brief ImGui editing function. Allows the player to change reflected component fields.

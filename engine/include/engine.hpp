@@ -5,7 +5,9 @@
 #include <functional>
 
 #include <SDL.h>
+#include <miniaudio.h>
 
+#include "game/entity_manager.hpp"
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
 
@@ -16,13 +18,6 @@ namespace Renderer::LowLevel
 }
 
 using UpdateEvent = std::function<void()>;
-
-namespace Game
-{
-    class EntityManager;
-}
-
-
 
 class Engine
 {
@@ -36,16 +31,17 @@ public:
     std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> gameFBO;
 
+    std::list<UpdateEvent> updateEventsHandler;
+
+    static ma_engine soundEngine;
+
     /**
      * Engine main loop. Manage frames and Render entities.
      * Call all UpdateEvent attached to UpdateEventHandler.
      */
     void Run();
 
-    std::list<UpdateEvent> updateEventsHandler;
-
 private:
-
     Game::Time timeManager;
     Game::Inputs inputsManager;
 
@@ -56,11 +52,14 @@ private:
      * Init SDL parameters, link to OpenGL and create a window.
      */
     void InitSDL();
+
+    /**
+    * Init SDL audio parameters.
+    */
+    void InitMiniaudio();
+
     /**
      * Create entities in hard-code to test our project
      */
     void CreateTestEntities();
-
-
-
 };

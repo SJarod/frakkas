@@ -7,7 +7,7 @@ namespace Resources
 	class Resource
 	{
 	public:
-		virtual ~Resource() {}
+		virtual ~Resource() = default;
 
 		// Resource name or path
 		std::string name;

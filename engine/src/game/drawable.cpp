@@ -1,5 +1,3 @@
-#include <imgui.h>
-
 #include "game/entity.hpp"
 
 #include "game/drawable.hpp"

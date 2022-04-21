@@ -1,6 +1,5 @@
 #include "game/entity.hpp"
 #include "game/camera_component.hpp"
-#include "game/entity_manager.hpp"
 #include "game/inputs_manager.hpp"
 #include "game/time_manager.hpp"
 

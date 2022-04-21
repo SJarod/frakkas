@@ -24,10 +24,10 @@ target_link_libraries(EditorFrakkas
 
 target_include_directories(EditorFrakkas
                            PRIVATE include
+                           PRIVATE ${LIB_INCLUDE_DIR}
                            PRIVATE ${ENGINE_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
-                           PRIVATE ${PROJECT_SOURCE_DIR}/lib
-                           PRIVATE ${imgui_SOURCE_DIR}
+						   PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends
 						   PRIVATE ${tracy_SOURCE_DIR}
 )
