@@ -1,4 +1,7 @@
 #include <imgui.h>
+#include <string>
+
+#include "log.hpp"
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"
@@ -7,8 +10,9 @@
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 
-#include "helpers/game_edit.hpp"
+#include "resources/sound.hpp"
 
+#include "helpers/game_edit.hpp"
 
 
 void Helpers::EditTransform(Game::Transform& io_transform)
@@ -127,6 +131,25 @@ void Helpers::EditLight(Renderer::Light& io_light)
     }
 }
 
+void Helpers::EditSound(Resources::Sound& io_sound)
+{
+    ImGui::Text("Sound");
+
+    if (ImGui::Button("Play"))
+        io_sound.Play();
+
+    ImGui::SameLine();
+    if (ImGui::Button("Pause"))
+        io_sound.Pause();
+
+    ImGui::SameLine();
+    if (ImGui::Button("Stop"))
+        io_sound.Stop();
+
+    ImGui::InputInt("Volume", &io_sound.volume);
+    io_sound.SetVolume();
+}
+
 void Helpers::EditComponentMetaData(unsigned char* io_component, const ClassMetaData& metaData, Property<bool>& io_enabled)
 {
     if (ImGui::TreeNodeEx(metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
@@ -156,11 +179,13 @@ void Helpers::EditComponentMetaData(unsigned char* io_component, const ClassMeta
             case DataType::LIGHT:
                 EditLight(*reinterpret_cast<Renderer::Light*>(componentData));
                 break;
+            case DataType::SOUND:
+                EditSound(*reinterpret_cast<Resources::Sound*>(componentData));
+                break;
             default:
                 break;
             }
         }
-
 
         ImGui::TreePop();
     }

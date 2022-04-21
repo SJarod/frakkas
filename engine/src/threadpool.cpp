@@ -15,7 +15,7 @@ ThreadPool::ThreadPool(const unsigned int i_nThread)
 	multithread = i_nThread > 0;
 
 	for (unsigned int i = 0; i < i_nThread; ++i)
-		threads.push_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this, i)));
+		threads.emplace_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this, i)));
 }
 
 ThreadPool::~ThreadPool()
@@ -50,7 +50,7 @@ void ThreadPool::AddTask(const Task& i_fct)
 		if (tasks.empty())
 			queueCV.notify_one();
 
-		tasks.push_back(Task(i_fct));
+		tasks.emplace_back(Task(i_fct));
 	}
 
 	if (!multithread)

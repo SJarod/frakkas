@@ -60,6 +60,10 @@ set(GAME_INCLUDE_DIRE ${PROJECT_SOURCE_DIR}/game/include)
 set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
                       ${PROJECT_SOURCE_DIR}/maths/inline
 )
+set(LIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib
+                    ${PROJECT_SOURCE_DIR}/lib/stb_image
+                    ${PROJECT_SOURCE_DIR}/lib/miniaudio
+)
 
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 

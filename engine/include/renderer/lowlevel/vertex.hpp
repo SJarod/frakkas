@@ -14,5 +14,5 @@ namespace Renderer
 			Vector3 normal;
 			Vector2 uv;
 		};
-	};
-};
+	}
+}

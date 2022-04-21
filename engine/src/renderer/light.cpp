@@ -1,2 +1,0 @@
-#include "renderer/light.hpp"
-

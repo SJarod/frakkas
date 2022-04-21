@@ -57,7 +57,8 @@ enum class DataType
 	FLOAT,
 	BOOL,
 	CAMERA,
-    LIGHT
+    LIGHT,
+    SOUND
 };
 
 /**

@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 #include <SDL.h>
-#include <backends/imgui_impl_sdl.h>
 #include <Tracy.hpp>
 
 #include "maths.hpp"
@@ -11,7 +10,7 @@
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
 #include "game/light_component.hpp"
-#include "game/entity_manager.hpp"
+#include "game/sound_component.hpp"
 
 #include "resources/resources_manager.hpp"
 
@@ -19,11 +18,15 @@
 
 #include "engine.hpp"
 
+
+ma_engine Engine::soundEngine {};
+
 Engine::Engine()
 {
     Log::Init();
 
     InitSDL();
+    InitMiniaudio();
 
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
@@ -37,6 +40,9 @@ Engine::~Engine()
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
+
+    //ma_engine_stop(&soundEngine);
+    ma_engine_uninit(&soundEngine);
 }
 
 static void DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
@@ -104,6 +110,18 @@ void Engine::InitSDL()
     }
 }
 
+void Engine::InitMiniaudio()
+{
+    if (ma_engine_init(nullptr, &soundEngine) != MA_SUCCESS)
+    {
+        Log::Error("Failed to initialize audio engine.");
+        exit(1);
+    }
+
+    ma_engine_start(&soundEngine);
+    Log::Info("Successfully start sound engine");
+};
+
 void Engine::CreateTestEntities()
 {
 // Create 5 entities for example
@@ -113,7 +131,7 @@ void Engine::CreateTestEntities()
         entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
         entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
 
-        if( i >= 2)
+        if( i >= 3)
         {
             auto drawable = entity->AddComponent<Game::Drawable>();
             auto& model = drawable->model;
@@ -125,10 +143,16 @@ void Engine::CreateTestEntities()
             entity->name = "Light";
             entity->AddComponent<Game::LightComponent>();
         }
-        else
+        else if (i == 2)
         {
             entity->AddComponent<Game::CameraComponent>();
             entity->name = "Game Camera";
+        }
+        else
+        {
+            Game::SoundComponent* sc = entity->AddComponent<Game::SoundComponent>();
+            sc->sound.SetSound("game/assets/Airport.wav");
+            entity->name = "Sound";
         }
     }
 
@@ -173,7 +197,3 @@ void Engine::Run()
         FrameMark
     }
 }
-
-
-
-

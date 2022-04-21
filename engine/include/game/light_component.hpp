@@ -11,4 +11,4 @@ namespace Game
         KK_FIELD(Renderer::Light, light);
 
     KK_COMPONENT_END
-};
+}
