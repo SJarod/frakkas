@@ -31,7 +31,7 @@ namespace Game
          * Don't add a same component twice, updating process won't be correct.
          * @param comp the component to add. The shared_ptr instance will be copied.
          */
-        void AddComponent(std::unique_ptr<Component> comp);
+        Component* AddComponent(std::unique_ptr<Component> comp);
 
         template<typename T>
         T* AddComponent();
@@ -79,7 +79,7 @@ T* Game::Entity::GetComponent()
 {
     std::vector<std::unique_ptr<Component>>::iterator it;
     it = std::find_if(components.begin(), components.end(), [&](const std::unique_ptr<Component>& c){
-        return c->GetID() == T::id;
+        return c->GetID() == T::metaData.className;
     });
 
     if (it != components.end())
@@ -97,7 +97,7 @@ std::vector<T*> Game::Entity::GetComponents()
     std::vector<std::unique_ptr<T>> comps;
     for(std::vector<std::unique_ptr<Component>>::iterator it = components.begin(); it != components.end(); it++)
     {
-        if (it->get()->GetID() == T::id)
+        if (it->get()->GetID() == T::metaData.className)
         {
             if (T* comp = reinterpret_cast<T*>(it->get()))
                 comps.emplace_back(comp);

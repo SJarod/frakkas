@@ -10,6 +10,19 @@
 
 #include "engine.hpp"
 
+#if 1
+// Run on laptop high perf GPU
+extern "C"
+{
+    __declspec(dllexport) int NvOptimusEnablement = 1;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif
+
+struct Test{ int  i = 0;};
+
+#define TEA(lol)
+
 #undef main
 int main()
 {

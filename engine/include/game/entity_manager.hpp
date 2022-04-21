@@ -11,11 +11,6 @@ namespace Renderer::LowLevel
     class LowRenderer;
 }
 
-namespace Resources
-{
-    class Serializer;
-}
-
 namespace Game
 {
     class Entity;
@@ -71,13 +66,13 @@ namespace Game
          * Creates entity from a scene input file.
          * @param i_file the opened input file.
          */
-        void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
+        void Read();
 
         /**
          * Writes all the entities in a scene output file.
          * @param o_file the opened output file.
          */
-        void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) {};
+        void Write();
 
         /**
         * Searches for all entities that owns a LightComponent enabled.

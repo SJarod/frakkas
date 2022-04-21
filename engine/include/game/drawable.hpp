@@ -2,8 +2,7 @@
 
 #include "renderer/model.hpp"
 
-#include "component.hpp"
-
+#include "component_generator.hpp"
 
 namespace Game
 {

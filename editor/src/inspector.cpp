@@ -14,7 +14,7 @@ void Inspector::OnImGuiRender(Game::Entity* io_selectedEntity)
     ImGui::Begin("Inspector");
 
     if (io_selectedEntity)
-        Helpers::EditEntity(*io_selectedEntity);
+        Helpers::Edit(*io_selectedEntity);
 
     ImGui::End();
 }

@@ -11,8 +11,9 @@ Entity::~Entity()
         comp->OnDestroy();
 }
 
-void Entity::AddComponent(std::unique_ptr<Component> comp)
+Component* Entity::AddComponent(std::unique_ptr<Component> comp)
 {
     comp->owner = this;
     components.emplace_back(std::move(comp));
+    return components.back().get();
 }

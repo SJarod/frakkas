@@ -1,4 +1,5 @@
 #include <cassert>
+#include <fstream>
 
 #include "resources/mesh.hpp"
 #include "resources/serializer.hpp"
@@ -117,7 +118,7 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
 
             comp->Update();
 
-            if (comp->GetID() == Drawable::id)
+            if (comp->GetID() == Drawable::metaData.className)
             {
                 Drawable* drawable = reinterpret_cast<Drawable*>(comp.get());
                 const Renderer::Model& model = drawable->model;
@@ -195,4 +196,36 @@ void EntityManager::UpdateGlobalUniform(const LowRenderer& i_renderer, float i_a
     i_renderer.SetUniform("uLight.ambient", light.ambient);
     i_renderer.SetUniform("uLight.diffuse", light.diffuse);
     i_renderer.SetUniform("uLight.specular", light.specular);
+}
+
+void EntityManager::Read()
+{
+    // Reset
+    entities.clear();
+
+    // Load
+    std::ifstream file("game/assets/exemple_scene.kk");
+    std::string attribute, sceneName;
+    std::getline(file, sceneName); //scene name
+    while (!file.eof())
+    {
+        std::getline(file, attribute); // skip empty lines
+        Serializer::GetAttribute(file, attribute); // skip '>entity'
+        if (attribute == "entity")
+        {
+            Entity* entity = CreateEntity("nameholders");
+            Serializer::Read(file, *entity);
+        }
+    }
+
+    FindGameCamera();
+    FindLight();
+}
+
+void EntityManager::Write()
+{
+    std::ofstream file("game/assets/exemple_scene.kk");
+    file << "exemple_scene" << std::endl;
+    for (const std::unique_ptr<Entity>& entity : entities)
+        Serializer::Write(file, *entity);
 }
