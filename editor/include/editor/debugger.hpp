@@ -11,7 +11,7 @@ namespace Editor
         /**
          * @summary Display the imgui panel
          */
-        void OnImGuiRender();
+        void OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_reloadScene);
 
     private:
         float prevTime = 0.f;

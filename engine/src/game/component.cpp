@@ -1,9 +1,12 @@
 #include "game/component.hpp"
 
-
 using namespace Game;
 
-
+std::vector<ClassMetaData*>& Component::GetRegistry()
+{
+    static std::vector<ClassMetaData*> componentRegistry;
+    return componentRegistry;
+}
 
 Component::Component()
 {

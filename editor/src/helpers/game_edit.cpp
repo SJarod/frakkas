@@ -14,8 +14,15 @@
 
 #include "helpers/game_edit.hpp"
 
+void Helpers::Edit(std::string& io_string, const char* i_label)
+{
+    char newStr[255] = "";
+    memcpy(newStr, io_string.c_str(), io_string.size());
+    if (ImGui::InputText(i_label, newStr, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
+        io_string= newStr;
+}
 
-void Helpers::EditTransform(Game::Transform& io_transform)
+void Helpers::Edit(Game::Transform& io_transform)
 {
     Game::Transform& trs = io_transform;
     Game::ScaleLockParams& scParams = trs.GetScaleLockParameters();
@@ -69,25 +76,26 @@ void Helpers::EditTransform(Game::Transform& io_transform)
     trs.scale = sc;
 }
 
-void Helpers::EditEntity(Game::Entity& io_entity)
+void Helpers::Edit(Game::Entity& io_entity)
 {
     //ImGui::Text("Entity: %s", io_entity.name.c_str());
-    char newName[255] = "";
-    memcpy(newName, io_entity.name.c_str(), io_entity.name.size());
-    if (ImGui::InputText("Name", newName, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
-        io_entity.name = newName;
+    Edit(io_entity.name, "Name");
 
     ImGui::Separator();
 
-    Helpers::EditTransform(io_entity.transform);
+    Edit(io_entity.transform);
 
     for (const std::unique_ptr<Game::Component>& comp : io_entity.components)
-        EditComponentMetaData(reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), comp->enabled);
+    {
+        bool compEnabled = comp->enabled;
+        Edit(reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), compEnabled);
+        comp->enabled = compEnabled;
+    }
 }
 
-void Helpers::EditCamera(Renderer::LowLevel::Camera& io_camera)
+void Helpers::Edit(Renderer::LowLevel::Camera& io_camera)
 {
-    Helpers::EditTransform(io_camera.transform);
+    Helpers::Edit(io_camera.transform);
     ImGui::Spacing();
 
     float fovy = Maths::ToDegrees(io_camera.fovY);
@@ -98,7 +106,7 @@ void Helpers::EditCamera(Renderer::LowLevel::Camera& io_camera)
     ImGui::DragFloat("Far", &io_camera.far, 10.f, 100.f, 5000.f);
 }
 
-void Helpers::EditLight(Renderer::Light& io_light)
+void Helpers::Edit(Renderer::Light& io_light)
 {
     ImGui::Text("Light");
 
@@ -131,7 +139,7 @@ void Helpers::EditLight(Renderer::Light& io_light)
     }
 }
 
-void Helpers::EditSound(Resources::Sound& io_sound)
+void Helpers::Edit(Resources::Sound& io_sound)
 {
     ImGui::Text("Sound");
 
@@ -150,15 +158,13 @@ void Helpers::EditSound(Resources::Sound& io_sound)
     io_sound.SetVolume();
 }
 
-void Helpers::EditComponentMetaData(unsigned char* io_component, const ClassMetaData& metaData, Property<bool>& io_enabled)
+void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled)
 {
-    if (ImGui::TreeNodeEx(metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::TreeNodeEx(io_metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
     {
-        bool enabled = io_enabled;
-        if(ImGui::Checkbox("Activate", &enabled))
-            io_enabled = enabled;
+        ImGui::Checkbox("Activate", &io_enabled);
 
-        for (const DataDescriptor& desc : metaData.descriptors)
+        for (const DataDescriptor& desc : io_metaData.descriptors)
         {
             unsigned char* componentData = io_component + desc.offset;
 
@@ -170,17 +176,20 @@ void Helpers::EditComponentMetaData(unsigned char* io_component, const ClassMeta
             case DataType::INT:
                 ImGui::DragScalarN(desc.name.c_str(), ImGuiDataType_S32, componentData, desc.count);
                 break;
+            case DataType::STRING:
+                Edit(*reinterpret_cast<std::string*>(componentData), desc.name.c_str());
+                break;
             case DataType::FLOAT:
                 ImGui::DragScalarN(desc.name.c_str(), ImGuiDataType_Float, componentData, desc.count);
                 break;
             case DataType::CAMERA:
-                EditCamera(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
+                Edit(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
             case DataType::LIGHT:
-                EditLight(*reinterpret_cast<Renderer::Light*>(componentData));
+                Edit(*reinterpret_cast<Renderer::Light*>(componentData));
                 break;
             case DataType::SOUND:
-                EditSound(*reinterpret_cast<Resources::Sound*>(componentData));
+                Edit(*reinterpret_cast<Resources::Sound*>(componentData));
                 break;
             default:
                 break;

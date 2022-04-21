@@ -1,16 +1,33 @@
 #include <imgui.h>
 
 #include "maths.hpp"
+#include "log.hpp"
 
 #include "game/time_manager.hpp"
+#include "game/entity_manager.hpp"
+
 #include "editor/debugger.hpp"
 
 using namespace Editor;
 
-void Debugger::OnImGuiRender()
+void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_reloadScene)
 {
     ImGui::Begin("Debugger");
 
+#pragma region Useful button
+    if(ImGui::Button("Save scene"))
+        io_entityManager.Write();
+
+    if (ImGui::Button("Load scene"))
+    {
+        io_entityManager.Read();
+        o_reloadScene = true;
+    }
+
+#pragma endregion
+
+
+#pragma region Performance
     float newTime = Game::Time::GetTime();
     float newDeltaTime = Game::Time::GetDeltaTime();
     int newFPS = round(1.f / newDeltaTime);
@@ -35,6 +52,6 @@ void Debugger::OnImGuiRender()
     ImGui::Spacing();
 
     ImGui::Text("FPS : %i", FPS);
-
+#pragma endregion
     ImGui::End();
 }

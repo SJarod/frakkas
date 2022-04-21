@@ -2,8 +2,8 @@
 
 #include "maths.hpp"
 
+#include "component_generator.hpp"
 #include "renderer/lowlevel/camera.hpp"
-#include "component.hpp"
 
 namespace Game
 {

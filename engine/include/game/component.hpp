@@ -1,9 +1,13 @@
 #pragma once
 
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "properties.hpp"
 #include "data_descriptor.hpp"
+
+
 
 namespace Resources
 {
@@ -13,7 +17,6 @@ namespace Resources
 namespace Game
 {
     class Entity;
-
     class Component
     {
     public:
@@ -22,7 +25,12 @@ namespace Game
 
         Property<bool> enabled;
         Property<Entity*> owner;
-        
+
+        /**
+         * @return A registry array which store all Component metadata.
+         */
+        static std::vector<ClassMetaData*>& GetRegistry();
+
         /**
          * @return an ID that identify the component. Useful to find a specific component in a bunch of another components.
          */
@@ -85,20 +93,4 @@ namespace Game
          */
         virtual void OnDisable() {};
     };
-
-    /**
-     * BaseComponent is the base of every game's component. It simply inherits from Component
-     * and add a static string id. Thanks to that, every game's component will have an id and we will be able to identify them properly.
-     */
-    template<const char* TComponentID>
-    class BaseComponent : public Component
-    {
-    public:
-        static std::string id;
-
-        const std::string& GetID() const override { return this->id; }
-    };
 }
-
-template<const char* TComponentID>
-std::string Game::BaseComponent<TComponentID>::id = std::string(TComponentID);
