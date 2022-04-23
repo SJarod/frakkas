@@ -4,9 +4,15 @@ target_include_directories(Launcher
                            PRIVATE ${ENGINE_INCLUDE_DIR}
                            PRIVATE ${GAME_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
+                           PRIVATE ${LIB_INCLUDE_DIR}
+                           PRIVATE ${sdl_INCLUDE_DIR}
 )
 
-target_link_libraries(Launcher PRIVATE GameFrakkas)
+target_link_libraries(Launcher
+        PRIVATE EngineFrakkas
+        PRIVATE GameFrakkas
+        PRIVATE SDL2-static
+)
 
 set_target_properties(Launcher PROPERTIES
                                RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/build/debug

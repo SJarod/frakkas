@@ -18,6 +18,7 @@ add_executable(EditorFrakkas
 
 target_link_libraries(EditorFrakkas
                       PRIVATE EngineFrakkas
+					  PRIVATE GameFrakkas
                       PRIVATE SDL2-static
 					  PUBLIC TracyClient
 )
@@ -26,6 +27,7 @@ target_include_directories(EditorFrakkas
                            PRIVATE include
                            PRIVATE ${LIB_INCLUDE_DIR}
                            PRIVATE ${ENGINE_INCLUDE_DIR}
+						   PRIVATE ${GAME_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends

@@ -1,0 +1,19 @@
+
+#include "engine.hpp"
+#include "game/entity.hpp"
+#include "game/time_manager.hpp"
+#include "game/player_movement.hpp"
+
+using namespace Game;
+
+KK_COMPONENT_IMPL(PlayerMovement)
+KK_FIELD_IMPL(PlayerMovement, startPosition, DataType::FLOAT, 3)
+KK_FIELD_IMPL(PlayerMovement, speed, DataType::FLOAT, 1)
+
+void PlayerMovement::Update()
+{
+    float xTranslation = Inputs::GetAxis("horizontal") * speed * Time::GetDeltaTime();
+    float zTranslation = Inputs::GetAxis("forward") * speed * Time::GetDeltaTime();
+    Vector3 translation = Vector3(xTranslation, 0.f, zTranslation);
+    owner.get()->transform.position = owner.get()->transform.position .get() + translation;
+}

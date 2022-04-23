@@ -10,6 +10,10 @@
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 
+#include "engine.hpp"
+
+#include "editor/editor_render.hpp"
+
 #include "resources/sound.hpp"
 
 #include "helpers/game_edit.hpp"
@@ -36,10 +40,10 @@ void Helpers::Edit(Game::Transform& io_transform)
     Vector3 sc = trs.scale;
 
     // Position edit
-    ImGui::DragFloat3("Position", pos.element, 0.1f);
+    DragScalar("Position", pos.element, 3, 0.1f);
 
     // Rotation edit
-    ImGui::DragFloat3("Rotation", rot.element, 1.f);
+    DragScalar("Rotation", rot.element, 3, 1.f);
     for (float& coord : rot.element)
         coord = Maths::Abs(coord) >= 360.f ? 0.f : coord;
 
@@ -47,7 +51,7 @@ void Helpers::Edit(Game::Transform& io_transform)
     if (scParams.isLock && scParams.origScale == Vector3::zero)
         scParams.ratio = 0.f;
 
-    if (ImGui::DragFloat3("Scale", sc.element, 0.1f))
+    if (DragScalar("Scale", sc.element, 3, 0.1f))
     {
         if (scParams.isLock)
         {
@@ -99,11 +103,11 @@ void Helpers::Edit(Renderer::LowLevel::Camera& io_camera)
     ImGui::Spacing();
 
     float fovy = Maths::ToDegrees(io_camera.fovY);
-    ImGui::SliderFloat("Field of view Y", &fovy, 0.f, 180.f);
+    DragScalar("Field of view Y", &fovy, 1, 1.f, 0.f, 180.f);
     io_camera.fovY = Maths::ToRadians(fovy);
 
-    ImGui::DragFloat("Near", &io_camera.near, 0.01f, 0.001f);
-    ImGui::DragFloat("Far", &io_camera.far, 10.f, 100.f, 5000.f);
+    DragScalar("Near", &io_camera.near, 1, 0.01f, 0.001f);
+    DragScalar("Far", &io_camera.far, 1, 10.f, 100.f, 5000.f);
 }
 
 void Helpers::Edit(Renderer::Light& io_light)
@@ -125,7 +129,7 @@ void Helpers::Edit(Renderer::Light& io_light)
     
     ImGui::Spacing();
 
-    ImGui::DragFloat4("Position", io_light.position.element);
+    DragScalar("Position", io_light.position.element, 3);
     ImGui::ColorEdit3("Ambient", io_light.ambient.element);
     ImGui::ColorEdit3("Diffuse", io_light.diffuse.element);
     ImGui::ColorEdit3("Specular", io_light.specular.element);
@@ -174,13 +178,13 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
                 ImGui::Checkbox(desc.name.c_str(), reinterpret_cast<bool*>(componentData));
                 break;
             case DataType::INT:
-                ImGui::DragScalarN(desc.name.c_str(), ImGuiDataType_S32, componentData, desc.count);
+                DragScalar(desc.name, reinterpret_cast<int*>(componentData), desc.count);
+                break;
+            case DataType::FLOAT:
+                DragScalar(desc.name, reinterpret_cast<float*>(componentData), desc.count);
                 break;
             case DataType::STRING:
                 Edit(*reinterpret_cast<std::string*>(componentData), desc.name.c_str());
-                break;
-            case DataType::FLOAT:
-                ImGui::DragScalarN(desc.name.c_str(), ImGuiDataType_Float, componentData, desc.count);
                 break;
             case DataType::CAMERA:
                 Edit(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));

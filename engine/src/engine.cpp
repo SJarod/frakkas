@@ -19,6 +19,16 @@
 #include "engine.hpp"
 
 
+#if 1
+// Run on laptop high perf GPU
+extern "C"
+{
+    __declspec(dllexport) int NvOptimusEnablement = 1;
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif
+
+SDL_Window* Engine::window = nullptr;
 ma_engine Engine::soundEngine {};
 
 Engine::Engine()
@@ -31,8 +41,6 @@ Engine::Engine()
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
-
-    CreateTestEntities();
 }
 
 Engine::~Engine()
@@ -122,66 +130,65 @@ void Engine::InitMiniaudio()
     Log::Info("Successfully start sound engine");
 };
 
-void Engine::CreateTestEntities()
+void Engine::BeginFrame()
 {
-// Create 5 entities for example
-    for (int i = 0; i < 5; i++)
-    {
-        Game::Entity* entity = entityManager.CreateEntity("entity_" + std::to_string(i));
-        entity->transform.position = Vector3(i * 2.f, 0.f, 0.f);
-        entity->transform.scale = Vector3(i * 0.2f + 0.2f, i * 0.2f + 0.2f, i * 0.2f + 0.2f);
+    ResourcesManager::PollGPULoad();
 
-        if( i >= 3)
-        {
-            auto drawable = entity->AddComponent<Game::Drawable>();
-            auto& model = drawable->model;
-            model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
-            model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
-        }
-        else if (i == 1)
-        {
-            entity->name = "Light";
-            entity->AddComponent<Game::LightComponent>();
-        }
-        else if (i == 2)
-        {
-            entity->AddComponent<Game::CameraComponent>();
-            entity->name = "Game Camera";
-        }
-        else
-        {
-            Game::SoundComponent* sc = entity->AddComponent<Game::SoundComponent>();
-            sc->sound.SetSound("game/assets/Airport.wav");
-            entity->name = "Sound";
-        }
-    }
-
-    entityManager.FindLight();
+    inputsManager.PollEvent(editorInputsEvent);
+    timeManager.NewFrame();
 }
 
-void Engine::Run()
+bool Engine::EndFrame()
 {
-    Game::Inputs::SetButtonAction("quit", {Game::EButton::ESCAPE});
+    SDL_GL_SwapWindow(window);
+    FrameMark
 
-    Game::Inputs::SetAxisAction("horizontal", {Game::EButton::ARROW_RIGHT, Game::EButton::D}, {Game::EButton::ARROW_LEFT, Game::EButton::A});
+    return  Game::Inputs::IsReleased("quit") && !Game::Inputs::quit;
+}
 
-    Game::Inputs::SetAxisAction("vertical", {Game::EButton::SPACE}, {Game::EButton::LEFT_CTRL});
-
-    Game::Inputs::SetAxisAction("forward", {Game::EButton::ARROW_UP, Game::EButton::W}, {Game::EButton::ARROW_DOWN, Game::EButton::S});
-
+void Engine::RunEditor()
+{
     bool running = true;
     while(running)
     {
-        ResourcesManager::PollGPULoad();
-
-        inputsManager.PollEvent();
-        /// NEW FRAME
-        timeManager.NewFrame();
+        BeginFrame();
 
         renderer->BeginFrame(*editorFBO);
-        entityManager.Render(*renderer, editorFBO->aspectRatio);
+        entityManager.RenderEditor(*renderer, editorFBO->aspectRatio);
 
         renderer->BeginFrame(*gameFBO);
+        if (gaming)
+        {
+            if (focusOnGaming)
+                inputsManager.SetInputsListening(true);
+
+            entityManager.UpdateAndRender(*renderer, gameFBO->aspectRatio);
+        }
+        else
+            entityManager.Render(*renderer, gameFBO->aspectRatio);
+
+        renderer->EndFrame();
+
+
+        inputsManager.SetInputsListening(true);
+        for (const UpdateEvent& updateEvent : updateEventsHandler)
+            updateEvent();
+
+        running = EndFrame();
+        inputsManager.SetInputsListening(false);
+    }
+}
+
+void Engine::RunGame()
+{
+    inputsManager.SetInputsListening(true);
+    SetCursorGameMode(true);
+    bool running = true;
+    while(running)
+    {
+        BeginFrame();
+
+        renderer->BeginFrame();
         entityManager.UpdateAndRender(*renderer, gameFBO->aspectRatio);
 
         renderer->EndFrame();
@@ -190,10 +197,25 @@ void Engine::Run()
             updateEvent();
 
         /// ENDFRAME
-
-        running  = Game::Inputs::IsReleased("quit") && !Game::Inputs::quit;
-        SDL_GL_SwapWindow(window);
-
-        FrameMark
+        running = EndFrame();
     }
 }
+
+void Engine::SetCursorVisibility(bool i_visibility)
+{
+    SDL_ShowCursor(i_visibility ? SDL_ENABLE : SDL_DISABLE);
+}
+
+void Engine::SetCursorGameMode(bool i_gameMode)
+{
+    SDL_SetRelativeMouseMode(static_cast<SDL_bool>(i_gameMode));
+}
+
+void Engine::SetCursorPosition(const Vector2& i_position)
+{
+    SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
+}
+
+
+
+

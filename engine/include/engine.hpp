@@ -25,6 +25,9 @@ public:
     Engine();
     ~Engine();
 
+    bool gaming = false;
+    bool focusOnGaming = false;
+
     Game::EntityManager entityManager;
 
     std::unique_ptr<Renderer::LowLevel::LowRenderer> renderer;
@@ -32,20 +35,42 @@ public:
     std::unique_ptr<Renderer::LowLevel::Framebuffer> gameFBO;
 
     std::list<UpdateEvent> updateEventsHandler;
+    InputsEvent editorInputsEvent;
 
     static ma_engine soundEngine;
 
     /**
-     * Engine main loop. Manage frames and Render entities.
+     * Editor main loop. Manage frames and Render entities.
      * Call all UpdateEvent attached to UpdateEventHandler.
      */
-    void Run();
+    void RunEditor();
+    /**
+     * Game main loop. Manage frames, Render and Update entities.
+     * Call all UpdateEvent attached to UpdateEventHandler.
+     */
+    void RunGame();
+
+    /**
+     * Change mouse cursor visibility
+     * @param i_visibility The visible state you want
+     */
+    static void SetCursorVisibility(bool i_visibility = true);
+    /**
+     * Lock cursor position on the window, useful to move the mouse cursor infinitely. Use deltaMotion infos.
+     */
+    static void SetCursorGameMode(bool i_gameMode);
+
+    /**
+     * Set the mouse cursor to the input position. Relative to window space. Left-Up corner is (0, 0).
+     * @param i_position
+     */
+    static void SetCursorPosition(const Vector2& i_position);
 
 private:
     Game::Time timeManager;
     Game::Inputs inputsManager;
 
-    SDL_Window* window = nullptr;
+    static SDL_Window* window;
     SDL_GLContext glContext;
 
     /**
@@ -53,8 +78,17 @@ private:
      */
     void InitSDL();
 
+	/**
+	* Begin a new frame in engine main loop. Inform other libraries and setup engine parameters.
+	*/
+    void BeginFrame();
     /**
-    * Init SDL audio parameters.
+    * End the current frame in engine main loop. Inform other libraries and swap window buffer.
+    */
+    bool EndFrame();
+
+    /**
+    * Init SDL audio parameters. 
     */
     void InitMiniaudio();
 

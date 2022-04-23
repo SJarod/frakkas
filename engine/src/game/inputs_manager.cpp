@@ -6,23 +6,39 @@
 
 using namespace Game;
 
+#pragma region STATIC DEFINITION
 bool Inputs::quit = false;
+bool Inputs::allowListeningInputs = false;
 
 std::unordered_map<SDL_KeyCode, EButton> Inputs::keys {};
 
 std::unordered_map<std::string, ButtonAction> Inputs::buttonActions {};
 std::unordered_map<std::string, AxisAction> Inputs::axisActions {};
+std::list<EButtonState*> Inputs::keyPressed {};
 MouseAction Inputs::mouse {};
 
 EnumArray<EButton, EButtonState, static_cast<size_t>(EButton::KEY_COUNT)> Inputs::buttonStates {};
+#pragma endregion
 
-void Inputs::KeyDown(EButtonState& o_state)
+void Inputs::KeyPressed(EButtonState& o_state)
 {
     if (o_state == EButtonState::RELEASED)
+    {
         o_state = EButtonState::PRESSED;
-    else
-        o_state = EButtonState::DOWN;
+        keyPressed.emplace_back(&o_state);
+    }
 }
+
+void Inputs::CheckKeyPressed()
+{
+    auto it = keyPressed.begin();
+    while(it != keyPressed.end())
+    {
+        if (**it == EButtonState::PRESSED) **it = EButtonState::DOWN;
+        it = keyPressed.erase(it);
+    }
+}
+
 
 EButtonState* Inputs::GetButtonState(Game::EButton i_button)
 {
@@ -104,14 +120,23 @@ Inputs::Inputs()
     keys[SDLK_ESCAPE] = EButton::ESCAPE;
 }
 
-void Inputs::PollEvent()
+void Inputs::PollEvent(const InputsEvent& editorEvent)
 {
     SDL_Event event;
+    CheckKeyPressed();
+
+    /// MOUSE UDPATE
+    int x, y, relX, relY;
+    SDL_GetMouseState(&x, &y);
+    SDL_GetRelativeMouseState(&relX, &relY);
+    mouse.position = Vector2(x, y);
+    mouse.deltaMotion = Vector2(relX, relY);
+
     /// INPTUS EVENT
     while (SDL_PollEvent(&event))
     {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        EButton key = EButton::NONE;
+        if (editorEvent) editorEvent(&event);
+        EButton key;
         switch(event.type)
         {
             case SDL_QUIT:
@@ -119,22 +144,24 @@ void Inputs::PollEvent()
                 break;
             case SDL_KEYDOWN:
                 key = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
-                KeyDown(buttonStates[key]);
+                KeyPressed(buttonStates[key]);
                 break;
             case SDL_KEYUP:
                 key = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
                 buttonStates[key] = EButtonState::RELEASED;
                 break;
             case SDL_MOUSEMOTION:
-                mouse.position = Vector2(event.motion.x, event.motion.y);
-                mouse.deltaMotion = Vector2(event.motion.xrel, event.motion.yrel);
+                //Log::Info(std::to_string(mouse.deltaMotion.x) + ", " + std::to_string(mouse.deltaMotion.y));
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 switch (event.button.button)
                 {
-                    case SDL_BUTTON_LEFT: KeyDown(buttonStates[EButton::MOUSE_LEFT]); break;
-                    case SDL_BUTTON_MIDDLE: KeyDown(buttonStates[EButton::MOUSE_MIDDLE]); break;
-                    case SDL_BUTTON_RIGHT: KeyDown(buttonStates[EButton::MOUSE_RIGHT]); break;
+                    case SDL_BUTTON_LEFT:
+                        KeyPressed(buttonStates[EButton::MOUSE_LEFT]); break;
+                    case SDL_BUTTON_MIDDLE:
+                        KeyPressed(buttonStates[EButton::MOUSE_MIDDLE]); break;
+                    case SDL_BUTTON_RIGHT:
+                        KeyPressed(buttonStates[EButton::MOUSE_RIGHT]); break;
                     default: break;
                 }
                 break;
@@ -143,7 +170,7 @@ void Inputs::PollEvent()
                 {
                     case SDL_BUTTON_LEFT: buttonStates[EButton::MOUSE_LEFT] = EButtonState::RELEASED; break;
                     case SDL_BUTTON_MIDDLE: buttonStates[EButton::MOUSE_MIDDLE] = EButtonState::RELEASED; break;
-                    case SDL_BUTTON_RIGHT: buttonStates[EButton::MOUSE_RIGHT] = EButtonState::RELEASED; break;
+                    case SDL_BUTTON_RIGHT:  buttonStates[EButton::MOUSE_RIGHT] = EButtonState::RELEASED; break;
                     default: break;
                 }
                 break;
@@ -156,45 +183,49 @@ void Inputs::PollEvent()
 #pragma region Action Getter
 EButtonState Inputs::GetButton(const std::string& i_name)
 {
-    if (!CheckButtonAction(i_name)) return EButtonState::RELEASED;
-
-    return buttonActions[i_name].state;
+    if (CheckButtonAction(i_name))
+        return buttonActions[i_name].state;
+    else
+        return EButtonState::RELEASED;
 }
 
 bool Inputs::IsPressed(const std::string& i_name)
 {
-    if (!CheckButtonAction(i_name)) return false;
-
-    return buttonActions[i_name].state == EButtonState::PRESSED;
+    if (CheckButtonAction(i_name))
+        return buttonActions[i_name].state == EButtonState::PRESSED;
+    else
+        return false;
 }
 
 bool Inputs::IsPressed(EButton i_button)
 {
-    return buttonStates[i_button] == EButtonState::PRESSED;
+    return ApplyListeningCheck(buttonStates[i_button] == EButtonState::PRESSED);
 }
 
 bool Inputs::IsDown(const std::string& i_name)
 {
-    if (!CheckButtonAction(i_name)) return false;
-
-    return buttonActions[i_name].state == EButtonState::DOWN;
+    if (CheckButtonAction(i_name))
+        return buttonActions[i_name].state == EButtonState::DOWN;
+    else
+        return false;
 }
 
 bool Inputs::IsDown(EButton i_button)
 {
-    return buttonStates[i_button] == EButtonState::DOWN;
+    return ApplyListeningCheck(buttonStates[i_button] == EButtonState::DOWN);
 }
 
 bool Inputs::IsReleased(const std::string& i_name)
 {
-    if (!CheckButtonAction(i_name)) return false;
-
-    return buttonActions[i_name].state == EButtonState::RELEASED;
+    if (CheckButtonAction(i_name))
+        return buttonActions[i_name].state == EButtonState::RELEASED;
+    else
+        return false;
 }
 
 bool Inputs::IsReleased(EButton i_button)
 {
-    return buttonStates[i_button] == EButtonState::RELEASED;
+    return ApplyListeningCheck(buttonStates[i_button] == EButtonState::RELEASED);
 }
 
 float Inputs::GetAxis(const std::string& i_name)
@@ -203,9 +234,26 @@ float Inputs::GetAxis(const std::string& i_name)
 
     return axisActions[i_name].value;
 }
+
+Vector2 Inputs::GetMousePosition()
+{
+    if (ApplyListeningCheck())
+        return mouse.position;
+    else
+        return {};
+}
+
+Vector2 Inputs::GetMouseDelta()
+{
+    if (ApplyListeningCheck())
+        return mouse.deltaMotion;
+    else
+        return {};
+}
+
 #pragma endregion
 
-bool Game::Inputs::CheckButtonAction(const std::string& i_name, bool i_update)
+bool Game::Inputs::CheckButtonAction(const std::string& i_name)
 {
     // FIND
     if (buttonActions.find(i_name) == buttonActions.end())
@@ -213,8 +261,6 @@ bool Game::Inputs::CheckButtonAction(const std::string& i_name, bool i_update)
         Log::Warning(std::string("The button action '") + i_name + std::string("' does not exist."));
         return false;
     }
-    // UPDATE
-    if (!i_update) return true;
 
     ButtonAction& action = buttonActions[i_name];
     action.state = EButtonState::RELEASED;
@@ -229,10 +275,10 @@ bool Game::Inputs::CheckButtonAction(const std::string& i_name, bool i_update)
             action.state = EButtonState::PRESSED;
     }
 
-    return true;
+    return ApplyListeningCheck(true);
 }
 
-bool Game::Inputs::CheckAxisAction(const std::string& i_name, bool i_update)
+bool Game::Inputs::CheckAxisAction(const std::string& i_name)
 {
     // FIND
     if (axisActions.find(i_name) == axisActions.end())
@@ -240,8 +286,6 @@ bool Game::Inputs::CheckAxisAction(const std::string& i_name, bool i_update)
         Log::Warning(std::string("The axis action '") + i_name + std::string("' does not exist."));
         return false;
     }
-    // UPDATE
-    if (!i_update) return true;
 
     AxisAction& action = axisActions[i_name];
     action.value = 0.f;
@@ -261,5 +305,15 @@ bool Game::Inputs::CheckAxisAction(const std::string& i_name, bool i_update)
             break;
         }
     }
-    return true;
+    return ApplyListeningCheck(true);
+}
+
+void Inputs::SetInputsListening(bool i_listening) noexcept
+{
+    allowListeningInputs = i_listening;
+}
+
+bool Inputs::ApplyListeningCheck(bool i_currentValue)
+{
+    return allowListeningInputs && i_currentValue;
 }

@@ -20,15 +20,19 @@ namespace Game
     class EntityManager;
 }
 
+class Engine;
+
 namespace Editor
 {
     class EditorRender
     {
     public:
-        void InitImGui();
+        void InitImGui(Engine& io_engine);
         void QuitImGui();
-        void UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager& io_entityManager,
-                             Renderer::LowLevel::Framebuffer& io_gameFbo);
+        void UpdateAndRender(Engine& io_engine);
+
+        static bool isEditingDrag;
+        static Vector2 mouseLockPosition;
 
     private:
         MenuBar m_menuBar;

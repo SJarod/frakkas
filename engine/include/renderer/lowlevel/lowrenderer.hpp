@@ -76,6 +76,11 @@ namespace Renderer
 			 */
             void BeginFrame(const Framebuffer& i_fbo) const;
 
+            /**
+             * @Summary Begin drawing with the main framebuffer (SDL window's framebuffer)
+             */
+            void BeginFrame() const;
+
 			/**
 			 * @Summary Render is ready to be displayed.
 			 */

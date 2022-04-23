@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <unordered_map>
 #include <string>
+#include <functional>
 
 #include "maths.hpp"
 #include "log.hpp"
@@ -13,6 +14,7 @@
 #include "enum_array.hpp"
 #include "inputs_enum.hpp"
 
+using InputsEvent = std::function<void(const SDL_Event*)>;
 
 namespace Game
 {
@@ -51,7 +53,13 @@ namespace Game
         /**
         * Listen to SDL inputs Event, and update keys' state
         */
-        void PollEvent();
+        void PollEvent(const InputsEvent& editorEvent);
+
+        /**
+         * Enable or Disable the inputs listening.
+         * @param i_listening The new listening state.
+         */
+        void SetInputsListening(bool i_listening) noexcept;
 
         /**
          * Create or Modify a button action map.
@@ -115,20 +123,39 @@ namespace Game
          */
         static float GetAxis(const std::string& i_name);
 
+        /**
+         * @return The current position of the mouse's cursor.
+         */
+        static Vector2 GetMousePosition();
+        /**
+         * Get the delta motion. Delta motion is the translation that the cursor did during the last frame.
+         * @return The current frame motion of the mouse's cursor.
+         */
+        static Vector2 GetMouseDelta();
+
     private:
         static std::unordered_map<SDL_KeyCode, EButton> keys;
 
         static std::unordered_map<std::string, ButtonAction> buttonActions;
         static std::unordered_map<std::string, AxisAction> axisActions;
 
-        static MouseAction mouse;
+        static std::list<EButtonState*> keyPressed;
+
         static EnumArray < EButton, EButtonState, static_cast<size_t>(EButton::KEY_COUNT)> buttonStates;
 
+        static MouseAction mouse;
+        static bool allowListeningInputs;
+
         /**
-         * Change input's state to PRESSED or DOWN according to its current state.
-         * @param o_state
+         * Change input's state to PRESSED and emplace a pointer into n pressed-key array.
+         * @param o_state A reference to the state of the pressed key.
          */
-        static void KeyDown(EButtonState& o_state);
+        static void KeyPressed(EButtonState& o_state);
+        /**
+         * Check on each keys which was pressed the last frame. Set them as DOWN if not RELEASED.
+         */
+        static void CheckKeyPressed();
+
         /**
          * @param i_button the input
          * @return a pointer to the static EButtonState of the input
@@ -140,13 +167,15 @@ namespace Game
          * @param i_update update the button action state if true.
          * @return true if button action exists, false if not.
          */
-        static bool CheckButtonAction(const std::string& i_name, bool i_update = true);
+        static bool CheckButtonAction(const std::string& i_name);
         /**
          * Check if the axis action map exists and update it if needed.
          * @param i_name the name of the action map.
          * @param i_update update the axis action value if true.
          * @return true if axis action exists, false if not.
          */
-        static bool CheckAxisAction(const std::string& i_name, bool i_update = true);
+        static bool CheckAxisAction(const std::string& i_name);
+
+        static bool ApplyListeningCheck(bool i_currentValue = true);
     };
 }

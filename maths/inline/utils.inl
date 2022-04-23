@@ -70,6 +70,16 @@ namespace Maths {
                        Clamp(i_val.w, i_min, i_max));
     }
 
+    inline int Modulo(int i_val, int i_base)
+    {
+        return i_val % i_base;
+    }
+
+    inline float Modulo(float i_val, float i_base)
+    {
+        return fmod(i_val, i_base);
+    }
+
     inline float Abs(float i_f)
     {
         return fabs(i_f);
@@ -118,7 +128,7 @@ namespace Maths {
     template<typename T>
     inline T Lerp(T i_start, T i_reach, float i_factor)
     {
-        i_factor = Clamp(i_factor, 0.f, 1.f);
+        i_factor = Clamp(i_factor, -1.f, 1.f);
         return i_start + i_factor * (i_reach - i_start);
     }
 

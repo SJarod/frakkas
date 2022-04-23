@@ -5,17 +5,19 @@
 #include <SDL.h>
 #include <glad/glad.h>
 
-#include "renderer/lowlevel/lowrenderer.hpp"
-#include "renderer/lowlevel/camera.hpp"
 #include "game/entity_manager.hpp"
+
+#include "engine.hpp"
 
 #include "editor/editor_render.hpp"
 
 
-
 using namespace Editor;
 
-void EditorRender::InitImGui()
+bool EditorRender::isEditingDrag = false;
+Vector2 EditorRender::mouseLockPosition {};
+
+void EditorRender::InitImGui(Engine& io_engine)
 {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -47,6 +49,41 @@ void EditorRender::InitImGui()
 
     ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
     ImGui_ImplOpenGL3_Init("#version 450");
+
+    // BIND FUNCTION TO ENGINE
+    UpdateEvent editorUpdateEvent = [&](){ UpdateAndRender(io_engine);};
+    io_engine.updateEventsHandler.emplace_back(editorUpdateEvent);
+    UpdateEvent editorCameraUpdateEvent = [&]()
+    {
+        if (!m_scene.isMoving) return;
+
+        Renderer::LowLevel::Camera& cam = io_engine.entityManager.editorCamera;
+        float frameSpeed = 20.f * Game::Time::GetDeltaTime();
+
+        float forwardVelocity = Game::Inputs::GetAxis("forward") * frameSpeed;
+        float strafeVelocity = Game::Inputs::GetAxis("horizontal") * frameSpeed;
+
+        Vector3 pos = cam.transform.position;
+        Vector3 rot = cam.transform.rotation;
+
+        pos.x += Maths::Sin(rot.y) * forwardVelocity + Maths::Cos(rot.y) * strafeVelocity;
+        pos.z += Maths::Sin(rot.y) * strafeVelocity - Maths::Cos(rot.y) * forwardVelocity;
+
+        rot.y += Game::Inputs::GetMouseDelta().x * 0.005f;
+        rot.x -= Game::Inputs::GetMouseDelta().y * 0.005f;
+
+        rot.y = Maths::Modulo(rot.y, Maths::Constants::doublePi);
+        rot.x = Maths::Clamp(rot.x, -Maths::Constants::halfPi, Maths::Constants::halfPi);
+
+        pos.y += frameSpeed * Game::Inputs::GetAxis("vertical");
+
+        cam.transform.position = pos;
+        cam.transform.rotation = rot;
+    };
+    io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
+
+
+    io_engine.editorInputsEvent = std::bind(&ImGui_ImplSDL2_ProcessEvent, std::placeholders::_1);
 }
 
 void EditorRender::QuitImGui()
@@ -56,8 +93,7 @@ void EditorRender::QuitImGui()
     ImGui::DestroyContext();
 }
 
-void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game::EntityManager & io_entityManager,
-                                   Renderer::LowLevel::Framebuffer& io_gameFbo)
+void EditorRender::UpdateAndRender(Engine& io_engine)
 {
     //Renderer::LowLevel::Framebuffer& io_fbo = *pio_fbo;
     //Game::EntityManager& i_entityManager = *pi_entityManager;
@@ -67,26 +103,32 @@ void EditorRender::UpdateAndRender(Renderer::LowLevel::Framebuffer& io_fbo, Game
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+    if (isEditingDrag && Game::Inputs::IsReleased(Game::EButton::MOUSE_LEFT))
+    {
+        Engine::SetCursorGameMode(false);
+        Engine::SetCursorPosition(mouseLockPosition);
+        isEditingDrag = false;
+    }
+
     // TODO Remove if no longer needed
     bool ShowDemoWindow = true;
     ImGui::ShowDemoWindow(&ShowDemoWindow);
 
-    m_menuBar.OnImGuiRender();
-    m_hierarchy.OnImGuiRender(io_entityManager);
-    m_inspector.OnImGuiRender(m_hierarchy.selected);
     bool reloadScene = false;
-    m_debugger.OnImGuiRender(io_entityManager, reloadScene);
-    if (reloadScene) m_hierarchy.selected = nullptr;
-    m_fileBrowser.OnImGuiRender();
-    m_console.OnImGuiRender();
-    m_game.OnImGuiRender(reinterpret_cast<ImTextureID>(io_gameFbo.GetColor0()));
-    Vector2 windowSize = m_scene.OnImGuiRender(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()));
-    io_fbo.aspectRatio = windowSize.x / windowSize.y;
+    m_debugger.OnImGuiRender(io_engine.entityManager, io_engine.gaming, reloadScene);
 
-    Renderer::LowLevel::Camera& camera = io_entityManager.editorCamera;
-    float newFovY = 2.f * Maths::Atan(Maths::Tan(camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
-    if (io_fbo.aspectRatio > 1.f)
-        camera.SetFieldOfView(newFovY);
+    m_menuBar.OnImGuiRender();
+    m_hierarchy.OnImGuiRender(io_engine.entityManager);
+    m_console.OnImGuiRender();
+    m_inspector.OnImGuiRender(m_hierarchy.selected);
+    m_fileBrowser.OnImGuiRender();
+    m_game.OnImGuiRender(*io_engine.gameFBO, io_engine.gaming);
+    m_scene.OnImGuiRender(*io_engine.editorFBO, io_engine.entityManager.editorCamera);
+
+
+    io_engine.focusOnGaming = m_game.focusOnGaming;
+	if (reloadScene)
+		m_hierarchy.selected = nullptr;
 
     UpdateImGui();
 }

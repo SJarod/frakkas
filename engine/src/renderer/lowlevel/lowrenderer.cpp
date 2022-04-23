@@ -86,6 +86,18 @@ void LowRenderer::BeginFrame(const Framebuffer &i_fbo) const
     glEnable(GL_CULL_FACE);
 }
 
+void LowRenderer::BeginFrame() const
+{
+    Framebuffer::Unbind();
+    glViewport(0, 0, 1920, 1080);
+
+    glClearColor(0.4f, 0.4f, 0.4f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+}
+
 void LowRenderer::EndFrame() const
 {
 	glDisable(GL_DEPTH_TEST);

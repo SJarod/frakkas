@@ -4,13 +4,15 @@
 #include "log.hpp"
 
 #include "game/time_manager.hpp"
+#include "game/inputs_manager.hpp"
 #include "game/entity_manager.hpp"
 
 #include "editor/debugger.hpp"
+#include "engine.hpp"
 
 using namespace Editor;
 
-void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_reloadScene)
+void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_gaming, bool& o_reloadScene)
 {
     ImGui::Begin("Debugger");
 
@@ -23,6 +25,9 @@ void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_relo
         io_entityManager.Read();
         o_reloadScene = true;
     }
+    
+    if(ImGui::Button("Play") || Game::Inputs::IsPressed("pause"))
+        o_gaming = !o_gaming;
 
 #pragma endregion
 
@@ -31,7 +36,8 @@ void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_relo
     float newTime = Game::Time::GetTime();
     float newDeltaTime = Game::Time::GetDeltaTime();
     int newFPS = round(1.f / newDeltaTime);
-    if (newTime - prevTime >= 1.f)
+    // Update frame performance value sometimes so that we can read the value correctly.
+    if (newTime - prevTime >= timeBeforeUpdate)
     {
         prevTime = newTime;
         deltaTime = newDeltaTime;

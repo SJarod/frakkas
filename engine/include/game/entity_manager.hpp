@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <list>
 
 #include "renderer/lowlevel/camera.hpp"
 
@@ -11,6 +12,10 @@ namespace Renderer::LowLevel
     class LowRenderer;
 }
 
+namespace Resources
+{
+    class Serializer;
+}
 namespace Game
 {
     class Entity;
@@ -29,11 +34,6 @@ namespace Game
         std::vector<LightComponent*> lights;
 
         /**
-         * Update every entities
-         */
-        void Update();
-
-        /**
          * @brief Renders each entity
          * @param i_renderer the renderer that will draw the entities
          * @param i_aspectRatio the render's aspect ratio
@@ -46,6 +46,13 @@ namespace Game
          * @param i_aspectRatio the render's aspect ratio
          */
         void UpdateAndRender(Renderer::LowLevel::LowRenderer &i_renderer, const float i_aspectRatio);
+
+        /**
+         * @brief Renders each entity
+         * @param i_renderer the renderer that will draw the entities
+         * @param i_aspectRatio the render's aspect ratio
+         */
+        void RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio);
 
         /**
          * @summary Moves an entity pointer into the entity manager's array,
@@ -92,7 +99,8 @@ namespace Game
         * @brief Update uniforms as light or camera's matrices before render entities.
         * @param i_renderer The renderer who possesses the shader to set uniform.
         * @param i_aspectRatio The aspect ratio of the screen to get camera projection matrix.
+         * @param i_camera The camera we use to view the scene.
         */
-        void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio) const noexcept;
+        void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio, Renderer::LowLevel::Camera& i_camera) const noexcept;
     };
 }

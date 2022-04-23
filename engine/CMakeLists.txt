@@ -29,9 +29,8 @@ target_include_directories(EngineFrakkas
                            PRIVATE include
                            PRIVATE ${LIB_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
-						   PRIVATE ${GAME_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
-						   PRIVATE ${sdl_SOURCE_DIR}
+		                   PRIVATE ${sdl_INCLUDE_DIR}
 						   PRIVATE ${tracy_SOURCE_DIR}
 )
 
@@ -44,7 +43,7 @@ target_link_libraries(EngineFrakkas
 					  PUBLIC TracyClient
 )
 
-set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIB_INCLUDE_DIR})
 
 add_custom_target(copy_shaders
 				  COMMAND ${CMAKE_COMMAND} -E copy_directory
