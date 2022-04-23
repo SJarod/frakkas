@@ -1,5 +1,7 @@
 #pragma once
 
+#include "maths.hpp"
+
 namespace Renderer::LowLevel
 {
     class Framebuffer;

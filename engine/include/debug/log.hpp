@@ -1,11 +1,11 @@
 #pragma once
 
-#include "utils/singleton.hpp"
-
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <vector>
+
+#include "utils/singleton.hpp"
 
 
 enum class ELogType
@@ -106,4 +106,3 @@ void Log::GetFormat(std::stringstream& o_stream, TArg i_firstArg, TArgs&&... i_a
     o_stream << i_firstArg;
     GetFormat(o_stream, i_args...);
 }
-

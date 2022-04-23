@@ -22,7 +22,7 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::str
 
     if (o_attribute.length() == 0)
     {
-        Log::Error("A scene attribute is not valid : " + o_attribute);
+        Log::Error("A scene attribute is not valid : '", o_attribute, "' l.", GetCurrentLine(i_file));
         return o_attribute;
     }
 
@@ -247,6 +247,25 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
 char Serializer::Tab()
 {
     return '\t';
+}
+
+unsigned int Resources::Serializer::GetCurrentLine(std::ifstream& i_file)
+{
+    auto pos = i_file.tellg();
+
+    i_file.seekg(0);
+
+    int count = 0;
+    std::string line;
+    for (count; i_file.tellg() < pos; count++)
+    {
+        std::getline(i_file, line);
+        std::cout << static_cast<int>(i_file.tellg()) << std::fflush << std::endl;
+    }
+
+    i_file.seekg(pos);
+
+    return count;
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, bool i_bool)

@@ -14,24 +14,9 @@
 
 using namespace Editor;
 
-void Debugger::OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_reloadScene)
+void Debugger::OnImGuiRender()
 {
     ImGui::Begin("Debugger");
-
-#pragma region Useful button
-    if(ImGui::Button("Save scene"))
-        io_graph.SaveScene();
-
-    if (ImGui::Button("Load scene"))
-    {
-        io_graph.LoadScene("exemple_scene");
-        o_reloadScene = true;
-    }
-    
-    if(ImGui::Button("Play") || Game::Inputs::IsPressed("pause"))
-        o_gaming = !o_gaming;
-
-#pragma endregion
 
 
 #pragma region Performance

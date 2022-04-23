@@ -228,6 +228,12 @@ bool Inputs::IsReleased(EButton i_button)
     return ApplyListeningCheck(buttonStates[i_button] == EButtonState::RELEASED);
 }
 
+bool Game::Inputs::IsControlCommandPressed(EButton i_button)
+{
+    return buttonStates[EButton::LEFT_CTRL] != EButtonState::RELEASED 
+        && buttonStates[i_button] == EButtonState::PRESSED;
+}
+
 float Inputs::GetAxis(const std::string& i_name)
 {
     if (!CheckAxisAction(i_name)) return 0.f;

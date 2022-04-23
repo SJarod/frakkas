@@ -108,6 +108,12 @@ namespace Game
         static bool IsReleased(EButton i_button);
 
         /**
+         * @param i_button The button input to associate with CTRL
+         * @return true if CTRL down and i_button PRESSED
+         */
+        static bool IsControlCommandPressed(EButton i_button);
+
+        /**
          * Create or Modify an axis action map
          * @param i_name  Name of the action map.
          * @param i_resetPositive Clear the positive inputs list if true (Only when map already exists).

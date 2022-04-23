@@ -1,34 +1,62 @@
 #include <imgui.h>
 #include <cstdlib>
 
+#include "game/inputs_manager.hpp"
+
+#include "renderer/graph.hpp"
+
+#include "helpers/game_edit.hpp"
 #include "editor/menu_bar.hpp"
 
 
 using namespace Editor;
+using namespace Game;
 
 
-void MenuBar::OnImGuiRender()
+void MenuBar::OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_loadScene)
 {
     ImGui::BeginMainMenuBar();
 
-    FileField();
+    FileField(io_graph, o_loadScene);
 
-    EditField();
+    EditField(o_gaming);
+
+    if (Inputs::IsPressed(EButton::P))
+        o_gaming = !o_gaming;
 
     OptionsField();
 
     ImGui::EndMainMenuBar();
 }
 
-void MenuBar::FileField()
+void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
 {
+    std::string fileAction = "None";
+
+    auto SetNewSceneAction = [&fileAction]() { fileAction = "New scene"; };
+    auto SetOpenSceneAction = [&fileAction]() { fileAction = "Open scene"; };
+    auto SaveScene = [&io_graph]() { io_graph.SaveScene(); };
+
+#pragma region Menu item
     if (ImGui::BeginMenu("File"))
     {
-        if (ImGui::MenuItem("New Scene", "CTRL+N")) {}
-        if (ImGui::MenuItem("Open Scene", "CTRL+O")) {}
+        if (ImGui::MenuItem("New Scene", "CTRL+N"))
+            SetNewSceneAction();
+
+        if (ImGui::MenuItem("Open Scene", "CTRL+O"))
+            SetOpenSceneAction();
+
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Save", "CTRL+S")) {}
+        if (ImGui::MenuItem("Save", "CTRL+S"))
+            SaveScene();
+
+        if (ImGui::MenuItem("Reload Scene"))
+        {
+            o_loadScene = true;
+            io_graph.ReloadScene();
+        }
+
         ImGui::Separator();
 
         if (ImGui::MenuItem("New Project...")) {}
@@ -36,13 +64,109 @@ void MenuBar::FileField()
         if (ImGui::MenuItem("Save Project")) {}
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Quit", "ALT+F4")) {exit(0);}
+        if (ImGui::MenuItem("Quit"))
+            Inputs::quit = true;
 
         ImGui::EndMenu();
     }
+#pragma endregion
+
+#pragma region Inputs shortcut
+    if(Inputs::IsControlCommandPressed(EButton::N)) 
+        SetNewSceneAction();
+    if (Inputs::IsControlCommandPressed(EButton::O))
+        SetOpenSceneAction();
+    if (Inputs::IsControlCommandPressed(EButton::S))
+        SaveScene();
+#pragma endregion
+
+#pragma region Popup
+    if (fileAction == "New scene")
+        ImGui::OpenPopup("Create new scene?");
+    if (fileAction == "Open scene")
+        ImGui::OpenPopup("Open scene?");
+
+    // Always center this window when appearing
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    /// CREATE NEW SCENE POPUP
+    if (ImGui::BeginPopupModal("Create new scene?", NULL))
+    {
+        ImGui::Text("Are you sure to open a new scene?\nDon't forget to save your current scene!\n");
+
+        ImGui::Separator();
+
+        //            static bool reminder = false;
+        //            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+        //            ImGui::Checkbox("Don't ask me next time", &reminder);
+        //            ImGui::PopStyleVar();
+
+        static std::string sceneName = "new_scene";
+        Helpers::Edit(sceneName, "Name");
+
+        if (ImGui::Button("Create", ImVec2(120, 0)))
+        {
+            std::ofstream emptyFile(io_graph.GetSceneFullPath(sceneName));
+            emptyFile.close();
+            io_graph.LoadScene(sceneName);
+            o_loadScene = true;
+            sceneName = "new_scene";
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+
+        ImGui::EndPopup();
+    }
+
+    /// OPEN EXISTING SCENE POPUP
+    if (ImGui::BeginPopupModal("Open scene?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Are you sure to open a new scene?\nDon't forget to save your current scene!\n");
+
+        ImGui::Separator();
+
+        static std::string sceneName = "exemple_scene";
+        static bool exist = true;
+        Helpers::Edit(sceneName, "Name");
+
+        if (ImGui::Button("Open", ImVec2(120, 0)))
+        {
+            std::ifstream file(io_graph.GetSceneFullPath(sceneName));
+            if (file.is_open())
+            {
+                io_graph.LoadScene(sceneName);
+
+                sceneName = "exemple_scene";
+                exist = true;
+                ImGui::CloseCurrentPopup();
+            }
+            else
+                exist = false;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        {
+            sceneName = "exemple_scene";
+            exist = true;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+
+        if (!exist)
+            ImGui::Text("Input name does not have existing scene file...");
+
+        ImGui::EndPopup();
+    }
+#pragma endregion
 }
 
-void MenuBar::EditField()
+void MenuBar::EditField(bool& o_gaming)
 {
     if (ImGui::BeginMenu("Edit"))
     {
@@ -55,8 +179,8 @@ void MenuBar::EditField()
         if (ImGui::MenuItem("Deselect All", "CTRL+D")) {}
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Play", "CTRL+P")) {}
-        if (ImGui::MenuItem("Pause", "CTRL+SHIFT+P")) {}
+        if (ImGui::MenuItem("Play", "P")) { o_gaming = true; }
+        if (ImGui::MenuItem("Pause", "P")) { o_gaming = false; }
 
         ImGui::EndMenu();
     }
