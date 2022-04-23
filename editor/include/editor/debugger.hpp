@@ -22,7 +22,7 @@ namespace Editor
         /**
          * @summary Display the imgui panel
          */
-        void OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_reloadScene);
+        void OnImGuiRender();
 
     private:
         float prevTime = 0.f;

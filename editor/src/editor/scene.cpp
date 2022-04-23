@@ -19,8 +19,8 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
 
     CheckMouseAction();
 
-	ImVec2 windowSize = ImGui::GetContentRegionAvail();
-	ImGui::Image(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
+    ImVec2 windowSize = ImGui::GetContentRegionAvail();
+    ImGui::Image(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
 

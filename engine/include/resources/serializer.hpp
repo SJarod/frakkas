@@ -173,6 +173,12 @@ namespace Resources
          * @return '\t', so a tabulation in character format. Useful to write tabulation with std::cout
          */
         static char Tab();
+
+        /**
+        * @param i_file The opened input file.
+         * @return The current line position of the file cursor.
+         */
+        static unsigned int GetCurrentLine(std::ifstream& i_file);
     };
 }
 

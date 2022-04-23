@@ -53,14 +53,15 @@ void EntityManager::CreateEntities(std::ifstream& i_file)
     entities.clear();
     // Load
     std::string attribute;
+    i_file.ignore(); // skip empty lines
     while (!i_file.eof())
     {
-        i_file.ignore(); // skip empty lines
         Serializer::GetAttribute(i_file, attribute); // skip '>entity'
         if (attribute == "entity")
         {
             Entity* entity = CreateEntity("nameholders");
             Serializer::Read(i_file, *entity);
         }
+        i_file.ignore(); // skip empty lines
     }
 }

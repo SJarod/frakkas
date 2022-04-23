@@ -30,6 +30,10 @@ namespace Editor
     public:
         void InitImGui(Engine& io_engine);
         void QuitImGui();
+        /**
+         * @brief Create all the editor interface and allow user to edit its game.
+         * @param io_engine The engine to edit.
+         */
         void UpdateAndRender(Engine& io_engine);
 
         static bool isEditingDrag;

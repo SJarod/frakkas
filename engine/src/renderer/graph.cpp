@@ -99,7 +99,7 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
                                           mesh->vertices.size(),
                                           texToBeBinded,
                                           true,
-                                          lights.back()->light.outline);
+                                          lights.empty() ? false : lights.back()->light.outline);
             }
         }
 
@@ -142,36 +142,42 @@ void Graph::LoadScene(const std::string& i_sceneName)
     std::string_view lastScene = currentSceneName;
     currentSceneName = i_sceneName;
 
-    std::ifstream file(GetFullPath());
+    std::ifstream file(GetSceneFullPath(currentSceneName));
 
     if (file.is_open())
     {
-        entityManager->CreateEntities(file);
-
         // Reset all lists
         gameCameras.clear();
         lights.clear();
         renderEntities.clear();
+
+        // Parse file to create entities
+        entityManager->CreateEntities(file);
+
         // Sort registered component
         CheckComponentQueue();
 
         SetGameCameraAuto();
+
+        Log::Info("Load scene " + currentSceneName);
     }
     else
     {
-        Log::Warning("Try to load scene from file '" + std::string(currentSceneName) + "' that does not exist.");
+        Log::Warning("Try to load scene from file '" + currentSceneName + "' that does not exist.");
         currentSceneName = lastScene;
     }
 }
 
 void Graph::SaveScene() const
 {
-    std::ofstream file(GetFullPath());
+    std::ofstream file(GetSceneFullPath(currentSceneName));
     for (const std::unique_ptr<Entity>& entity : entityManager->GetEntities())
         Serializer::Write(file, *entity);
+
+    Log::Info("Save scene " + currentSceneName);
 }
 
-std::string Graph::GetFullPath() const
+std::string Graph::GetSceneFullPath(const std::string& i_sceneName) const
 {
-    return pathToScenes + std::string(currentSceneName) + ".kk";
+    return pathToScenes + i_sceneName + ".kk";
 }

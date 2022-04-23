@@ -61,17 +61,16 @@ namespace Renderer
          */
         void SaveScene() const;
 
+        std::string GetSceneFullPath(const std::string& i_sceneName) const;
     private:
         Game::EntityManager* entityManager;
         std::vector<Game::CameraComponent*> gameCameras;
         std::vector<Game::LightComponent*> lights;
         std::vector<Game::Drawable*> renderEntities;
 
-        std::string_view currentSceneName = "exemple_scene";
+        std::string currentSceneName = "exemple_scene";
 
         static constexpr char pathToScenes[] = "game/assets/";
-
-        std::string GetFullPath() const;
 
         void CheckComponentQueue() noexcept;
 
