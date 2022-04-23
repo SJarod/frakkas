@@ -6,8 +6,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
-#include "singleton.hpp"
-#include "threadpool.hpp"
+#include "utils/singleton.hpp"
+#include "multithread/threadpool.hpp"
 
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"

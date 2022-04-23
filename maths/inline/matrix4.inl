@@ -1,6 +1,6 @@
-#include "vector3.hpp"
-#include "vector4.hpp"
-#include "utils.hpp"
+#include "maths/vector3.hpp"
+#include "maths/vector4.hpp"
+#include "maths/utils.hpp"
 
 ////////////////////////////// OPERATORS
 

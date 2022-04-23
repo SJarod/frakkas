@@ -1,6 +1,6 @@
-#include "vector4.hpp"
-#include "quaternion.hpp"
-#include "utils.hpp"
+#include "maths/vector4.hpp"
+#include "maths/quaternion.hpp"
+#include "maths/utils.hpp"
 
 ////////////////////////////// CONSTRUCTORS
 

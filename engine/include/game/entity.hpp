@@ -59,10 +59,13 @@ namespace Game
         virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
 
         /**
-         * Write the entity components in scene text format.
+         * SaveScene the entity components in scene text format.
          * @param o_file the opened output file.
          */
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
+
+    private:
+        static void RegisterIntoGraph(Component* i_newComponent);
     };
 }
 
@@ -71,6 +74,7 @@ T* Game::Entity::AddComponent()
 {
     components.emplace_back(std::make_unique<T>());
     components.back()->owner = this;
+    RegisterIntoGraph(components.back().get());
     return reinterpret_cast<T*>(components.back().get());
 }
 

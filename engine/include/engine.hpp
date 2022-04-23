@@ -11,10 +11,15 @@
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
 
-namespace Renderer::LowLevel
+namespace Renderer
 {
-    class LowRenderer;
-    class Framebuffer;
+    class Graph;
+    namespace LowLevel
+    {
+        class LowRenderer;
+        class Framebuffer;
+        class Camera;
+    }
 }
 
 using UpdateEvent = std::function<void()>;
@@ -34,6 +39,8 @@ public:
     std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> gameFBO;
 
+    std::unique_ptr<Renderer::Graph> graph;
+    
     std::list<UpdateEvent> updateEventsHandler;
     InputsEvent editorInputsEvent;
 
@@ -65,6 +72,15 @@ public:
      * @param i_position
      */
     static void SetCursorPosition(const Vector2& i_position);
+
+    /**
+     * @return The editor camera from Graph class. never return nullptr.
+     */
+    Renderer::LowLevel::Camera* GetEditorGamera() const;
+    /**
+     * @return The current game camera from Graph class. Can return nullptr.
+     */
+    Renderer::LowLevel::Camera* GetGameCamera() const;
 
 private:
     Game::Time timeManager;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "constants.hpp"
+#include "maths/constants.hpp"
 
 struct Vector4;
 struct Quaternion;

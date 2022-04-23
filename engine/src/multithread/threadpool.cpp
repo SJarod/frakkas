@@ -2,9 +2,9 @@
 
 #include <chrono>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 
-#include "threadpool.hpp"
+#include "multithread/threadpool.hpp"
 
 ThreadPool::ThreadPool(const unsigned int i_nThread)
 {

@@ -1,7 +1,7 @@
 #include <stb_image.h>
 #include <assimp/postprocess.h>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 #include "maths.hpp"
 
 #include "resources/resources_manager.hpp"

@@ -15,6 +15,7 @@ namespace Game
 {
     struct Transform;
     class Entity;
+    class EntityManager;
 }
 
 namespace Resources
@@ -59,7 +60,7 @@ namespace Resources
          */
         static void Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData, bool& o_enabled);
         /**
-         * @brief Read a certain number of scalar and store them.
+         * @brief LoadScene a certain number of scalar and store them.
          * @tparam TScalarType The scalar type : int, float, unsigned int.
          * @param i_file The opened input file.
          * @param o_vector The pointer to the scalar array.
@@ -108,7 +109,7 @@ namespace Resources
     public: /// WRITE FUNCTIONS
 
         /**
-         * @brief Write an attribute in frakkas text format
+         * @brief SaveScene an attribute in frakkas text format
          * @param io_file the opened output file to write in
          * @param i_attribute the variable type to write
          */
@@ -142,30 +143,30 @@ namespace Resources
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, bool i_bool);
         /**
-         * @brief Write a string in frakkas text format
+         * @brief SaveScene a component in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const std::string& i_string);
         /**
-         * @brief Write a transform in frakkas text format
+         * @brief SaveScene a transform in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Game::Transform& i_transform);
         /**
-         * @brief Write a camera in frakkas text format
+         * @brief SaveScene a camera in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::LowLevel::Camera& i_camera);
         /**
-         * @brief Write a light in frakkas text format
+         * @brief SaveScene a light in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Light& i_light);
         /**
-         * @brief Write a sound in frakkas text format
+         * @brief SaveScene a sound in frakkas text format
          * @param io_file the opened output file to write in
          */
-        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Resources::Sound& i_sound);
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound);
     private:
 
         /**

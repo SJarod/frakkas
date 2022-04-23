@@ -2,7 +2,7 @@
 #include <chrono>
 #include <iomanip>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 
 
 Log::~Log()

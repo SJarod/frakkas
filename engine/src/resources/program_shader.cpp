@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 #include "resources/resources_manager.hpp"
 
 #include "resources/program_shader.hpp"

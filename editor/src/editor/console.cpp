@@ -1,7 +1,7 @@
 #include <fstream>
 #include <Tracy.hpp>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 
 #include "editor/console.hpp"
 

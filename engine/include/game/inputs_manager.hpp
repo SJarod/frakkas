@@ -9,10 +9,10 @@
 #include <functional>
 
 #include "maths.hpp"
-#include "log.hpp"
+#include "debug/log.hpp"
 
-#include "enum_array.hpp"
-#include "inputs_enum.hpp"
+#include "utils/enum_array.hpp"
+#include "utils/inputs_enum.hpp"
 
 using InputsEvent = std::function<void(const SDL_Event*)>;
 

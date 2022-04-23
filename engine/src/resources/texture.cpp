@@ -1,7 +1,7 @@
 #include <stb_image.h>
 
 #include "resources/resources_manager.hpp"
-#include "log.hpp"
+#include "debug/log.hpp"
 
 #include "resources/texture.hpp"
 

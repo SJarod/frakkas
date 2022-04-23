@@ -1,6 +1,10 @@
 #pragma once
 
-#include "engine.hpp"
+namespace Renderer
+{
+    class Graph;
+}
+
 
 namespace Editor
 {
@@ -18,7 +22,7 @@ namespace Editor
         /**
          * @summary Display the imgui panel
          */
-        void OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_gaming, bool& o_reloadScene);
+        void OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_reloadScene);
 
     private:
         float prevTime = 0.f;
