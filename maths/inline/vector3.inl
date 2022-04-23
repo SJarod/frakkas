@@ -35,6 +35,17 @@ inline Vector3 Vector3::operator*(const T& k) const
             z * k
     };
 }
+
+template<typename T>
+Vector3 operator*(T i_k, const Vector3& i_v)
+{
+    return{
+            i_v.x * i_k,
+            i_v.y * i_k,
+            i_v.z * i_k,
+    };
+}
+
 inline Vector3 Vector3::operator*(const Vector3& vec) const
 {
     return {

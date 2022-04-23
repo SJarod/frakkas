@@ -37,6 +37,8 @@ FetchContent_Declare(sdl
 )
 FetchContent_MakeAvailable(sdl)
 
+set(sdl_INCLUDE_DIR ${sdl_SOURCE_DIR}/include)
+
 # ImGui
 FetchContent_Declare(imgui
                      GIT_REPOSITORY https://github.com/ocornut/imgui.git
@@ -56,7 +58,7 @@ set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
 )
 
 set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include)
-set(GAME_INCLUDE_DIRE ${PROJECT_SOURCE_DIR}/game/include)
+set(GAME_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/game/include)
 set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
                       ${PROJECT_SOURCE_DIR}/maths/inline
 )
@@ -75,5 +77,5 @@ add_subdirectory(editor)
 add_subdirectory(launcher)
 
 add_dependencies(GameFrakkas EngineFrakkas)
-add_dependencies(EditorFrakkas EngineFrakkas)
+add_dependencies(EditorFrakkas GameFrakkas)
 add_dependencies(Launcher GameFrakkas)

@@ -14,7 +14,6 @@
 
 #include "game/entity_manager.hpp"
 
-
 using namespace Game;
 
 EntityManager::EntityManager()
@@ -22,24 +21,9 @@ EntityManager::EntityManager()
     editorCamera.transform.position = Vector3(0.f, 0.f, 5.f);
 }
 
-void EntityManager::Update()
+void EntityManager::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, const float i_aspectRatio)
 {
-    for (const auto& entity : entities)
-    {
-        for (const std::unique_ptr<Component>& comp: entity->components)
-        {
-            if (comp->enabled)
-                comp->Update();
-        }
-    }
-}
-
-void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio)
-{
-    UpdateGlobalUniform(i_renderer, i_aspectRatio);
-
-    i_renderer.SetUniform("uToonShading", lights.back()->light.toonShading);
-    i_renderer.SetUniform("uFiveTone", lights.back()->light.fiveTone);
+    UpdateGlobalUniform(i_renderer, i_aspectRatio, editorCamera);
 
     for (const auto& entity : entities)
     {
@@ -57,7 +41,7 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, float i_
 
                 Resources::Texture* diffuseTex = mesh->diffuseTex.get();
                 if (diffuseTex != nullptr)
-                    if (diffuseTex->gpu.get())
+                    if (diffuseTex->gpu)
                         texToBeBinded = diffuseTex->gpu->data;
 
                 assert(mesh->gpu.VAO != 0);
@@ -73,33 +57,7 @@ void EntityManager::Render(Renderer::LowLevel::LowRenderer& i_renderer, float i_
     }
 }
 
-void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
-{
-    for (const std::unique_ptr<Component>& comp : i_entity->components)
-    {
-        comp->Start();
-        if (!gameCamera)
-        {
-            if (CameraComponent* cameraEntity = reinterpret_cast<CameraComponent*>(comp.get()))
-                gameCamera = cameraEntity;
-        }
-    }
-
-    entities.emplace_back(std::move(i_entity));
-}
-
-Entity* EntityManager::CreateEntity(const std::string_view& i_name)
-{
-    entities.emplace_back(std::make_unique<Entity>(i_name));
-    return entities.back().get();
-}
-
-const std::list<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
-{
-    return entities;
-}
-
-void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspectRatio) {
+void EntityManager::Render(LowRenderer &i_renderer, const float i_aspectRatio) {
     // An entity with CameraComponent should be added to render
     if (!gameCamera || !gameCamera->enabled)
     {
@@ -107,20 +65,15 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
         return;
     }
 
-    UpdateGlobalUniform(i_renderer, i_aspectRatio);
+    UpdateGlobalUniform(i_renderer, i_aspectRatio, gameCamera->camera);
 
     for (const auto& entity : entities)
     {
         for (const std::unique_ptr<Component>& comp : entity->components)
         {
-            if (!comp->enabled)
-                continue;
-
-            comp->Update();
-
-            if (comp->GetID() == Drawable::metaData.className)
+            auto drawable = entity->GetComponent<Drawable>();
+            if (drawable && drawable->enabled)
             {
-                Drawable* drawable = reinterpret_cast<Drawable*>(comp.get());
                 const Renderer::Model& model = drawable->model;
 
                 for (auto& mesh : model.meshes)
@@ -132,7 +85,7 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
 
                     Resources::Texture* diffuseTex = mesh->diffuseTex.get();
                     if (diffuseTex != nullptr)
-                        if (diffuseTex->gpu.get())
+                        if (diffuseTex->gpu)
                             texToBeBinded = diffuseTex->gpu->data;
 
                     assert(mesh->gpu.VAO != 0);
@@ -148,11 +101,86 @@ void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspec
     }
 }
 
+Entity* EntityManager::CreateEntity(const std::string_view& i_name)
+{
+    entities.emplace_back(std::make_unique<Entity>(i_name));
+    return entities.back().get();
+}
+
+void EntityManager::UpdateAndRender(LowRenderer &i_renderer, const float i_aspectRatio) {
+    // An entity with CameraComponent should be added to render
+    if (!gameCamera || !gameCamera->enabled)
+    {
+        FindGameCamera();
+        return;
+    }
+
+    UpdateGlobalUniform(i_renderer, i_aspectRatio, gameCamera->camera);
+
+    for (const auto& entity : entities)
+    {
+        for (const std::unique_ptr<Component>& comp : entity->components)
+        {
+            if (!comp->enabled)
+                continue;
+
+            comp->Update();
+
+            if (comp->GetID() == Drawable::metaData.className)
+            {
+                auto drawable = reinterpret_cast<Drawable*>(comp.get());
+                const Renderer::Model& model = drawable->model;
+
+                for (auto& mesh : model.meshes)
+                {
+                    if (mesh == nullptr || mesh->gpu.VAO == 0)
+                        continue;
+
+                    GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+
+                    Resources::Texture* diffuseTex = mesh->diffuseTex.get();
+                    if (diffuseTex != nullptr)
+                        if (diffuseTex->gpu)
+                            texToBeBinded = diffuseTex->gpu->data;
+
+                    assert(mesh->gpu.VAO != 0);
+                    i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
+                        mesh->gpu.VAO,
+                        mesh->vertices.size(),
+                        texToBeBinded,
+                        true,
+                        lights.back()->light.outline);
+                }
+            }
+        }
+    }
+}
+
+void EntityManager::AddEntity(std::unique_ptr<Entity> i_entity)
+{
+    for (const std::unique_ptr<Component>& comp : i_entity->components)
+    {
+        comp->Start();
+        if (!gameCamera)
+        {
+            if (auto cameraEntity = reinterpret_cast<CameraComponent*>(comp.get()))
+                gameCamera = cameraEntity;
+        }
+    }
+
+    entities.emplace_back(std::move(i_entity));
+}
+
+const std::list<std::unique_ptr<Entity>>& EntityManager::GetEntities() const
+{
+    return entities;
+}
+
 void EntityManager::FindGameCamera() noexcept
 {
     for (std::unique_ptr<Entity>& entity: entities)
     {
-        if (CameraComponent* cameraComponent = entity->GetComponent<CameraComponent>())
+        if (auto cameraComponent = entity->GetComponent<CameraComponent>())
         {
             if (cameraComponent->enabled)
             {
@@ -171,17 +199,17 @@ void EntityManager::FindLight() noexcept
 
     for (std::unique_ptr<Entity>& entity: entities)
     {
-        if (LightComponent* lightComponent = entity->GetComponent<LightComponent>())
+        if (auto lightComponent = entity->GetComponent<LightComponent>())
             lights.emplace_back(lightComponent);
     }
 }
 
-void EntityManager::UpdateGlobalUniform(const LowRenderer& i_renderer, float i_aspectRatio) const noexcept
+void EntityManager::UpdateGlobalUniform(const LowRenderer& i_renderer, float i_aspectRatio, Renderer::LowLevel::Camera& i_camera) const noexcept
 {
 // An entity with CameraComponent should be added to render
-    i_renderer.SetUniform("uProjection", editorCamera.GetProjectionMatrix(i_aspectRatio));
-    i_renderer.SetUniform("uView", editorCamera.GetViewMatrix());
-    i_renderer.SetUniform("uCameraView", editorCamera.transform.position.get());
+    i_renderer.SetUniform("uProjection", i_camera.GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetUniform("uView", i_camera.GetViewMatrix());
+    i_renderer.SetUniform("uCameraView", i_camera.transform.position.get());
 
     if (lights.empty())
     {
@@ -196,6 +224,11 @@ void EntityManager::UpdateGlobalUniform(const LowRenderer& i_renderer, float i_a
     i_renderer.SetUniform("uLight.ambient", light.ambient);
     i_renderer.SetUniform("uLight.diffuse", light.diffuse);
     i_renderer.SetUniform("uLight.specular", light.specular);
+
+
+    i_renderer.SetUniform("uToonShading", lights.back()->light.toonShading);
+    i_renderer.SetUniform("uFiveTone", lights.back()->light.fiveTone);
+
 }
 
 void EntityManager::Read()

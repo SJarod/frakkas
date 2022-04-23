@@ -1,17 +1,18 @@
+#include "maths.hpp"
+#include "renderer/lowlevel/camera.hpp"
+
+#include "game/world.hpp"
+
+#include "engine.hpp"
+
+#undef main
 int main()
 {
-    bool running = true;
-    int foo = 1;
-    while(running)
-    {
-        /// NEW FRAME
+    Engine engine;
 
-        /// UPDATE
+    Game::World world(engine);
 
-        /// ENDFRAME
+    engine.RunGame();
 
-        if (foo++ == 3)
-            running = false;
-    }
     return 0;
 }

@@ -30,12 +30,12 @@ namespace Renderer
 
 			Game::Transform transform;
 
-			float targetFovY = Maths::Constants::piHalf; //target vertical field of view
+			float targetFovY = Maths::Constants::halfPi; //target vertical field of view
 			float near = 0.001f;
 			float far = 1000.f;
 
 			//vertical field of view
-			float fovY = Maths::Constants::piHalf;
+			float fovY = Maths::Constants::halfPi;
 		private:
 
 		};

@@ -24,7 +24,45 @@ struct ClassMetaData;
 
 namespace Helpers
 {
-    /**
+     /**
+     * @brief Call ImGui::DragScalarN and activate cursor game mode for comfortability.
+     * @tparam TScalarType Type of the scalar : int or float
+     * @param i_label The variable name to print on editor.
+     * @param io_data The pointer to the scalar array.
+     * @param i_count The number of scalar in the array.
+     * @param i_speed The quantity step that changes the scalar value when dragging.
+     * @param i_min The minimum value to clamp at.
+     * @param i_max The maximum value to clamp at.
+     * @return true if user edit the scalar, false if nothing happened.
+     */
+     template<typename TScalarType> requires std::is_scalar_v<TScalarType>
+    bool DragScalar(const std::string_view& i_label, TScalarType* io_data, int i_count, float i_speed = 0.5f, TScalarType i_min = std::numeric_limits<TScalarType>::lowest(), TScalarType i_max = std::numeric_limits<TScalarType>::max())
+    {
+        ImGuiDataType_ dataType = ImGuiDataType_Float;
+        if constexpr (std::is_same_v<TScalarType, int>)
+            dataType = ImGuiDataType_S32;
+        else if constexpr (std::is_floating_point_v<TScalarType>)
+            dataType = ImGuiDataType_Float;
+        else
+        {
+                Log::Warning("Intended to drag-edit a wrong type.");
+                return false;
+        }
+
+        if (ImGui::DragScalarN(i_label.data(), dataType, io_data, i_count, i_speed, &i_min, &i_max))
+        {
+            if (!Editor::EditorRender::isEditingDrag)
+            {
+                Engine::SetCursorGameMode(true);
+                Editor::EditorRender::isEditingDrag = true;
+                Editor::EditorRender::mouseLockPosition = Game::Inputs::GetMousePosition();
+            }
+            return true;
+        }
+        return false;
+    }
+
+	/**
     * @brief ImGui editing function. Allows the player to edit a string variable.
      * @param io_string The string to display and edit.
      * @param i_label The variable name of the string. Called 'label' for ImGui field.

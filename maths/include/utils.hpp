@@ -64,6 +64,21 @@ namespace Maths
     template<typename T>
     T Clamp(T i_val, T i_min, T i_max);
 
+    /**
+     * @summary Loops an int value in a range, so that it is never larger than the range and never smaller than 0.
+     * @param i_val the value to loop, else the divident
+     * @param i_range the value which defines the maximum value of the loop, else the divisor
+     * @return the rest of an euclidien division.
+     */
+    int Modulo(int i_val, int i_range);
+/**
+     * @summary Loops a float value in a range, so that it is never larger than the range and never smaller than 0.
+     * @param i_val the value to loop, else the divident
+     * @param i_range the value which defines the maximum value of the loop, else the divisor
+     * @return the rest of an euclidien division.
+     */
+    float Modulo(float i_val, float i_range);
+
 /**
  * @summary Return a float's absolute value
  */
@@ -118,7 +133,7 @@ namespace Maths
 /**
  * @summary Linearly interpolates between i_start and i_reach by i_factor
  * @return The interpolated float result between the two float values
- * @param i_factor clamped to the range [0, 1]
+ * @param i_factor clamped to the range [-1, 1]
  */
     template<typename T>
     T Lerp(T i_start, T i_reach, float i_factor);

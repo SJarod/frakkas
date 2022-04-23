@@ -114,6 +114,8 @@ struct Vector3
     static Vector3 Clamp(const Vector3& i_v, float i_min, float i_max);
 };
 
+template<typename T>
+Vector3 operator*(T i_k, const Vector3& i_v);
 std::ostream& operator<<(std::ostream& o_o, const Vector3& i_vec);
 
 #include "vector3.inl"

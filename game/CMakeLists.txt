@@ -1,13 +1,25 @@
-add_library(GameFrakkas src/bar.cpp)
+add_library(GameFrakkas
+        ${PROJECT_SOURCE_DIR}/lib/glad.c
+        src/bar.cpp
+        src/world.cpp
+        src/fps_movement.cpp
+        src/player_movement.cpp
+        src/follow_camera.cpp
+)
 
 target_include_directories(GameFrakkas
                            PRIVATE include
                            PRIVATE ${ENGINE_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}
+                           PRIVATE ${sdl_INCLUDE_DIR}
+                           PRIVATE ${LIB_INCLUDE_DIR}
 )
 
-target_link_directories(GameFrakkas PRIVATE EngineFrakkas)
+target_link_directories(GameFrakkas
+        PRIVATE EngineFrakkas
+        PRIVATE SDL2-static
+)
 
 set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
