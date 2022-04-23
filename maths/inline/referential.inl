@@ -1,5 +1,5 @@
-#include "vector3.hpp"
-#include "quaternion.hpp"
+#include "maths/vector3.hpp"
+#include "maths/quaternion.hpp"
 
 ////////////////////////////// CONSTRUCTORS
 

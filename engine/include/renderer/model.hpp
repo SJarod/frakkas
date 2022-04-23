@@ -80,7 +80,7 @@ namespace Renderer
         void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
 
         /**
-         * @Summary Write the entity components in scene text format.
+         * @Summary SaveScene the entity components in scene text format.
          * @param o_file the opened output file.
          */
         void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};

@@ -8,6 +8,7 @@
 #include "editor/scene.hpp"
 #include "editor/game_scene.hpp"
 #include "editor/debugger.hpp"
+#include "engine.hpp"
 
 
 namespace Renderer::LowLevel

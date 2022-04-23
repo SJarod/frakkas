@@ -1,4 +1,3 @@
-exemple_scene
 
 >entity
 >name
@@ -7,7 +6,7 @@ exemple_scene
 	1
 >transform
 >position
-	0, 0, 0
+	0, 0, -5
 >rotation
 	0, 0, 0
 >scale
@@ -24,7 +23,7 @@ exemple_scene
 	1
 >transform
 >position
-	2, 0, 0
+	2, 0, -5
 >rotation
 	0, 0, 0
 >scale
@@ -55,7 +54,7 @@ exemple_scene
 	1
 >transform
 >position
-	4, 0, 0
+	4, 0, -5
 >rotation
 	0, 0, 0
 >scale
@@ -85,7 +84,7 @@ exemple_scene
 	1
 >transform
 >position
-	6, 0, 0
+	4.1, 0, -5
 >rotation
 	0, 0, 0
 >scale
@@ -101,7 +100,7 @@ exemple_scene
 	1
 >transform
 >position
-	8, 0, 0
+	8, 0, -5
 >rotation
 	0, 0, 0
 >scale

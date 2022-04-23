@@ -1,28 +1,30 @@
 #include <imgui.h>
 
 #include "maths.hpp"
-#include "log.hpp"
+#include "debug/log.hpp"
 
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
 #include "game/entity_manager.hpp"
+
+#include "renderer/graph.hpp"
 
 #include "editor/debugger.hpp"
 #include "engine.hpp"
 
 using namespace Editor;
 
-void Debugger::OnImGuiRender(Game::EntityManager& io_entityManager, bool& o_gaming, bool& o_reloadScene)
+void Debugger::OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_reloadScene)
 {
     ImGui::Begin("Debugger");
 
 #pragma region Useful button
     if(ImGui::Button("Save scene"))
-        io_entityManager.Write();
+        io_graph.SaveScene();
 
     if (ImGui::Button("Load scene"))
     {
-        io_entityManager.Read();
+        io_graph.LoadScene("exemple_scene");
         o_reloadScene = true;
     }
     

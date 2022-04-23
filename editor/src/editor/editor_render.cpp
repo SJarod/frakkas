@@ -57,7 +57,7 @@ void EditorRender::InitImGui(Engine& io_engine)
     {
         if (!m_scene.isMoving) return;
 
-        Renderer::LowLevel::Camera& cam = io_engine.entityManager.editorCamera;
+        Renderer::LowLevel::Camera& cam = *io_engine.GetEditorGamera();
         float frameSpeed = 20.f * Game::Time::GetDeltaTime();
 
         float forwardVelocity = Game::Inputs::GetAxis("forward") * frameSpeed;
@@ -115,7 +115,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     ImGui::ShowDemoWindow(&ShowDemoWindow);
 
     bool reloadScene = false;
-    m_debugger.OnImGuiRender(io_engine.entityManager, io_engine.gaming, reloadScene);
+    m_debugger.OnImGuiRender(*io_engine.graph, io_engine.gaming, reloadScene);
 
     m_menuBar.OnImGuiRender();
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
@@ -123,7 +123,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_inspector.OnImGuiRender(m_hierarchy.selected);
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender(*io_engine.gameFBO, io_engine.gaming);
-    m_scene.OnImGuiRender(*io_engine.editorFBO, io_engine.entityManager.editorCamera);
+    m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera());
 
 
     io_engine.focusOnGaming = m_game.focusOnGaming;

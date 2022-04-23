@@ -20,9 +20,11 @@ add_library(EngineFrakkas STATIC
 			src/resources/serializer.cpp
 			src/resources/texture.cpp
 			src/resources/sound.cpp
-        	src/log.cpp
+        	src/renderer/graph.cpp
+        	src/debug/log.cpp
             src/engine.cpp
-	    	src/threadpool.cpp
+        	src/multithread/threadpool.cpp
+			${IMGUI_SOURCE_FILES}
 )
 
 target_include_directories(EngineFrakkas

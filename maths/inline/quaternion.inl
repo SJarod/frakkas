@@ -1,6 +1,6 @@
-#include "vector3.hpp"
-#include "matrix4.hpp"
-#include "utils.hpp"
+#include "maths/vector3.hpp"
+#include "maths/matrix4.hpp"
+#include "maths/utils.hpp"
 
 ////////////////////////////// CONSTRUCTORS
 

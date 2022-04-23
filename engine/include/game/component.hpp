@@ -4,8 +4,10 @@
 #include <utility>
 #include <vector>
 
-#include "properties.hpp"
-#include "data_descriptor.hpp"
+#include "utils/properties.hpp"
+#include "game/reflection/data_descriptor.hpp"
+
+
 
 
 
@@ -68,7 +70,7 @@ namespace Game
         virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
 
         /**
-         * @Summary Write the component parameters in scene text format.
+         * @Summary SaveScene the component parameters in scene text format.
          * @param o_file teh opened output file.
          */
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};

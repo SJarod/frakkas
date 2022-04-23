@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component_generator.hpp"
+#include "game/reflection/component_generator.hpp"
 #include "renderer/light.hpp"
 
 

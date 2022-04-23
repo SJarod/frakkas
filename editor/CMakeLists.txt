@@ -4,15 +4,15 @@ add_executable(EditorFrakkas
 			   ${IMGUI_BACKENDS_FILES}
 			   ${tracy_SOURCE_DIR}/TracyClient.cpp
                src/main.cpp
-               src/editor_render.cpp
-               src/hierarchy.cpp
-               src/menu_bar.cpp
-               src/file_browser.cpp
-        	   src/console.cpp
-			   src/inspector.cpp
-			   src/scene.cpp
-			   src/game_scene.cpp
-               src/debugger.cpp
+        src/editor/editor_render.cpp
+        src/editor/hierarchy.cpp
+        src/editor/menu_bar.cpp
+        src/editor/file_browser.cpp
+        src/editor/console.cpp
+        src/editor/inspector.cpp
+        src/editor/scene.cpp
+        src/editor/game_scene.cpp
+        src/editor/debugger.cpp
                src/helpers/game_edit.cpp
 )
 
@@ -27,7 +27,7 @@ target_include_directories(EditorFrakkas
                            PRIVATE include
                            PRIVATE ${LIB_INCLUDE_DIR}
                            PRIVATE ${ENGINE_INCLUDE_DIR}
-						   PRIVATE ${GAME_INCLUDE_DIR}
+                           PRIVATE ${GAME_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
 						   PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${imgui_SOURCE_DIR}/backends

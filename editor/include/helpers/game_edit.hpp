@@ -1,5 +1,12 @@
 #pragma once
 
+#include "log.hpp"
+#include "engine.hpp"
+
+#include "game/inputs_manager.hpp"
+
+#include "editor/editor_render.hpp"
+
 namespace Game
 {
 	class Entity;

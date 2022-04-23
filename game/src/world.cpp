@@ -59,6 +59,4 @@ World::World(Engine& engine)
             entity->name = "Game Camera";
         }
     }
-
-    engine.entityManager.FindLight();
 }

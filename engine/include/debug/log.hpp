@@ -1,20 +1,18 @@
 #pragma once
 
-#include "singleton.hpp"
+#include "utils/singleton.hpp"
 
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <vector>
 
-#include "singleton.hpp"
-
 
 enum class ELogType
 {
     INFO,
     WARNING,
-    ERROR,
+    ERROR
 };
 
 class Log : public Singleton<Log>

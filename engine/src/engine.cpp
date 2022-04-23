@@ -5,7 +5,7 @@
 #include <Tracy.hpp>
 
 #include "maths.hpp"
-#include "log.hpp"
+#include "debug/log.hpp"
 #include "game/entity.hpp"
 #include "game/drawable.hpp"
 #include "game/camera_component.hpp"
@@ -15,6 +15,8 @@
 #include "resources/resources_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
+#include "renderer/lowlevel/camera.hpp"
+#include "renderer/graph.hpp"
 
 #include "engine.hpp"
 
@@ -41,6 +43,8 @@ Engine::Engine()
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+
+    graph = std::make_unique<Renderer::Graph>(&entityManager);
 }
 
 Engine::~Engine()
@@ -154,7 +158,7 @@ void Engine::RunEditor()
         BeginFrame();
 
         renderer->BeginFrame(*editorFBO);
-        entityManager.RenderEditor(*renderer, editorFBO->aspectRatio);
+        graph->RenderEditor(*renderer, editorFBO->aspectRatio);
 
         renderer->BeginFrame(*gameFBO);
         if (gaming)
@@ -162,10 +166,11 @@ void Engine::RunEditor()
             if (focusOnGaming)
                 inputsManager.SetInputsListening(true);
 
-            entityManager.UpdateAndRender(*renderer, gameFBO->aspectRatio);
+            entityManager.Update();
+            graph->RenderGame(*renderer, gameFBO->aspectRatio);
         }
         else
-            entityManager.Render(*renderer, gameFBO->aspectRatio);
+            graph->RenderGame(*renderer, gameFBO->aspectRatio);
 
         renderer->EndFrame();
 
@@ -188,8 +193,11 @@ void Engine::RunGame()
     {
         BeginFrame();
 
+		entityManager.Update();
+
         renderer->BeginFrame();
-        entityManager.UpdateAndRender(*renderer, gameFBO->aspectRatio);
+        graph->RenderGame(*renderer, gameFBO->aspectRatio);
+		
 
         renderer->EndFrame();
 
@@ -214,6 +222,19 @@ void Engine::SetCursorGameMode(bool i_gameMode)
 void Engine::SetCursorPosition(const Vector2& i_position)
 {
     SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
+}
+
+
+
+
+Renderer::LowLevel::Camera* Engine::GetEditorGamera() const
+{
+    return &graph->editorCamera;
+}
+
+Renderer::LowLevel::Camera* Engine::GetGameCamera() const
+{
+    return graph->gameCamera ? &graph->gameCamera->camera : nullptr;
 }
 
 

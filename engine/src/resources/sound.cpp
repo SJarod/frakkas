@@ -1,6 +1,6 @@
-#include "log.hpp"
+#include "debug/log.hpp"
 #include "engine.hpp"
-#include "utils.hpp"
+#include "maths/utils.hpp"
 
 #include "resources/sound.hpp"
 

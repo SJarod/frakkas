@@ -1,7 +1,7 @@
 #pragma once
 
-#include "component.hpp"
-#include "entity.hpp"
+#include "game/component.hpp"
+#include "game/entity.hpp"
 #include "game/reflection/data_descriptor.hpp"
 #include "debug/log.hpp"
 //                componentGenerators[name] = std::make_unique<ComponentGenerator>(metaData, generator);\

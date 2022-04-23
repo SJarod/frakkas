@@ -1,5 +1,5 @@
-#include "log.hpp"
-#include "data_descriptor.hpp"
+#include "debug/log.hpp"
+#include "game/reflection/data_descriptor.hpp"
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"
@@ -22,7 +22,7 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::str
 
     if (o_attribute.length() == 0)
     {
-        Log::Error("A scene attribute is not valid");
+        Log::Error("A scene attribute is not valid : " + o_attribute);
         return o_attribute;
     }
 
