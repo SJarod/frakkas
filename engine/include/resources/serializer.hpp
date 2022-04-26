@@ -7,7 +7,7 @@
 
 #include "maths.hpp"
 
-#include "game/component.hpp"
+#include "game/lowcomponent/component.hpp"
 
 struct ClassMetaData;
 

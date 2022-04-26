@@ -21,7 +21,18 @@ Component* Entity::AddComponent(std::unique_ptr<Component> comp)
     return components.back().get();
 }
 
+void Entity::RemoveComponentAt(int index)
+{
+    UnregisterIntoGraph(components[index].get());
+    components.erase(components.begin() + index);
+}
+
 void Entity::RegisterIntoGraph(Component* i_newComponent)
 {
-    Renderer::Graph::entityComponentRegistry.emplace(i_newComponent);
+    Renderer::Graph::RegisterComponent(i_newComponent);
+}
+
+void Entity::UnregisterIntoGraph(Component* i_oldComponent)
+{
+    Renderer::Graph::UnregisterComponent(i_oldComponent);
 }

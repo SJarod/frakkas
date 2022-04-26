@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <unordered_map>
+
 #include "log.hpp"
 #include "engine.hpp"
 
@@ -85,7 +88,7 @@ namespace Helpers
      * @brief ImGui editing function. Allows the player to change entity parameters.
      * @param io_entity the entity to edit
      */
-    void Edit(Game::Entity& io_entity, int& i_gizmoType);
+    void Edit(Game::Entity& io_entity, const std::unordered_map<const char*, Game::Transform*>& entityTransforms, int& i_gizmoType);
 
     /**
      * @brief ImGui editing function. Allows the player to change camera parameters.
@@ -109,6 +112,7 @@ namespace Helpers
      * @brief ImGui editing function. Allows the player to change reflected component fields.
      * @param io_component The component itself, cast in an unsigned char* pointer for simple memory work.
      * @param io_metaData The metaData of the component, which means all the reflected informations to use io_component correctly.
+     * @return false if the component should be removed.
      */
-    void Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled);
+    bool Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled);
 }

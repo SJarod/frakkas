@@ -5,7 +5,7 @@
 #include <string>
 
 #include "transform.hpp"
-#include "component.hpp"
+#include "game/lowcomponent/component.hpp"
 
 
 namespace Resources
@@ -23,6 +23,8 @@ namespace Game
 
         std::string name;
 
+        std::string parentName;
+
         std::vector<std::unique_ptr<Component>> components;
         Transform transform;
 
@@ -35,6 +37,8 @@ namespace Game
 
         template<typename T>
         T* AddComponent();
+
+        void RemoveComponentAt(int index);
 
         /**
          * @brief Find a component by its id
@@ -65,7 +69,15 @@ namespace Game
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
     private:
+        /**
+         * @brief Send the component to the graph register system.
+         */
         static void RegisterIntoGraph(Component* i_newComponent);
+        /**
+         * @brief Send the component to the graph unregister system.
+         */
+        static void UnregisterIntoGraph(Component* i_oldComponent);
+
     };
 }
 

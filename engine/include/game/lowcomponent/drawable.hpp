@@ -2,7 +2,7 @@
 
 #include "renderer/model.hpp"
 
-#include "game/reflection/component_generator.hpp"
+#include "game/component_generator.hpp"
 
 namespace Game
 {

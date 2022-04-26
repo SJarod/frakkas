@@ -1,10 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <memory>
-#include <list>
+#include <vector>
+#include <string>
 
-#include "renderer/lowlevel/camera.hpp"
+#include <unordered_map>
 
 
 namespace Renderer::LowLevel
@@ -18,9 +18,8 @@ namespace Resources
 }
 namespace Game
 {
+    class Transform;
     class Entity;
-    class CameraComponent;
-    class LightComponent;
 
     class EntityManager
     {
@@ -41,6 +40,12 @@ namespace Game
         void AddEntity(std::unique_ptr<Entity> i_entity);
 
         /**
+         * @summary Remove an entity from the entities array according to index.
+         * @param i_index The index of the entity to remove.
+         */
+        void RemoveEntityAt(int i_index);
+
+        /**
          * @summary Creates an unique-pointer-empty-entity and emplace it in entities array
          * @return the created entity, you can add component to it.
          */
@@ -52,9 +57,11 @@ namespace Game
          */
         void CreateEntities(std::ifstream& i_file);
 
-        const std::list<std::unique_ptr<Entity>>& GetEntities() const;
+        const std::vector<std::unique_ptr<Entity>>& GetEntities() const;
+        const std::unordered_map<const char*, Transform*>& GetEntitiesTransform() const;
 
     private:
-        std::list<std::unique_ptr<Entity>> entities;
+        std::vector<std::unique_ptr<Entity>> entities;
+        std::unordered_map<const char*, Transform*> transforms;
     };
 }

@@ -2,7 +2,7 @@
 
 #include "maths.hpp"
 
-#include "game/reflection/component_generator.hpp"
+#include "game/component_generator.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
 namespace Game

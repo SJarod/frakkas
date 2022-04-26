@@ -1,10 +1,10 @@
 add_library(GameFrakkas
-        ${PROJECT_SOURCE_DIR}/lib/glad.c
         src/bar.cpp
         src/world.cpp
         src/fps_movement.cpp
         src/player_movement.cpp
         src/follow_camera.cpp
+        ${PROJECT_SOURCE_DIR}/lib/glad.c
 )
 
 target_include_directories(GameFrakkas

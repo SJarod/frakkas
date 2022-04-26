@@ -47,6 +47,10 @@ namespace Game
 		Matrix4 GetModelMatrix() const;
 
         void RemoveChild(Transform* childToRemove);
+        /**
+         * Remove all child. Put their parent to nullptr.
+         */
+        void ClearChilds();
 
         /**
          * @return the ScaleLockParameters struct of this transform

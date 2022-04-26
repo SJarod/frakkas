@@ -7,10 +7,6 @@
 #include "utils/properties.hpp"
 #include "game/reflection/data_descriptor.hpp"
 
-
-
-
-
 namespace Resources
 {
     class Serializer;

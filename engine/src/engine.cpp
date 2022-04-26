@@ -7,10 +7,7 @@
 #include "maths.hpp"
 #include "debug/log.hpp"
 #include "game/entity.hpp"
-#include "game/drawable.hpp"
-#include "game/camera_component.hpp"
-#include "game/light_component.hpp"
-#include "game/sound_component.hpp"
+#include "game/lowcomponent/camera_component.hpp"
 
 #include "resources/resources_manager.hpp"
 
@@ -19,7 +16,6 @@
 #include "renderer/graph.hpp"
 
 #include "engine.hpp"
-
 
 #if 1
 // Run on laptop high perf GPU
