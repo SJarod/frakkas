@@ -123,7 +123,6 @@ struct Matrix4
  * @summary Create a scale matrix
  */
     static Matrix4 Scale(const Vector3& i_sc);
-
 };
 
 std::ostream& operator<<(std::ostream& o_o, const Matrix4& i_mat);

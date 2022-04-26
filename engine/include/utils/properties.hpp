@@ -12,15 +12,19 @@ public:
     operator const T&() const
     {
         // Call override getter if defined
-        if (getter) return getter();
-        return get();
+        if (getter)
+            return getter();
+        else
+            return get();
     }
 
     void operator = (const T& value)
     {
         // Call override setter if defined
-        if (setter) setter(value);
-        set(value);
+        if (setter)
+            setter(value);
+        else
+            set(value);
     }
 
     bool operator == (const T& value) const

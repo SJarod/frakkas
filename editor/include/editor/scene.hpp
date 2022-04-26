@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ImGuizmo.h>
+
 #include "maths.hpp"
 
 namespace Renderer::LowLevel
@@ -8,6 +10,10 @@ namespace Renderer::LowLevel
     class Camera;
 }
 
+namespace Game
+{
+    class Entity;
+}
 typedef void* ImTextureID;
 
 namespace Editor
@@ -30,7 +36,7 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& camera);
+        void OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, int& i_gizmoType);
 
         /**
          * @summary Listen to mouse right click, and enable/disable movement in editor scene.

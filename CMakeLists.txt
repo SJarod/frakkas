@@ -57,7 +57,16 @@ set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
                          ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
-set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include ${PROJECT_SOURCE_DIR}/engine/include/debug)
+#ImGuizmo
+FetchContent_Declare(imguizmo
+                     GIT_REPOSITORY https://github.com/CedricGuillemet/ImGuizmo.git
+                     GIT_TAG 664cf2d # v1.83
+)
+FetchContent_MakeAvailable(imguizmo)
+
+set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include 
+					   ${PROJECT_SOURCE_DIR}/engine/include/debug
+)
 set(GAME_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/game/include)
 set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
                       ${PROJECT_SOURCE_DIR}/maths/inline

@@ -1,4 +1,5 @@
 #include <imgui.h>
+#include <ImGuizmo.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl.h>
 
@@ -100,6 +101,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
@@ -120,11 +122,10 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_debugger.OnImGuiRender();
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
     m_console.OnImGuiRender();
-    m_inspector.OnImGuiRender(m_hierarchy.selected);
+    m_inspector.OnImGuiRender(m_hierarchy.selected, gizmoType);
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender(*io_engine.gameFBO, io_engine.gaming);
-    m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera());
-
+    m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera(), m_hierarchy.selected, gizmoType);
 
     io_engine.focusOnGaming = m_game.focusOnGaming;
 	if (reloadScene)

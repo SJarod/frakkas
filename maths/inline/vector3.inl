@@ -7,11 +7,11 @@
 inline Vector3::Vector3()
             : x(0.f), y(0.f), z(0.f)
 {}
-inline Vector3::Vector3(const float& _x, const float& _y, const float& _z)
-            : x(_x), y(_y), z(_z)
+inline Vector3::Vector3(const float& i_x, const float& i_y, const float& i_z)
+            : x(i_x), y(i_y), z(i_z)
 {}
-inline Vector3::Vector3(const Vector4& v4)
-            : x(v4.x), y(v4.y), z(v4.z)
+inline Vector3::Vector3(const Vector4& i_v4)
+            : x(i_v4.x), y(i_v4.y), z(i_v4.z)
 {}
 
 ////////////////////////////// VARIABLES

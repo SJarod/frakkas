@@ -19,7 +19,7 @@ struct Vector3
 
     Vector3();
     Vector3(const float& i_x, const float& i_y, const float& i_z);
-    explicit Vector3(const Vector4& i_v4);
+    Vector3(const Vector4& i_v4);
 
 ////////////////////////////// CONSTANTS
 
