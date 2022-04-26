@@ -131,6 +131,13 @@ namespace Maths
     float Atan(float i_f);
 
 /**
+ * @summary Return two float's arctangent
+ * @param i_f1 float in radian
+ * @param i_f2 float in radian
+ */
+    float Atan2(float i_f1, float i_f2);
+
+/**
  * @summary Linearly interpolates between i_start and i_reach by i_factor
  * @return The interpolated float result between the two float values
  * @param i_factor clamped to the range [-1, 1]

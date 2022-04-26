@@ -1,6 +1,7 @@
 #include <imgui.h>
 
 #include "game/inputs_manager.hpp"
+#include "game/entity.hpp"
 
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -12,8 +13,7 @@
 
 using namespace Editor;
 
-
-void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& camera)
+void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, int& i_gizmoType)
 {
     ImGui::Begin("Scene");
 
@@ -22,13 +22,69 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
     ImVec2 windowSize = ImGui::GetContentRegionAvail();
     ImGui::Image(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
 
+    if (!isMoving)
+    {
+        if(Game::Inputs::IsPressed(Game::EButton::Q))
+            i_gizmoType = -1;
+
+        else if(Game::Inputs::IsPressed(Game::EButton::W))
+            i_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+
+        else if(Game::Inputs::IsPressed(Game::EButton::E))
+            i_gizmoType = ImGuizmo::OPERATION::ROTATE;
+
+        else if(Game::Inputs::IsPressed(Game::EButton::R))
+            i_gizmoType = ImGuizmo::OPERATION::SCALE;
+    }
+
+    if (i_selectedEntity && i_gizmoType != -1)
+    {
+        ImGuizmo::SetOrthographic(false);
+        ImGuizmo::SetDrawlist();
+
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowSize.x, windowSize.y);
+
+        Matrix4 cameraProj = i_camera.GetProjectionMatrix(windowSize.x / windowSize.y);
+        Matrix4 cameraView = i_camera.GetViewMatrix();
+
+        Game::Transform& trs = i_selectedEntity->transform;
+        Matrix4 trsMatrix = i_selectedEntity->transform.GetModelMatrix();
+
+        Matrix4 deltaMatrix = Matrix4::Identity();
+
+        if(ImGuizmo::Manipulate(cameraView.element, cameraProj.element, (ImGuizmo::OPERATION)i_gizmoType, ImGuizmo::LOCAL, trsMatrix.element, deltaMatrix.element))
+        {
+            /*
+            Normally we could have done trsMatrix *= deltaMatrix, unfortunately it doesn't work.
+            So we decide to decompose deltaMatrix. Even with this, the scale component didn't work,
+             so we had to use the one from trsMatrix.
+            This is why we decompose the two matrices.
+            */
+
+            Vector3 pos, scale, rot;
+            Vector3 posDelta, scaleDelta, rotDelta;
+
+            ImGuizmo::DecomposeMatrixToComponents(trsMatrix.element, pos.element, rot.element, scale.element);
+            ImGuizmo::DecomposeMatrixToComponents(deltaMatrix.element, posDelta.element, rotDelta.element, scaleDelta.element);
+
+            if (i_gizmoType == ImGuizmo::OPERATION::TRANSLATE)
+                trs.position = trs.position.get() + posDelta;
+
+            if (i_gizmoType == ImGuizmo::OPERATION::ROTATE)
+                trs.rotation = trs.rotation.get() + Maths::ToRadians(rotDelta);
+
+            if (i_gizmoType == ImGuizmo::OPERATION::SCALE)
+                trs.scale = scale;
+        }
+    }
+
     ImGui::End();
 
     io_fbo.aspectRatio = windowSize.x / windowSize.y;
 
-    float newFovY = 2.f * Maths::Atan(Maths::Tan(camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
+    float newFovY = 2.f * Maths::Atan(Maths::Tan(i_camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
     if (io_fbo.aspectRatio > 1.f)
-        camera.SetFieldOfView(newFovY);
+        i_camera.SetFieldOfView(newFovY);
 }
 
 void Scene::CheckMouseAction()

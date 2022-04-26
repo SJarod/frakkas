@@ -40,6 +40,8 @@ namespace Editor
         static Vector2 mouseLockPosition;
 
     private:
+        int gizmoType = -1;
+
         MenuBar m_menuBar;
         Hierarchy m_hierarchy;
         Console m_console;

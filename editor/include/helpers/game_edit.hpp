@@ -85,7 +85,7 @@ namespace Helpers
      * @brief ImGui editing function. Allows the player to change entity parameters.
      * @param io_entity the entity to edit
      */
-    void Edit(Game::Entity& io_entity);
+    void Edit(Game::Entity& io_entity, int& i_gizmoType);
 
     /**
      * @brief ImGui editing function. Allows the player to change camera parameters.

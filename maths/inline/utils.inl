@@ -125,6 +125,11 @@ namespace Maths {
         return atanf(i_f);
     }
 
+    inline float Atan2(float i_f1, float i_f2)
+    {
+        return atan2(i_f1, i_f2);
+    }
+
     template<typename T>
     inline T Lerp(T i_start, T i_reach, float i_factor)
     {

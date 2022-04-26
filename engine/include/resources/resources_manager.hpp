@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <memory>
+#include <list>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

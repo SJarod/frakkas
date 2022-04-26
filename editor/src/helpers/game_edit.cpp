@@ -1,7 +1,6 @@
 #include <imgui.h>
+#include <ImGuizmo.h>
 #include <string>
-
-#include "log.hpp"
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"
@@ -10,13 +9,10 @@
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 
-#include "engine.hpp"
-
-#include "editor/editor_render.hpp"
-
 #include "resources/sound.hpp"
 
 #include "helpers/game_edit.hpp"
+
 
 void Helpers::Edit(std::string& io_string, const char* i_label)
 {
@@ -36,16 +32,17 @@ void Helpers::Edit(Game::Transform& io_transform)
     ImGui::Spacing();
 
     Vector3 pos = trs.position;
-    Vector3 rot = Maths::ToDegrees(trs.rotation);
+    Vector3 rot = trs.rotation;
     Vector3 sc = trs.scale;
 
     // Position edit
     DragScalar("Position", pos.element, 3, 0.1f);
 
     // Rotation edit
-    DragScalar("Rotation", rot.element, 3, 1.f);
-    for (float& coord : rot.element)
-        coord = Maths::Abs(coord) >= 360.f ? 0.f : coord;
+    ImGui::Text("Rotation");
+    ImGui::SliderAngle("x", &rot.x);
+    ImGui::SliderAngle("y", &rot.y);
+    ImGui::SliderAngle("z", &rot.z);
 
 #pragma region Scale edit
     if (scParams.isLock && scParams.origScale == Vector3::zero)
@@ -76,12 +73,25 @@ void Helpers::Edit(Game::Transform& io_transform)
 #pragma endregion
 
     trs.position = pos;
-    trs.rotation = Maths::ToRadians(rot);
+    trs.rotation = rot;
     trs.scale = sc;
 }
 
-void Helpers::Edit(Game::Entity& io_entity)
+void Helpers::Edit(Game::Entity& io_entity, int& i_gizmoType)
 {
+    ImGui::RadioButton("None", &i_gizmoType, -1);
+
+    ImGui::SameLine();
+    ImGui::RadioButton("Translate", &i_gizmoType, ImGuizmo::OPERATION::TRANSLATE);
+
+    ImGui::SameLine();
+    ImGui::RadioButton("Rotate", &i_gizmoType, ImGuizmo::OPERATION::ROTATE);
+
+    ImGui::SameLine();
+    ImGui::RadioButton("Scale", &i_gizmoType, ImGuizmo::OPERATION::SCALE);
+
+    ImGui::Separator();
+
     //ImGui::Text("Entity: %s", io_entity.name.c_str());
     Edit(io_entity.name, "Name");
 
