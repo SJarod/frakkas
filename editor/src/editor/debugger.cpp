@@ -4,13 +4,8 @@
 #include "debug/log.hpp"
 
 #include "game/time_manager.hpp"
-#include "game/inputs_manager.hpp"
-#include "game/entity_manager.hpp"
-
-#include "renderer/graph.hpp"
 
 #include "editor/debugger.hpp"
-#include "engine.hpp"
 
 using namespace Editor;
 

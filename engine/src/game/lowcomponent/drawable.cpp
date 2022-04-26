@@ -1,6 +1,6 @@
 #include "game/entity.hpp"
 
-#include "game/drawable.hpp"
+#include "game/lowcomponent/drawable.hpp"
 
 KK_COMPONENT_IMPL(Drawable)
 

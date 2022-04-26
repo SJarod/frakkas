@@ -2,12 +2,7 @@
 #include "maths.hpp"
 #include "engine.hpp"
 
-#include "game/entity.hpp"
-#include "game/time_manager.hpp"
-
 #include "game/fps_movement.hpp"
-
-using namespace Game;
 
 KK_COMPONENT_IMPL(FPSMovement)
 

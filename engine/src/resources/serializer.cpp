@@ -3,7 +3,7 @@
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"
-#include "game/component.hpp"
+#include "game/lowcomponent/component.hpp"
 
 #include "resources/sound.hpp"
 
@@ -90,9 +90,6 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
                 break;
             case DataType::CAMERA:
                 Read(i_file, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
-                break;
-            case DataType::LIGHT:
-                Read(i_file, *reinterpret_cast<Renderer::Light*>(componentData));
                 break;
             case DataType::SOUND:
                 Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
@@ -232,9 +229,6 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
             case DataType::CAMERA:
                 Write(io_file, desc.name, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
-            case DataType::LIGHT:
-                Write(io_file, desc.name, *reinterpret_cast<Renderer::Light*>(componentData));
-                break;
             case DataType::SOUND:
                 Write(io_file, desc.name, *reinterpret_cast<Resources::Sound*>(componentData));
                 break;
@@ -251,19 +245,21 @@ char Serializer::Tab()
 
 unsigned int Resources::Serializer::GetCurrentLine(std::ifstream& i_file)
 {
-    auto pos = i_file.tellg();
+    auto originalPos = i_file.tellg();
 
     i_file.seekg(0);
 
     int count = 0;
     std::string line;
-    for (count; i_file.tellg() < pos; count++)
+    // Read line one by one, and check cursor position
+    // 'for' loop stop when cursor moves beyond the original position
+    for (; i_file.tellg() < originalPos; count++)
     {
         std::getline(i_file, line);
-        std::cout << static_cast<int>(i_file.tellg()) << std::fflush << std::endl;
+        std::cout << static_cast<int>(i_file.tellg()) << std::endl;
     }
 
-    i_file.seekg(pos);
+    i_file.seekg(originalPos);
 
     return count;
 }

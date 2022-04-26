@@ -4,7 +4,6 @@
 #include "resources/program_shader.hpp"
 #include "renderer/model.hpp"
 #include "renderer/lowlevel/camera.hpp"
-#include "game/light_component.hpp"
 
 
 namespace Renderer

@@ -1,9 +1,8 @@
 #include <cassert>
 
-#include "game/component.hpp"
-#include "game/drawable.hpp"
-#include "game/light_component.hpp"
-#include "game/camera_component.hpp"
+#include "game/lowcomponent/component.hpp"
+#include "game/lowcomponent/drawable.hpp"
+#include "game/lowcomponent/camera_component.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -17,30 +16,42 @@
 using namespace Game;
 using namespace Renderer;
 
-std::queue<Game::Component*> Graph::entityComponentRegistry;
+std::vector<Game::CameraComponent*> Graph::gameCameras;
+std::vector<Game::Drawable*> Graph::renderEntities;
+bool Graph::updateCamera = true;
 
 Graph::Graph(Game::EntityManager* entityManager)
     :entityManager(entityManager)
 {}
 
-void Graph::CheckComponentQueue() noexcept
+void Graph::RegisterComponent(Game::Component* i_newComponent)
 {
-    while(!entityComponentRegistry.empty())
-    {
-        Component* comp = entityComponentRegistry.front();
-        if (comp->GetID() == Drawable::metaData.className)
-            renderEntities.emplace_back(reinterpret_cast<Drawable*>(comp));
-        else if (comp->GetID() == CameraComponent::metaData.className)
-            gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(comp));
-        else if (comp->GetID() == LightComponent::metaData.className)
-            lights.emplace_back(reinterpret_cast<LightComponent*>(comp));
+    if (i_newComponent->GetID() == Drawable::metaData.className)
+        renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
+    else if (i_newComponent->GetID() == CameraComponent::metaData.className)
+        gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(i_newComponent));
+}
 
-        entityComponentRegistry.pop();
+void Graph::UnregisterComponent(Game::Component* i_oldComponent)
+{
+    if (i_oldComponent->GetID() == Drawable::metaData.className)
+    {
+        auto it = std::find(renderEntities.begin(), renderEntities.end(), reinterpret_cast<Drawable*>(i_oldComponent));
+        if (it != renderEntities.end())
+            renderEntities.erase(it);
+    }
+    else if (i_oldComponent->GetID() == CameraComponent::metaData.className)
+    {
+        auto it = std::find(gameCameras.begin(), gameCameras.end(), reinterpret_cast<CameraComponent*>(i_oldComponent));
+        if (it != gameCameras.end())
+            gameCameras.erase(it);
+        updateCamera = true;
     }
 }
 
 void Graph::SetGameCameraAuto() noexcept
 {
+    updateCamera = false;
     for (CameraComponent* cameraComponent : gameCameras)
     {
         if (cameraComponent->enabled)
@@ -61,7 +72,7 @@ void Graph::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_as
 
 void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio)
 {
-    if (!gameCamera || !gameCamera->enabled)
+    if (updateCamera || !gameCamera || !gameCamera->enabled)
     {
         SetGameCameraAuto();
         return;
@@ -73,8 +84,6 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
 
 void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
 {
-    CheckComponentQueue();
-
     for (Drawable* drawable : renderEntities)
     {
         if (drawable && drawable->enabled)
@@ -99,7 +108,7 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
                                           mesh->vertices.size(),
                                           texToBeBinded,
                                           true,
-                                          lights.empty() ? false : lights.back()->light.outline);
+                                          light.outline);
             }
         }
 
@@ -114,22 +123,15 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
     i_renderer.SetUniform("uView", i_camera.GetViewMatrix());
     i_renderer.SetUniform("uCameraView", i_camera.transform.position.get());
 
-    if (lights.empty())
-    {
-        i_renderer.SetUniform("uLight.enabled", false);
-        return;
-    }
     // Use last light as default
-    LightComponent* lightComp = lights.back();
-    i_renderer.SetUniform("uLight.enabled", lightComp->enabled.get());
-    auto& light = lightComp->light;
-    i_renderer.SetUniform("uLight.position", light.position + lightComp->owner.get()->transform.position.get());
+    i_renderer.SetUniform("uLight.enabled", lightEnabled);
+    i_renderer.SetUniform("uLight.position", light.position);
     i_renderer.SetUniform("uLight.ambient", light.ambient);
     i_renderer.SetUniform("uLight.diffuse", light.diffuse);
     i_renderer.SetUniform("uLight.specular", light.specular);
 
-    i_renderer.SetUniform("uToonShading", lights.back()->light.toonShading);
-    i_renderer.SetUniform("uFiveTone", lights.back()->light.fiveTone);
+    i_renderer.SetUniform("uToonShading", light.toonShading);
+    i_renderer.SetUniform("uFiveTone", light.fiveTone);
 }
 
 void Graph::ReloadScene()
@@ -148,14 +150,10 @@ void Graph::LoadScene(const std::string& i_sceneName)
     {
         // Reset all lists
         gameCameras.clear();
-        lights.clear();
         renderEntities.clear();
 
         // Parse file to create entities
         entityManager->CreateEntities(file);
-
-        // Sort registered component
-        CheckComponentQueue();
 
         SetGameCameraAuto();
 
@@ -177,7 +175,7 @@ void Graph::SaveScene() const
     Log::Info("Save scene " + currentSceneName);
 }
 
-std::string Graph::GetSceneFullPath(const std::string& i_sceneName) const
+std::string Graph::GetSceneFullPath(const std::string& i_sceneName)
 {
     return pathToScenes + i_sceneName + ".kk";
 }

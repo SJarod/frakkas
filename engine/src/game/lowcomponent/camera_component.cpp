@@ -1,8 +1,8 @@
-#include <imgui.h>
+#include "imgui.h"
 
 #include "game/entity.hpp"
 
-#include "game/camera_component.hpp"
+#include "game/lowcomponent/camera_component.hpp"
 
 KK_COMPONENT_IMPL(CameraComponent)
 KK_FIELD_IMPL(CameraComponent, camera, DataType::CAMERA, 1)

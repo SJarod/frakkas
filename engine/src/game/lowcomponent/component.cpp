@@ -1,4 +1,4 @@
-#include "game/component.hpp"
+#include "game/lowcomponent/component.hpp"
 
 using namespace Game;
 

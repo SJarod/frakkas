@@ -3,6 +3,7 @@
 namespace Renderer
 {
     class Graph;
+    class Light;
 }
 
 namespace Editor
@@ -25,7 +26,17 @@ namespace Editor
          * @param io_graph The graph to manage scene from.
          */
         void FileField(Renderer::Graph& io_graph, bool& o_loadScene);
-        void EditField(bool& o_gaming);
+        void EditField();
         void OptionsField();
+        /**
+         * @brief Give useful utilities about Game experience.
+         * @param o_gaming The current gaming state (playing or not playing)
+         */
+        void GameField(bool& o_gaming);
+        /**
+         * @brief Edit lighting
+         * @param io_graph The graph which possesses the light.
+         */
+        void LightingField(Renderer::Graph& io_graph);
     };
 }

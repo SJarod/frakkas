@@ -3,8 +3,7 @@
 #include <string>
 
 #include "game/transform.hpp"
-#include "game/entity.hpp"
-#include "game/component.hpp"
+#include "game/component_generator.hpp"
 
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
@@ -16,10 +15,9 @@
 
 void Helpers::Edit(std::string& io_string, const char* i_label)
 {
-    char newStr[255] = "";
-    memcpy(newStr, io_string.c_str(), io_string.size());
-    if (ImGui::InputText(i_label, newStr, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
-        io_string= newStr;
+    std::string cpy = io_string;
+    if (!ImGui::InputText(i_label, io_string.data(), 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
+        io_string= cpy; // Do not save change if ENTER not pressed
 }
 
 void Helpers::Edit(Game::Transform& io_transform)
@@ -77,7 +75,7 @@ void Helpers::Edit(Game::Transform& io_transform)
     trs.scale = sc;
 }
 
-void Helpers::Edit(Game::Entity& io_entity, int& i_gizmoType)
+void Helpers::Edit(Game::Entity& io_entity, const std::unordered_map<const char*, Game::Transform*>& entityTransforms, int& i_gizmoType)
 {
     ImGui::RadioButton("None", &i_gizmoType, -1);
 
@@ -97,13 +95,112 @@ void Helpers::Edit(Game::Entity& io_entity, int& i_gizmoType)
 
     ImGui::Separator();
 
+    if (!io_entity.transform.parent.get())
+        io_entity.parentName = "none";
+
+    ImGui::Text("Parent: %s", io_entity.parentName.c_str());
+    ImGui::SameLine();
+    if (ImGui::Button("Set"))
+        ImGui::OpenPopup("Set parent");
+    ImGui::SameLine();
+    if (ImGui::Button("Unset"))
+    {
+        io_entity.parentName = "";
+        io_entity.transform.parent = nullptr;
+    }
+
+    /// SET PARENT POPUP
+    if (ImGui::BeginPopup("Set parent", NULL))
+    {
+        static ImGuiTextFilter parentFilter;
+        parentFilter.Draw("Parent", 150.f);
+
+        static bool firstTime = true;
+        if (firstTime)
+        {
+            ImGui::SetKeyboardFocusHere();
+            firstTime = false;
+        }
+
+
+        for (const auto& pair : entityTransforms)
+        {
+            const char* pName = pair.first;
+
+            if(!parentFilter.PassFilter(pName) || pName == io_entity.name.c_str())
+                continue;
+
+            if (ImGui::Selectable(pName))
+            {
+                if(pair.second->parent && pair.second->parent == &io_entity.transform)
+                {
+                    Log::Warning("Try to set transform parent which is already its child");
+                    firstTime = true;
+                    break;
+                }
+
+                io_entity.parentName = pName;
+                io_entity.transform.parent = pair.second;
+                firstTime = true;
+                break;
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+
+    // Edit transform
     Edit(io_entity.transform);
 
+    /// EDIT COMPONENTS
+    int index = 0, removeIndex = -1;
     for (const std::unique_ptr<Game::Component>& comp : io_entity.components)
     {
+        ImGui::PushID(index);
+
         bool compEnabled = comp->enabled;
-        Edit(reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), compEnabled);
+        if (!Edit(reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), compEnabled))
+            removeIndex = index;
         comp->enabled = compEnabled;
+
+        ImGui::PopID();
+        index++;
+    }
+
+    if (removeIndex != -1)
+        io_entity.RemoveComponentAt(removeIndex);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    if (ImGui::Button("Add Component", ImVec2(200, 0)))
+        ImGui::OpenPopup("Add component.");
+
+    /// ADD NEW COMPONENT POPUP
+    ImGui::SetNextWindowSize(ImVec2(0, 200));
+    if (ImGui::BeginPopup("Add component.", ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_AlwaysVerticalScrollbar))
+    {
+        static ImGuiTextFilter filter;
+
+        // Set keyboard focus on filter only when window popup
+        static bool firstTime = true;
+        if (firstTime) ImGui::SetKeyboardFocusHere();
+        firstTime = false;
+
+        filter.Draw("Component", 180);
+
+        for (const ClassMetaData* metaData : Game::Component::GetRegistry())
+        {
+            std::string name = metaData->className;
+            if (!filter.PassFilter(name.c_str()))
+                continue;
+
+            if (ImGui::Selectable(name.c_str()))
+                io_entity.AddComponent(std::unique_ptr<Game::Component>(metaData->constructor()));
+        }
+
+        ImGui::EndPopup();
     }
 }
 
@@ -122,27 +219,32 @@ void Helpers::Edit(Renderer::LowLevel::Camera& io_camera)
 
 void Helpers::Edit(Renderer::Light& io_light)
 {
-    ImGui::Text("Light");
-
     ImGui::Checkbox("ToonShading", &io_light.toonShading);
 
     if (io_light.toonShading)
     {
-        ImGui::Checkbox("Outline", &io_light.outline);
+        ImGui::SameLine();
         ImGui::Checkbox("FiveTone", &io_light.fiveTone);
+        ImGui::Checkbox("Outline", &io_light.outline);
     }
     else
     {
+        ImGui::Spacing();
+
         io_light.outline = false;
         io_light.fiveTone = false;
+
+        ImGui::ColorEdit3("Ambient", io_light.ambient.element);
+        ImGui::ColorEdit3("Diffuse", io_light.diffuse.element);
+        ImGui::ColorEdit3("Specular", io_light.specular.element);
     }
     
     ImGui::Spacing();
 
-    DragScalar("Position", io_light.position.element, 3);
-    ImGui::ColorEdit3("Ambient", io_light.ambient.element);
-    ImGui::ColorEdit3("Diffuse", io_light.diffuse.element);
-    ImGui::ColorEdit3("Specular", io_light.specular.element);
+    ImGui::SliderFloat3("Position", io_light.position.element, -1.f, 1.f);
+
+    ImGui::Spacing();
+    ImGui::Separator();
 
     if (ImGui::Button("Reset light"))
     {
@@ -172,8 +274,9 @@ void Helpers::Edit(Resources::Sound& io_sound)
     io_sound.SetVolume();
 }
 
-void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled)
+bool Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled)
 {
+    bool keepOnEntity = true;
     if (ImGui::TreeNodeEx(io_metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("Activate", &io_enabled);
@@ -199,9 +302,6 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
             case DataType::CAMERA:
                 Edit(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
-            case DataType::LIGHT:
-                Edit(*reinterpret_cast<Renderer::Light*>(componentData));
-                break;
             case DataType::SOUND:
                 Edit(*reinterpret_cast<Resources::Sound*>(componentData));
                 break;
@@ -210,6 +310,16 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
             }
         }
 
+        ImGui::Spacing();
+
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.5f, 0.5f, 1.f));
+        if (ImGui::Selectable(("Remove " + io_metaData.className).c_str()))
+            keepOnEntity = false;
+        ImGui::PopStyleColor();
+
+        ImGui::Spacing();
+
         ImGui::TreePop();
     }
+    return keepOnEntity;
 }

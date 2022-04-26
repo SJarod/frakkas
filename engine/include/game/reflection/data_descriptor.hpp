@@ -12,7 +12,6 @@ enum class DataType
 	BOOL,
 	STRING,
 	CAMERA,
-    LIGHT,
     SOUND
 };
 

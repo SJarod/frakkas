@@ -1,9 +1,10 @@
 #include <imgui.h>
 #include <cstdlib>
 
-#include "game/inputs_manager.hpp"
+#include "game/component_generator.hpp"
 
 #include "renderer/graph.hpp"
+#include "renderer/light.hpp"
 
 #include "helpers/game_edit.hpp"
 #include "editor/menu_bar.hpp"
@@ -19,12 +20,16 @@ void MenuBar::OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_l
 
     FileField(io_graph, o_loadScene);
 
-    EditField(o_gaming);
+    EditField();
 
     if (Inputs::IsPressed(EButton::P))
         o_gaming = !o_gaming;
 
     OptionsField();
+
+    GameField(o_gaming);
+
+    LightingField(io_graph);
 
     ImGui::EndMainMenuBar();
 }
@@ -108,6 +113,9 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
         if (ImGui::Button("Create", ImVec2(120, 0)))
         {
             std::ofstream emptyFile(io_graph.GetSceneFullPath(sceneName));
+            if (!emptyFile.is_open())
+                Log::Warning("bah non");
+
             emptyFile.close();
             io_graph.LoadScene(sceneName);
             o_loadScene = true;
@@ -166,7 +174,7 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
 #pragma endregion
 }
 
-void MenuBar::EditField(bool& o_gaming)
+void MenuBar::EditField()
 {
     if (ImGui::BeginMenu("Edit"))
     {
@@ -178,9 +186,6 @@ void MenuBar::EditField(bool& o_gaming)
         if (ImGui::MenuItem("Select All", "CTRL+A")) {}
         if (ImGui::MenuItem("Deselect All", "CTRL+D")) {}
         ImGui::Separator();
-
-        if (ImGui::MenuItem("Play", "P")) { o_gaming = true; }
-        if (ImGui::MenuItem("Pause", "P")) { o_gaming = false; }
 
         ImGui::EndMenu();
     }
@@ -250,4 +255,75 @@ void MenuBar::FrakkasColors()
     colors[ImGuiCol_TabUnfocusedActive] = ImVec4(108.f / 255.f, 35.f / 255.f, 35.f / 255.f, 1.f);
 
     colors[ImGuiCol_DockingPreview] = ImVec4(250.f / 255.f, 66.f / 255.f, 66.f / 255.f, 179.f / 255.f);
+}
+
+void Editor::MenuBar::GameField(bool& o_gaming)
+{
+    bool createComponent = false;
+
+    if (ImGui::BeginMenu("Game"))
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.4f, 1.0f)); // Yellow
+        if (ImGui::MenuItem("Create component", "CTRL+G"))
+            createComponent = true;
+        ImGui::PopStyleColor();
+
+        ImGui::Separator();
+
+        if (ImGui::MenuItem("Play", "P")) { o_gaming = true; }
+        if (ImGui::MenuItem("Pause", "P")) { o_gaming = false; }
+
+        ImGui::EndMenu();
+    }
+
+    if (createComponent || Inputs::IsControlCommandPressed(EButton::G))
+        ImGui::OpenPopup("Create new component?");
+
+    if (ImGui::BeginPopupModal("Create new component?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        static bool existingFile = false;
+        static std::string compName = "NewComponent";
+        Helpers::Edit(compName, "Name");
+
+        if (ImGui::Button("Create", ImVec2(120, 0)))
+        {
+            if (CreateNewComponentScript(compName))
+            {
+                compName = "NewComponent";
+                existingFile = false;
+
+                ImGui::CloseCurrentPopup();
+            }
+            else
+                existingFile = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        {
+            compName = "NewComponent";
+            existingFile = false;
+            ImGui::CloseCurrentPopup();
+        }
+
+        if (existingFile)
+            ImGui::Text("This component already exists...");
+
+        ImGui::EndPopup();
+    }
+
+
+}
+
+void Editor::MenuBar::LightingField(Renderer::Graph& io_graph)
+{
+    if (ImGui::BeginMenu("Lighting"))
+    {
+        ImGui::Checkbox("Activate", &io_graph.lightEnabled);
+
+        ImGui::Separator();
+
+        Helpers::Edit(io_graph.light);
+
+        ImGui::EndMenu();
+    }
 }

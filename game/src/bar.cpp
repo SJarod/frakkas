@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "maths.hpp"
-#include "log.hpp"
 
 #include "game/time_manager.hpp"
 #include "game/bar.hpp"

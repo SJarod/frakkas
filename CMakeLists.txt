@@ -76,6 +76,11 @@ set(LIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib
                     ${PROJECT_SOURCE_DIR}/lib/miniaudio
 )
 
+# C++ MACROS
+if ($ENV{CLION_IDE})
+    add_compile_definitions(CLION_IDE)
+endif()
+
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 
 add_subdirectory(maths)

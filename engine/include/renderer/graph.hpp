@@ -2,6 +2,7 @@
 
 #include <queue>
 
+#include "renderer/light.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
 namespace Game
@@ -18,7 +19,6 @@ namespace Renderer
 {
     namespace LowLevel
     {
-        class Camera;
         class LowRenderer;
     }
 
@@ -28,10 +28,24 @@ namespace Renderer
         Graph(Game::EntityManager* entityManager);
         ~Graph() = default;
 
-        static std::queue<Game::Component*> entityComponentRegistry;
+        bool lightEnabled = true;
+        Renderer::Light light;
 
         Renderer::LowLevel::Camera editorCamera;
         Game::CameraComponent* gameCamera = nullptr;
+
+        /**
+         * @brief Inform the graph that a new component had been added.
+         * If the component is a drawable or a camera, store it into the graph.
+         * @param i_newComponent A pointer of the new component to register.
+         */
+        static void RegisterComponent(Game::Component* i_newComponent);
+        /**
+         * @brief Inform the graph that a component will be removed.
+         * If the component is a drawable or a camera, remove it from the graph.
+         * @param i_oldComponent A pointer of the component to unregister.
+         */
+        static void UnregisterComponent(Game::Component* i_oldComponent);
 
         /**
          * @brief Renders each entity, using editor camera
@@ -61,18 +75,17 @@ namespace Renderer
          */
         void SaveScene() const;
 
-        std::string GetSceneFullPath(const std::string& i_sceneName) const;
+        static std::string GetSceneFullPath(const std::string& i_sceneName) ;
     private:
         Game::EntityManager* entityManager;
-        std::vector<Game::CameraComponent*> gameCameras;
-        std::vector<Game::LightComponent*> lights;
-        std::vector<Game::Drawable*> renderEntities;
+
+        static bool updateCamera;
+        static std::vector<Game::CameraComponent*> gameCameras;
+        static std::vector<Game::Drawable*> renderEntities;
 
         std::string currentSceneName = "exemple_scene";
 
         static constexpr char pathToScenes[] = "game/assets/";
-
-        void CheckComponentQueue() noexcept;
 
         /**
          * Searches for the first CameraComponent enabled. Set game camera to nullptr if not found.

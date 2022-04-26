@@ -4,15 +4,14 @@ add_library(EngineFrakkas STATIC
 			${IMGUI_SOURCE_FILES}
 			src/game/entity_manager.cpp
         	src/game/transform.cpp
-        	src/game/drawable.cpp
-			src/game/camera_component.cpp
-			src/game/component.cpp
+            src/game/lowcomponent/drawable.cpp
+            src/game/lowcomponent/camera_component.cpp
+            src/game/lowcomponent/component.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
-			src/game/light_component.cpp
 			src/renderer/model.cpp
-			src/game/sound_component.cpp
+            src/game/lowcomponent/sound_component.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
@@ -25,7 +24,7 @@ add_library(EngineFrakkas STATIC
             src/engine.cpp
         	src/multithread/threadpool.cpp
 			${IMGUI_SOURCE_FILES}
-)
+ "src/game/component_generator.cpp")
 
 target_include_directories(EngineFrakkas
                            PRIVATE include

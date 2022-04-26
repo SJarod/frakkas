@@ -1,10 +1,12 @@
 #pragma once
 
-#include "component.hpp"
-#include "entity.hpp"
-#include "game/reflection/data_descriptor.hpp"
 #include "debug/log.hpp"
-//                componentGenerators[name] = std::make_unique<ComponentGenerator>(metaData, generator);\
+#include "game/inputs_manager.hpp"
+#include "game/time_manager.hpp"
+
+#include "game/entity.hpp"
+#include "game/lowcomponent/component.hpp"
+#include "game/reflection/data_descriptor.hpp"
 
 /**
  * @brief Define a struct in-class to reflect field,
@@ -30,7 +32,8 @@ private:\
         ComponentRegister()\
         {                       \
             compClass::metaData.className = #compClass;       \
-            compClass::metaData.constructor = [](){ return new compClass(); };      \
+            compClass::metaData.constructor = [](){ return new compClass(); };\
+            Log::Info("Register '", #compClass, "' component.");\
             GetRegistry().push_back(&metaData);\
         }\
     };\
@@ -60,4 +63,14 @@ public: \
 	fieldType fieldName
 
 #define KK_FIELD_IMPL(compClass, fieldName, type, count) \
-    compClass::FieldMetaData compClass::field_##fieldName{compClass::metaData, #fieldName, type, count, offsetof(compClass, fieldName)};
+    _Pragma("GCC diagnostic push")                                                         \
+    _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
+    compClass::FieldMetaData compClass::field_##fieldName{compClass::metaData, #fieldName, type, count, offsetof(compClass, fieldName)};\
+    _Pragma("GCC diagnostic pop")
+
+/**
+ * @brief Create new .cpp/.hpp component file if does not already exist.
+ * @param i_compName name of the component class.
+ * @return true if the component is added, false if not.
+ */
+bool CreateNewComponentScript(const std::string& i_compName);

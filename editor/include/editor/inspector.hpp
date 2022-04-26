@@ -1,12 +1,12 @@
-//
-// Created by m.mehalin on 22/03/2022.
-//
-
 #pragma once
+
+#include <string>
+#include <unordered_map>
 
 namespace Game
 {
     class Entity;
+    class EntityManager;
 }
 
 namespace Editor
@@ -20,6 +20,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Game::Entity* io_selectedEntity, int& i_gizmoType);
+        void OnImGuiRender(Game::Entity* io_selectedEntity, Game::EntityManager& io_entityManager, int& i_gizmoType);
     };
 }

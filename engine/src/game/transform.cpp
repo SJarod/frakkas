@@ -1,6 +1,5 @@
 #include "game/transform.hpp"
 
-
 using namespace Game;
 
 Transform::Transform()
@@ -30,9 +29,12 @@ Transform::Transform()
     };
     parent.setter = [&](Transform* value)
     {
+        if (value && value->parent == this)
+            return;
+
         parent.set(value);
-        if (value)
-            value->childs.emplace_back(parent.get());
+        if (value && value)
+            value->childs.emplace_back(this);
     };
     parent = nullptr;
 }
@@ -65,4 +67,12 @@ void Transform::UpdateModelMatrix() const
     needUpdate = false;
     for (Transform* child: childs)
         child->needUpdate = true;
+}
+
+void Transform::ClearChilds()
+{
+    for (Transform* child : childs)
+        child->parent = nullptr;
+
+    childs.clear();
 }

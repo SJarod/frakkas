@@ -1,6 +1,6 @@
 #pragma once
 
-#include "component_generator.hpp"
+#include "game/component_generator.hpp"
 #include "resources/sound.hpp"
 
 
