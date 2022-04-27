@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <fstream>
 
+#include "helpers/string_helpers.hpp"
+
 #include "game/component_generator.hpp"
 
 #ifdef CLION_IDE
@@ -14,30 +16,14 @@ static constexpr char engineDirectoryPath[] = "../../engine/";
 
 #endif
 static constexpr char lowComponentDirectoryPath[] = "game/lowcomponent/";
+static constexpr char cmakeAddLibraryString[] = "add_library(GameFrakkas";
 static constexpr char templateComponentName[] = "$name";
 static constexpr char templateFileName[] = "$file";
 
-inline std::string GetComponentFileName(const std::string& name)
-{
-	std::string fileName;
-	for (int i = 0; i < name.size(); i++)
-	{
-		if (std::isupper(name[i]))
-		{
-			if (i != 0)
-				fileName += '_';
-			fileName += static_cast<char>(name[i] + 32);
-		}
-		else
-			fileName += name[i];
-	}
-
-	return fileName;
-}
 
 inline std::string GetComponentSourceFullPath(const std::string& name)
 {
-	return gameDirectoryPath + std::string("src/") + name + ".cpp";
+	return gameDirectoryPath + std::string("src/game/") + name + ".cpp";
 }
 
 inline std::string GetComponentIncludeFullPath(const std::string& name)
@@ -50,21 +36,13 @@ inline std::string GetCMakeFullPath()
 	return gameDirectoryPath + std::string("CMakeLists.txt");
 }
 
-inline void StringReplaceAll(std::string& io_str, const std::string& i_from, const std::string& i_to)
-{
-    size_t lastFindPos = 0;
-    while((lastFindPos = io_str.find(i_from, lastFindPos)) != io_str.npos)
-    {
-        io_str.replace(lastFindPos, i_from.length(), i_to);
-        lastFindPos+= i_to.length(); // if i_to contains 'i_from', avoid finding it.
-    }
-}
-
 bool CreateNewComponentScript(const std::string& compName)
 {
-	std::string fileName = GetComponentFileName(compName);
+	std::string fileName = Helpers::CamelCaseToSnakeCase(compName);
+
 	std::ifstream checkFile(GetComponentIncludeFullPath(fileName));
-	if (checkFile.is_open() || fileName == "drawable" || fileName == "camera_component" || fileName == "component")
+    std::string lowComponentList = "drawable camera_component component";
+	if (checkFile.is_open() || lowComponentList.find(fileName) != lowComponentList.npos)
 	{
 		checkFile.close();
 		return false;
@@ -93,7 +71,7 @@ bool CreateNewComponentScript(const std::string& compName)
     templateString = templateStream.str();
 
     templateString.erase(0, templateString.find('\n')+1); // remove first line
-    StringReplaceAll(templateString, templateComponentName, compName);
+    Helpers::StringReplaceAll(templateString, templateComponentName, compName);
 
     // Write in new file
 	newHeader << templateString;
@@ -111,8 +89,8 @@ bool CreateNewComponentScript(const std::string& compName)
     templateString = templateStream.str();
 
     templateString.erase(0, templateString.find('\n')+1); // remove first line
-    StringReplaceAll(templateString, templateComponentName, compName);
-    StringReplaceAll(templateString, templateFileName, fileName);
+    Helpers::StringReplaceAll(templateString, templateComponentName, compName);
+    Helpers::StringReplaceAll(templateString, templateFileName, fileName);
 
     // Write in new file
     newSource << templateString;
@@ -129,13 +107,39 @@ bool CreateNewComponentScript(const std::string& compName)
 
 	strCmake = stream.str();
 
-	int endFirstLine = strCmake.find_first_of('\n');
-	strCmake.insert(endFirstLine + 1, "\t\tsrc/" + fileName + ".cpp\n");
+	int addLibraryLine = strCmake.find(cmakeAddLibraryString) + (sizeof(cmakeAddLibraryString) / sizeof(char));
+	strCmake.insert(addLibraryLine + 1, "\t\tsrc/game/" + fileName + ".cpp\n");
 
 	std::ofstream outCMake(GetCMakeFullPath());
 
 	outCMake << strCmake;
 	outCMake.close();
 
-	return true;
+    /// UPDATE COMPONENT REGISTER
+    std::string registerPath = gameDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_register.cpp");
+    std::ifstream inRegisterSource(registerPath);
+
+    if (!inRegisterSource.is_open())
+    {
+        Log::Warning("Could not open component register file \"game/src/game/lowcomponent/component_register.cpp\"");
+        return false;
+    }
+
+    // read file
+    std::stringstream registerStream;
+    registerStream << inRegisterSource.rdbuf();
+    std::string registerString(registerStream.str());
+
+    registerString.insert(0, "#include \"game/" + fileName + ".hpp\"\n");
+    registerString.insert(registerString.find('$')+2, "\tgreedEntity.AddComponent<" + compName + ">();\n");
+
+    inRegisterSource.close();
+
+    // write file
+    std::ofstream outRegisterSource(registerPath);
+    outRegisterSource << registerString;
+
+    outRegisterSource.close();
+
+    return true;
 }

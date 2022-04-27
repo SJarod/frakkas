@@ -38,7 +38,7 @@ World::World(Engine& engine)
             model.AddMeshesFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
             model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
 
-            if (i == 3) entity->AddComponent<Bar>();
+            //if (i == 3) entity->AddComponent<Bar>();
         }
         else if (i == 1)
         {

@@ -1,9 +1,10 @@
 add_library(GameFrakkas
-        src/bar.cpp
-        src/world.cpp
-        src/fps_movement.cpp
-        src/player_movement.cpp
-        src/follow_camera.cpp
+		src/game/bar.cpp
+		src/game/world.cpp
+		src/game/fps_movement.cpp
+		src/game/player_movement.cpp
+		src/game/follow_camera.cpp
+		src/game/lowcomponent/component_register.cpp
         ${PROJECT_SOURCE_DIR}/lib/glad.c
 )
 

@@ -7,6 +7,7 @@
 #include "renderer/light.hpp"
 
 #include "helpers/game_edit.hpp"
+#include "helpers/string_helpers.hpp"
 #include "editor/menu_bar.hpp"
 
 
@@ -281,32 +282,36 @@ void Editor::MenuBar::GameField(bool& o_gaming)
 
     if (ImGui::BeginPopupModal("Create new component?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        static bool existingFile = false;
+        static std::string_view entryState = "none";
         static std::string compName = "NewComponent";
         Helpers::Edit(compName, "Name");
 
         if (ImGui::Button("Create", ImVec2(120, 0)))
         {
-            if (CreateNewComponentScript(compName))
+            if (!Helpers::IsCamelCase(compName))
+                entryState = "Name not correct";
+            else if (CreateNewComponentScript(compName))
             {
                 compName = "NewComponent";
-                existingFile = false;
+                entryState = "none";
 
                 ImGui::CloseCurrentPopup();
             }
             else
-                existingFile = true;
+                entryState = "File exists";
         }
         ImGui::SameLine();
         if (ImGui::Button("Cancel", ImVec2(120, 0)))
         {
             compName = "NewComponent";
-            existingFile = false;
+            entryState = "none";
             ImGui::CloseCurrentPopup();
         }
 
-        if (existingFile)
+        if (entryState == "File exists")
             ImGui::Text("This component already exists...");
+        else if (entryState == "Name not correct")
+            ImGui::Text("This name does not respect CamelCase convention.");
 
         ImGui::EndPopup();
     }
