@@ -15,9 +15,10 @@
 
 void Helpers::Edit(std::string& io_string, const char* i_label)
 {
-    std::string cpy = io_string;
-    if (!ImGui::InputText(i_label, io_string.data(), 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
-        io_string= cpy; // Do not save change if ENTER not pressed
+    char strCopy[256] = "";
+    strcpy_s(strCopy, io_string.data());
+    ImGui::InputText(i_label, strCopy, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+    io_string = std::string(strCopy);
 }
 
 void Helpers::Edit(Game::Transform& io_transform)
