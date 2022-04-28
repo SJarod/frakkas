@@ -52,6 +52,14 @@ namespace Resources
          * @param o_entity the Entity to build
          */
         static void Read(std::ifstream& i_file, Game::Entity& o_entity);
+
+        /**
+         * @brief read all the information about an Entity not store in a scene file.
+         * @param i_file The opened input file
+         * @param o_entity The entity to build
+         */
+        static void ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_entity);
+
         /**
          * @brief read a component and store data in an unsigned char pointer
          * @param i_file the opened input file
