@@ -62,6 +62,14 @@ void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
     }
 }
 
+void Serializer::ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_entity)
+{
+    std::string consumerStr;
+    std::getline(i_file, consumerStr); // empty line
+    GetAttribute(i_file, consumerStr); // useless attribute
+    Read(i_file, o_entity);
+}
+
 void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData, bool& o_enabled)
 {
     std::string attribute;

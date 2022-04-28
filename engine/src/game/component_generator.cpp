@@ -4,17 +4,10 @@
 #include <fstream>
 
 #include "helpers/string_helpers.hpp"
+#include "helpers/path_constants.hpp"
 
 #include "game/component_generator.hpp"
 
-#ifdef CLION_IDE
-static constexpr char gameDirectoryPath[] = "game/";
-static constexpr char engineDirectoryPath[] = "engine/";
-#else
-static constexpr char gameDirectyoryPath[] = "../../game/";
-static constexpr char engineDirectoryPath[] = "../../engine/";
-
-#endif
 static constexpr char lowComponentDirectoryPath[] = "game/lowcomponent/";
 static constexpr char cmakeAddLibraryString[] = "add_library(GameFrakkas";
 static constexpr char templateComponentName[] = "$name";
@@ -23,17 +16,17 @@ static constexpr char templateFileName[] = "$file";
 
 inline std::string GetComponentSourceFullPath(const std::string& name)
 {
-	return gameDirectoryPath + std::string("src/game/") + name + ".cpp";
+    return Helpers::gameDirectoryPath + std::string("src/game/") + name + ".cpp";
 }
 
 inline std::string GetComponentIncludeFullPath(const std::string& name)
 {
-	return gameDirectoryPath + std::string("include/game/") + name + ".hpp";
+	return Helpers::gameDirectoryPath + std::string("include/game/") + name + ".hpp";
 }
 
 inline std::string GetCMakeFullPath()
 {
-	return gameDirectoryPath + std::string("CMakeLists.txt");
+	return Helpers::gameDirectoryPath + std::string("CMakeLists.txt");
 }
 
 bool CreateNewComponentScript(const std::string& compName)
@@ -52,7 +45,7 @@ bool CreateNewComponentScript(const std::string& compName)
     std::string templateString;
 	/// CREATE HEADER FILE
 	std::ofstream newHeader(GetComponentIncludeFullPath(fileName));
-    std::ifstream templateHeader(engineDirectoryPath + std::string("include/") + lowComponentDirectoryPath + std::string("component_template.hpp"));
+    std::ifstream templateHeader(Helpers::engineDirectoryPath + std::string("include/") + lowComponentDirectoryPath + std::string("component_template.hpp"));
 
     if (!newHeader.is_open())
     {
@@ -81,7 +74,7 @@ bool CreateNewComponentScript(const std::string& compName)
 
 	/// CREATE SOURCE FILE
 	std::ofstream newSource(GetComponentSourceFullPath(fileName));
-    std::ifstream templateSource(engineDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_template.cpp"));
+    std::ifstream templateSource(Helpers::engineDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_template.cpp"));
     // No need to check if it is opened, header checking is enough
 
     // Read template component header file in string
@@ -116,7 +109,7 @@ bool CreateNewComponentScript(const std::string& compName)
 	outCMake.close();
 
     /// UPDATE COMPONENT REGISTER
-    std::string registerPath = gameDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_register.cpp");
+    std::string registerPath = Helpers::gameDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_register.cpp");
     std::ifstream inRegisterSource(registerPath);
 
     if (!inRegisterSource.is_open())

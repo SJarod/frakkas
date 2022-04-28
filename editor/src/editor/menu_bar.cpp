@@ -1,13 +1,17 @@
 #include <imgui.h>
-#include <cstdlib>
 
 #include "game/component_generator.hpp"
+#include "game/entity_manager.hpp"
+#include "game/entity.hpp"
+
+#include "resources/serializer.hpp"
 
 #include "renderer/graph.hpp"
-#include "renderer/light.hpp"
 
 #include "helpers/game_edit.hpp"
 #include "helpers/string_helpers.hpp"
+#include "helpers/path_constants.hpp"
+
 #include "editor/menu_bar.hpp"
 
 
@@ -15,13 +19,15 @@ using namespace Editor;
 using namespace Game;
 
 
-void MenuBar::OnImGuiRender(Renderer::Graph& io_graph, bool& o_gaming, bool& o_loadScene)
+void MenuBar::OnImGuiRender(Renderer::Graph& io_graph, Game::EntityManager& io_entityManager, bool& o_loadScene,
+                            bool& o_gaming,
+                            Game::Entity* io_selectedEntity)
 {
     ImGui::BeginMainMenuBar();
 
     FileField(io_graph, o_loadScene);
 
-    EditField();
+    EditField(io_entityManager, io_selectedEntity);
 
     if (Inputs::IsPressed(EButton::P))
         o_gaming = !o_gaming;
@@ -65,11 +71,6 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
 
         ImGui::Separator();
 
-        if (ImGui::MenuItem("New Project...")) {}
-        if (ImGui::MenuItem("Open Project...")) {}
-        if (ImGui::MenuItem("Save Project")) {}
-        ImGui::Separator();
-
         if (ImGui::MenuItem("Quit"))
             Inputs::quit = true;
 
@@ -96,45 +97,54 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
+    o_loadScene |= CreateScenePopup(io_graph);
+    o_loadScene = o_loadScene || OpenScenePopup(io_graph);
+#pragma endregion
+}
+
+bool MenuBar::CreateScenePopup(Renderer::Graph& io_graph)
+{
     /// CREATE NEW SCENE POPUP
-    if (ImGui::BeginPopupModal("Create new scene?", NULL))
+    if (ImGui::BeginPopupModal("Create new scene?", nullptr))
     {
         ImGui::Text("Are you sure to open a new scene?\nDon't forget to save your current scene!\n");
 
         ImGui::Separator();
 
-        //            static bool reminder = false;
-        //            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-        //            ImGui::Checkbox("Don't ask me next time", &reminder);
-        //            ImGui::PopStyleVar();
-
         static std::string sceneName = "new_scene";
-        Helpers::Edit(sceneName, "Name");
+        Helpers::Edit(sceneName, "Name");                                       // GET SCENE NAME
+        ImGui::SetItemDefaultFocus();
 
         if (ImGui::Button("Create", ImVec2(120, 0)))
         {
-            std::ofstream emptyFile(io_graph.GetSceneFullPath(sceneName));
+            std::ofstream emptyFile(Renderer::Graph::GetSceneFullPath(sceneName)); // CREATE BUTTON
             if (!emptyFile.is_open())
                 Log::Warning("bah non");
 
             emptyFile.close();
             io_graph.LoadScene(sceneName);
-            o_loadScene = true;
             sceneName = "new_scene";
             ImGui::CloseCurrentPopup();
+
+            ImGui::EndPopup();
+            return true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))                        // CANCEL BUTTON
         {
             ImGui::CloseCurrentPopup();
         }
-        ImGui::SetItemDefaultFocus();
 
         ImGui::EndPopup();
     }
 
+    return false;
+}
+
+bool MenuBar::OpenScenePopup(Renderer::Graph& io_graph)
+{
     /// OPEN EXISTING SCENE POPUP
-    if (ImGui::BeginPopupModal("Open scene?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal("Open scene?", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::Text("Are you sure to open a new scene?\nDon't forget to save your current scene!\n");
 
@@ -142,11 +152,12 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
 
         static std::string sceneName = "exemple_scene";
         static bool exist = true;
-        Helpers::Edit(sceneName, "Name");
+        Helpers::Edit(sceneName, "Name");                                   // GET SCENE NAME
+        ImGui::SetItemDefaultFocus();
 
-        if (ImGui::Button("Open", ImVec2(120, 0)))
+        if (ImGui::Button("Open", ImVec2(120, 0)))                    // OPEN BUTTON
         {
-            std::ifstream file(io_graph.GetSceneFullPath(sceneName));
+            std::ifstream file(Renderer::Graph::GetSceneFullPath(sceneName));
             if (file.is_open())
             {
                 io_graph.LoadScene(sceneName);
@@ -154,42 +165,68 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
                 sceneName = "exemple_scene";
                 exist = true;
                 ImGui::CloseCurrentPopup();
+
+                ImGui::EndPopup();
+                return true;
             }
             else
                 exist = false;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))                    // CANCEL BUTTON
         {
             sceneName = "exemple_scene";
             exist = true;
             ImGui::CloseCurrentPopup();
         }
-        ImGui::SetItemDefaultFocus();
 
         if (!exist)
-            ImGui::Text("Input name does not have existing scene file...");
+            ImGui::Text("Input name does not have existing scene file...");         // WARNING POPUP LOG
 
         ImGui::EndPopup();
     }
-#pragma endregion
+
+    return false;
 }
 
-void MenuBar::EditField()
+
+void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_selectedEntity)
 {
+    auto copyFunc = [&io_selectedEntity](){
+        if (io_selectedEntity)
+        {
+            std::ofstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
+            Resources::Serializer::Write(copyFile, *io_selectedEntity);
+            copyFile.close();
+        }
+    };
+    auto pastFunc = [&io_entityManager, &io_selectedEntity](){
+        if (io_selectedEntity)
+        {
+            std::ifstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
+
+            if (copyFile.is_open())
+            {
+                Game::Entity* entity = io_entityManager.CreateEntity("newEntity");
+                Resources::Serializer::ReadStandaloneEntity(copyFile, *entity);
+            }
+        }
+    };
+
     if (ImGui::BeginMenu("Edit"))
     {
-        if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-        if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-        if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-        ImGui::Separator();
-
-        if (ImGui::MenuItem("Select All", "CTRL+A")) {}
-        if (ImGui::MenuItem("Deselect All", "CTRL+D")) {}
-        ImGui::Separator();
+        if (ImGui::MenuItem("Copy", "CTRL+C"))
+            copyFunc();
+        if (ImGui::MenuItem("Paste", "CTRL+V"))
+            pastFunc();
 
         ImGui::EndMenu();
     }
+
+    if(Inputs::IsControlCommandPressed(EButton::C))
+        copyFunc();
+    if(Inputs::IsControlCommandPressed(EButton::V))
+        pastFunc();
 }
 
 void MenuBar::OptionsField()
@@ -280,44 +317,49 @@ void Editor::MenuBar::GameField(bool& o_gaming)
     if (createComponent || Inputs::IsControlCommandPressed(EButton::G))
         ImGui::OpenPopup("Create new component?");
 
-    if (ImGui::BeginPopupModal("Create new component?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    CreateComponentPopup();
+}
+
+void MenuBar::CreateComponentPopup()
+{
+    if (ImGui::BeginPopupModal("Create new component?", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
     {
         static std::string_view entryState = "none";
-        static std::string compName = "NewComponent";
-        Helpers::Edit(compName, "Name");
 
-        if (ImGui::Button("Create", ImVec2(120, 0)))
+        static std::string compName = "NewComponent";
+        Helpers::Edit(compName, "Name");                          // EDIT NAME
+
+        if (ImGui::Button("Create", ImVec2(120, 0)))        // CREATE BUTTON
         {
-            if (!Helpers::IsCamelCase(compName))
+            if (!Helpers::IsCamelCase(compName))                      // Bad name
                 entryState = "Name not correct";
-            else if (CreateNewComponentScript(compName))
+            else if (!CreateNewComponentScript(compName))       // Can't open file
+                entryState = "File exists";
+            else                                                            // Create new component
             {
                 compName = "NewComponent";
                 entryState = "none";
 
                 ImGui::CloseCurrentPopup();
             }
-            else
-                entryState = "File exists";
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))        // CANCEL BUTTON
         {
             compName = "NewComponent";
             entryState = "none";
             ImGui::CloseCurrentPopup();
         }
 
-        if (entryState == "File exists")
-            ImGui::Text("This component already exists...");
+        if (entryState == "File exists")                                    // WARNING POPUP LOG
+            ImGui::Text("The file already exists or can't be located.");
         else if (entryState == "Name not correct")
-            ImGui::Text("This name does not respect CamelCase convention.");
+            ImGui::Text("CamelCase convention not respected.");
 
         ImGui::EndPopup();
     }
-
-
 }
+
 
 void Editor::MenuBar::LightingField(Renderer::Graph& io_graph)
 {
