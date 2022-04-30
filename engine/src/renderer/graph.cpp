@@ -11,6 +11,8 @@
 #include "resources/resources_manager.hpp"
 #include "resources/serializer.hpp"
 
+#include "helpers/path_constants.hpp"
+
 #include "renderer/graph.hpp"
 
 using namespace Game;
@@ -166,16 +168,25 @@ void Graph::LoadScene(const std::string& i_sceneName)
     }
 }
 
+// Save an entity in text format, function to simplify SaveScene()
+inline void SaveEntity(std::ofstream& i_file, const Entity& i_entity)
+{
+    Serializer::Write(i_file, i_entity);
+    for (const Entity* child : i_entity.childs)
+        SaveEntity(i_file, *child);
+}
+
 void Graph::SaveScene() const
 {
     std::ofstream file(GetSceneFullPath(currentSceneName));
-    for (const std::unique_ptr<Entity>& entity : entityManager->GetEntities())
-        Serializer::Write(file, *entity);
+
+    for (const auto& pair : entityManager->GetRootEntities())
+        SaveEntity(file, *pair.second);
 
     Log::Info("Save scene " + currentSceneName);
 }
 
 std::string Graph::GetSceneFullPath(const std::string& i_sceneName)
 {
-    return pathToScenes + i_sceneName + ".kk";
+    return Helpers::gameDirectoryPath + std::string("assets/") + i_sceneName + ".kk";
 }

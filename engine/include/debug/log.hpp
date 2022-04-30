@@ -5,8 +5,9 @@
 #include <fstream>
 #include <vector>
 
-#include "utils/singleton.hpp"
+#include "helpers/path_constants.hpp"
 
+#include "utils/singleton.hpp"
 
 enum class ELogType
 {
@@ -25,7 +26,11 @@ public:
 
     static void Init()
     {
+#ifdef IN_BUILD_DIRECTORY
+        Instance().logFile.open("../build/FrakkasLog.log", std::ios::out);
+#else
         Instance().logFile.open("build/FrakkasLog.log", std::ios::out);
+#endif
     }
 
     /**

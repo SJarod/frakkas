@@ -13,12 +13,14 @@
 #include "helpers/game_edit.hpp"
 
 
-void Helpers::Edit(std::string& io_string, const char* i_label)
+bool Helpers::Edit(std::string& io_string, const char* i_label)
 {
     char strCopy[256] = "";
     strcpy_s(strCopy, io_string.data());
-    ImGui::InputText(i_label, strCopy, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
+    bool returnValue = ImGui::InputText(i_label, strCopy, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
     io_string = std::string(strCopy);
+
+    return returnValue;
 }
 
 void Helpers::Edit(Game::Transform& io_transform)
@@ -34,20 +36,18 @@ void Helpers::Edit(Game::Transform& io_transform)
     Vector3 rot = trs.rotation;
     Vector3 sc = trs.scale;
 
-    // Position edit
-    DragScalar("Position", pos.element, 3, 0.1f);
 
-    // Rotation edit
-    ImGui::Text("Rotation");
-    ImGui::SliderAngle("x", &rot.x);
-    ImGui::SliderAngle("y", &rot.y);
-    ImGui::SliderAngle("z", &rot.z);
+    // Position edit
+    ImGui::Text("Position");
+    DragScalar("XYZ###P", pos.element, 3, 0.1f);
 
 #pragma region Scale edit
+    ImGui::Text("Scale");
+
     if (scParams.isLock && scParams.origScale == Vector3::zero)
         scParams.ratio = 0.f;
 
-    if (DragScalar("Scale", sc.element, 3, 0.1f))
+    if (DragScalar("XYZ###S", sc.element, 3, 0.1f))
     {
         if (scParams.isLock)
         {
@@ -71,23 +71,31 @@ void Helpers::Edit(Game::Transform& io_transform)
     ImGui::Checkbox("Lock scale", &scParams.isLock);
 #pragma endregion
 
+    // Rotation edit
+    ImGui::Text("Rotation");
+    ImGui::SliderAngle("x", &rot.x);
+    ImGui::SliderAngle("y", &rot.y);
+    ImGui::SliderAngle("z", &rot.z);
+
+
     trs.position = pos;
     trs.rotation = rot;
     trs.scale = sc;
 }
 
-void Helpers::Edit(Game::Entity& io_entity, const std::unordered_map<const char*, Game::Transform*>& entityTransforms, int& i_gizmoType)
+void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperation)
 {
-    ImGui::RadioButton("None", &i_gizmoType, -1);
+    int guizmoOperation = static_cast<int>(i_guizmoOperation);
+    ImGui::RadioButton("None", &guizmoOperation, ImGuizmo::OPERATION::BOUNDS); // Bounds is not used, so equal to NONE
 
     ImGui::SameLine();
-    ImGui::RadioButton("Translate", &i_gizmoType, ImGuizmo::OPERATION::TRANSLATE);
+    ImGui::RadioButton("Translate", &guizmoOperation, ImGuizmo::OPERATION::TRANSLATE);
 
     ImGui::SameLine();
-    ImGui::RadioButton("Rotate", &i_gizmoType, ImGuizmo::OPERATION::ROTATE);
+    ImGui::RadioButton("Rotate", &guizmoOperation, ImGuizmo::OPERATION::ROTATE);
 
     ImGui::SameLine();
-    ImGui::RadioButton("Scale", &i_gizmoType, ImGuizmo::OPERATION::SCALE);
+    ImGui::RadioButton("Scale", &guizmoOperation, ImGuizmo::OPERATION::SCALE);
 
     ImGui::Separator();
 
@@ -96,59 +104,10 @@ void Helpers::Edit(Game::Entity& io_entity, const std::unordered_map<const char*
 
     ImGui::Separator();
 
-    if (!io_entity.transform.parent.get())
-        io_entity.parentName = "none";
+    ImGui::Text("ID : %u", io_entity.GetID());
 
-    ImGui::Text("Parent: %s", io_entity.parentName.c_str());
-    ImGui::SameLine();
-    if (ImGui::Button("Set"))
-        ImGui::OpenPopup("Set parent");
-    ImGui::SameLine();
-    if (ImGui::Button("Unset"))
-    {
-        io_entity.parentName = "";
-        io_entity.transform.parent = nullptr;
-    }
-
-    /// SET PARENT POPUP
-    if (ImGui::BeginPopup("Set parent", NULL))
-    {
-        static ImGuiTextFilter parentFilter;
-        parentFilter.Draw("Parent", 150.f);
-
-        static bool firstTime = true;
-        if (firstTime)
-        {
-            ImGui::SetKeyboardFocusHere();
-            firstTime = false;
-        }
-
-
-        for (const auto& pair : entityTransforms)
-        {
-            const char* pName = pair.first;
-
-            if(!parentFilter.PassFilter(pName) || pName == io_entity.name.c_str())
-                continue;
-
-            if (ImGui::Selectable(pName))
-            {
-                if(pair.second->parent && pair.second->parent == &io_entity.transform)
-                {
-                    Log::Warning("Try to set transform parent which is already its child");
-                    firstTime = true;
-                    break;
-                }
-
-                io_entity.parentName = pName;
-                io_entity.transform.parent = pair.second;
-                firstTime = true;
-                break;
-            }
-        }
-
-        ImGui::EndPopup();
-    }
+    if (io_entity.parent && ImGui::Button("Unset parent"))
+        io_entity.unsettingParent = true;
 
     // Edit transform
     Edit(io_entity.transform);

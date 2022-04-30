@@ -121,10 +121,10 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_debugger.OnImGuiRender();
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
     m_console.OnImGuiRender();
-    m_inspector.OnImGuiRender(m_hierarchy.selected, io_engine.entityManager, gizmoType);
+    m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender(*io_engine.gameFBO, io_engine.gaming);
-    m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera(), m_hierarchy.selected, gizmoType);
+    m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera(), m_hierarchy.selected, guizmoOperation);
 
     io_engine.focusOnGaming = m_game.focusOnGaming;
 

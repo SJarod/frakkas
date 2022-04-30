@@ -11,12 +11,12 @@
 using namespace Editor;
 
 
-void Inspector::OnImGuiRender(Game::Entity* io_selectedEntity, Game::EntityManager& io_entityManager, int& i_gizmoType)
+void Inspector::OnImGuiRender(Game::Entity* io_selectedEntity, ImGuizmo::OPERATION& i_guizmoOperation)
 {
     ImGui::Begin("Inspector");
 
     if (io_selectedEntity)
-        Helpers::Edit(*io_selectedEntity, io_entityManager.GetEntitiesTransform(), i_gizmoType);
+        Helpers::Edit(*io_selectedEntity, i_guizmoOperation);
 
     ImGui::End();
 }

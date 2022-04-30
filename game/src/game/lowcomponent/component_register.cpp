@@ -8,7 +8,7 @@
 using namespace Game;
 
 ComponentRegister::ComponentRegister()
-    : greedEntity("greed")
+    : greedEntity(0, "greed")
 {
     greedEntity.AddComponent<FPSMovement>();
     greedEntity.AddComponent<PlayerMovement>();

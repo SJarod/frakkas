@@ -7,6 +7,15 @@
 
 using namespace Game;
 
+Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
+    :id(i_id)
+{
+    if (i_name.empty())
+        name = "NewEntity_" + std::to_string(id);
+    else
+        name = i_name;
+};
+
 Entity::~Entity()
 {
     for(const std::unique_ptr<Component>& comp : components)
