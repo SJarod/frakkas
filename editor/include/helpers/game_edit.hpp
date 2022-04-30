@@ -7,12 +7,12 @@
 #include "engine.hpp"
 
 #include "game/inputs_manager.hpp"
+#include "game/entity.hpp"
 
 #include "editor/editor_render.hpp"
 
 namespace Game
 {
-	class Entity;
 	struct Transform;
 }
 
@@ -76,8 +76,9 @@ namespace Helpers
     * @brief ImGui editing function. Allows the player to edit a string variable.
      * @param io_string The string to display and edit.
      * @param i_label The variable name of the string. Called 'label' for ImGui field.
+     * @return true if the user press ENTER while editing text, else return false
      */
-    void Edit(std::string& io_string, const char* i_label);
+    bool Edit(std::string& io_string, const char* i_label);
     /**
      * @brief ImGui editing function. Allows the player to change transform parameters.
      * @param io_transform the transform to edit
@@ -87,8 +88,10 @@ namespace Helpers
     /**
      * @brief ImGui editing function. Allows the player to change entity parameters.
      * @param io_entity the entity to edit
+     * @param i_guizmoOperation A int used by ImGui to defined which guizmo utility is being used.
+     * 0 - none / 1 - translate / 2 - rotate / 3 - scale
      */
-    void Edit(Game::Entity& io_entity, const std::unordered_map<const char*, Game::Transform*>& entityTransforms, int& i_gizmoType);
+    void Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperation);
 
     /**
      * @brief ImGui editing function. Allows the player to change camera parameters.

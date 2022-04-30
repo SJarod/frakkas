@@ -85,8 +85,6 @@ namespace Renderer
 
         std::string currentSceneName = "exemple_scene";
 
-        static constexpr char pathToScenes[] = "game/assets/";
-
         /**
          * Searches for the first CameraComponent enabled. Set game camera to nullptr if not found.
          * This function is used when the current game camera is disabled.

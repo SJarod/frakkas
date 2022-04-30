@@ -13,7 +13,7 @@
 
 using namespace Editor;
 
-void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, int& i_gizmoType)
+void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, ImGuizmo::OPERATION& i_gizmoOperation)
 {
     ImGui::Begin("Scene");
 
@@ -25,19 +25,19 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
     if (!isMoving)
     {
         if(Game::Inputs::IsPressed(Game::EButton::Q))
-            i_gizmoType = -1;
+            i_gizmoOperation = ImGuizmo::OPERATION::BOUNDS;
 
         else if(Game::Inputs::IsPressed(Game::EButton::W))
-            i_gizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            i_gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 
         else if(Game::Inputs::IsPressed(Game::EButton::E))
-            i_gizmoType = ImGuizmo::OPERATION::ROTATE;
+            i_gizmoOperation = ImGuizmo::OPERATION::ROTATE;
 
         else if(Game::Inputs::IsPressed(Game::EButton::R))
-            i_gizmoType = ImGuizmo::OPERATION::SCALE;
+            i_gizmoOperation = ImGuizmo::OPERATION::SCALE;
     }
 
-    if (i_selectedEntity && i_gizmoType != -1)
+    if (i_selectedEntity && i_gizmoOperation != ImGuizmo::OPERATION::BOUNDS)
     {
         ImGuizmo::SetOrthographic(false);
         ImGuizmo::SetDrawlist();
@@ -52,7 +52,7 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
 
         Matrix4 deltaMatrix = Matrix4::Identity();
 
-        if(ImGuizmo::Manipulate(cameraView.element, cameraProj.element, (ImGuizmo::OPERATION)i_gizmoType, ImGuizmo::LOCAL, trsMatrix.element, deltaMatrix.element))
+        if(ImGuizmo::Manipulate(cameraView.element, cameraProj.element, i_gizmoOperation, ImGuizmo::LOCAL, trsMatrix.element, deltaMatrix.element))
         {
             /*
             Normally we could have done trsMatrix *= deltaMatrix, unfortunately it doesn't work.
@@ -67,13 +67,13 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
             ImGuizmo::DecomposeMatrixToComponents(trsMatrix.element, pos.element, rot.element, scale.element);
             ImGuizmo::DecomposeMatrixToComponents(deltaMatrix.element, posDelta.element, rotDelta.element, scaleDelta.element);
 
-            if (i_gizmoType == ImGuizmo::OPERATION::TRANSLATE)
+            if (i_gizmoOperation == ImGuizmo::OPERATION::TRANSLATE)
                 trs.position = trs.position.get() + posDelta;
 
-            if (i_gizmoType == ImGuizmo::OPERATION::ROTATE)
+            if (i_gizmoOperation == ImGuizmo::OPERATION::ROTATE)
                 trs.rotation = trs.rotation.get() + Maths::ToRadians(rotDelta);
 
-            if (i_gizmoType == ImGuizmo::OPERATION::SCALE)
+            if (i_gizmoOperation == ImGuizmo::OPERATION::SCALE)
                 trs.scale = scale;
         }
     }

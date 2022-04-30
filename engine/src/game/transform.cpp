@@ -29,10 +29,21 @@ Transform::Transform()
     };
     parent.setter = [&](Transform* value)
     {
-        if (value && value->parent == this)
-            return;
+        // Check if this transform, is not a parent of the input transform 'value'
+        if (value)
+        {
+            bool isParent = false;
+            Transform* parent = value->parent;
+            while (parent)
+            {
+                if (this == parent) isParent = true;
+                parent = parent->parent;
+            }
+            if (isParent) return;
+        }
 
         parent.set(value);
+        needUpdate = true;
         if (value && value)
             value->childs.emplace_back(this);
     };

@@ -3,10 +3,10 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <string_view>
 
 #include "transform.hpp"
 #include "game/lowcomponent/component.hpp"
-
 
 namespace Resources
 {
@@ -15,18 +15,23 @@ namespace Resources
 
 namespace Game
 {
+    using EntityIdentifier = uint64_t;
+
     class Entity
     {
     public:
-        Entity(const std::string_view& i_name) : name(i_name) {};
+        Entity(const EntityIdentifier& i_id, const std::string_view& i_name = "");
         ~Entity();
 
         std::string name;
 
-        std::string parentName;
+        bool unsettingParent = false;
+        Transform transform;
+
+        std::list<Entity*> childs;
+        Entity* parent = nullptr;
 
         std::vector<std::unique_ptr<Component>> components;
-        Transform transform;
 
         /**
          * Push back the input unique component in components array. You must use std::move().
@@ -68,7 +73,12 @@ namespace Game
          */
         virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
+        const EntityIdentifier& GetID() const { return id; }
+
     private:
+
+        EntityIdentifier id;
+
         /**
          * @brief Send the component to the graph register system.
          */
@@ -80,6 +90,7 @@ namespace Game
 
     };
 }
+
 
 template<typename T>
 T* Game::Entity::AddComponent()

@@ -36,7 +36,7 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, int& i_gizmoType);
+        void OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, ImGuizmo::OPERATION& i_gizmoOperation);
 
         /**
          * @summary Listen to mouse right click, and enable/disable movement in editor scene.

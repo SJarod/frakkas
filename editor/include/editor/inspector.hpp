@@ -2,6 +2,7 @@
 
 #include <string>
 #include <unordered_map>
+#include "ImGuizmo.h"
 
 namespace Game
 {
@@ -20,6 +21,6 @@ namespace Editor
         /**
         * @summary Display the ImGui panel
         */
-        void OnImGuiRender(Game::Entity* io_selectedEntity, Game::EntityManager& io_entityManager, int& i_gizmoType);
+        void OnImGuiRender(Game::Entity* io_selectedEntity, ImGuizmo::OPERATION& i_guizmoOperation);
     };
 }

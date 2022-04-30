@@ -1,5 +1,9 @@
 
 >entity
+>id
+	1
+>parentid
+	0
 >name
 	Game Camera
 >component_count
@@ -33,6 +37,10 @@
 	1
 
 >entity
+>id
+	2
+>parentid
+	0
 >name
 	Sound
 >component_count
@@ -50,29 +58,17 @@
 >sound
 
 >entity
->name
-	entity_2
->component_count
-	1
->transform
->position
-	4, 0, 0
->rotation
-	0, 0, 0
->scale
-	0.6, 0.6, 0.6
->Drawable
->enabled
-	1
-
->entity
+>id
+	4
+>parentid
+	0
 >name
 	entity_3
 >component_count
-	2
+	1
 >transform
 >position
-	-0.47702, -0.47702, 0
+	6, 0, 0
 >rotation
 	0, 0, 0
 >scale
@@ -80,17 +76,12 @@
 >Drawable
 >enabled
 	1
->Bar
->enabled
-	1
->originPos
-	0, 0, 0
->destPos
-	2, 2, 0
->speed
-	5
 
 >entity
+>id
+	5
+>parentid
+	0
 >name
 	entity_4
 >component_count
@@ -107,26 +98,21 @@
 	1
 
 >entity
+>id
+	3
+>parentid
+	5
 >name
-	new_0
+	entity_2
 >component_count
-	2
+	1
 >transform
 >position
-	8.7422, -0.968812, 0
+	4, 0, 0
 >rotation
 	0, 0, 0
 >scale
-	1, 1, 1
+	0.6, 0.6, 0.6
 >Drawable
 >enabled
 	1
->Bar
->enabled
-	1
->originPos
-	8.5, 0, 0
->destPos
-	8, 2, 0
->speed
-	10.5

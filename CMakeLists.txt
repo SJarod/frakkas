@@ -76,9 +76,11 @@ set(LIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib
                     ${PROJECT_SOURCE_DIR}/lib/miniaudio
 )
 
+option(EXECUTION_SOURCE_IN_BUILD_DIRECTORY "The directory where the program will be executed and find ressources from" OFF)
+
 # C++ MACROS
-if ($ENV{CLION_IDE})
-    add_compile_definitions(CLION_IDE)
+if (EXECUTION_SOURCE_IN_BUILD_DIRECTORY)
+    add_compile_definitions(IN_BUILD_DIRECTORY)
 endif()
 
 # MATHS

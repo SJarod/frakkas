@@ -40,7 +40,7 @@ namespace Editor
         static Vector2 mouseLockPosition;
 
     private:
-        int gizmoType = -1;
+        ImGuizmo::OPERATION guizmoOperation = ImGuizmo::OPERATION::BOUNDS;
 
         MenuBar m_menuBar;
         Hierarchy m_hierarchy;
