@@ -1,10 +1,11 @@
 #pragma once
 
 #include "maths.hpp"
-#include "resources/program_shader.hpp"
 #include "renderer/model.hpp"
+#include "renderer/point.hpp"
 #include "renderer/lowlevel/camera.hpp"
 
+#include "debug/log.hpp"
 
 namespace Renderer
 {
@@ -13,9 +14,9 @@ namespace Renderer
 		class Framebuffer
 		{
 		public:
-            float aspectRatio = 16.f / 9.f;
+			float aspectRatio = 16.f / 9.f;
 
-            /**
+			/**
 			 * @Summary Create a framebuffer specifying its dimensions.
 			 */
 			Framebuffer(const int i_width, const int i_height);
@@ -62,18 +63,38 @@ namespace Renderer
 			int height = 0;
 		};
 
-		class LowRenderer
+		class UniformBuffer
 		{
 		public:
-			/**
-			 * @Summary Create a renderer given a shader name.
-			 */
-			LowRenderer(const std::string &i_shaderName);
+			UniformBuffer(const int i_binding, const int i_size);
+
+			void SetUniformToBlock(const int i_offset, const bool& i_value) const;
+
+			void SetUniformToBlock(const int i_offset, const Vector3& i_value) const;
+
+			void SetUniformToBlock(const int i_offset, const Vector4& i_value) const;
+
+			void SetUniformToBlock(const int i_offset, const Matrix4& i_value) const;
+
+		private:
+			GLuint UBO = 0;
+
+			int blockBinding = -1;
+			int blockSize = 0;
+		};
+
+		class LowRenderer
+		{
+		private:
+			std::unordered_map<std::string_view, UniformBuffer> shaderUBOs;
+
+		public:
+			LowRenderer();
 
 			/**
 			 * @Summary Begin drawing on the specified framebuffer.
 			 */
-            void BeginFrame(const Framebuffer& i_fbo) const;
+			void BeginFrame(const Framebuffer& i_fbo) const;
 
             /**
              * @Summary Begin drawing with the main framebuffer (SDL window's framebuffer)
@@ -83,41 +104,36 @@ namespace Renderer
 			/**
 			 * @Summary Render is ready to be displayed.
 			 */
-            void EndFrame() const;
+			void EndFrame() const;
 
-            /**
-            * @Summary Set the light and camera used by the shader.
-            */
-            //void SetUniform(const Renderer::LowLevel::Camera& i_camera, const float i_aspectRatio, const Game::LightComponent& i_light) const;
+			template<typename TUniformType>
+			void SetUniformToNamedBlock(const std::string_view& i_blockName, const int i_offset, const TUniformType& i_value) const;
 
-            /**
+			void RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size);
+
+			/**
 			 * @Summary Render a mesh once.
 			 * Call this function in a loop to render a model in real time.
-			 * 
-			 * @param i_model the model matrix used by the shader to draw the mesh
+			 *
 			 * @param i_VAO the opengl vertex array object
 			 * @param i_count the number of triangles to draw
 			 * @param i_texture the texture index to draw on the mesh
-			 * @param i_hasTexture specify if a texture is to be drawn on this mesh
 			 */
-			void RenderMeshOnce(const Matrix4& i_model, const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture, const bool i_hasTexture, const bool i_outline);
+			void RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture);
 
-            /**
-             * @Summary send value to the shader program
-             * @param i_uniformName name of the uniform, must exist in shader
-             * @param i_value templated value
-             */
-            template <typename T>
-            void SetUniform(const std::string_view& i_uniformName, const T& i_value) const;
-
-	    std::shared_ptr<Resources::Shader> shader;
+			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count);
 		};
 	}
 }
 
-template <typename T>
-void Renderer::LowLevel::LowRenderer::SetUniform(const std::string_view &i_uniformName, const T &i_value) const
+template<typename TUniformType>
+void Renderer::LowLevel::LowRenderer::SetUniformToNamedBlock(const std::string_view& i_blockName, const int i_offset, const TUniformType& i_value) const
 {
-    shader->Use();
-    shader->SetUniform(i_uniformName, i_value);
+	if (shaderUBOs.find(i_blockName) == shaderUBOs.end())
+	{
+		Log::Warning(std::string(i_blockName) + " is not a uniform block");
+		return;
+	}
+
+	shaderUBOs.find(i_blockName)->second.SetUniformToBlock(i_offset, i_value);
 }

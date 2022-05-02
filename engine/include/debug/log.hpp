@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <mutex>
 
 #include "helpers/path_constants.hpp"
 
@@ -60,6 +61,7 @@ public:
 private:
     std::ofstream logFile;
     std::vector<std::string> logList;
+    std::mutex logMX;
 
     /**
      * Centralize all the arguments log into one string stream.

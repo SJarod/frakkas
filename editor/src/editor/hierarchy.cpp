@@ -1,7 +1,7 @@
 #include <imgui.h>
 #include <string>
 
-#include "game/lowcomponent/drawable.hpp"
+#include "game/lowcomponent/static_draw.hpp"
 #include "game/entity_manager.hpp"
 
 #include "helpers/game_edit.hpp"
@@ -25,9 +25,9 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     if(ImGui::Button("Add entity"))
     {
         Game::Entity* entity = io_entityManager.CreateEntity();
-        auto drawable = entity->AddComponent<Game::Drawable>();
-        drawable->model.AddSphereMesh();
-        drawable->model.AddTextureToMesh("game/assets/gold.jpg", true, 0);
+        auto drawable = entity->AddComponent<Game::StaticDraw>();
+        drawable->model.SetMeshFromFile("ProceduralSphere");
+        drawable->model.SetTextureToSubmesh("game/assets/gold.jpg", true, 0);
     }
 
     // reset remove id

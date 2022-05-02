@@ -44,6 +44,41 @@ public: \
 	const ClassMetaData& GetMetaData() const override { return metaData; };      \
     const std::string& GetID() const override { return metaData.className; };\
 
+/**
+ * Create a component inheriting from a parent component, may be an interface component.
+ */
+#define KK_COMPONENT_FROM(compClass, parentCompClass) \
+                                \
+class Entity;                                \
+class compClass : public parentCompClass\
+{\
+private:\
+\
+	struct FieldMetaData\
+	{\
+		FieldMetaData(ClassMetaData& md, const char* n, DataType t, int c, size_t o)\
+		{\
+			md.descriptors.emplace_back(DataDescriptor(n, t, c, o));                          \
+		}\
+	};\
+                                \
+    struct ComponentRegister       \
+    {                           \
+        ComponentRegister()\
+        {                       \
+            compClass::metaData.className = #compClass;       \
+            compClass::metaData.constructor = [](){ return new compClass(); };\
+            Log::Info("Register '", #compClass, "' component.");\
+            GetRegistry().push_back(&metaData);\
+        }\
+    };\
+	static const ComponentRegister componentRegister;                           \
+public: \
+	static ClassMetaData metaData;\
+\
+	const ClassMetaData& GetMetaData() const override { return metaData; };      \
+    const std::string& GetID() const override { return metaData.className; };\
+
 #define KK_COMPONENT_END };
 
 /**

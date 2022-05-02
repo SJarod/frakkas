@@ -6,40 +6,31 @@
 #include "renderer/model.hpp"
 
 Renderer::Model::Model(const std::string& i_meshFilename)
+	: RenderObject("engine/shaders/basic")
 {
-	//meshes.reserve(10000);
-	ResourcesManager::LoadModel(meshes, i_meshFilename);
+	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename);
 }
 
 Renderer::Model::Model(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
+	: RenderObject("engine/shaders/basic")
 {
-	ResourcesManager::LoadModel(meshes, i_meshFilename, i_textureFilename, i_flipTexture);
+	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename, i_textureFilename, i_flipTexture);
 }
 
-void Renderer::Model::AddCubeMesh()
+void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename)
 {
-	ResourcesManager::LoadCube(meshes);
+	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename);
 }
 
-void Renderer::Model::AddSphereMesh(const float i_radius, const int i_longitude, const int i_latitude)
+void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
 {
-	ResourcesManager::LoadSphere(meshes, i_radius, i_longitude, i_latitude);
+	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename, i_textureFilename, i_flipTexture);
 }
 
-void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename)
+void Renderer::Model::SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex)
 {
-	ResourcesManager::LoadModel(meshes, i_meshFilename);
-}
+	assert(i_meshIndex < mesh->submeshes.size() && "out of range");
 
-void Renderer::Model::AddMeshesFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
-{
-	ResourcesManager::LoadModel(meshes, i_meshFilename, i_textureFilename, i_flipTexture);
-}
-
-void Renderer::Model::AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex)
-{
-	assert(i_meshIndex < meshes.size() && "out of range");
-
-	Mesh* mesh = std::next(meshes.begin(), i_meshIndex)->get();
-	mesh->diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
+	Submesh* smesh = std::next(mesh->submeshes.begin(), i_meshIndex)->get();
+	smesh->diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
 }

@@ -24,8 +24,6 @@ private:
 	std::deque<Task>	tasks;
 
 	std::mutex				queueMX;
-	std::mutex				printMX;
-
 	std::condition_variable queueCV;
 
 	//is the routine running?

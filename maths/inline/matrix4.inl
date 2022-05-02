@@ -2,6 +2,21 @@
 #include "maths/vector4.hpp"
 #include "maths/utils.hpp"
 
+////////////////////////////// CONSTRUCTORS
+
+inline Matrix4::Matrix4()
+    : element{ 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f }
+{}
+inline Matrix4::Matrix4(const float& i_f0, const float& i_f1, const float& i_f2, const float& i_f3,
+    const float& i_f4, const float& i_f5, const float& i_f6, const float& i_f7,
+    const float& i_f8, const float& i_f9, const float& i_f10, const float& i_f11,
+    const float& i_f12, const float& i_f13, const float& i_f14, const float& i_f15)
+    : element{ i_f0, i_f1, i_f2, i_f3,
+        i_f4, i_f5, i_f6, i_f7,
+        i_f8, i_f9, i_f10, i_f11,
+        i_f12, i_f13, i_f14, i_f15 }
+{}
+
 ////////////////////////////// OPERATORS
 
 inline Vector3 Matrix4::operator*(const Vector3& vec) const
@@ -232,6 +247,16 @@ inline Matrix4 Matrix4::RotateXYZ(const Vector3& i_anglesRadians)
     return  RotateY(i_anglesRadians.y) * RotateX(i_anglesRadians.x) * RotateZ(i_anglesRadians.z);
 }
 
+inline Matrix4 Matrix4::MatrixFromQuat(const Quaternion& i_q)
+{
+    float q0 = i_q.w, q1 = i_q.x, q2 = i_q.y, q3 = i_q.z;
+    return Matrix4{
+        2.f * (q0 * q0 + q1 * q1) - 1.f, 2.f * (q1 * q2 - q0 * q3), 2.f * (q1 * q3 + q0 * q2), 0.f,
+        2.f * (q1 * q2 + q0 * q3), 2.f * (q0 * q0 + q2 * q2) - 1.f, 2.f * (q2 * q3 - q0 * q1), 0.f,
+        2.f * (q1 * q3 - q0 * q2), 2.f * (q2 * q3 + q0 * q1), 2.f * (q0 * q0 + q3 * q3) - 1.f, 0.f,
+        0.f, 0.f, 0.f, 1.f }.Transpose();
+}
+
 inline Matrix4 Matrix4::Translate(float i_x, float i_y, float i_z)
 {
     return {
@@ -270,4 +295,17 @@ inline Matrix4 Matrix4::Scale(const Vector3& i_sc)
             0.f,     0.f,     i_sc.z,  0.f,
             0.f,     0.f,     0.f,     1.f
     };
+}
+
+inline Vector3 Matrix4::Translation() const
+{
+    return { element[12], element[13], element[14] };
+}
+
+inline Vector3 Matrix4::Scale() const
+{
+    float sx = Vector3{ element[0], element[1], element[2] }.Length();
+    float sy = Vector3{ element[4], element[5], element[6] }.Length();
+    float sz = Vector3{ element[8], element[9], element[10] }.Length();
+    return { sx, sy, sz };
 }

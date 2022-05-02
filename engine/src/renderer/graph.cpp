@@ -28,7 +28,7 @@ Graph::Graph(Game::EntityManager* entityManager)
 
 void Graph::RegisterComponent(Game::Component* i_newComponent)
 {
-    if (i_newComponent->GetID() == Drawable::metaData.className)
+    if (i_newComponent->GetID() == "StaticDraw" || i_newComponent->GetID() == "AnimatedDraw")
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
     else if (i_newComponent->GetID() == CameraComponent::metaData.className)
         gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(i_newComponent));
@@ -36,7 +36,7 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
 
 void Graph::UnregisterComponent(Game::Component* i_oldComponent)
 {
-    if (i_oldComponent->GetID() == Drawable::metaData.className)
+    if (i_oldComponent->GetID() == "StaticDraw" || i_oldComponent->GetID() == "AnimatedDraw")
     {
         auto it = std::find(renderEntities.begin(), renderEntities.end(), reinterpret_cast<Drawable*>(i_oldComponent));
         if (it != renderEntities.end())
@@ -89,31 +89,7 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
     for (Drawable* drawable : renderEntities)
     {
         if (drawable && drawable->enabled)
-        {
-            const Renderer::Model& model = drawable->model;
-
-            for (auto& mesh : model.meshes)
-            {
-                if (mesh == nullptr || mesh->gpu.VAO == 0)
-                    continue;
-
-                GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
-
-                Resources::Texture* diffuseTex = mesh->diffuseTex.get();
-                if (diffuseTex != nullptr)
-                    if (diffuseTex->gpu)
-                        texToBeBinded = diffuseTex->gpu->data;
-
-                assert(mesh->gpu.VAO != 0);
-                i_renderer.RenderMeshOnce(mesh->localTransform * model.transform.GetModelMatrix(),
-                                          mesh->gpu.VAO,
-                                          mesh->vertices.size(),
-                                          texToBeBinded,
-                                          true,
-                                          light.outline);
-            }
-        }
-
+            drawable->Draw(i_renderer, light);
     }
 }
 
@@ -121,19 +97,29 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
                                 Renderer::LowLevel::Camera& i_camera) const noexcept
 {
 // An entity with CameraComponent should be added to render
-    i_renderer.SetUniform("uProjection", editorCamera.GetProjectionMatrix(i_aspectRatio));
-    i_renderer.SetUniform("uView", i_camera.GetViewMatrix());
-    i_renderer.SetUniform("uCameraView", i_camera.transform.position.get());
+    // projection
+    i_renderer.SetUniformToNamedBlock("uProjView", 0, editorCamera.GetProjectionMatrix(i_aspectRatio));
+    // view
+    i_renderer.SetUniformToNamedBlock("uProjView", 64, i_camera.GetViewMatrix());
+    // cameraView
+    i_renderer.SetUniformToNamedBlock("uRendering", 96, i_camera.transform.position.get());
 
     // Use last light as default
-    i_renderer.SetUniform("uLight.enabled", lightEnabled);
-    i_renderer.SetUniform("uLight.position", light.position);
-    i_renderer.SetUniform("uLight.ambient", light.ambient);
-    i_renderer.SetUniform("uLight.diffuse", light.diffuse);
-    i_renderer.SetUniform("uLight.specular", light.specular);
+    // light.enabled
+    i_renderer.SetUniformToNamedBlock("uRendering", 0, lightEnabled);
+    // light.position
+    i_renderer.SetUniformToNamedBlock("uRendering", 16, light.position);
+    // light.ambient
+    i_renderer.SetUniformToNamedBlock("uRendering", 32, light.ambient);
+    // light.diffuse
+    i_renderer.SetUniformToNamedBlock("uRendering", 48, light.diffuse);
+    // light.specular
+    i_renderer.SetUniformToNamedBlock("uRendering", 64, light.specular);
 
-    i_renderer.SetUniform("uToonShading", light.toonShading);
-    i_renderer.SetUniform("uFiveTone", light.fiveTone);
+    // toonShading
+    i_renderer.SetUniformToNamedBlock("uRendering", 80, light.toonShading);
+    // fiveTone
+    i_renderer.SetUniformToNamedBlock("uRendering", 88, light.fiveTone);
 }
 
 void Graph::ReloadScene()

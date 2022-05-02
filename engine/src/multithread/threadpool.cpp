@@ -114,7 +114,6 @@ void ThreadPool::PoolRoutine(const int i_id)
 
 void ThreadPool::PrintThreadId(const int i_id)
 {
-	std::lock_guard<std::mutex> guard(printMX);
 	Log::Info("thread #" + std::to_string(i_id));
 }
 
@@ -147,7 +146,6 @@ float ThreadPool::PrintLastWorkingTimeOnce()
 
 	float val = (lastTaskTime - startTime) / 1000.f;
 
-	std::lock_guard<std::mutex> guard(printMX);
 	Log::Info("LOADING TIME : " + std::to_string(val) + "s");
 
 	lastTaskTime = 0.f;

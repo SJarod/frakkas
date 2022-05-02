@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <list>
+
+#include "renderer/render_object.hpp"
 
 #include "game/transform.hpp"
-
 
 namespace Resources
 {
@@ -14,18 +14,16 @@ namespace Resources
 
 namespace Renderer
 {
-	class Model
+	class Model : public Renderer::RenderObject
 	{
 	public:
-		// Every meshes that this model posseses.
-		std::list<std::shared_ptr<Resources::Mesh>> meshes;
-
+		std::shared_ptr<Resources::Mesh> mesh;
 		Game::Transform transform;
 
-		Model() = default;
+		Model() : RenderObject("engine/shaders/basic") {}
 
 		/**
-		 * @Summary Create a model that contains meshes with embedded textures using Assimp.
+		 * @Summary Create a model that contains submeshes with embedded textures using Assimp.
 		 * @param i_meshFilename
 		 */
 		Model(const std::string& i_meshFilename);
@@ -40,38 +38,27 @@ namespace Renderer
 		Model(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
-		 * @Summary Add a cube shaped mesh after the creation of this model object.
-		 */
-		void AddCubeMesh();
-
-		/**
-		 * @Summary Add a sphere shaped mesh after the creation of this model object.
-		 *
-		 * @param i_radius
-		 * @param i_longitude
-		 * @param i_latitude
-		 */
-		void AddSphereMesh(const float i_radius = 1.f, const int i_longitude = 50, const int i_latitude = 25);
-
-		/**
-		* @Summary Add a mesh coming from a 3D model file after the creation of this model object.
+		* @Summary Set a mesh coming from a 3D model file after the creation of this model object.
 		* The specified mesh may contain embedded texture.
+		* User can set "ProceduralCube" or "ProceduralSphere" as filename to procedurally load a cube or a sphere.
 		*/
-		void AddMeshesFromFile(const std::string& i_meshFilename);
+		void SetMeshFromFile(const std::string& i_meshFilename);
 
 		/**
-		* @Summary Add a mesh coming from a 3D model file, manually specifying its texture, after the creation of this model object.
+		* @Summary Set a mesh coming from a 3D model file, manually specifying its texture, after the creation of this model object.
+		* User can set "ProceduralCube" or "ProceduralSphere" as filename to procedurally load a cube or a sphere.
+		* If user uses procedural loading, the specified texture will not be precessed.
 		*/
-		void AddMeshesFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
+		void SetMeshFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
-		 * @Summary Add a texture after the creation of this model object.
+		 * @Summary Set a texture after the creation of this model object.
 		 *
 		 * @param i_textureFilename
 		 * @param i_flipTexture
-		 * @param i_meshIndex
+		 * @param i_submeshIndex
 		 */
-		void AddTextureToMesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_meshIndex);
+		void SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_submeshIndex);
 
         /**
          * @Summary Setup entity components from input file.

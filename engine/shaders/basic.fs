@@ -38,13 +38,21 @@ in vec2 vUV;
 
 out vec4 oColor;
 
-uniform Light uLight;
-uniform bool uToonShading;
-uniform bool uOutline;
-uniform bool uFiveTone;
-uniform bool hasTexture = false;
+layout(std140, binding = 1) uniform uRendering
+{
+                        //base alignment    //aligned offset
+    Light light;        //4                 //0
+                        //16                //16
+                        //16                //32
+                        //16                //48
+                        //16                //64
+    bool toonShading;   //4                 //80
+    bool outLine;       //4                 //84
+    bool fiveTone;      //4                 //88
+    vec3 cameraView;    //16                //96
+};
+
 uniform sampler2D uTexture;
-uniform vec3 uCameraView;
 
 light_shade_result light_shade(Light light, float shininess, vec3 eyePosition, vec3 position, vec3 normal)
 {
@@ -78,7 +86,7 @@ light_shade_result get_lights_shading()
 {
     light_shade_result lightResult = light_shade_result(vec3(0.0), vec3(0.0), vec3(0.0));
 
-    light_shade_result light = light_shade(uLight, gDefaultMaterial.shininess, uCameraView, vPos, normalize(vNormal));
+    light_shade_result light = light_shade(light, gDefaultMaterial.shininess, cameraView, vPos, normalize(vNormal));
     lightResult.ambient  += light.ambient;
     lightResult.diffuse  += light.diffuse;
     lightResult.specular += light.specular;
@@ -88,17 +96,20 @@ light_shade_result get_lights_shading()
 
 void main()
 {
-    float intensity = dot(normalize(uLight.position.xyz), normalize(vNormal));
+    if (outLine)
+    {
+        oColor = vec4(0.0, 0.0, 0.0, 1.0);
+        return;
+    }
+
+    float intensity = dot(normalize(light.position.xyz), normalize(vNormal));
     vec4 color1, color2;
 
-    if (uToonShading)
+    if (toonShading)
     {
-        if (hasTexture)
-            color1 = texture(uTexture, vUV);
-        else
-            color1 = vec4(uLight.diffuse, 1.0);
+        color1 = texture(uTexture, vUV);
 
-        if (uFiveTone)
+        if (fiveTone)
         {
             if (intensity > 0.95)       color2 = vec4(1.0, 1.0, 1.0, 1.0);
             else if (intensity > 0.75)  color2 = vec4(0.8, 0.8, 0.8, 1.0);
@@ -116,7 +127,7 @@ void main()
 
         oColor = color1 * color2;
     }
-    else if (!uToonShading && hasTexture)
+    else if (!toonShading)
     {
         // Compute phong shading
         light_shade_result lightResult = get_lights_shading();
@@ -131,7 +142,4 @@ void main()
     }
     else
         oColor = vec4(1.0);
-
-    if (uOutline)
-        oColor = vec4(0.0, 0.0, 0.0, 1.0);
 }
