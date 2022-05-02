@@ -36,7 +36,7 @@ Engine::Engine()
     InitSDL();
     InitMiniaudio();
 
-    renderer = std::make_unique<Renderer::LowLevel::LowRenderer>("basic");
+    renderer = std::make_unique<Renderer::LowLevel::LowRenderer>();
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
 

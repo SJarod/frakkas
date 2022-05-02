@@ -4,21 +4,29 @@ add_library(EngineFrakkas STATIC
 			${IMGUI_SOURCE_FILES}
 			src/game/entity_manager.cpp
         	src/game/transform.cpp
-            src/game/lowcomponent/drawable.cpp
+            src/game/lowcomponent/static_draw.cpp
+			src/game/lowcomponent/animated_draw.cpp
             src/game/lowcomponent/camera_component.cpp
             src/game/lowcomponent/component.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
+			src/renderer/render_object.cpp
 			src/renderer/model.cpp
+			src/renderer/skeletal_model.cpp
+			src/renderer/point.cpp
             src/game/lowcomponent/sound_component.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
 			src/resources/resources_manager.cpp
 			src/resources/serializer.cpp
+			src/resources/mesh.cpp
+			src/resources/skeletal_mesh.cpp
+			src/resources/skeletal_animation.cpp
 			src/resources/texture.cpp
 			src/resources/sound.cpp
+			src/animation/animator.cpp
         	src/renderer/graph.cpp
         	src/debug/log.cpp
             src/engine.cpp

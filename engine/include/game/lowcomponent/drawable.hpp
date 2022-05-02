@@ -1,17 +1,22 @@
 #pragma once
 
-#include "renderer/model.hpp"
+#include "game/lowcomponent/component.hpp"
 
-#include "game/component_generator.hpp"
+namespace Renderer
+{
+	class Light;
+
+	namespace LowLevel
+	{
+		class LowRenderer;
+	}
+}
 
 namespace Game
 {
-    KK_COMPONENT(Drawable)
-
-        Renderer::Model model;
-
-    protected:
-        void SetOwner(Entity* owner) override;
-
-    KK_COMPONENT_END
+	class Drawable : public Component
+	{
+	public:
+		virtual void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) = 0;
+	};
 }

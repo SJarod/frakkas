@@ -7,10 +7,18 @@ struct Matrix4
 {
     union
     {
-        float element[16]{};
+        float element[16];
 
         Vector4 line[4];
     };
+
+////////////////////////////// CONSTRUCTORS
+
+    Matrix4();
+    Matrix4(const float& i_f0, const float& i_f1, const float& i_f2, const float& i_f3,
+        const float& i_f4, const float& i_f5, const float& i_f6, const float& i_f7,
+        const float& i_f8, const float& i_f9, const float& i_f10, const float& i_f11,
+        const float& i_f12, const float& i_f13, const float& i_f14, const float& i_f15);
 
 ////////////////////////////// OPERATORS
 
@@ -104,6 +112,12 @@ struct Matrix4
     static Matrix4 RotateXYZ(const Vector3& i_anglesRadians);
 
 /**
+ * @return a rotation matrix from a quaternion
+ * @param i_q must be a normalized quaternion
+ */
+    static Matrix4 MatrixFromQuat(const Quaternion& i_q);
+
+/**
  * @summary Create a translation matrix
  */
     static Matrix4 Translate(float i_x, float i_y, float i_z);
@@ -123,6 +137,16 @@ struct Matrix4
  * @summary Create a scale matrix
  */
     static Matrix4 Scale(const Vector3& i_sc);
+
+/**
+ * @summary Get the translation component of the matrix
+ */
+    Vector3 Translation() const;
+
+/**
+ * @summary Get the scale component of the matrix
+ */
+    Vector3 Scale() const;
 };
 
 std::ostream& operator<<(std::ostream& o_o, const Matrix4& i_mat);

@@ -14,10 +14,16 @@ namespace Resources
 	{
 	public:
 		/**
-		 * @Summary Create a shader from a shader file.
+		 * @Summary Create a shader from a couple of shader files.
 		 * @param i_shaderName : Shader name
 		 */
 		Shader(const std::string &i_shaderName);
+
+		/**
+		 * @Summary Create a shader from a vertex shader file and a fragment shader file seperately.
+		 */
+		Shader(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName);
+
 		~Shader();
 
 		void LoadFromInfo() override;
@@ -32,10 +38,20 @@ namespace Resources
         */
         void SetUniform(const std::string_view& i_uniformName, const bool& i_value) const;
 
+		/**
+		* @Summary Pass a float to the shader as uniform.
+		*/
+		void SetUniform(const std::string_view& i_uniformName, const float& i_value) const;
+
         /**
         * @Summary Pass a Matrix4 to the shader as uniform.
         */
-        void SetUniform(const std::string_view& i_uniformName, const Matrix4& i_value) const;
+        void SetUniform(const std::string_view& i_uniformName, const Matrix4& i_value, const bool i_transpose = false) const;
+
+		/**
+		* @Summary Pass an array of Matrix4 as an array of float to the shader as uniform.
+		*/
+		void SetUniform(const std::string_view& i_uniformName, const int i_num, const float* i_array, const bool i_transpose = false) const;
 
         /**
         * @Summary Pass a Vector3 to the shader as uniform.
@@ -48,6 +64,9 @@ namespace Resources
         void SetUniform(const std::string_view& i_uniformName, const Vector4& i_value) const;
 
 	private:
+		const std::string vertexShaderName;
+		const std::string fragmentShaderName;
+
 		GLuint program = 0;
 	};
 }
