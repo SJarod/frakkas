@@ -190,3 +190,19 @@ void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned
 	glBindTextureUnit(0, 0);
 	glBindVertexArray(0);
 }
+
+void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_count, const Matrix4& i_model,
+                              const float i_size, const Vector3& i_color, bool i_useLineStrip)
+{
+    static Point line;
+    line.UseShader();
+    line.SetUniform("uModel", i_model);
+    line.SetUniform("uSize", i_size);
+    line.SetUniform("uColor", i_color);
+
+    glBindVertexArray(i_VAO);
+    glDrawArrays(i_useLineStrip ? GL_LINE_STRIP : GL_LINES, 0, i_count);
+
+    // unbind
+    glBindVertexArray(0);
+}

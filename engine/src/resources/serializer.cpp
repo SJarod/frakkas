@@ -86,22 +86,22 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
         {
             switch (desc.dataType)
             {
-            case DataType::BOOL:
+            case EDataType::BOOL:
                 Read(i_file, *reinterpret_cast<bool*>(componentData));
                 break;
-            case DataType::INT:
+            case EDataType::INT:
                 Read(i_file, reinterpret_cast<int*>(componentData), desc.count);
                 break;
-            case DataType::FLOAT:
+            case EDataType::FLOAT:
                 Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
                 break;
-            case DataType::STRING:
+            case EDataType::STRING:
                 Read(i_file, *reinterpret_cast<std::string*>(componentData));
                 break;
-            case DataType::CAMERA:
+            case EDataType::CAMERA:
                 Read(i_file, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
-            case DataType::SOUND:
+            case EDataType::SOUND:
                 Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
                 break;
             default:
@@ -234,20 +234,20 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
 
         switch (desc.dataType)
         {
-            case DataType::BOOL:
-            case DataType::INT:
+            case EDataType::BOOL:
+            case EDataType::INT:
                 Write(io_file, desc.name, reinterpret_cast<int*>(componentData), desc.count);
                 break;
-            case DataType::FLOAT:
+            case EDataType::FLOAT:
                 Write(io_file, desc.name, reinterpret_cast<float*>(componentData), desc.count);
                 break;
-            case DataType::STRING:
+            case EDataType::STRING:
                 Write(io_file, desc.name, *reinterpret_cast<std::string*>(componentData));
                 break;
-            case DataType::CAMERA:
+            case EDataType::CAMERA:
                 Write(io_file, desc.name, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
-            case DataType::SOUND:
+            case EDataType::SOUND:
                 Write(io_file, desc.name, *reinterpret_cast<Resources::Sound*>(componentData));
                 break;
             default:

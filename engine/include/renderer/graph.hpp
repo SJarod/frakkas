@@ -9,10 +9,15 @@ namespace Game
 {
     class Component;
     class CameraComponent;
-    class LightComponent;
     class Drawable;
+    class Collider;
 
     class EntityManager;
+}
+
+namespace Physic
+{
+    class PhysicScene;
 }
 
 namespace Renderer
@@ -25,7 +30,7 @@ namespace Renderer
     class Graph
     {
     public:
-        Graph(Game::EntityManager* entityManager);
+        Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene);
         ~Graph() = default;
 
         bool lightEnabled = true;
@@ -78,6 +83,7 @@ namespace Renderer
         static std::string GetSceneFullPath(const std::string& i_sceneName) ;
     private:
         Game::EntityManager* entityManager;
+        static Physic::PhysicScene* physicScene;
 
         static bool updateCamera;
         static std::vector<Game::CameraComponent*> gameCameras;
@@ -95,6 +101,7 @@ namespace Renderer
         * @brief Update uniforms as light or camera's matrices before render entities.
         * @param i_renderer The renderer who possesses the shader to set uniform.
         * @param i_aspectRatio The aspect ratio of the screen to get camera projection matrix.
+         * @param i_camera The camera to project the scene from.
         */
         void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio,
                                  Renderer::LowLevel::Camera& i_camera) const noexcept;
@@ -103,8 +110,13 @@ namespace Renderer
          * @brief Renders each entity for real.
          * In fact, RenderGame and RenderEditor call this function to process the same way.
          * @param i_renderer the renderer that will draw the entities
-         * @param i_aspectRatio the render's aspect ratio
          */
         void Render(Renderer::LowLevel::LowRenderer& i_renderer);
+
+        /**
+         * @brief Render all enabled collider.
+         * @param i_renderer The renderer that will draw the colliders.
+         */
+        void RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer);
     };
 }

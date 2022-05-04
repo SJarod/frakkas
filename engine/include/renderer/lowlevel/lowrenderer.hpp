@@ -111,6 +111,9 @@ namespace Renderer
 
 			void RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size);
 
+            void RenderLines(const unsigned int i_VAO, const unsigned int i_count, const Matrix4& i_model,
+                             const float i_size, const Vector3& i_color, bool i_useLineStrip);
+
 			/**
 			 * @Summary Render a mesh once.
 			 * Call this function in a loop to render a model in real time.

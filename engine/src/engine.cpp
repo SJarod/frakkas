@@ -17,7 +17,7 @@
 
 #include "engine.hpp"
 
-#if 1
+#if WIN32
 // Run on laptop high perf GPU
 extern "C"
 {
@@ -40,7 +40,7 @@ Engine::Engine()
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
 
-    graph = std::make_unique<Renderer::Graph>(&entityManager);
+    graph = std::make_unique<Renderer::Graph>(&entityManager, &physicScene);
 }
 
 Engine::~Engine()
@@ -152,7 +152,6 @@ void Engine::RunEditor()
     while(running)
     {
         BeginFrame();
-
         renderer->BeginFrame(*editorFBO);
         graph->RenderEditor(*renderer, editorFBO->aspectRatio);
 
@@ -175,6 +174,8 @@ void Engine::RunEditor()
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
+        physicScene.Update(gaming);
+
         running = EndFrame();
         inputsManager.SetInputsListening(false);
     }
@@ -194,11 +195,12 @@ void Engine::RunGame()
         renderer->BeginFrame();
         graph->RenderGame(*renderer, gameFBO->aspectRatio);
 		
-
         renderer->EndFrame();
 
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
+
+        physicScene.Update();
 
         /// ENDFRAME
         running = EndFrame();
@@ -219,8 +221,6 @@ void Engine::SetCursorPosition(const Vector2& i_position)
 {
     SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
 }
-
-
 
 
 Renderer::LowLevel::Camera* Engine::GetEditorGamera() const

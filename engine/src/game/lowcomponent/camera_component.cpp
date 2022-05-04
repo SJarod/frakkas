@@ -5,7 +5,7 @@
 #include "game/lowcomponent/camera_component.hpp"
 
 KK_COMPONENT_IMPL(CameraComponent)
-KK_FIELD_IMPL(CameraComponent, camera, DataType::CAMERA, 1)
+KK_FIELD_IMPL(CameraComponent, camera, EDataType::CAMERA, 1)
 
 void CameraComponent::SetOwner(Entity* owner)
 {

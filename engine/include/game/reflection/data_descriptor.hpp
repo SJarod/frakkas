@@ -5,7 +5,7 @@
 #include <functional>
 #include <unordered_map>
 
-enum class DataType
+enum class EDataType
 {
 	INT,
 	FLOAT,
@@ -20,11 +20,11 @@ enum class DataType
  */
 struct DataDescriptor
 {
-	DataDescriptor(const std::string& name, DataType dataType, int count, size_t offset)
+	DataDescriptor(const std::string& name, EDataType dataType, int count, size_t offset)
 		:name(name), dataType(dataType), count(count), offset(offset){}
 
 	std::string name;
-	DataType dataType;
+	EDataType dataType;
 	int count = 1;
 	size_t offset = 0;
 };

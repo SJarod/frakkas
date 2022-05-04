@@ -44,6 +44,12 @@ namespace Resources
 
 	class Mesh : public Resource
 	{
+	public:
+		// Those string are code name to load in-engine shape when call LoadFromInfo()
+		static constexpr char cubeMesh[] = "ProceduralCube";
+		static constexpr char sphereMesh[] = "ProceduralSphere";
+		static constexpr char cubeColliderMesh[] = "ProceduralCubeLines";
+		static constexpr char sphereColliderMesh[] = "ProceduralSphereLines";
 	protected:
 		std::string textureName = "";
 		bool		flipTexture = false;
@@ -107,6 +113,11 @@ namespace Resources
 		 */
 		void LoadCube();
 
+        /**
+         * Load procedurally a cube for line rendering
+         */
+        void LoadLineCube();
+
 		/**
 		 * Procedurally load a sphere.
 		 *
@@ -117,6 +128,8 @@ namespace Resources
 		void LoadSphere(const float i_radius = 1.f,
 			const int i_longitude = 50,
 			const int i_latitude = 25);
+
+        void LoadLineSphere(float i_radius = 1.f);
 
 	public:
 		// Every submeshes that this mesh possesses.
