@@ -32,6 +32,9 @@ Component* Entity::AddComponent(std::unique_ptr<Component> comp)
 
 void Entity::RemoveComponentAt(int index)
 {
+    // Call OnDestroy event
+    components[index].get()->OnDestroy();
+    // Unregister
     UnregisterIntoGraph(components[index].get());
     components.erase(components.begin() + index);
 }

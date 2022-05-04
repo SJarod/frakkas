@@ -3,6 +3,8 @@
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
 #include "game/lowcomponent/camera_component.hpp"
+#include "game/lowcomponent/collider/box_collider.hpp"
+#include "game/lowcomponent/collider/sphere_collider.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -11,6 +13,8 @@
 #include "resources/resources_manager.hpp"
 #include "resources/serializer.hpp"
 
+#include "physic/physic_scene.hpp"
+
 #include "helpers/path_constants.hpp"
 
 #include "renderer/graph.hpp"
@@ -18,36 +22,60 @@
 using namespace Game;
 using namespace Renderer;
 
+Physic::PhysicScene* Graph::physicScene = nullptr;
+
 std::vector<Game::CameraComponent*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
 bool Graph::updateCamera = true;
 
-Graph::Graph(Game::EntityManager* entityManager)
-    :entityManager(entityManager)
-{}
+Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene)
+    :entityManager(io_entityManager)
+{
+    physicScene = i_physicScene;
+    editorCamera.transform.position = Vector3::forward * 4.f;
+}
 
 void Graph::RegisterComponent(Game::Component* i_newComponent)
 {
-    if (i_newComponent->GetID() == "StaticDraw" || i_newComponent->GetID() == "AnimatedDraw")
+    std::string ID = i_newComponent->GetID();
+    if (ID == "StaticDraw" || ID == "AnimatedDraw")
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
-    else if (i_newComponent->GetID() == CameraComponent::metaData.className)
+    else if (ID == CameraComponent::metaData.className)
         gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(i_newComponent));
+    else if (ID == BoxCollider::metaData.className)
+    {
+        auto box = reinterpret_cast<BoxCollider*>(i_newComponent);
+        box->SetCollider(physicScene->CreateBody(box->halfExtension));
+        physicScene->colliders.emplace_back(box);
+    }
+    else if (ID == SphereCollider::metaData.className)
+    {
+        auto sphere = reinterpret_cast<SphereCollider*>(i_newComponent);
+        sphere->SetCollider(physicScene->CreateBody(sphere->radius));
+        physicScene->colliders.emplace_back(sphere);
+    }
 }
 
 void Graph::UnregisterComponent(Game::Component* i_oldComponent)
 {
-    if (i_oldComponent->GetID() == "StaticDraw" || i_oldComponent->GetID() == "AnimatedDraw")
+    std::string ID = i_oldComponent->GetID();
+    if (ID == "StaticDraw" || ID == "AnimatedDraw")
     {
         auto it = std::find(renderEntities.begin(), renderEntities.end(), reinterpret_cast<Drawable*>(i_oldComponent));
         if (it != renderEntities.end())
             renderEntities.erase(it);
     }
-    else if (i_oldComponent->GetID() == CameraComponent::metaData.className)
+    else if (ID == CameraComponent::metaData.className)
     {
         auto it = std::find(gameCameras.begin(), gameCameras.end(), reinterpret_cast<CameraComponent*>(i_oldComponent));
         if (it != gameCameras.end())
             gameCameras.erase(it);
         updateCamera = true;
+    }
+    else if (ID == BoxCollider::metaData.className || ID == SphereCollider::metaData.className)
+    {
+        auto collider = reinterpret_cast<Collider*>(i_oldComponent);
+        physicScene->RemoveBody(collider->GetPhysicBodyID());
     }
 }
 
@@ -70,6 +98,7 @@ void Graph::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_as
 {
     UpdateGlobalUniform(i_renderer, i_aspectRatio, editorCamera);
     Render(i_renderer);
+    RenderColliders(i_renderer);
 }
 
 void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio)
@@ -90,6 +119,15 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
     {
         if (drawable && drawable->enabled)
             drawable->Draw(i_renderer, light);
+    }
+}
+
+void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
+{
+    for (Collider* collider : physicScene->colliders)
+    {
+        if (collider && collider->enabled)
+            collider->DebugDraw(i_renderer);
     }
 }
 

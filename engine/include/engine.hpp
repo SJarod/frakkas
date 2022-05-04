@@ -7,6 +7,8 @@
 #include <SDL.h>
 #include <miniaudio.h>
 
+#include "physic/physic_scene.hpp"
+
 #include "game/entity_manager.hpp"
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
@@ -34,6 +36,7 @@ public:
     bool focusOnGaming = false;
 
     Game::EntityManager entityManager;
+    Physic::PhysicScene physicScene;
 
     std::unique_ptr<Renderer::LowLevel::LowRenderer> renderer;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;

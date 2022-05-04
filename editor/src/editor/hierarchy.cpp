@@ -4,6 +4,8 @@
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/entity_manager.hpp"
 
+#include "resources/mesh.hpp"
+
 #include "helpers/game_edit.hpp"
 
 #include "editor/hierarchy.hpp"
@@ -26,10 +28,29 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     {
         Game::Entity* entity = io_entityManager.CreateEntity();
         auto drawable = entity->AddComponent<Game::StaticDraw>();
-        drawable->model.SetMeshFromFile("ProceduralSphere");
+        drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
         drawable->model.SetTextureToSubmesh("game/assets/gold.jpg", true, 0);
     }
 
+    ImGui::SameLine();
+
+    if (ImGui::Button("Unset parent") && selected)
+    {
+        io_entityManager.UnsetEntityParent(*selected);
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ENTITY"))
+        {
+            Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
+            if (child)
+            {
+                io_entityManager.UnsetEntityParent(*selected);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
     // reset remove id
     removeID = -1;
 

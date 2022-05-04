@@ -8,14 +8,15 @@ add_library(EngineFrakkas STATIC
 			src/game/lowcomponent/animated_draw.cpp
             src/game/lowcomponent/camera_component.cpp
             src/game/lowcomponent/component.cpp
+            src/game/lowcomponent/sound_component.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
+			src/game/component_generator.cpp
 			src/renderer/render_object.cpp
 			src/renderer/model.cpp
 			src/renderer/skeletal_model.cpp
 			src/renderer/point.cpp
-            src/game/lowcomponent/sound_component.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
 			src/resources/program_shader.cpp
@@ -31,8 +32,11 @@ add_library(EngineFrakkas STATIC
         	src/debug/log.cpp
             src/engine.cpp
         	src/multithread/threadpool.cpp
-			${IMGUI_SOURCE_FILES}
- "src/game/component_generator.cpp")
+		    src/physic/physic_scene.cpp
+		    src/game/lowcomponent/collider/box_collider.cpp 
+		    src/game/lowcomponent/collider/collider.cpp 
+		    src/game/lowcomponent/collider/sphere_collider.cpp
+)
 
 target_include_directories(EngineFrakkas
                            PRIVATE include
@@ -41,6 +45,7 @@ target_include_directories(EngineFrakkas
 						   PRIVATE ${imgui_SOURCE_DIR}
 		                   PRIVATE ${sdl_INCLUDE_DIR}
 						   PRIVATE ${tracy_SOURCE_DIR}
+						   PRIVATE ${PROJECT_SOURCE_DIR}/lib/Jolt
 )
 
 # Include jolt and assimp libraries

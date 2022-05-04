@@ -16,7 +16,12 @@
 bool Helpers::Edit(std::string& io_string, const char* i_label)
 {
     char strCopy[256] = "";
+
+#if WIN32
     strcpy_s(strCopy, io_string.data());
+#else
+    strcpy(strCopy, io_string.data());
+#endif
     bool returnValue = ImGui::InputText(i_label, strCopy, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
     io_string = std::string(strCopy);
 
@@ -247,22 +252,22 @@ bool Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
 
             switch (desc.dataType)
             {
-            case DataType::BOOL:
+            case EDataType::BOOL:
                 ImGui::Checkbox(desc.name.c_str(), reinterpret_cast<bool*>(componentData));
                 break;
-            case DataType::INT:
+            case EDataType::INT:
                 DragScalar(desc.name, reinterpret_cast<int*>(componentData), desc.count);
                 break;
-            case DataType::FLOAT:
+            case EDataType::FLOAT:
                 DragScalar(desc.name, reinterpret_cast<float*>(componentData), desc.count);
                 break;
-            case DataType::STRING:
+            case EDataType::STRING:
                 Edit(*reinterpret_cast<std::string*>(componentData), desc.name.c_str());
                 break;
-            case DataType::CAMERA:
+            case EDataType::CAMERA:
                 Edit(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                 break;
-            case DataType::SOUND:
+            case EDataType::SOUND:
                 Edit(*reinterpret_cast<Resources::Sound*>(componentData));
                 break;
             default:

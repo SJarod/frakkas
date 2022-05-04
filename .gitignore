@@ -27,9 +27,9 @@
 *.la
 *.a
 *.lib
-!lib/assimp/*/*.lib
-!lib/jolt/*/*.lib
-!lib/jolt/*/*.a
+!lib/assimp/*.lib
+!lib/jolt/libs/*.lib
+!lib/jolt/libs/*.a
 
 # Executables
 *.exe
@@ -147,3 +147,4 @@ Launcher.pdb
 *.manifest
 **/.vs
 EditorFrakkas.pdb
+default.profraw

@@ -13,6 +13,9 @@ project(EngineFrakkas
         DESCRIPTION "Engine"
 )
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1") # needed for Jolt
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:>:-MT>") # force static
+
 include(FetchContent)
 
 # Tracy
@@ -35,6 +38,9 @@ FetchContent_Declare(sdl
                      GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
                      GIT_TAG b424665 # release-2.0.20
 )
+
+set(SDL_LIBC ON CACHE BOOL "Use the system C library" FORCE)
+
 FetchContent_MakeAvailable(sdl)
 
 set(sdl_INCLUDE_DIR ${sdl_SOURCE_DIR}/include)

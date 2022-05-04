@@ -13,7 +13,7 @@
  * declare a static metaData variable and define the constructor of the class.
  */
 #define KK_COMPONENT(compClass) \
-                                \
+\
 class Entity;                                \
 class compClass : public Component\
 {\
@@ -21,11 +21,12 @@ private:\
 \
 	struct FieldMetaData\
 	{\
-		FieldMetaData(ClassMetaData& md, const char* n, DataType t, int c, size_t o)\
+		FieldMetaData(ClassMetaData& md, const char* n, EDataType t, int c, size_t o)\
 		{\
-			md.descriptors.emplace_back(DataDescriptor(n, t, c, o));                          \
+			md.descriptors.emplace_back(DataDescriptor(n, t, c, o)); \
 		}\
 	};\
+                                \
                                 \
     struct ComponentRegister       \
     {                           \
@@ -54,13 +55,13 @@ class compClass : public parentCompClass\
 {\
 private:\
 \
-	struct FieldMetaData\
-	{\
-		FieldMetaData(ClassMetaData& md, const char* n, DataType t, int c, size_t o)\
-		{\
-			md.descriptors.emplace_back(DataDescriptor(n, t, c, o));                          \
-		}\
-	};\
+    struct FieldMetaData\
+    {\
+        FieldMetaData(ClassMetaData& md, const char* n, EDataType t, int c, size_t o)\
+        {\
+            md.descriptors.emplace_back(DataDescriptor(n, t, c, o));                          \
+        }\
+    };\
                                 \
     struct ComponentRegister       \
     {                           \
@@ -72,11 +73,11 @@ private:\
             GetRegistry().push_back(&metaData);\
         }\
     };\
-	static const ComponentRegister componentRegister;                           \
+    static const ComponentRegister componentRegister;                           \
 public: \
-	static ClassMetaData metaData;\
+    static ClassMetaData metaData;\
 \
-	const ClassMetaData& GetMetaData() const override { return metaData; };      \
+    const ClassMetaData& GetMetaData() const override { return metaData; };      \
     const std::string& GetID() const override { return metaData.className; };\
 
 #define KK_COMPONENT_END };
