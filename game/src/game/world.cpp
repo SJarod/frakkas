@@ -92,6 +92,8 @@ World::World(Engine& engine)
 		collider->halfExtension = Vector3(10.f, 1.f, 10.f);
 
 		entity->transform.position = Vector3(0.f, -3.f, 0.f);
+
+        entity->AddComponent<Bar>();
 	}
 #endif
 

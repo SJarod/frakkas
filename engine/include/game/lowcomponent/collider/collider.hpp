@@ -8,7 +8,7 @@
 
 #include "physic/simple_layers.hpp"
 
-#include "game/lowcomponent/component.hpp"
+#include "game/component_generator.hpp"
 
 
 namespace JPH
@@ -25,14 +25,12 @@ namespace Renderer::LowLevel
 
 namespace Game
 {
-    class Collider : public Component
-    {
-    public:
+    KK_PRIVATE_COMPONENT(Collider)
 
-        Vector3 velocity;
-        Vector3 angularVelocity;
+        KK_FIELD(Vector3, velocity);
+        KK_FIELD(Vector3, angularVelocity);
 
-        bool isStatic = true;
+        KK_FIELD(bool, isStatic) = true;
 
         /**
          * @return ID of collider in jolt physic system.
@@ -49,8 +47,6 @@ namespace Game
         */
         virtual void ApplyPhysicUpdate();
 
-        void Update() override;
-
         /**
          * Give a constructed body to this collider.
          * @param i_collider The constructed body.
@@ -60,7 +56,7 @@ namespace Game
         /**
          * Draw the collider on the scene.
          */
-        virtual void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const = 0;
+        virtual void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const {};
 
     protected:
         JPH::Body* collider = nullptr;
@@ -108,5 +104,6 @@ namespace Game
         * @param i_bodyInterface The Jolt body interface to change body object layer.
         */
         void SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterface);
-    };
+
+    KK_COMPONENT_END
 }

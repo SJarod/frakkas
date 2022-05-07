@@ -7,6 +7,7 @@
 #include <mutex>
 
 #include "helpers/path_constants.hpp"
+#include "utils/string_format.hpp"
 
 #include "utils/singleton.hpp"
 
@@ -63,19 +64,7 @@ private:
     std::vector<std::string> logList;
     std::mutex logMX;
 
-    /**
-     * Centralize all the arguments log into one string stream.
-     * @param o_stream The output stream to print.
-     * @param i_firstArg The first variadic object.
-     * @param i_args The others variadic objects
-     */
-    template<typename TArg, typename... TArgs>
-    static void GetFormat(std::stringstream& o_stream, TArg i_firstArg, TArgs&&... i_args);
-    /**
-     * This function end the GetFormat template process.
-     * @param i_stream The string stream with all the logs.
-     */
-    static void GetFormat(std::stringstream& i_stream) {};
+    
 
     /**
     * @Summary Output the casted log
@@ -86,30 +75,17 @@ private:
 template <typename... Args>
 void Log::Info(Args&&... i_logs)
 {
-    std::stringstream stream;
-    GetFormat(stream, i_logs...);
-    Out("[INFO] " + stream.str());
+    Out("[INFO] " + StringFormat::GetFormat(std::forward<Args>(i_logs)...));
 }
 
 template <typename... Args>
 void Log::Warning(Args&&... i_logs)
 {
-    std::stringstream stream;
-    GetFormat(stream, i_logs...);
-    Out("[WARNING] " + stream.str());
+    Out("[WARNING] " + StringFormat::GetFormat(std::forward<Args>(i_logs)...));
 }
 
 template <typename... Args>
 void Log::Error(Args&&... i_logs)
 {
-    std::stringstream stream;
-    GetFormat(stream, i_logs...);
-    Out("[ERROR] " + stream.str());
-}
-
-template<typename TArg, typename... TArgs>
-void Log::GetFormat(std::stringstream& o_stream, TArg i_firstArg, TArgs&&... i_args)
-{
-    o_stream << i_firstArg;
-    GetFormat(o_stream, i_args...);
+    Out("[ERROR] " + StringFormat::GetFormat(std::forward<Args>(i_logs)...));
 }

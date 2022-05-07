@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string>
-#include <list>
+#include <vector>
 #include <functional>
 #include <unordered_map>
+
+#include "maths.hpp"
 
 enum class EDataType
 {
@@ -20,13 +22,15 @@ enum class EDataType
  */
 struct DataDescriptor
 {
-	DataDescriptor(const std::string& name, EDataType dataType, int count, size_t offset)
-		:name(name), dataType(dataType), count(count), offset(offset){}
+	DataDescriptor(const std::string& name, EDataType dataType, int count, size_t offset, bool viewOnly = false, const Vector2& range = Vector2())
+		:name(name), dataType(dataType), count(count), offset(offset), viewOnly(viewOnly), range(range) {}
 
 	std::string name;
 	EDataType dataType;
 	int count = 1;
 	size_t offset = 0;
+	bool viewOnly = false;
+    Vector2 range;
 };
 
 namespace Game
@@ -39,6 +43,8 @@ namespace Game
 struct ClassMetaData
 {
 	std::string className;
+    std::string parentClassName;
+    bool publicClass = true;
     std::function<Game::Component*()> constructor; // [](){ return new PlayerComponent(); }
-	std::list<DataDescriptor> descriptors;
+	std::vector<DataDescriptor> descriptors;
 };

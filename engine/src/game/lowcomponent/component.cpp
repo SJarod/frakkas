@@ -8,6 +8,17 @@ std::vector<ClassMetaData*>& Component::GetRegistry()
     return componentRegistry;
 }
 
+ClassMetaData* Component::FindMetaData(const std::string& i_compName)
+{
+    std::vector<ClassMetaData*>& registry = GetRegistry();
+    auto it = std::find_if(registry.begin(), registry.end(), [&i_compName](ClassMetaData* md){ return i_compName == md->className;});
+
+    if (it != registry.end())
+        return *it;
+
+    return nullptr;
+}
+
 Component::Component()
 {
     enabled.setter = [&](const bool& value)

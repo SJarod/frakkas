@@ -40,7 +40,7 @@
 	2
 >transform
 >position
-	0, -1.02, 0
+	-0.000598555, -11384.3, -0.338796
 >rotation
 	0, 0, 0
 >scale
@@ -51,6 +51,8 @@
 >SphereCollider
 >enabled
 	1
+>isStatic
+	0
 >radius
 	1
 
@@ -63,7 +65,7 @@
 	2
 >transform
 >position
-	0, 0.96, 0
+	-0.038065, 2.37951, 1.98458
 >rotation
 	0, 0, 0
 >scale
@@ -74,6 +76,8 @@
 >SphereCollider
 >enabled
 	1
+>isStatic
+	0
 >radius
 	1
 
@@ -83,10 +87,10 @@
 >name
 	Banana
 >component_count
-	2
+	1
 >transform
 >position
-	0.340112, 0.340112, 0
+	0, 0, 0
 >rotation
 	0, 0, 0
 >scale
@@ -94,15 +98,6 @@
 >AnimatedDraw
 >enabled
 	1
->Bar
->enabled
-	1
->originPos
-	0, 0, 0
->destPos
-	2, 2, 0
->speed
-	5
 
 >entity
 >childs
@@ -110,10 +105,10 @@
 >name
 	Ground
 >component_count
-	1
+	2
 >transform
 >position
-	0, -3, 0
+	1.95351, 1.95351, 0
 >rotation
 	0, 0, 0
 >scale
@@ -121,5 +116,43 @@
 >BoxCollider
 >enabled
 	1
+>isStatic
+	1
 >halfExtension
 	10, 1, 10
+>Bar
+>enabled
+	1
+>speed
+	5
+>originPos
+	0, 0, 0
+>destPos
+	2, 2, 0
+
+>entity
+>childs
+	0
+>name
+	NewEntity_6
+>component_count
+	2
+>transform
+>position
+	1.95351, 1.95351, 0
+>rotation
+	0, 0, 0
+>scale
+	14.899, 0.427305, 14.899
+>StaticDraw
+>enabled
+	1
+>Bar
+>enabled
+	1
+>speed
+	5
+>originPos
+	0, 0, 0
+>destPos
+	2, 2, 0

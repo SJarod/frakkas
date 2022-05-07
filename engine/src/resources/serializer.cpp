@@ -77,8 +77,19 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
     std::string attribute;
     GetAttribute(i_file, attribute);
     Read(i_file, o_enabled);
+    Read(i_file, o_component, i_metaData);
+}
+
+void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData)
+{
+    std::string attribute;
+    if (!i_metaData.parentClassName.empty())
+        Read(i_file, o_component, *Game::Component::FindMetaData(i_metaData.parentClassName));
+
     for (const DataDescriptor& desc : i_metaData.descriptors)
     {
+        if (desc.viewOnly) continue;
+
         unsigned char* componentData = o_component + desc.offset;
 
         GetAttribute(i_file, attribute);
@@ -86,29 +97,30 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
         {
             switch (desc.dataType)
             {
-            case EDataType::BOOL:
-                Read(i_file, *reinterpret_cast<bool*>(componentData));
-                break;
-            case EDataType::INT:
-                Read(i_file, reinterpret_cast<int*>(componentData), desc.count);
-                break;
-            case EDataType::FLOAT:
-                Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
-                break;
-            case EDataType::STRING:
-                Read(i_file, *reinterpret_cast<std::string*>(componentData));
-                break;
-            case EDataType::CAMERA:
-                Read(i_file, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
-                break;
-            case EDataType::SOUND:
-                Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
-                break;
-            default:
-                break;
-        }
+                case EDataType::BOOL:
+                    Read(i_file, *reinterpret_cast<bool*>(componentData));
+                    break;
+                case EDataType::INT:
+                    Read(i_file, reinterpret_cast<int*>(componentData), desc.count);
+                    break;
+                case EDataType::FLOAT:
+                    Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
+                    break;
+                case EDataType::STRING:
+                    Read(i_file, *reinterpret_cast<std::string*>(componentData));
+                    break;
+                case EDataType::CAMERA:
+                    Read(i_file, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
+                    break;
+                case EDataType::SOUND:
+                    Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
 }
 
 void Serializer::Read(std::ifstream& i_file, std::string& o_string)
@@ -228,8 +240,18 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
 {
     WriteAttribute(io_file, i_metaData.className);
     Write(io_file, "enabled", i_enabled);
+    Write(io_file, i_component, i_metaData);
+}
+
+void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const ClassMetaData& i_metaData)
+{
+    if(!i_metaData.parentClassName.empty())
+        Write(io_file, i_component, *Game::Component::FindMetaData(i_metaData.parentClassName));
+
     for (const DataDescriptor& desc : i_metaData.descriptors)
     {
+        if (desc.viewOnly) continue;
+
         unsigned char* componentData = i_component + desc.offset;
 
         switch (desc.dataType)
@@ -254,6 +276,7 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
                 break;
         }
     }
+
 }
 
 char Serializer::Tab()

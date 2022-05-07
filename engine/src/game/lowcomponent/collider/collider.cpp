@@ -10,7 +10,10 @@
 
 #include "game/lowcomponent/collider/collider.hpp"
 
-using namespace Game;
+KK_COMPONENT_IMPL(Collider)
+KK_FIELD_IMPL(Collider, isStatic, EDataType::BOOL, 1)
+KK_FIELD_VIEW_ONLY_IMPL(Collider, velocity, EDataType::FLOAT, 3)
+KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
 
 Vector3 Collider::GetPosition() const
 {
@@ -77,14 +80,6 @@ void Collider::SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterfa
         collider->SetMotionType(JPH::EMotionType::Dynamic);
         i_bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::MOVING);
     }
-}
-
-
-void Collider::Update()
-{
-    Transform& trs = owner.get()->transform;
-    trs.position = trs.position.get() + velocity * Time::GetFixedDeltaTime();
-    trs.rotation = trs.rotation.get() + angularVelocity * Time::GetFixedDeltaTime();
 }
 
 void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)

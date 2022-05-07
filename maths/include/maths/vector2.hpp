@@ -36,7 +36,7 @@ struct Vector2
 
     Vector2 operator-=(Vector2& i_vec);
 
-    bool operator==(Vector2& i_vec) const;
+    bool operator==(const Vector2& i_vec) const;
 
     template<typename T>
     Vector2 &operator*=(const T& i_k);

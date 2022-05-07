@@ -102,7 +102,7 @@ inline Vector2 Vector2::operator-=(Vector2& vec)
     };
 }
 
-inline bool Vector2::operator==(Vector2& vec) const
+inline bool Vector2::operator==(const Vector2& vec) const
 {
     return (
             x == vec.x &&
