@@ -1,20 +1,18 @@
 
 >entity
->id
-	1
->parentid
+>childs
 	0
 >name
-	Game Camera
+	Camera entity
 >component_count
-	2
+	1
 >transform
 >position
-	0, 0, 0
+	0, 2, 5
 >rotation
 	0, 0, 0
 >scale
-	0.2, 0.2, 0.2
+	1, 1, 1
 >CameraComponent
 >enabled
 	1
@@ -32,87 +30,96 @@
 	0.001
 >far
 	1000
->FPSMovement
->enabled
-	1
 
 >entity
->id
+>childs
+	0
+>name
+	Bagpack
+>component_count
 	2
->parentid
-	0
->name
-	Sound
->component_count
-	1
 >transform
 >position
-	2, 0, 0
->rotation
-	0, 0, 0
->scale
-	0.4, 0.4, 0.4
->SoundComponent
->enabled
-	1
->sound
-
->entity
->id
-	4
->parentid
-	0
->name
-	entity_3
->component_count
-	1
->transform
->position
-	6, 0, 0
->rotation
-	0, 0, 0
->scale
-	0.8, 0.8, 0.8
->Drawable
->enabled
-	1
-
->entity
->id
-	5
->parentid
-	0
->name
-	entity_4
->component_count
-	1
->transform
->position
-	8, 0, 0
+	0, -1.02, 0
 >rotation
 	0, 0, 0
 >scale
 	1, 1, 1
->Drawable
+>StaticDraw
 >enabled
+	1
+>SphereCollider
+>enabled
+	1
+>radius
 	1
 
 >entity
->id
-	3
->parentid
-	5
+>childs
+	0
 >name
-	entity_2
+	Super Bagpack
+>component_count
+	2
+>transform
+>position
+	0, 0.96, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>StaticDraw
+>enabled
+	1
+>SphereCollider
+>enabled
+	1
+>radius
+	1
+
+>entity
+>childs
+	0
+>name
+	Banana
+>component_count
+	2
+>transform
+>position
+	0.340112, 0.340112, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>AnimatedDraw
+>enabled
+	1
+>Bar
+>enabled
+	1
+>originPos
+	0, 0, 0
+>destPos
+	2, 2, 0
+>speed
+	5
+
+>entity
+>childs
+	0
+>name
+	Ground
 >component_count
 	1
 >transform
 >position
-	4, 0, 0
+	0, -3, 0
 >rotation
 	0, 0, 0
 >scale
-	0.6, 0.6, 0.6
->Drawable
+	1, 1, 1
+>BoxCollider
 >enabled
 	1
+>halfExtension
+	10, 1, 10

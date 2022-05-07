@@ -9,19 +9,14 @@ namespace Editor
     public:
         GameScene() = default;
         ~GameScene() = default;
-
-        /**
-         * Tell the editor if user is playing or not.
-         */
-        bool focusOnGaming = false;
         /**
          * Position where the cursor is locked when user begin playing.
          */
         Vector2 mouseLockPosition;
 
         /**
-        * @summary Display the ImGui panel
+        * @brief Draw the game framebuffer texture, and allow interactions with this window.
         */
-        void OnImGuiRender(const Renderer::LowLevel::Framebuffer& i_fbo, bool i_gaming);
+        void OnImGuiRender(Engine& io_engine);
     };
 }

@@ -19,24 +19,28 @@ using namespace Editor;
 using namespace Game;
 
 
-void MenuBar::OnImGuiRender(Renderer::Graph& io_graph, Game::EntityManager& io_entityManager, bool& o_loadScene,
-                            bool& o_gaming,
-                            Game::Entity* io_selectedEntity)
+void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* io_selectedEntity)
 {
     ImGui::BeginMainMenuBar();
 
-    FileField(io_graph, o_loadScene);
+    FileField(*io_engine.graph, o_loadScene);
 
-    EditField(io_entityManager, io_selectedEntity);
+    EditField(io_engine.entityManager, io_selectedEntity);
 
+    Engine::RunFlag rFlag = io_engine.GetRunMode();
     if (Inputs::IsPressed(EButton::P))
-        o_gaming = !o_gaming;
+    {
+        if (rFlag & Engine::RunFlag_Editing)
+            io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
+        else
+            io_engine.SetRunMode(Engine::RunFlag_Editing);
+    }
 
     OptionsField();
 
-    GameField(o_gaming);
+    GameField(io_engine, o_loadScene);
 
-    LightingField(io_graph);
+    LightingField(*io_engine.graph);
 
     ImGui::EndMainMenuBar();
 }
@@ -295,9 +299,20 @@ void MenuBar::FrakkasColors()
     colors[ImGuiCol_DockingPreview] = ImVec4(250.f / 255.f, 66.f / 255.f, 66.f / 255.f, 179.f / 255.f);
 }
 
-void Editor::MenuBar::GameField(bool& o_gaming)
+void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
 {
     bool createComponent = false;
+
+    bool isGaming = io_engine.GetRunMode() & Engine::RunFlag_Gaming;
+
+    auto reloadSceneFunc = [&]()
+            {
+                io_engine.SetRunMode(Engine::RunFlag_Editing);
+                io_engine.graph->ReloadScene();
+                o_loadScene = true;
+            };
+
+    if (isGaming && Inputs::IsControlCommandPressed(EButton::P)) { reloadSceneFunc(); }
 
     if (ImGui::BeginMenu("Game"))
     {
@@ -308,8 +323,9 @@ void Editor::MenuBar::GameField(bool& o_gaming)
 
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Play", "P")) { o_gaming = true; }
-        if (ImGui::MenuItem("Pause", "P")) { o_gaming = false; }
+        if (ImGui::MenuItem("Play", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming); }
+        if (isGaming && ImGui::MenuItem("Pause", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing); }
+        if (isGaming && ImGui::MenuItem("Stop", "CTRL+P"))  { reloadSceneFunc(); }
 
         ImGui::EndMenu();
     }

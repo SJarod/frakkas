@@ -12,6 +12,8 @@ namespace Renderer
     class Light;
 }
 
+class Engine;
+
 namespace Editor
 {
     class MenuBar
@@ -21,34 +23,31 @@ namespace Editor
         ~MenuBar() = default;
 
         /**
-        * @summary Display the ImGui panel
+        * @brief Draw the top panel with useful menus.
+        * @param io_engine The engine to interact with the entire system.
+        * @param o_loadScene An output boolean to notify editor render when the scene is reload.
+        * @param io_selectedEntity The entity selected in hierarchy.
         */
-        void OnImGuiRender(Renderer::Graph& io_graph, Game::EntityManager& io_entityManager, bool& o_loadScene,
-                           bool& o_gaming, Game::Entity* io_selectedEntity);
+        void OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* io_selectedEntity);
         void FrakkasColors();
 
     private:
-        /**
-         * @brief Build the imgui interface of scene and project file utility.
-         * @param io_graph The graph to manage scene from.
-         */
+        // Scene management (Save, Load, Reload, New)
         void FileField(Renderer::Graph& io_graph, bool& o_loadScene);
         static bool CreateScenePopup(Renderer::Graph& io_graph);
         static bool OpenScenePopup(Renderer::Graph& io_graph);
 
+        // Entity editing (copy, past)
         void EditField(Game::EntityManager& io_entityManager, Game::Entity* io_selectedEntity);
+
+        // Editor style option
         void OptionsField();
-        /**
-         * @brief Give useful utilities about Game experience.
-         * @param o_gaming The current gaming state (playing or not playing)
-         */
-        void GameField(bool& o_gaming);
+
+        // Game interaction (Add component, Play, Pause, Stop) 
+        void GameField(Engine& io_engine, bool& o_loadScene);
         static void CreateComponentPopup();
 
-        /**
-         * @brief Edit lighting
-         * @param io_graph The graph which possesses the light.
-         */
+        // Edit the lighting
         void LightingField(Renderer::Graph& io_graph);
     };
 }

@@ -115,18 +115,21 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     ImGui::ShowDemoWindow(&ShowDemoWindow);
 
     bool reloadScene = false;
-    m_menuBar.OnImGuiRender(*io_engine.graph, io_engine.entityManager, reloadScene, io_engine.gaming, m_hierarchy.selected);
-    if (reloadScene) m_hierarchy.selected = nullptr;
-    
+    m_menuBar.OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
+    if (reloadScene)
+    {
+        m_hierarchy.selected = nullptr;
+        io_engine.gameRestart = true;
+        io_engine.SetRunMode(Engine::RunFlag_Editing);
+    }
+
     m_debugger.OnImGuiRender();
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
     m_fileBrowser.OnImGuiRender();
-    m_game.OnImGuiRender(*io_engine.gameFBO, io_engine.gaming);
+    m_game.OnImGuiRender(io_engine);
     m_scene.OnImGuiRender(*io_engine.editorFBO, *io_engine.GetEditorGamera(), m_hierarchy.selected, guizmoOperation);
-
-    io_engine.focusOnGaming = m_game.focusOnGaming;
 
     UpdateImGui();
 }

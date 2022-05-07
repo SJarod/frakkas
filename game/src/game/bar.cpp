@@ -2,7 +2,6 @@
 
 #include "maths.hpp"
 
-#include "game/time_manager.hpp"
 #include "game/bar.hpp"
 
 KK_COMPONENT_IMPL(Bar)
@@ -13,11 +12,16 @@ KK_FIELD_IMPL(Bar, speed, EDataType::FLOAT, 1)
 
 void Game::Bar::Start()
 {
-    std::cout << "Bar component started" << std::endl;
+    Log::Info("Bar component started");
 }
 
 void Bar::Update()
 {
-    lerpTime = Maths::Sin(Time::GetTime() * speed);
+    lerpTime = Maths::Sin(Time::GetTime() * speed * Time::GetDeltaTime());
     owner.get()->transform.position = Maths::Lerp(originPos, destPos, lerpTime);
+}
+
+void Bar::OnDestroy()
+{
+    Log::Info("Bar component destroyed");
 }

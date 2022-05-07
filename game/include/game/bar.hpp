@@ -15,6 +15,7 @@ namespace Game
 
         void Start() override;
         void Update() override;
+        void OnDestroy() override;
 
     KK_COMPONENT_END
 }
