@@ -191,6 +191,7 @@ void Helpers::Edit(Renderer::Light& io_light)
         ImGui::SameLine();
         ImGui::Checkbox("FiveTone", &io_light.fiveTone);
         ImGui::Checkbox("Outline", &io_light.outline);
+        ImGui::SliderInt("Outline size", &io_light.outlineSize, 1, 10);
     }
     else
     {

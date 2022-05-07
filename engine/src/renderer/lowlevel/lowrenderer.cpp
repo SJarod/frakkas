@@ -171,13 +171,13 @@ void LowRenderer::RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_
 	glBindVertexArray(0);
 }
 
-void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count)
+void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count, int i_lineWidth)
 {
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glLineWidth(10);
+	glLineWidth(i_lineWidth);
 
 	glBindVertexArray(i_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, i_count);

@@ -9,14 +9,14 @@ struct Light
     vec3 specular;
 };
 
-struct light_shade_result
+struct LightShadeResult
 {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
 };
 
-struct material
+struct Material
 {
 	vec3 ambient;
 	vec3 diffuse;
@@ -25,7 +25,7 @@ struct material
 	float shininess;
 };
 
-uniform material gDefaultMaterial = material(
+uniform Material gDefaultMaterial = Material(
     vec3(0.8, 0.8, 0.8),
     vec3(1.0, 1.0, 1.0),
     vec3(1.0, 1.0, 1.0),
@@ -54,9 +54,9 @@ layout(std140, binding = 1) uniform uRendering
 
 uniform sampler2D uTexture;
 
-light_shade_result light_shade(Light light, float shininess, vec3 eyePosition, vec3 position, vec3 normal)
+LightShadeResult LightShade(Light light, float shininess, vec3 eyePosition, vec3 position, vec3 normal)
 {
-	light_shade_result r = light_shade_result(vec3(0.0), vec3(0.0), vec3(0.0));
+	LightShadeResult r = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
 	if (!light.enabled)
 		return r;
 
@@ -82,11 +82,11 @@ light_shade_result light_shade(Light light, float shininess, vec3 eyePosition, v
 	return r;
 }
 
-light_shade_result get_lights_shading()
+LightShadeResult GetLightsShading()
 {
-    light_shade_result lightResult = light_shade_result(vec3(0.0), vec3(0.0), vec3(0.0));
+    LightShadeResult lightResult = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
 
-    light_shade_result light = light_shade(light, gDefaultMaterial.shininess, cameraView, vPos, normalize(vNormal));
+    LightShadeResult light = LightShade(light, gDefaultMaterial.shininess, cameraView, vPos, normalize(vNormal));
     lightResult.ambient  += light.ambient;
     lightResult.diffuse  += light.diffuse;
     lightResult.specular += light.specular;
@@ -130,7 +130,7 @@ void main()
     else if (!toonShading)
     {
         // Compute phong shading
-        light_shade_result lightResult = get_lights_shading();
+        LightShadeResult lightResult = GetLightsShading();
 
         vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient * texture(uTexture, vUV).rgb;
         vec3 diffuseColor  = gDefaultMaterial.diffuse * lightResult.diffuse * texture(uTexture, vUV).rgb;
