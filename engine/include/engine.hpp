@@ -32,11 +32,15 @@ public:
     Engine();
     ~Engine();
 
-    bool gaming = false;
-    bool focusOnGaming = false;
+    using RunFlag = unsigned int;
+
+    static constexpr RunFlag RunFlag_Editing = 1 << 0;
+    static constexpr RunFlag RunFlag_Gaming = 1 << 1;
 
     Game::EntityManager entityManager;
     Physic::PhysicScene physicScene;
+
+    bool gameRestart = true;
 
     std::unique_ptr<Renderer::LowLevel::LowRenderer> renderer;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;
@@ -59,6 +63,17 @@ public:
      * Call all UpdateEvent attached to UpdateEventHandler.
      */
     void RunGame();
+
+
+    /**
+     * @brief Change engine run mode, and change settings if needed.
+     * @param i_flag The new mode to set.
+     */
+    void SetRunMode(RunFlag i_flag);
+    /**
+     * @return Current run mode.
+     */
+    RunFlag GetRunMode() const;
 
     /**
      * Change mouse cursor visibility
@@ -86,6 +101,8 @@ public:
     Renderer::LowLevel::Camera* GetGameCamera() const;
 
 private:
+    RunFlag runMode = RunFlag_Editing;
+
     Game::Time timeManager;
     Game::Inputs inputsManager;
 

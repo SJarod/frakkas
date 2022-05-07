@@ -98,6 +98,11 @@ public: \
     static FieldMetaData field_##fieldName; \
 	fieldType fieldName
 
+/**
+ * @brief Define a FieldMetaData that had been declare in the compClass.
+ * @param compClass The component class name.
+ * @param fieldName
+ */
 #define KK_FIELD_IMPL(compClass, fieldName, type, count) \
     _Pragma("GCC diagnostic push")                                                         \
     _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \

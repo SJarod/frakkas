@@ -14,6 +14,13 @@ using namespace Game;
 
 EntityIdentifier EntityManager::maxID = 1; // Begin at 1, because '0' is index none
 
+void EntityManager::Start()
+{
+    for (const auto& entity : entities)
+        for (const std::unique_ptr<Component>& comp: entity->components)
+            comp->Start();
+}
+
 void EntityManager::Update()
 {
     for (const auto& entity : entities)

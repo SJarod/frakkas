@@ -37,6 +37,7 @@ World::World(Engine& engine)
 		entity = em.CreateEntity("Camera entity");
 		entity->transform.position = Vector3(0.f, 2.f, 5.f);
 		entity->AddComponent<CameraComponent>();
+        entity->AddComponent<FPSMovement>();
 	}
 #endif
 

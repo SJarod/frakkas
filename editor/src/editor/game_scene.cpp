@@ -11,28 +11,27 @@ using namespace Editor;
 using namespace Game;
 
 
-void GameScene::OnImGuiRender(const Renderer::LowLevel::Framebuffer& i_fbo, bool i_gaming)
+void GameScene::OnImGuiRender(Engine& io_engine)
 {
     ImGui::Begin("GameScene");
 
-    bool canPlayGame = i_gaming && ImGui::IsWindowHovered()
-        && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed("pause"));
+    bool focusOnGaming = !(io_engine.GetRunMode() & Engine::RunFlag_Editing);
+    bool canPlayGame = (io_engine.GetRunMode() & Engine::RunFlag_Gaming) && ImGui::IsWindowHovered()
+                       && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed("pause"));
     if (!focusOnGaming && canPlayGame) // User right click on game window to play
     {
         mouseLockPosition = Inputs::GetMousePosition();
-        Engine::SetCursorGameMode(true);
         ImGui::SetWindowFocus(nullptr);
-        focusOnGaming = true;
+        io_engine.SetRunMode(Engine::RunFlag_Gaming);
     }
     else if (focusOnGaming && Inputs::IsPressed(EButton::MOUSE_RIGHT)) // User right click to exit play mode
     {
-        Engine::SetCursorGameMode(false);
         Engine::SetCursorPosition(mouseLockPosition);
-        focusOnGaming = false;
+        io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
     }
 
     ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImGui::Image(reinterpret_cast<ImTextureID>(i_fbo.GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.gameFBO->GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
 }

@@ -152,39 +152,43 @@ void Engine::RunEditor()
     while(running)
     {
         BeginFrame();
-        renderer->BeginFrame(*editorFBO);
-        graph->RenderEditor(*renderer, editorFBO->aspectRatio);
 
-        renderer->BeginFrame(*gameFBO);
-        if (gaming)
+        /// Update
+        if (runMode & RunFlag_Gaming)
         {
-            if (focusOnGaming)
-                inputsManager.SetInputsListening(true);
+            // Disable inputs for game update if editing
+            if (runMode & RunFlag_Editing)
+                inputsManager.SetInputsListening(false);
 
             entityManager.Update();
-            graph->RenderGame(*renderer, gameFBO->aspectRatio);
         }
-        else
-            graph->RenderGame(*renderer, gameFBO->aspectRatio);
-
-        renderer->EndFrame();
-
 
         inputsManager.SetInputsListening(true);
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
-        physicScene.Update(gaming);
+        physicScene.Update(runMode & RunFlag_Gaming);
+
+        /// Draw
+        renderer->BeginFrame(*editorFBO);
+        graph->RenderEditor(*renderer, editorFBO->aspectRatio);
+
+        renderer->BeginFrame(*gameFBO);
+        graph->RenderGame(*renderer, gameFBO->aspectRatio);
+
+        renderer->EndFrame();
+
 
         running = EndFrame();
-        inputsManager.SetInputsListening(false);
     }
 }
 
 void Engine::RunGame()
 {
     inputsManager.SetInputsListening(true);
-    SetCursorGameMode(true);
+
+    SetRunMode(RunFlag_Gaming);
+
     bool running = true;
     while(running)
     {
@@ -205,6 +209,28 @@ void Engine::RunGame()
         /// ENDFRAME
         running = EndFrame();
     }
+}
+
+void Engine::SetRunMode(RunFlag i_flag)
+{
+    runMode = i_flag;
+
+    if (runMode & RunFlag_Gaming)
+        Engine::SetCursorGameMode(true);
+
+    if (runMode & RunFlag_Editing)
+        Engine::SetCursorGameMode(false);
+
+    if (runMode & RunFlag_Gaming && gameRestart)
+    {
+        gameRestart = false;
+        entityManager.Start();
+    }
+}
+
+Engine::RunFlag Engine::GetRunMode() const
+{
+    return runMode;
 }
 
 void Engine::SetCursorVisibility(bool i_visibility)

@@ -177,6 +177,8 @@ void Graph::LoadScene(const std::string& i_sceneName)
         // Reset all lists
         gameCameras.clear();
         renderEntities.clear();
+        physicScene->colliders.clear();
+
 
         // Parse file to create entities
         entityManager->CreateEntities(file);
