@@ -155,25 +155,6 @@ inline Quaternion Quaternion::Invert() const
 
 inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 {
-#if false
-    Quaternion result = Identity();
-
-    Matrix4 m = i_mat.Transpose();
-    float trace = m.element[0]
-                  + m.element[5]
-                  + m.element[10];
-
-    if (trace < 0.f)
-        return Quaternion();
-
-    result.w = Maths::Sqrt(1.f + trace) / 2.f;
-    float w4 = 4.f * result.w;
-    result.x = (m.element[9] - m.element[6]) / w4;
-    result.y = (m.element[2] - m.element[8]) / w4;
-    result.z = (m.element[4] - m.element[1]) / w4;
-
-    return result;
-#else
     Matrix4 m = i_mat.Transpose();
     float m00 = m.line[0].element[0];
     float m11 = m.line[1].element[1];
@@ -186,23 +167,22 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     float m01 = m.line[0].element[1];
 
     Quaternion q;
-    q.w = sqrtf(1.f + m00 + m11 + m22) * 0.5f;
+    q.w = Maths::Sqrt(1.f + m00 + m11 + m22) * 0.5f;
     q.x = (m21 - m12) / (4.f * q.w);
-    q.y = (m02 - m20) / (4.f * q.w);
+    q.y = (m20 - m02) / (4.f * q.w);
     q.z = (m10 - m01) / (4.f * q.w);
 
     return q;
-#endif
 }
 
-inline Quaternion Quaternion::QuatFromEuler(const float& i_roll, const float& i_pitch, const float& i_yaw)
+inline Quaternion Quaternion::QuatFromEuler(const float& i_yaw, const float& i_pitch, const float& i_roll)
 {
-    float x0 = Maths::Cos(i_roll * 0.5f);
-    float x1 = Maths::Sin(i_roll * 0.5f);
+    float x0 = Maths::Cos(i_yaw * 0.5f);
+    float x1 = Maths::Sin(i_yaw * 0.5f);
     float y0 = Maths::Cos(i_pitch * 0.5f);
     float y1 = Maths::Sin(i_pitch * 0.5f);
-    float z0 = Maths::Cos(i_yaw * 0.5f);
-    float z1 = Maths::Sin(i_yaw * 0.5f);
+    float z0 = Maths::Cos(i_roll * 0.5f);
+    float z1 = Maths::Sin(i_roll * 0.5f);
 
     return {
             x1 * y0 * z0 - x0 * y1 * z1,
@@ -210,6 +190,29 @@ inline Quaternion Quaternion::QuatFromEuler(const float& i_roll, const float& i_
             x0 * y0 * z1 - x1 * y1 * z0,
             x0 * y0 * z0 + x1 * y1 * z1
     };
+}
+
+inline Vector3 Quaternion::QuatToEuler()
+{
+    Vector3 result = Vector3::zero;
+
+    // Yaw (x-axis rotation)
+    float x0 = 2.0f * (w * x + y * z);
+    float x1 = 1.0f - 2.0f * (x * x + y * y);
+    result.x = Maths::Atan2(x0, x1);
+
+    // Pitch (y-axis rotation)
+    float y0 = 2.0f * (w * y - z * x);
+    y0 = y0 > 1.0f ? 1.0f : y0;
+    y0 = y0 < -1.0f ? -1.0f : y0;
+    result.y = Maths::Asin(y0);
+
+    // Roll (z-axis rotation)
+    float z0 = 2.0f * (w * z + x * y);
+    float z1 = 1.0f - 2.0f * (y * y + z * z);
+    result.z = Maths::Atan2(z0, z1);
+
+    return result;
 }
 
 inline Quaternion Quaternion::QuatFromAxisAngle(const Vector3& i_axis, float i_radAngle)
@@ -232,7 +235,7 @@ inline Quaternion Quaternion::QuatFromAxisAngle(const Vector3& i_axis, float i_r
     return result.Normalize();
 }
 
-inline void Quaternion::QuatToAxisAngle(Vector3* o_outAxis, float* o_outAngle)
+inline void Quaternion::QuatToAxisAngle(Vector3& o_outAxis, float& o_outAngle)
 {
     if (Maths::Abs(w) > 1.0f)
         *this = this->Normalize();
@@ -248,10 +251,14 @@ inline void Quaternion::QuatToAxisAngle(Vector3* o_outAxis, float* o_outAngle)
         resAxis.z = z / den;
     }
     else
-        resAxis.x = 1.0f;
+    {
+        resAxis.x = x;
+        resAxis.y = y;
+        resAxis.z = z;
+    }
 
-    *o_outAxis = resAxis;
-    *o_outAngle = resAngle;
+    o_outAxis = resAxis;
+    o_outAngle = resAngle;
 }
 
 inline Quaternion Quaternion::Lerp(const Quaternion& i_q1, const Quaternion& i_q2, float i_factor)

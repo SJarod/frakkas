@@ -184,7 +184,7 @@ inline Matrix4 Matrix4::Orthographic(float i_left, float i_right, float i_bottom
                     2.f / rightMinusLeft,                 0.f,                                   0.f,                               0.f,
                     0.f,                                  2.f / topMinusBottom,                  0.f,                               0.f,
                     0.f,                                  0.f,                                   -2 / farMinusNear,                 0.f,
-                    -(i_right + i_left) / rightMinusLeft, -(i_top + i_bottom) / topMinusBottom,  -(i_near + i_far) / farMinusNear,  0.f
+                    -(i_right + i_left) / rightMinusLeft, -(i_top + i_bottom) / topMinusBottom,  -(i_near + i_far) / farMinusNear,  1.f
             };
 }
 
