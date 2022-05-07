@@ -9,6 +9,10 @@
 #include "game/inputs_manager.hpp"
 #include "game/entity.hpp"
 
+#include "game/reflection/data_descriptor.hpp"
+
+#include "utils/string_format.hpp"
+
 #include "editor/editor_render.hpp"
 
 namespace Game
@@ -40,13 +44,13 @@ namespace Helpers
      * @param i_label The variable name to print on editor.
      * @param io_data The pointer to the scalar array.
      * @param i_count The number of scalar in the array.
-     * @param i_speed The quantity step that changes the scalar value when dragging.
      * @param i_min The minimum value to clamp at.
      * @param i_max The maximum value to clamp at.
+     * @param i_speed The quantity step that changes the scalar value when dragging.
      * @return true if user edit the scalar, false if nothing happened.
      */
      template<typename TScalarType> requires std::is_scalar_v<TScalarType>
-    bool DragScalar(const std::string_view& i_label, TScalarType* io_data, int i_count, float i_speed = 0.5f, TScalarType i_min = std::numeric_limits<TScalarType>::lowest(), TScalarType i_max = std::numeric_limits<TScalarType>::max())
+    bool DragScalar(const std::string_view& i_label, TScalarType* io_data, int i_count, TScalarType i_min = std::numeric_limits<TScalarType>::lowest(), TScalarType i_max = std::numeric_limits<TScalarType>::max(), float i_speed = 0.1f)
     {
         ImGuiDataType_ dataType = ImGuiDataType_Float;
         if constexpr (std::is_same_v<TScalarType, int>)
@@ -71,6 +75,30 @@ namespace Helpers
         }
         return false;
     }
+
+    /**
+     * @brief Call ImGui::DragScalarN and activate cursor game mode for comfortability.
+     * @tparam TScalarType Type of the scalar : int or float
+     * @param i_label The variable name to print on editor.
+     * @param io_data The pointer to the scalar array.
+     * @param i_count The number of scalar in the array.
+     * @param i_range Prevent the scalar data to be out of range. i_range.x is minimum, i_range.y is maximum
+     * @return true if user edit the scalar, false if nothing happened.
+     */
+    template<typename TScalarType> requires std::is_scalar_v<TScalarType>
+    bool DragScalar(const std::string_view& i_label, TScalarType* io_data, int i_count, const Vector2& i_range)
+    {
+        // Apply range only if there is a difference
+        if (i_range.x < i_range.y)
+        {
+            auto min = static_cast<TScalarType>(i_range.x);
+            auto max = static_cast<TScalarType>(i_range.y);
+            return DragScalar(i_label, io_data, i_count,min, max);
+        }
+        else
+            return DragScalar(i_label, io_data, i_count);
+    }
+
 
 	/**
     * @brief ImGui editing function. Allows the player to edit a string variable.
@@ -112,10 +140,34 @@ namespace Helpers
     void Edit(Resources::Sound& io_sound);
 
     /**
-     * @brief ImGui editing function. Allows the player to change reflected component fields.
+     * @brief Get a string from a pointer of scalars to render it with ImGui::Text()
+     * @param i_fieldName Name of the field to begin the text.
+     * @param i_data The data to convert into string.
+     * @param i_scalarCount The number of scalar to print from the data pointer
+     * @return The data converted in string.
+     */
+    template<typename TScalarType> requires std::is_scalar_v<TScalarType>
+    std::string ScalarDataToString(std::string i_fieldName, unsigned char* i_data, int i_scalarCount)
+    {
+        std::string fmt = i_fieldName + " : ";
+        auto vect = reinterpret_cast<TScalarType*>(i_data);
+        for (int i = 0; i < i_scalarCount; ++i)
+            fmt = StringFormat::GetFormat(fmt, vect[i], ", ");
+        return fmt;
+    }
+
+    /**
+     * @brief ImGui editing function. Edit a component.
      * @param io_component The component itself, cast in an unsigned char* pointer for simple memory work.
-     * @param io_metaData The metaData of the component, which means all the reflected informations to use io_component correctly.
+     * @param io_metaData The metaData of the component, which means all the reflected information to use io_component properly.
      * @return false if the component should be removed.
      */
     bool Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled);
+
+    /**
+     * @brief ImGui editing function. Edit all the component's field.
+     * @param io_component The component itself, cast in an unsigned char* pointer for simple memory work.
+     * @param io_metaData The class meta data to get access to component field properly.
+     */
+    void Edit(unsigned char* io_component, const ClassMetaData& io_metaData);
 }

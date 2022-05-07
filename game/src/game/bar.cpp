@@ -6,9 +6,9 @@
 
 KK_COMPONENT_IMPL(Bar)
 
+KK_FIELD_RANGE_IMPL(Bar, speed, EDataType::FLOAT, 1, 0.1f, 50.f)
 KK_FIELD_IMPL(Bar, originPos, EDataType::FLOAT, 3)
 KK_FIELD_IMPL(Bar, destPos, EDataType::FLOAT, 3)
-KK_FIELD_IMPL(Bar, speed, EDataType::FLOAT, 1)
 
 void Game::Bar::Start()
 {

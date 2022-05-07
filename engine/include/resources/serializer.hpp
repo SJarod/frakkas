@@ -61,12 +61,22 @@ namespace Resources
         static void ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_entity);
 
         /**
-         * @brief read a component and store data in an unsigned char pointer
-         * @param i_file the opened input file
-         * @param o_component the Component to build
-         * @param o_enabled the enabled state of the component
+         * @brief read a component and store data in an unsigned char pointer.
+         * @param i_file the opened input file.
+         * @param o_component the Component to build.
+         * @param i_metaData The class meta data to read the info properly.
+         * @param o_enabled the enabled state of the component.
          */
         static void Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData, bool& o_enabled);
+
+        /**
+         * @brief Read all the data descriptors from a component metadata, and store them in an unsigned char pointer.
+         * @param i_file the opened input file.
+         * @param o_component the Component to build.
+         * @param i_metaData The class meta data to read the info properly.
+         */
+        static void Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData);
+
         /**
          * @brief LoadScene a certain number of scalar and store them.
          * @tparam TScalarType The scalar type : int, float, unsigned int.
@@ -136,6 +146,15 @@ namespace Resources
          * @param i_enabled the enabled state of the component
          */
         static void Write(std::ofstream& io_file, unsigned char* i_component, const ClassMetaData& i_metaData, bool i_enabled);
+
+        /**
+         * @brief Write all the data descriptors from a component metadata in frakkas text format
+         * @param io_file The opened input file.
+         * @param i_component The component data.
+         * @param i_metaData The component reflection info.
+         */
+        static void Write(std::ofstream& io_file, unsigned char* i_component, const ClassMetaData& i_metaData);
+
         /**
          * @brief Write an array of scalar in frakkas text format
          * @tparam TScalarType The type of scalar : int, float, unsigned int...

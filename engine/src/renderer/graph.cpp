@@ -40,15 +40,15 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
     std::string ID = i_newComponent->GetID();
     if (ID == "StaticDraw" || ID == "AnimatedDraw")
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
-    else if (ID == CameraComponent::metaData.className)
+    else if (ID == CameraComponent::MetaData().className)
         gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(i_newComponent));
-    else if (ID == BoxCollider::metaData.className)
+    else if (ID == BoxCollider::MetaData().className)
     {
         auto box = reinterpret_cast<BoxCollider*>(i_newComponent);
         box->SetCollider(physicScene->CreateBody(box->halfExtension));
         physicScene->colliders.emplace_back(box);
     }
-    else if (ID == SphereCollider::metaData.className)
+    else if (ID == SphereCollider::MetaData().className)
     {
         auto sphere = reinterpret_cast<SphereCollider*>(i_newComponent);
         sphere->SetCollider(physicScene->CreateBody(sphere->radius));
@@ -65,14 +65,14 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
         if (it != renderEntities.end())
             renderEntities.erase(it);
     }
-    else if (ID == CameraComponent::metaData.className)
+    else if (ID == CameraComponent::MetaData().className)
     {
         auto it = std::find(gameCameras.begin(), gameCameras.end(), reinterpret_cast<CameraComponent*>(i_oldComponent));
         if (it != gameCameras.end())
             gameCameras.erase(it);
         updateCamera = true;
     }
-    else if (ID == BoxCollider::metaData.className || ID == SphereCollider::metaData.className)
+    else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
     {
         auto collider = reinterpret_cast<Collider*>(i_oldComponent);
         physicScene->RemoveBody(collider->GetPhysicBodyID());

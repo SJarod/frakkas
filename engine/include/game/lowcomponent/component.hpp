@@ -30,6 +30,12 @@ namespace Game
         static std::vector<ClassMetaData*>& GetRegistry();
 
         /**
+         * @param i_compName The name of the component class
+         * @return The class meta data that has the same className that the input component name.
+         */
+        static ClassMetaData* FindMetaData(const std::string& i_compName);
+
+        /**
          * @return an ID that identify the component. Useful to find a specific component in a bunch of another components.
          */
         virtual const std::string& GetID() const = 0;

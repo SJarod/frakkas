@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/lowcomponent/component.hpp"
+#include "game/component_generator.hpp"
 
 namespace Renderer
 {
@@ -14,9 +14,9 @@ namespace Renderer
 
 namespace Game
 {
-	class Drawable : public Component
-	{
-	public:
-		virtual void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) = 0;
-	};
+	KK_PRIVATE_COMPONENT(Drawable)
+
+		virtual void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) {};
+
+	KK_COMPONENT_END
 }
