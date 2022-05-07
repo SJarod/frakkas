@@ -124,7 +124,15 @@ namespace Renderer
 			 */
 			void RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture);
 
-			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count);
+            /**
+            * @Summary Render a mesh once with an outline.
+            * Call this function in a loop to render a model in real time.
+            *
+            * @param i_VAO the opengl vertex array object
+            * @param i_count the number of triangles to draw
+            * @param i_lineWidth the width of the outline
+            */
+			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count, int i_lineWidth);
 		};
 	}
 }

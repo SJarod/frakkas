@@ -19,5 +19,6 @@ namespace Renderer
         bool toonShading = true;
         bool fiveTone = false;
         bool outline = true;
+        int outlineSize = 10;
     };
 }

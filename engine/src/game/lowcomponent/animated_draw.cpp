@@ -60,7 +60,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         {
             // outline
             i_renderer.SetUniformToNamedBlock("uRendering", 84, true);
-            i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size());
+            i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size(), i_light.outlineSize);
         }
     }
 }
