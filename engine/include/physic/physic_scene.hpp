@@ -11,7 +11,8 @@
 #include <Physics/PhysicsSystem.h>
 
 #include "maths.hpp"
-#include "simple_layers.hpp"
+#include "layers.hpp"
+#include "contact_listener.hpp"
 
 namespace JPH
 {
@@ -36,6 +37,16 @@ namespace Physic
     static constexpr uint physicBodyMutexCount = 0; // Autodetect
     static constexpr uint physicMaxBodyPairs = 65536;
     static constexpr uint physicMaxContactConstraints = 10240;
+
+    enum class ECollisionEvent
+    {
+        COLLISION_ENTER,
+        COLLISION_STAY,
+        COLLISION_EXIT,
+        TRIGGER_ENTER,
+        TRIGGER_STAY,
+        TRIGGER_EXIT
+    };
 
     class PhysicScene
     {
@@ -76,10 +87,27 @@ namespace Physic
          */
         void RemoveBody(const JPH::BodyID& i_ID);
 
+        /**
+         * @brief Notify the physic scene that a collision happened, then notify the concerned entities.
+         * @param i_event The collision event type.
+         * @param i_body1 The physic system ID of the first entity which collides.
+         * @param i_body1 The physic system ID of the second entity which collides.
+         */
+        static void NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_body1, const JPH::BodyID& i_body2);
+
+        /**
+         * @brief Check and notify the physic scene that a collision finished, then notify the concerned entities.
+         * @param i_body1 The physic system ID of the first entity which collides.
+         * @param i_body1 The physic system ID of the second entity which collides.
+         */
+        static void NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::BodyID& i_body2);
+
+
     private:
         std::unique_ptr<JPH::TempAllocator> tempAllocator = nullptr;
         std::unique_ptr<JPH::JobSystem> jobSystem = nullptr;
         std::unique_ptr<JPH::PhysicsSystem> physicsSystem = nullptr;
+        std::unique_ptr<JPH::MyContactListener> contactListener = nullptr;
         JPH::BodyInterface* bodyInterface = nullptr;
 
         JPH::MyBroadPhaseLayerInterface broadPhaseLayerInterface;

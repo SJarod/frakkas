@@ -13,9 +13,16 @@ namespace Resources
     class Serializer;
 }
 
+namespace Physic
+{
+    enum class ECollisionEvent;
+}
+
 namespace Game
 {
     using EntityIdentifier = uint64_t;
+
+    class Collider;
 
     class Entity
     {
@@ -43,7 +50,16 @@ namespace Game
         template<typename T>
         T* AddComponent();
 
+        /**
+         * @brief Remove a component according to its position in the components array.
+         */
         void RemoveComponentAt(int index);
+
+        /**
+         * @brief Call the specific collision function in each entity's components.
+         * @param i_collisionType The type of collision to call the good function.
+         */
+        void NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* i_ownerCollider, Collider* i_otherCollider);
 
         /**
          * @brief Find a component by its id
@@ -106,7 +122,7 @@ T* Game::Entity::GetComponent()
 {
     std::vector<std::unique_ptr<Component>>::iterator it;
     it = std::find_if(components.begin(), components.end(), [&](const std::unique_ptr<Component>& c){
-        return c->GetID() == T::metaData.className;
+        return c->GetID() == T::MetaData().className;
     });
 
     if (it != components.end())
@@ -124,7 +140,7 @@ std::vector<T*> Game::Entity::GetComponents()
     std::vector<std::unique_ptr<T>> comps;
     for(std::vector<std::unique_ptr<Component>>::iterator it = components.begin(); it != components.end(); it++)
     {
-        if (it->get()->GetID() == T::metaData.className)
+        if (it->get()->GetID() == T::MetaData().className)
         {
             if (T* comp = reinterpret_cast<T*>(it->get()))
                 comps.emplace_back(comp);

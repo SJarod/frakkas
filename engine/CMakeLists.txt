@@ -23,6 +23,7 @@ add_library(EngineFrakkas STATIC
 			src/renderer/point.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
+        	src/renderer/graph.cpp
 			src/resources/program_shader.cpp
 			src/resources/resources_manager.cpp
 			src/resources/serializer.cpp
@@ -32,11 +33,12 @@ add_library(EngineFrakkas STATIC
 			src/resources/texture.cpp
 			src/resources/sound.cpp
 			src/animation/animator.cpp
-        	src/renderer/graph.cpp
         	src/debug/log.cpp
             src/engine.cpp
         	src/multithread/threadpool.cpp
 		    src/physic/physic_scene.cpp
+			src/physic/contact_listener.cpp
+			src/physic/layers.cpp
 )
 
 target_include_directories(EngineFrakkas

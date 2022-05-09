@@ -11,6 +11,7 @@
 #include "game/lowcomponent/collider/collider.hpp"
 
 KK_COMPONENT_IMPL(Collider)
+KK_FIELD_IMPL(Collider, isTrigger, EDataType::BOOL, 1)
 KK_FIELD_IMPL(Collider, isStatic, EDataType::BOOL, 1)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, velocity, EDataType::FLOAT, 3)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
@@ -82,6 +83,11 @@ void Collider::SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterfa
     }
 }
 
+void Collider::SetTriggerState(bool i_isTrigger, JPH::BodyInterface* i_bodyInterface)
+{
+    collider->SetIsSensor(i_isTrigger);
+}
+
 void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
 {
     Transform& trs = owner.get()->transform;
@@ -89,6 +95,12 @@ void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
     SetRotation(Quaternion::QuatFromEuler(trs.rotation.get().x, trs.rotation.get().y, trs.rotation.get().z));
 
     SetStaticState(isStatic, i_bodyInterface);
+
+    if (isTrigger)
+        isStatic = true;
+
+
+    SetTriggerState(isTrigger, i_bodyInterface);
 
     if (!isStatic)
     {

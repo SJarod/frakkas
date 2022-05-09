@@ -46,6 +46,13 @@ namespace Game
 		 */
 		Matrix4 GetModelMatrix() const;
 
+        /**
+         * @brief Get a model matrix with uniform scale from a transform. If model matrix not update, compute the matrix.
+         * If the transform's scale is not uniform, we will scale uniformly according to greatest scale.
+         * @return Matrix4 model
+         */
+        Matrix4 GetModelMatrixUniformScale() const;
+
         void RemoveChild(Transform* childToRemove);
         /**
          * Remove all child. Put their parent to nullptr.
@@ -59,6 +66,7 @@ namespace Game
 
     private:
         mutable bool needUpdate = true;
+        mutable bool needUniformUpdate = true;
 
         ScaleLockParams scaleLockParams;
 
@@ -70,5 +78,11 @@ namespace Game
          * Compute the model matrix using position, rotation and scale
          */
         void UpdateModelMatrix() const;
+
+        /**
+         * Compute the model matrix using position, rotation and uniform scale.
+         * If the transform's scale is not uniform, we will scale uniformly according to greatest scale.
+         */
+        void UpdateModelMatrixUniformScale() const;
 	};
 }

@@ -10,19 +10,19 @@ Transform::Transform()
     position.setter = [&](const Vector3& value)
     {
         if (position != value)
-            needUpdate = true;
+            needUpdate = needUniformUpdate = true;
         position.set(value);
     };
     rotation.setter = [&](const Vector3& value)
     {
         if (rotation != value)
-            needUpdate = true;
+            needUpdate = needUniformUpdate = true;
         rotation.set(value);
     };
     scale.setter = [&](const Vector3& value)
     {
         if (scale != value)
-            needUpdate = true;
+            needUpdate = needUniformUpdate = true;
         scale.set(value);
         scaleLockParams.origScale = scale.get();
         scaleLockParams.ratio = 1.f;
@@ -43,7 +43,7 @@ Transform::Transform()
         }
 
         parent.set(value);
-        needUpdate = true;
+        needUpdate = needUniformUpdate = true;
         if (value && value)
             value->childs.emplace_back(this);
     };
@@ -56,6 +56,16 @@ Matrix4 Transform::GetModelMatrix() const
 
     if (needUpdate || parentUpdate)
         UpdateModelMatrix();
+
+    return modelMatrix;
+}
+
+Matrix4 Transform::GetModelMatrixUniformScale() const
+{
+    bool parentUpdate = (parent.get() && parent.get()->needUniformUpdate);
+
+    if (needUniformUpdate || parentUpdate)
+        UpdateModelMatrixUniformScale();
 
     return modelMatrix;
 }
@@ -78,6 +88,20 @@ void Transform::UpdateModelMatrix() const
     needUpdate = false;
     for (Transform* child: childs)
         child->needUpdate = true;
+}
+
+void Transform::UpdateModelMatrixUniformScale() const
+{
+    float maxValue = Maths::Max(scale.get().x, scale.get().y, scale.get().z);
+    Vector3 uniformScale{ maxValue,maxValue ,maxValue };
+
+    modelMatrix = Matrix4::Scale(uniformScale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
+    if (parent)
+        modelMatrix = modelMatrix * parent.get()->GetModelMatrixUniformScale();
+
+    needUniformUpdate = false;
+    for (Transform* child : childs)
+        child->needUniformUpdate = true;
 }
 
 void Transform::ClearChilds()
