@@ -10,6 +10,6 @@ namespace Game
         KK_FIELD(Vector3, startPosition) = Vector3::zero;
         KK_FIELD(float, speed) = 3.f;
 
-        void Update() override;
+        void OnUpdate() override;
     KK_COMPONENT_END
 }

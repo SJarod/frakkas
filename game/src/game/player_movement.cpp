@@ -10,7 +10,7 @@ KK_COMPONENT_IMPL(PlayerMovement)
 KK_FIELD_IMPL(PlayerMovement, startPosition, EDataType::FLOAT, 3)
 KK_FIELD_IMPL(PlayerMovement, speed, EDataType::FLOAT, 1)
 
-void PlayerMovement::Update()
+void PlayerMovement::OnUpdate()
 {
     float xTranslation = Inputs::GetAxis("horizontal") * speed * Time::GetDeltaTime();
     float zTranslation = Inputs::GetAxis("forward") * speed * Time::GetDeltaTime();

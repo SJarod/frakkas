@@ -153,7 +153,7 @@ void Engine::RunEditor()
     {
         BeginFrame();
 
-        /// Update
+        /// OnUpdate
         if (runMode & RunFlag_Gaming)
         {
             // Disable inputs for game update if editing

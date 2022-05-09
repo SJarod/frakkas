@@ -14,7 +14,7 @@ namespace Game
 protected:
     void SetOwner(Entity* owner) override;
 
-    void Update() override;
+    void OnUpdate() override;
 
     void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) override;
 

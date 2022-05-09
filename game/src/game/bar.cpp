@@ -10,12 +10,12 @@ KK_FIELD_RANGE_IMPL(Bar, speed, EDataType::FLOAT, 1, 0.1f, 50.f)
 KK_FIELD_IMPL(Bar, originPos, EDataType::FLOAT, 3)
 KK_FIELD_IMPL(Bar, destPos, EDataType::FLOAT, 3)
 
-void Game::Bar::Start()
+void Game::Bar::OnStart()
 {
     Log::Info("Bar component started");
 }
 
-void Bar::Update()
+void Bar::OnUpdate()
 {
     lerpTime = Maths::Sin(Time::GetTime() * speed * Time::GetDeltaTime());
     owner.get()->transform.position = Maths::Lerp(originPos, destPos, lerpTime);

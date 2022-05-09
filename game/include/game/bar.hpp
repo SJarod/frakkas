@@ -13,8 +13,8 @@ namespace Game
         KK_FIELD(float, speed) = 5.f;
         float lerpTime = 0.f;
 
-        void Start() override;
-        void Update() override;
+        void OnStart() override;
+        void OnUpdate() override;
         void OnDestroy() override;
 
     KK_COMPONENT_END

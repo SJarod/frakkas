@@ -6,7 +6,7 @@ namespace Game
 {
     KK_COMPONENT(FPSMovement);
 
-        void Update() override;
+        void OnUpdate() override;
 
     KK_COMPONENT_END
 }

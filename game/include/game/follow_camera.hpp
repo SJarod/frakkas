@@ -12,6 +12,6 @@ namespace Game
         Transform* playerTransform = nullptr;
         KK_FIELD(Vector3, offset) = Vector3::zero;
 
-        void Update() override;
+        void OnUpdate() override;
     KK_COMPONENT_END
 }
