@@ -32,12 +32,12 @@ namespace Game
         ~EntityManager() = default;
 
         /**
-         * Call Start() function in all entities' components.
+         * Call OnStart() function in all entities' components.
          */
         void Start();
 
         /**
-         * Update every entities
+         * OnUpdate every entities
          */
         void Update();
 

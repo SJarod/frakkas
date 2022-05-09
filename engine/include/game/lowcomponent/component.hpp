@@ -46,13 +46,13 @@ namespace Game
          * so it is called once even if component should be disabled,
          * and beware that other entities may not be set at this moment.
          */
-        virtual void Start() {};
+        virtual void OnStart() {};
 
         /**
          * @Summary Called every frame in the game loop if component enabled.
          * The common function to write game script.
          */
-        virtual void Update() {};
+        virtual void OnUpdate() {};
 
         /**
          * Called when component is removed, or when owner is deleted.
@@ -130,7 +130,7 @@ namespace Game
         virtual void SetOwner(Entity* entity);
 
         /**
-         * @brief Called when change enabled state. Could be consider as a Start() but can be call many times.
+         * @brief Called when change enabled state. Could be consider as a OnStart() but can be call many times.
          * Not called when entity started
          */
         virtual void OnEnable() {};

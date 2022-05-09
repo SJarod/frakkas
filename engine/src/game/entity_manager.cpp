@@ -18,7 +18,7 @@ void EntityManager::Start()
 {
     for (const auto& entity : entities)
         for (const std::unique_ptr<Component>& comp: entity->components)
-            comp->Start();
+            comp->OnStart();
 }
 
 void EntityManager::Update()
@@ -28,7 +28,7 @@ void EntityManager::Update()
         for (const std::unique_ptr<Component>& comp: entity->components)
         {
             if (comp->enabled)
-                comp->Update();
+                comp->OnUpdate();
         }
     }
 }

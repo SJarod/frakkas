@@ -6,7 +6,7 @@
 
 KK_COMPONENT_IMPL(FPSMovement)
 
-void FPSMovement::Update()
+void FPSMovement::OnUpdate()
 {
     float frameSpeed = 20.f * Time::GetDeltaTime();
 

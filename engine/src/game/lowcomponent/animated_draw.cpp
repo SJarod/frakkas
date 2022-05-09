@@ -18,7 +18,7 @@ void AnimatedDraw::SetOwner(Entity* owner)
 	Component::SetOwner(owner);
 }
 
-void AnimatedDraw::Update()
+void AnimatedDraw::OnUpdate()
 {
 	skmodel.player.UpdatePlayer(Game::Time::GetDeltaTime());
 }
