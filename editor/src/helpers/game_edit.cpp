@@ -91,7 +91,8 @@ void Helpers::Edit(Game::Transform& io_transform)
 void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperation)
 {
     int guizmoOperation = static_cast<int>(i_guizmoOperation);
-    ImGui::RadioButton("None", &guizmoOperation, ImGuizmo::OPERATION::BOUNDS); // Bounds is not used, so equal to NONE
+
+    ImGui::RadioButton("None",  &guizmoOperation, ImGuizmo::OPERATION::BOUNDS); // Bounds is not used, so equal to NONE
 
     ImGui::SameLine();
     ImGui::RadioButton("Translate", &guizmoOperation, ImGuizmo::OPERATION::TRANSLATE);
@@ -101,6 +102,8 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 
     ImGui::SameLine();
     ImGui::RadioButton("Scale", &guizmoOperation, ImGuizmo::OPERATION::SCALE);
+
+    i_guizmoOperation = static_cast<ImGuizmo::OPERATION>(guizmoOperation);
 
     ImGui::Separator();
 
