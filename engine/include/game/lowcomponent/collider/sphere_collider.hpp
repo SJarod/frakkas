@@ -14,13 +14,18 @@ namespace Game
 
         void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const override;
 
+        void OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
+
+        void OnCollisionExit(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
+
+        void OnTriggerEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
+
     private:
         float prevRadius = 1.f;
         /**
-         * Create a new sphere shape with input radius.
-         * @param i_radius The new radius of the object.
+         * Check collider scale, and create new scaled sphere if needed.
          */
-        void ApplyNewRadius(float i_radius);
+        void UpdateSphereShape();
 
     KK_COMPONENT_END
 }

@@ -16,10 +16,9 @@ namespace Game
     private:
         Vector3 prevExtension = Vector3(1.f, 1.f, 1.f);
         /**
-         * Create a new shape with input scale.
-         * @param i_scale The new scale of the object.
+         * Check collider scale and create new scaled shape if needed.
          */
-        void ApplyNewScale(const Vector3& i_scale);
+        void UpdateBoxScale();
 
     KK_COMPONENT_END
 }

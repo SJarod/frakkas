@@ -2,6 +2,9 @@
 
 #include "renderer/graph.hpp"
 
+#include "physic/physic_scene.hpp"
+
+#include "game/lowcomponent/collider/collider.hpp"
 #include "game/entity.hpp"
 
 
@@ -37,6 +40,39 @@ void Entity::RemoveComponentAt(int index)
     // Unregister
     UnregisterIntoGraph(components[index].get());
     components.erase(components.begin() + index);
+}
+
+void Entity::NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* i_ownerCollider, Collider* i_otherCollider)
+{
+    switch (i_collisionType)
+    {
+    case Physic::ECollisionEvent::COLLISION_ENTER:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnCollisionEnter(i_ownerCollider, i_otherCollider);
+        break;
+    case Physic::ECollisionEvent::COLLISION_STAY:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnCollisionStay(i_ownerCollider, i_otherCollider);
+        break;
+    case Physic::ECollisionEvent::COLLISION_EXIT:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnCollisionExit(i_ownerCollider, i_otherCollider);
+        break;
+    case Physic::ECollisionEvent::TRIGGER_ENTER:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnTriggerEnter(i_ownerCollider, i_otherCollider);
+        break;
+    case Physic::ECollisionEvent::TRIGGER_STAY:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnTriggerStay(i_ownerCollider, i_otherCollider);
+        break;
+    case Physic::ECollisionEvent::TRIGGER_EXIT:
+        for (const std::unique_ptr<Component>& comp : components)
+            comp->OnTriggerExit(i_ownerCollider, i_otherCollider);
+        break;
+    default:
+        break;
+    }
 }
 
 void Entity::RegisterIntoGraph(Component* i_newComponent)

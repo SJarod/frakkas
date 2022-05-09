@@ -6,7 +6,7 @@
 
 #include "renderer/model.hpp"
 
-#include "physic/simple_layers.hpp"
+#include "physic/layers.hpp"
 
 #include "game/component_generator.hpp"
 
@@ -30,6 +30,7 @@ namespace Game
         KK_FIELD(Vector3, velocity);
         KK_FIELD(Vector3, angularVelocity);
 
+        KK_FIELD(bool, isTrigger) = false;
         KK_FIELD(bool, isStatic) = true;
 
         /**
@@ -104,6 +105,13 @@ namespace Game
         * @param i_bodyInterface The Jolt body interface to change body object layer.
         */
         void SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterface);
+
+        /**
+        * @brief Update the collision type and the layer if static bool is changed.
+        * @param i_isSensor The sensor state of the body.
+        * @param i_bodyInterface The Jolt body interface to change body object layer.
+        */
+        void SetTriggerState(bool i_isTrigger, JPH::BodyInterface* i_bodyInterface);
 
     KK_COMPONENT_END
 }

@@ -15,6 +15,7 @@ namespace Resources
 namespace Game
 {
     class Entity;
+    class Collider;
     class Component
     {
     public:
@@ -58,6 +59,48 @@ namespace Game
          * Called even if component is disabled.
          */
         virtual void OnDestroy(){};
+
+        /**
+         * @brief Called when two colliders collide. You should have a non static collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+
+        /**
+         * @brief Called when two colliders are overlapping. You should have a non static collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnCollisionStay(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+
+        /**
+         * @brief Called when two colliders are no colliding anymore. You should have a non static collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnCollisionExit(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+
+        /**
+         * @brief Called when two colliders collide, and there is at least one trigger collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnTriggerEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
+
+        /**
+         * @brief Called when two colliders are overlapping, and there is at least one trigger collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnTriggerStay(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
+
+        /**
+         * @brief Called when two colliders are no colliding anymore, and there is at least one trigger collider.
+         * @param i_ownerCollider The collider of the entity which owns this component as well.
+         * @param i_otherCollider The collider of the colliding entity.
+         */
+        virtual void OnTriggerExit(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
 
         /**
          * @brief an abstract function, every inheretid components should define this function with KK_GENERATE_COMPONENT
