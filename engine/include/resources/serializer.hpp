@@ -85,7 +85,7 @@ namespace Resources
          * @param i_count The number of scalar in the pointer.
          */
         template<typename TScalarType>
-        static void Read(std::ifstream& i_file, TScalarType* o_vector, int i_count);
+        static void Read(std::ifstream& i_file, TScalarType* o_vector, int i_count = 1);
         /**
          * @brief read a string in the next line of i_file
          * @param i_file the opened input file
@@ -163,7 +163,7 @@ namespace Resources
          * @param i_count The number of scalar in the array.
          */
         template<typename TScalarType>
-        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const TScalarType* i_vector, int i_count);
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const TScalarType* i_vector, int i_count = 1);
         /**
          * @brief Write a bool in frakkas text format
          * @param io_file the opened output file to write in

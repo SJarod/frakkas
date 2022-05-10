@@ -69,7 +69,7 @@ namespace Game
          * @brief read all entities from the file, then create and store them in this manager
          * @param i_file the opened input file
          */
-        void CreateEntities(std::ifstream& i_file);
+        void LoadEntities(std::ifstream& i_file);
 
         /**
          * @brief Reset all entities array to 0.

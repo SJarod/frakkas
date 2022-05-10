@@ -49,7 +49,6 @@ Engine::~Engine()
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-    //ma_engine_stop(&soundEngine);
     ma_engine_uninit(&soundEngine);
 }
 

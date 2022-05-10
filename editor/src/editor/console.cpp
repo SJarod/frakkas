@@ -18,10 +18,6 @@ void Console::OnImGuiRender()
     if (ImGui::IsWindowAppearing())
         scrollToBottom = true;
 
-    if (ImGui::Button("AddLog"))
-        Log::Info("Add Log");
-    ImGui::SameLine();
-
     // clear console
     if (ImGui::Button("Clear"))
         ClearLog();
@@ -36,8 +32,8 @@ void Console::OnImGuiRender()
     ImGui::Separator();
 
     // Reserve enough left-over height for 1 separator + 1 input text
-    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
-    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
+    const float footerHeightToReserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+    ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footerHeightToReserve), false, ImGuiWindowFlags_HorizontalScrollbar);
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 

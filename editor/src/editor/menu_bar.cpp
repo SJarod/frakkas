@@ -121,12 +121,13 @@ bool MenuBar::CreateScenePopup(Renderer::Graph& io_graph)
 
         if (ImGui::Button("Create", ImVec2(120, 0)))
         {
-            std::ofstream emptyFile(Renderer::Graph::GetSceneFullPath(sceneName)); // CREATE BUTTON
+            std::filesystem::path path = Renderer::Graph::GetSceneFullPath(sceneName);
+            std::ofstream emptyFile(path); // CREATE BUTTON
             if (!emptyFile.is_open())
-                Log::Warning("bah non");
+                Log::Warning("Can't open scene file : ", path);
 
             emptyFile.close();
-            io_graph.LoadScene(sceneName);
+            io_graph.LoadScene(path);
             sceneName = "new_scene";
             ImGui::CloseCurrentPopup();
 
@@ -161,10 +162,11 @@ bool MenuBar::OpenScenePopup(Renderer::Graph& io_graph)
 
         if (ImGui::Button("Open", ImVec2(120, 0)))                    // OPEN BUTTON
         {
-            std::ifstream file(Renderer::Graph::GetSceneFullPath(sceneName));
+            std::filesystem::path path = Renderer::Graph::GetSceneFullPath(sceneName);
+            std::ifstream file(path);
             if (file.is_open())
             {
-                io_graph.LoadScene(sceneName);
+                io_graph.LoadScene(path);
 
                 sceneName = "exemple_scene";
                 exist = true;

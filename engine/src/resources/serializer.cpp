@@ -205,7 +205,18 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
 
 void Serializer::Read(std::ifstream& i_file, Sound& o_sound)
 {
-    //TODO
+    std::string attribute;
+    for (int i = 0; i < 2; ++i)
+    {
+        GetAttribute(i_file, attribute);
+        if(attribute == "sound_path")
+            Read(i_file, o_sound.soundPath);
+        else if (attribute == "volume")
+            Read(i_file, &o_sound.volume);
+    }
+
+    o_sound.SetSound(o_sound.soundPath);
+    o_sound.SetVolume();
 }
 
 
@@ -350,5 +361,6 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound)
 {
     WriteAttribute(io_file, i_attributeName);
-    //TODO
+    Write(io_file, "sound_path", i_sound.soundPath);
+    Write(io_file, "volume", &i_sound.volume);
 }

@@ -100,6 +100,12 @@ void PhysicScene::RemoveBody(const JPH::BodyID& i_ID)
         colliders.erase(it);
 }
 
+void PhysicScene::Clear()
+{
+    while (!colliders.empty())
+        RemoveBody(colliders.front()->GetPhysicBodyID());
+}
+
 void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_body1, const JPH::BodyID& i_body2)
 {
     auto findPredicate1 = [&i_body1](const Game::Collider* collider) { return i_body1 == collider->GetPhysicBodyID(); };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <filesystem>
 
 #include "renderer/light.hpp"
 #include "renderer/lowlevel/camera.hpp"
@@ -71,16 +72,17 @@ namespace Renderer
         void ReloadScene();
         /**
          * Load a scene from a text file.
-         * @param i_sceneName Name of scene, should exists as .kk file.
+         * @param i_scenePath Path of the scene.
          */
-        void LoadScene(const std::string& i_sceneName);
+        void LoadScene(const std::filesystem::path& i_scenePath);
         /**
          * Save a scene into a text file.
          * @param i_sceneName Name of scene, should exists as .kk file.
          */
         void SaveScene() const;
 
-        static std::string GetSceneFullPath(const std::string& i_sceneName) ;
+        // Get the scene path from its name (without .kk)
+        static std::filesystem::path GetSceneFullPath(const std::string& i_sceneName) ;
     private:
         Game::EntityManager* entityManager;
         static Physic::PhysicScene* physicScene;
@@ -89,7 +91,7 @@ namespace Renderer
         static std::vector<Game::CameraComponent*> gameCameras;
         static std::vector<Game::Drawable*> renderEntities;
 
-        std::string currentSceneName = "exemple_scene";
+        std::filesystem::path currentScenePath = "game/assets/exemple_scene.kk";
 
         /**
          * Searches for the first CameraComponent enabled. Set game camera to nullptr if not found.

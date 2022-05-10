@@ -13,6 +13,7 @@ namespace Resources
         Sound() = default;
         ~Sound() = default;
 
+        ma_sound soundObject;
         std::string soundPath;
         int volume = 1;
 
@@ -43,8 +44,6 @@ namespace Resources
         void SetVolume();
 
     private:
-        ma_sound soundObject;
-
         /**
          * Init sound from file
          */

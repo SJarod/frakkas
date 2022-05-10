@@ -5,7 +5,7 @@
 >name
 	Camera entity
 >component_count
-	1
+	2
 >transform
 >position
 	0, 2, 5
@@ -30,6 +30,9 @@
 	0.001
 >far
 	1000
+>FPSMovement
+>enabled
+	1
 
 >entity
 >childs
@@ -40,7 +43,7 @@
 	2
 >transform
 >position
-	-0.000598555, -11384.3, -0.338796
+	0, 0, 0
 >rotation
 	0, 0, 0
 >scale
@@ -51,6 +54,8 @@
 >SphereCollider
 >enabled
 	1
+>isTrigger
+	0
 >isStatic
 	0
 >radius
@@ -65,7 +70,7 @@
 	2
 >transform
 >position
-	-0.038065, 2.37951, 1.98458
+	0, 5, 0
 >rotation
 	0, 0, 0
 >scale
@@ -76,6 +81,8 @@
 >SphereCollider
 >enabled
 	1
+>isTrigger
+	0
 >isStatic
 	0
 >radius
@@ -108,7 +115,7 @@
 	2
 >transform
 >position
-	1.95351, 1.95351, 0
+	0, -3, 0
 >rotation
 	0, 0, 0
 >scale
@@ -116,43 +123,17 @@
 >BoxCollider
 >enabled
 	1
+>isTrigger
+	257
 >isStatic
 	1
 >halfExtension
 	10, 1, 10
->Bar
+>SoundComponent
 >enabled
 	1
->speed
-	5
->originPos
-	0, 0, 0
->destPos
-	2, 2, 0
-
->entity
->childs
-	0
->name
-	NewEntity_6
->component_count
-	2
->transform
->position
-	1.95351, 1.95351, 0
->rotation
-	0, 0, 0
->scale
-	14.899, 0.427305, 14.899
->StaticDraw
->enabled
-	1
->Bar
->enabled
-	1
->speed
-	5
->originPos
-	0, 0, 0
->destPos
-	2, 2, 0
+>sound
+>sound_path
+	game/assets\GameWin.mp3
+>volume
+	4

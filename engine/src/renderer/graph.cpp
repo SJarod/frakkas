@@ -124,7 +124,7 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
 
 void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
 {
-    for (Collider* collider : physicScene->colliders)
+    for (Collider* collider : Physic::PhysicScene::colliders)
     {
         if (collider && collider->enabled)
             collider->DebugDraw(i_renderer);
@@ -162,35 +162,34 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
 
 void Graph::ReloadScene()
 {
-    LoadScene(std::string(currentSceneName));
+    LoadScene(currentScenePath);
 }
 
-void Graph::LoadScene(const std::string& i_sceneName)
+void Graph::LoadScene(const std::filesystem::path& i_scenePath)
 {
-    std::string_view lastScene = currentSceneName;
-    currentSceneName = i_sceneName;
+    std::filesystem::path lastScene = currentScenePath;
+    currentScenePath = i_scenePath;
 
-    std::ifstream file(GetSceneFullPath(currentSceneName));
+    std::ifstream file(currentScenePath);
 
     if (file.is_open())
     {
         // Reset all lists
         gameCameras.clear();
         renderEntities.clear();
-        physicScene->colliders.clear();
-
+        physicScene->Clear();
 
         // Parse file to create entities
-        entityManager->CreateEntities(file);
+        entityManager->LoadEntities(file);
 
         SetGameCameraAuto();
 
-        Log::Info("Load scene " + currentSceneName);
+        Log::Info("Load scene ", currentScenePath);
     }
     else
     {
-        Log::Warning("Try to load scene from file '" + currentSceneName + "' that does not exist.");
-        currentSceneName = lastScene;
+        Log::Warning("Try to load scene from file '", currentScenePath, "' that does not exist.");
+        currentScenePath = lastScene;
     }
 }
 
@@ -204,15 +203,15 @@ inline void SaveEntity(std::ofstream& i_file, const Entity& i_entity)
 
 void Graph::SaveScene() const
 {
-    std::ofstream file(GetSceneFullPath(currentSceneName));
+    std::ofstream file(currentScenePath);
 
     for (const auto& pair : entityManager->GetRootEntities())
         SaveEntity(file, *pair.second);
 
-    Log::Info("Save scene " + currentSceneName);
+    Log::Info("Save scene ", currentScenePath);
 }
 
-std::string Graph::GetSceneFullPath(const std::string& i_sceneName)
+std::filesystem::path Graph::GetSceneFullPath(const std::string& i_sceneName)
 {
     return Helpers::gameDirectoryPath + std::string("assets/") + i_sceneName + ".kk";
 }

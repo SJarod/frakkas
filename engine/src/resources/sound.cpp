@@ -4,7 +4,6 @@
 
 #include "resources/sound.hpp"
 
-
 void Resources::Sound::SetSound(std::string i_soundPath)
 {
     if (i_soundPath.empty())

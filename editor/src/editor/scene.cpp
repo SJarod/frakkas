@@ -2,7 +2,10 @@
 
 #include "game/inputs_manager.hpp"
 #include "game/entity.hpp"
+#include "game/lowcomponent/sound_component.hpp"
+#include "game/lowcomponent/static_draw.hpp"
 
+#include "renderer/graph.hpp"
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 
@@ -13,14 +16,19 @@
 
 using namespace Editor;
 
-void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::LowLevel::Camera& i_camera, Game::Entity* i_selectedEntity, ImGuizmo::OPERATION& i_gizmoOperation)
+void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImGuizmo::OPERATION& i_gizmoOperation)
 {
+    Renderer::LowLevel::Framebuffer& sceneFBO = *io_engine.editorFBO;
+    Renderer::LowLevel::Camera& editorCamera = *io_engine.GetEditorGamera();
+
     ImGui::Begin("Scene");
 
     CheckMouseAction();
 
     ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImGui::Image(reinterpret_cast<ImTextureID>(io_fbo.GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.editorFBO->GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
+
+    DragDropResources(io_engine.entityManager, *io_engine.graph);
 
     if (!isMoving)
     {
@@ -44,8 +52,8 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
 
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowSize.x, windowSize.y);
 
-        Matrix4 cameraProj = i_camera.GetProjectionMatrix(windowSize.x / windowSize.y);
-        Matrix4 cameraView = i_camera.GetViewMatrix();
+        Matrix4 cameraProj = editorCamera.GetProjectionMatrix(windowSize.x / windowSize.y);
+        Matrix4 cameraView = editorCamera.GetViewMatrix();
 
         Game::Transform& trs = i_selectedEntity->transform;
         Matrix4 trsMatrix = i_selectedEntity->transform.GetModelMatrix();
@@ -80,11 +88,45 @@ void Scene::OnImGuiRender(Renderer::LowLevel::Framebuffer& io_fbo, Renderer::Low
 
     ImGui::End();
 
-    io_fbo.aspectRatio = windowSize.x / windowSize.y;
+    io_engine.editorFBO->aspectRatio = windowSize.x / windowSize.y;
 
-    float newFovY = 2.f * Maths::Atan(Maths::Tan(i_camera.targetFovY / io_fbo.aspectRatio * 0.5f) * io_fbo.aspectRatio);
-    if (io_fbo.aspectRatio > 1.f)
-        i_camera.SetFieldOfView(newFovY);
+    float newFovY = 2.f * Maths::Atan(Maths::Tan(editorCamera.targetFovY / sceneFBO.aspectRatio * 0.5f) * sceneFBO.aspectRatio);
+    if (sceneFBO.aspectRatio > 1.f)
+        editorCamera.SetFieldOfView(newFovY);
+}
+
+void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::Graph& io_graph)
+{
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
+        {
+            std::string dataName = *static_cast<std::string*>(payload->Data);
+
+            if (dataName.find(".wav") != std::string::npos || dataName.find(".mp3") != std::string::npos)
+            {
+                Game::Entity* entity = io_entityManager.CreateEntity("Sound entity");
+                entity->transform.position = Vector3::zero;
+                auto soundComp = entity->AddComponent<Game::SoundComponent>();
+                soundComp->sound.SetSound(dataName);
+            }
+
+            else if (dataName.find(".obj") != std::string::npos || dataName.find(".fbx") != std::string::npos || dataName.find(".gltf") != std::string::npos)
+            {
+                Game::Entity* entity = io_entityManager.CreateEntity();
+
+                auto staticDraw = entity->AddComponent<Game::StaticDraw>();
+                auto& model = staticDraw->model;
+                model.SetMeshFromFile(dataName, "", false);
+                model.transform.scale = Vector3(1.f, 1.f, 1.f);
+            }
+
+            else if (dataName.find(".kk") != std::string::npos )
+                io_graph.LoadScene(dataName);
+        }
+
+        ImGui::EndDragDropTarget();
+    }
 }
 
 void Scene::CheckMouseAction()

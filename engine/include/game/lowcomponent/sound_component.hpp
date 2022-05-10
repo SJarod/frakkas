@@ -10,5 +10,7 @@ namespace Game
 
     KK_FIELD(Resources::Sound, sound);
 
+    void OnDestroy() override;
+
     KK_COMPONENT_END
 }
