@@ -27,7 +27,7 @@ void SkeletalMesh::LoadFromInfo()
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			Log::Warning("Could not load model file : " + name + "\nASSIMP: " + (std::string)importer.GetErrorString());
+			Log::Warning("ASSIMP: ", static_cast<std::string>(importer.GetErrorString()));
 			meshSuccess = false;
 			return;
 		}

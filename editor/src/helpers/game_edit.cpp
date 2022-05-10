@@ -228,6 +228,20 @@ void Helpers::Edit(Resources::Sound& io_sound)
 {
     ImGui::Text("Sound");
 
+    ImGui::InputText("Sound file", const_cast<char *>(io_sound.soundPath.c_str()), 64, ImGuiInputTextFlags_CharsNoBlank);
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
+        {
+            std::string pathSound = *static_cast<std::string*>(payload->Data);
+            if (pathSound.find("wav") != std::string::npos || pathSound.find("mp3") != std::string::npos)
+                io_sound.SetSound(pathSound);
+        }
+
+        ImGui::EndDragDropTarget();
+    }
+
     if (ImGui::Button("Play"))
         io_sound.Play();
 

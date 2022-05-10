@@ -10,7 +10,6 @@
 #include "game/bar.hpp"
 #include "game/fps_movement.hpp"
 #include "game/lowcomponent/camera_component.hpp"
-#include "game/lowcomponent/sound_component.hpp"
 
 #include "game/world.hpp"
 

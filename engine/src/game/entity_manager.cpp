@@ -127,7 +127,7 @@ void EntityManager::LoadEntity(std::ifstream& i_file, Entity* i_parent)
         LoadEntity(i_file, entity);
 }
 
-void EntityManager::CreateEntities(std::ifstream& i_file)
+void EntityManager::LoadEntities(std::ifstream& i_file)
 {
     // Reset
     ClearEntities();

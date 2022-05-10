@@ -88,6 +88,11 @@ namespace Physic
         void RemoveBody(const JPH::BodyID& i_ID);
 
         /**
+         * @brief Clear the colliders list, and remove all physic body from physic scene.
+         */
+        void Clear();
+
+        /**
          * @brief Notify the physic scene that a collision happened, then notify the concerned entities.
          * @param i_event The collision event type.
          * @param i_body1 The physic system ID of the first entity which collides.
