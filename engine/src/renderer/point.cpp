@@ -1,7 +1,7 @@
 #include "renderer/point.hpp"
 
 Renderer::Point::Point()
-	: RenderObject("engine/shaders/point")
+	: RenderObject("pointShader", "engine/shaders/point")
 {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);

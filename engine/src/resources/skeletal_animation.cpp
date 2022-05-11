@@ -69,7 +69,7 @@ KeyFrameBone::KeyFrameBone(const std::string_view& i_name, const int i_id, const
 		KeyFramePos data;
 		data.pos = { aiPosition.x, aiPosition.y, aiPosition.z };
 		data.timeStamp = timeStamp;
-		positions.push_back(data);
+		positions.emplace_back(data);
 	}
 
 	for (int rotationIndex = 0; rotationIndex < i_assimpChannel->mNumRotationKeys; ++rotationIndex)
@@ -80,7 +80,7 @@ KeyFrameBone::KeyFrameBone(const std::string_view& i_name, const int i_id, const
 		KeyFrameRot data;
 		data.rot = { aiOrientation.x, aiOrientation.y, aiOrientation.z, aiOrientation.w };
 		data.timeStamp = timeStamp;
-		rotations.push_back(data);
+		rotations.emplace_back(data);
 	}
 
 	for (int keyIndex = 0; keyIndex < i_assimpChannel->mNumScalingKeys; ++keyIndex)
@@ -91,7 +91,7 @@ KeyFrameBone::KeyFrameBone(const std::string_view& i_name, const int i_id, const
 		KeyFrameScl data;
 		data.scl = { scale.x, scale.y, scale.z };
 		data.timeStamp = timeStamp;
-		scales.push_back(data);
+		scales.emplace_back(data);
 	}
 }
 
@@ -111,6 +111,7 @@ int KeyFrameBone::GetPositionKeyFrame(const float animationTime) const
 			return index;
 	}
 	assert(0);
+    return -1;
 }
 
 int KeyFrameBone::GetRotationKeyFrame(const float animationTime) const
@@ -122,6 +123,7 @@ int KeyFrameBone::GetRotationKeyFrame(const float animationTime) const
 			return index;
 	}
 	assert(0);
+    return -1;
 }
 
 int KeyFrameBone::GetScaleKeyFrame(const float animationTime) const
@@ -133,9 +135,10 @@ int KeyFrameBone::GetScaleKeyFrame(const float animationTime) const
 			return index;
 	}
 	assert(0);
+    return -1;
 }
 
-const std::string_view& KeyFrameBone::GetName() const
+const std::string& KeyFrameBone::GetName() const
 {
 	return name;
 }
@@ -153,7 +156,7 @@ void SkeletalAnimation::ReadHierarchyData(SkeletonNodeData& dest, const aiNode* 
 	{
 		SkeletonNodeData newData;
 		ReadHierarchyData(newData, src->mChildren[i]);
-		dest.children.push_back(newData);
+		dest.children.emplace_back(newData);
 	}
 }
 
@@ -161,7 +164,7 @@ void SkeletalAnimation::ReadMissingBones(const aiAnimation* animation, SkeletalM
 {
 	int size = animation->mNumChannels;
 
-	std::unordered_map<std::string_view, Resources::Bone>& bim = skmesh.boneInfoMap;
+	std::unordered_map<std::string, Resources::Bone>& bim = skmesh.boneInfoMap;
 	int& boneCount = skmesh.boneCounter;
 
 	for (int i = 0; i < size; ++i)
@@ -174,7 +177,7 @@ void SkeletalAnimation::ReadMissingBones(const aiAnimation* animation, SkeletalM
 			bim[boneName].id = boneCount;
 			++boneCount;
 		}
-		kfBones.push_back(KeyFrameBone(channel->mNodeName.data, bim[channel->mNodeName.data].id, channel));
+		kfBones.emplace_back(KeyFrameBone(channel->mNodeName.data, bim[channel->mNodeName.data].id, channel));
 	}
 
 	boneInfoMap = bim;
@@ -209,7 +212,7 @@ const KeyFrameBone* SkeletalAnimation::FindBone(const std::string_view& name) co
 		return &(*iter);
 }
 
-const std::unordered_map<std::string_view, Bone>& SkeletalAnimation::GetBoneMap() const
+const std::unordered_map<std::string, Bone>& SkeletalAnimation::GetBoneMap() const
 {
 	return boneInfoMap;
 }

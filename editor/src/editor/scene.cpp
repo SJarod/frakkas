@@ -89,10 +89,6 @@ void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImG
     ImGui::End();
 
     io_engine.editorFBO->aspectRatio = windowSize.x / windowSize.y;
-
-    float newFovY = 2.f * Maths::Atan(Maths::Tan(editorCamera.targetFovY / sceneFBO.aspectRatio * 0.5f) * sceneFBO.aspectRatio);
-    if (sceneFBO.aspectRatio > 1.f)
-        editorCamera.SetFieldOfView(newFovY);
 }
 
 void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::Graph& io_graph)

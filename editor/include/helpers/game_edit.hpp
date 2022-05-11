@@ -131,9 +131,10 @@ namespace Helpers
 
     /**
      * @brief ImGui editing function. Allows the player to change light parameters.
-     * @param io_light the light to edit
+     * @param io_engine the engine containing the light
+     * @param i_menuWidth a float measuring the size of the menu, used for displaying the depth map
      */
-    void Edit(Renderer::Light& io_light);
+    void Edit(Engine& io_engine, const float i_menuWidth);
 
     /**
     * @brief ImGui editing function. Allows the player to change sound parameters.

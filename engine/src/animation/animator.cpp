@@ -10,7 +10,7 @@ Animation::Animator::Animator()
 	boneMatrices.reserve(MAX_BONES);
 	for (unsigned int i = 0; i < MAX_BONES; ++i)
 	{
-		boneMatrices.push_back(Matrix4::Identity());
+		boneMatrices.emplace_back(Matrix4::Identity());
 	}
 }
 
@@ -42,7 +42,7 @@ const std::vector<Matrix4>& Animation::Animator::GetBoneMatrices() const
 
 void Animation::Animator::UpdateBoneMatrices(const SkeletonNodeData* node, const Matrix4& parentTransform)
 {
-	std::string_view nodeName = node->name;
+	std::string nodeName(node->name);
 	Matrix4 nodeTransform = node->transform.Transpose();
 
 	const KeyFrameBone* kfBone = anim->FindBone(nodeName);

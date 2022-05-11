@@ -24,7 +24,7 @@ void Resources::ResourcesManager::CreateGPUSubmesh(Submesh& io_mesh)
 	ResourcesManager& rm = ResourcesManager::Instance();
 
 	std::lock_guard<std::mutex> guard(rm.loadMX);
-	rm.gpuLoadQueue.push_back([&]() {
+	rm.gpuLoadQueue.emplace_back([&]() {
 		glGenBuffers(1, &io_mesh.gpu.VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, io_mesh.gpu.VBO);
 		glBufferData(GL_ARRAY_BUFFER, io_mesh.vertices.size() * sizeof(Vertex), io_mesh.vertices.data(), GL_STATIC_DRAW);
@@ -58,7 +58,7 @@ void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
 	ResourcesManager& rm = ResourcesManager::Instance();
 
 	std::lock_guard<std::mutex> guard(rm.loadMX);
-	rm.gpuLoadQueue.push_back([&]() {
+	rm.gpuLoadQueue.emplace_back([&]() {
 		io_texture.gpu = std::make_unique<GPUTexture>();
 		glGenTextures(1, &io_texture.gpu->data);
 

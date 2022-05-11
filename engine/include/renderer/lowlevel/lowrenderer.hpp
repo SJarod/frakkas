@@ -51,11 +51,14 @@ namespace Renderer
 			 */
 			int GetHeight() const;
 
-		private:
+		protected:
 			GLuint FBO = 0;
+
+		private:
 			GLuint color0 = 0;
 			GLuint depthStencil = 0;
 
+		protected:
 			//framebuffer's dimensions (width)
 			int width = 0;
 
@@ -63,12 +66,27 @@ namespace Renderer
 			int height = 0;
 		};
 
+		class DepthFramebuffer : public Framebuffer
+		{
+		public:
+			DepthFramebuffer(const int i_width, const int i_height);
+
+			GLuint GetDepthMap() const;
+
+		private:
+			GLuint depthMap = 0;
+		};
+
 		class UniformBuffer
 		{
 		public:
 			UniformBuffer(const int i_binding, const int i_size);
 
-			void SetUniformToBlock(const int i_offset, const bool& i_value) const;
+			void SetUniformToBlock(const int i_offset, const bool i_value) const;
+
+			void SetUniformToBlock(const int i_offset, const int i_value) const;
+
+			void SetUniformToBlock(const int i_offset, const float i_value) const;
 
 			void SetUniformToBlock(const int i_offset, const Vector3& i_value) const;
 
@@ -87,19 +105,30 @@ namespace Renderer
 		{
 		private:
 			std::unordered_map<std::string_view, UniformBuffer> shaderUBOs;
+			int shadowMapResolution = 4096;
 
 		public:
+			bool outline = true;
+			//shadow rendering values
+			float shadowRange = 50.f;
+			float shadowDepth = 50.f;
+
+			std::unique_ptr<Renderer::LowLevel::DepthFramebuffer> depthMapFBO;
+			std::unique_ptr<Renderer::LowLevel::Framebuffer> firstPassFBO;
+			std::unique_ptr<Renderer::LowLevel::Framebuffer> secondPassFBO;
+
 			LowRenderer();
 
 			/**
-			 * @Summary Begin drawing on the specified framebuffer.
+			 * @Summary Begin drawing on the specified the framebuffer.
 			 */
 			void BeginFrame(const Framebuffer& i_fbo) const;
 
             /**
-             * @Summary Begin drawing with the main framebuffer (SDL window's framebuffer)
+             * @brief Drawing on a specified the framebuffer without clearing.
+             * @param i_fbo The FBO to bind.
              */
-            void BeginFrame() const;
+            void ContinueFrame(const Framebuffer& i_fbo) const;
 
 			/**
 			 * @Summary Render is ready to be displayed.
@@ -109,9 +138,9 @@ namespace Renderer
 			template<typename TUniformType>
 			void SetUniformToNamedBlock(const std::string_view& i_blockName, const int i_offset, const TUniformType& i_value) const;
 
-			void RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size);
+			void RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size) const;
 
-            void RenderLines(const unsigned int i_VAO, const unsigned int i_count, const Matrix4& i_model,
+			void RenderLines(const unsigned int i_VAO, const unsigned int i_count, const Matrix4& i_model,
                              const float i_size, const Vector3& i_color, bool i_useLineStrip);
 
 			/**
@@ -122,17 +151,13 @@ namespace Renderer
 			 * @param i_count the number of triangles to draw
 			 * @param i_texture the texture index to draw on the mesh
 			 */
-			void RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture);
+			void RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture) const;
 
-            /**
-            * @Summary Render a mesh once with an outline.
-            * Call this function in a loop to render a model in real time.
-            *
-            * @param i_VAO the opengl vertex array object
-            * @param i_count the number of triangles to draw
-            * @param i_lineWidth the width of the outline
-            */
-			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count, int i_lineWidth);
+			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count) const;
+
+			void RenderScreen(const LowLevel::Framebuffer& i_fbo) const;
+
+			void RenderScreen() const;
 		};
 	}
 }

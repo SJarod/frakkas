@@ -105,8 +105,10 @@ namespace Renderer
         * @param i_aspectRatio The aspect ratio of the screen to get camera projection matrix.
          * @param i_camera The camera to project the scene from.
         */
-        void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio,
-                                 Renderer::LowLevel::Camera& i_camera) const noexcept;
+        void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer,
+            float i_aspectRatio,
+            Renderer::LowLevel::Camera& i_camera,
+            const Vector3& i_cameraPos) const noexcept;
 
         /**
          * @brief Renders each entity for real.

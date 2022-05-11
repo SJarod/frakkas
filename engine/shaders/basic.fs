@@ -1,5 +1,3 @@
-#version 450 core
-
 struct Light
 {
     bool enabled;
@@ -35,111 +33,201 @@ uniform Material gDefaultMaterial = Material(
 in vec3 vPos;
 in vec3 vNormal;
 in vec2 vUV;
+in vec4 vLightSpace;
 
 out vec4 oColor;
 
 layout(std140, binding = 1) uniform uRendering
 {
-                        //base alignment    //aligned offset
-    Light light;        //4                 //0
-                        //16                //16
-                        //16                //32
-                        //16                //48
-                        //16                //64
-    bool toonShading;   //4                 //80
-    bool outLine;       //4                 //84
-    bool fiveTone;      //4                 //88
-    vec3 cameraView;    //16                //96
+                            //base alignment    //aligned offset
+    Light light;            //4                 //0
+                            //16                //16
+                            //16                //32
+                            //16                //48
+                            //16                //64
+    bool toonShading;       //4                 //80
+
+    int stepAmount;         //4                 //84
+    float stepSize;         //4                 //88
+
+    float specSize;         //4                 //92
+
+    bool shadow;            //4                 //96
+    bool adaptativeBias;    //4                 //100
+    float shadowBias;       //4                 //104
+
+    vec3 cameraPos;         //16                //112
 };
 
-uniform sampler2D uTexture;
+uniform bool uOutline = false;
 
-LightShadeResult LightShade(Light light, float shininess, vec3 eyePosition, vec3 position, vec3 normal)
+layout(binding = 0) uniform sampler2D uTexture;
+layout(binding = 1) uniform sampler2D uShadowMap;
+
+/**
+ * Get the L vector (from the light position to the vertex position)
+ * @param l : the light
+ */
+vec3 GetLightDir(Light l)
 {
-	LightShadeResult r = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
-	if (!light.enabled)
-		return r;
-
     vec3 lightDir;
-    if (light.position.w > 0.0) // Point light
+
+    // Point light
+    if (l.position.w > 0.0)
     {
-        vec3 lightPosFromVertexPos = (light.position.xyz / light.position.w) - position;
+        vec3 lightPosFromVertexPos = (l.position.xyz / l.position.w) - vPos;
         lightDir = normalize(lightPosFromVertexPos);
         float dist = length(lightPosFromVertexPos);
     }
-    else // Directional light
-        lightDir = normalize(light.position.xyz);
+    // Directional light
+    else
+    {
+        lightDir = normalize(l.position.xyz);
+    }
 
+    return lightDir;
+}
+
+/**
+ * Use the shadow map to check if the vertex is lit by the light
+ * @param lightSpace : the light space processed in the vertex shader
+ * @param bias : the shadow bias
+ * @param pcf : the shadow's "smoothness" as pixel resolution
+ */
+float Enlighten(vec4 lightSpace, float bias, int pcf)
+{
+    vec3 perspective = lightSpace.xyz / lightSpace.w;
+    perspective = perspective * 0.5 + 0.5;
+
+    if (perspective.z > 1.0)
+        return 1.0;
+
+    float currentDepth = perspective.z;
+
+    // is the fragment lit ?
+    float lit = 0.0;
+
+    // Percentage Closer Filtering (PCF) for smooth shadows
+    vec2 texelSize = 1.0 / textureSize(uShadowMap, 0);
+    for (int i = -pcf; i <= pcf; ++i)
+    {
+        for (int j = -pcf; j <= pcf; ++j)
+        {
+            float pcfDepth = texture(uShadowMap, perspective.xy + vec2(i, j) * texelSize).r;
+            lit += currentDepth - bias > pcfDepth ? 0.0 : 1.0;
+        }
+    }
+
+    int totalPCF = 2 * pcf + 1;
+    int sqrTotalPCF = totalPCF * totalPCF;
+    return lit / sqrTotalPCF;
+}
+
+/**
+ * Process the light for this vertex, apply shadows if applicable
+ * @param l : the light
+ * @param shininess : the material's shininess
+ * @param eyePosition : the camera position (or eye)
+ * @param position : the vertex position
+ * @param normal : the vertex normal
+ * @param toon : does the shading need to be toon shading?
+ */
+LightShadeResult LightShade(Light l, float shininess, vec3 eyePosition, vec3 position, vec3 normal, bool toon)
+{
+	LightShadeResult r = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
+	if (!l.enabled)
+		return r;
+
+    vec3 lightDir = GetLightDir(l);
+
+    // Process the shadow value (weather the fragment is lit or not)
+    float lit = 1.0;
+    if (shadow)
+    {
+        float bias = shadowBias;
+        if (adaptativeBias)
+            bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.0);
+        lit = Enlighten(vLightSpace, bias, 10);
+    }
+
+    // Process the common light vectors
     vec3 eyeDir  = normalize(eyePosition - position);
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float specAngle = max(dot(reflectDir, eyeDir), 0.0);
 
-    r.ambient  = light.ambient;
-    r.diffuse  = light.diffuse  * max(dot(normal, lightDir), 0.0);
-    r.specular = light.specular * (pow(specAngle, shininess / 4.0));
+    // Phong lighting
+    if (!toon)
+    {
+        r.ambient  = l.ambient;
+        r.diffuse  = lit * l.diffuse  * max(dot(normal, lightDir), 0.0);
+        r.specular = lit * l.specular * pow(specAngle, shininess / 4.0);
+    }
+    // Toon shading
+    else
+    {
+        // edging the shadow
+        float attenuationChange = fwidth(lit) * 0.5;
+        float toonLit = smoothstep(0.5 - attenuationChange, 0.5 + attenuationChange, lit);
+
+        // process the diffuse light with a certain amount of steps
+        float diffuseIntensity = ceil(max(dot(normal, lightDir) / stepSize, 0.0));
+        diffuseIntensity = diffuseIntensity / stepAmount;
+        diffuseIntensity = clamp(diffuseIntensity, 0.0, 1.0);
+
+        // process the specular light
+        float specChange = fwidth(specAngle);
+        float specIntensity = smoothstep(1 - specSize, 1 - specSize + specChange, specAngle);
+
+        r.ambient  = l.ambient;
+        r.diffuse  = toonLit * l.diffuse  * diffuseIntensity;
+        r.specular = toonLit * l.specular * specIntensity;
+    }
+
 	r.specular = clamp(r.specular, 0.0, 1.0);
 
 	return r;
 }
 
-LightShadeResult GetLightsShading()
+/**
+ * Process every lights' shading (there is only one light for now)
+ * @param toon : does the shading need to be toon shading?
+ */
+LightShadeResult GetLightsShading(bool toon)
 {
     LightShadeResult lightResult = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
 
-    LightShadeResult light = LightShade(light, gDefaultMaterial.shininess, cameraView, vPos, normalize(vNormal));
-    lightResult.ambient  += light.ambient;
-    lightResult.diffuse  += light.diffuse;
-    lightResult.specular += light.specular;
+    LightShadeResult l = LightShade(light,
+                                    gDefaultMaterial.shininess,
+                                    cameraPos,
+                                    vPos,
+                                    normalize(vNormal),
+                                    toon);
+
+    lightResult.ambient  += l.ambient;
+    lightResult.diffuse  += l.diffuse;
+    lightResult.specular += l.specular;
 
     return lightResult;
 }
 
 void main()
 {
-    if (outLine)
+    if (uOutline)
     {
         oColor = vec4(0.0, 0.0, 0.0, 1.0);
         return;
     }
 
-    float intensity = dot(normalize(light.position.xyz), normalize(vNormal));
-    vec4 color1, color2;
+    // Compute light (phong or toon) shading
+    LightShadeResult lightResult = GetLightsShading(toonShading);
 
-    if (toonShading)
-    {
-        color1 = texture(uTexture, vUV);
+    vec4 texColor = texture(uTexture, vUV);
 
-        if (fiveTone)
-        {
-            if (intensity > 0.95)       color2 = vec4(1.0, 1.0, 1.0, 1.0);
-            else if (intensity > 0.75)  color2 = vec4(0.8, 0.8, 0.8, 1.0);
-            else if (intensity > 0.50)  color2 = vec4(0.6, 0.6, 0.6, 1.0);
-            else if (intensity > 0.25)  color2 = vec4(0.4, 0.4, 0.4, 1.0);
-            else                        color2 = vec4(0.2, 0.2, 0.2, 1.0);
-        }
-        else
-        {
-            if (intensity > 0.95)       color2 = vec4(1.0, 1.0, 1.0, 1.0);
-            else if (intensity > 0.50)  color2 = vec4(0.6, 0.6, 0.6, 1.0);
-            else if (intensity > 0.25)  color2 = vec4(0.4, 0.4, 0.4, 1.0);
-            else                        color2 = vec4(0.2, 0.2, 0.2, 1.0);
-        }
+    vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient * texColor.rgb;
+    vec3 diffuseColor  = gDefaultMaterial.diffuse * lightResult.diffuse * texColor.rgb;
+    vec3 specularColor = gDefaultMaterial.specular * lightResult.specular;
+    vec3 emissiveColor = gDefaultMaterial.emission * texColor.rgb;
 
-        oColor = color1 * color2;
-    }
-    else if (!toonShading)
-    {
-        // Compute phong shading
-        LightShadeResult lightResult = GetLightsShading();
-
-        vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient * texture(uTexture, vUV).rgb;
-        vec3 diffuseColor  = gDefaultMaterial.diffuse * lightResult.diffuse * texture(uTexture, vUV).rgb;
-        vec3 specularColor = gDefaultMaterial.specular * lightResult.specular;
-        vec3 emissiveColor = gDefaultMaterial.emission * texture(uTexture, vUV).rgb;
-
-        // Apply light color
-        oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), 1.0);
-    }
-    else
-        oColor = vec4(1.0);
+    // Apply light color
+    oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), 1.0);
 }

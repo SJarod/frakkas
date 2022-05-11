@@ -50,6 +50,7 @@ namespace Resources
 		static constexpr char sphereMesh[] = "ProceduralSphere";
 		static constexpr char cubeColliderMesh[] = "ProceduralCubeLines";
 		static constexpr char sphereColliderMesh[] = "ProceduralSphereLines";
+
 	protected:
 
 		////////////////////////////////////////////// ASSIMP

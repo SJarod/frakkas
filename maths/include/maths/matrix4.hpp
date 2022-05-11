@@ -139,6 +139,11 @@ struct Matrix4
     static Matrix4 Scale(const Vector3& i_sc);
 
 /**
+ * @summary Create a look at matrix.
+ */
+    static Matrix4 LookAt(const Vector3& i_eye, const Vector3& i_center, const Vector3& i_up);
+
+/**
  * @summary Get the translation component of the matrix
  */
     Vector3 Translation() const;

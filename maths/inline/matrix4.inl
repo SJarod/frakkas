@@ -115,48 +115,48 @@ inline Matrix4 Matrix4::Transpose() const
 
 inline Matrix4 Matrix4::Inverse() const
 {
-    Matrix4 R = Identity();
+    Matrix4 result;
 
-    float S[6];
-    S[0] = element[0] * element[5] - element[4] * element[1];
-    S[1] = element[0] * element[6] - element[4] * element[2];
-    S[2] = element[0] * element[7] - element[4] * element[3];
-    S[3] = element[1] * element[6] - element[5] * element[2];
-    S[4] = element[1] * element[7] - element[5] * element[3];
-    S[5] = element[2] * element[7] - element[6] * element[3];
+    // Cache the matrix values (speed optimization)
+    float a00 = element[0], a01 = element[1], a02 = element[2], a03 = element[3];
+    float a10 = element[4], a11 = element[5], a12 = element[6], a13 = element[7];
+    float a20 = element[8], a21 = element[9], a22 = element[10], a23 = element[11];
+    float a30 = element[12], a31 = element[13], a32 = element[14], a33 = element[15];
 
-    float C[6];
-    C[0] = element[8] * element[13] - element[12] * element[9];
-    C[1] = element[8] * element[14] - element[12] * element[10];
-    C[2] = element[8] * element[15] - element[12] * element[11];
-    C[3] = element[9] * element[14] - element[13] * element[10];
-    C[4] = element[9] * element[15] - element[13] * element[11];
-    C[5] = element[10] * element[15] - element[14] * element[11];
+    float b00 = a00 * a11 - a01 * a10;
+    float b01 = a00 * a12 - a02 * a10;
+    float b02 = a00 * a13 - a03 * a10;
+    float b03 = a01 * a12 - a02 * a11;
+    float b04 = a01 * a13 - a03 * a11;
+    float b05 = a02 * a13 - a03 * a12;
+    float b06 = a20 * a31 - a21 * a30;
+    float b07 = a20 * a32 - a22 * a30;
+    float b08 = a20 * a33 - a23 * a30;
+    float b09 = a21 * a32 - a22 * a31;
+    float b10 = a21 * a33 - a23 * a31;
+    float b11 = a22 * a33 - a23 * a32;
 
-    // Assuming it is invertible
-    float InvDet = 1.0f / (S[0] * C[5] - S[1] * C[4] + S[2] * C[3] + S[3] * C[2] - S[4] * C[1] + S[5] * C[0]);
+    // Calculate the invert determinant (inlined to avoid double-caching)
+    float invDet = 1.0f / (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06);
 
-    R.element[0] = +(element[5] * C[5] - element[5] * C[4] + element[7] * C[3]) * InvDet;
-    R.element[1] = -(element[1] * C[5] - element[2] * C[4] + element[3] * C[3]) * InvDet;
-    R.element[2] = +(element[13] * S[5] - element[14] * S[4] + element[15] * S[3]) * InvDet;
-    R.element[3] = -(element[9] * S[5] - element[10] * S[4] + element[11] * S[3]) * InvDet;
+    result.element[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+    result.element[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+    result.element[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+    result.element[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+    result.element[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+    result.element[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+    result.element[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+    result.element[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+    result.element[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+    result.element[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+    result.element[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+    result.element[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+    result.element[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+    result.element[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+    result.element[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+    result.element[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
 
-    R.element[4] = -(element[4] * C[5] - element[6] * C[2] + element[7] * C[1]) * InvDet;
-    R.element[5] = +(element[0] * C[5] - element[2] * C[2] + element[3] * C[1]) * InvDet;
-    R.element[6] = -(element[12] * S[5] - element[14] * S[2] + element[15] * S[1]) * InvDet;
-    R.element[7] = +(element[8] * S[5] - element[10] * S[2] + element[11] * S[1]) * InvDet;
-
-    R.element[8] = +(element[4] * C[4] - element[5] * C[2] + element[7] * C[0]) * InvDet;
-    R.element[9] = -(element[0] * C[4] - element[1] * C[2] + element[3] * C[0]) * InvDet;
-    R.element[10] = +(element[12] * S[4] - element[13] * S[2] + element[15] * S[0]) * InvDet;
-    R.element[11] = -(element[8] * S[4] - element[9] * S[2] + element[11] * S[0]) * InvDet;
-
-    R.element[12] = -(element[4] * C[3] - element[5] * C[1] + element[6] * C[0]) * InvDet;
-    R.element[13] = +(element[0] * C[3] - element[1] * C[1] + element[2] * C[0]) * InvDet;
-    R.element[14] = -(element[12] * S[3] - element[13] * S[1] + element[14] * S[0]) * InvDet;
-    R.element[15] = +(element[8] * S[3] - element[9] * S[1] + element[10] * S[0]) * InvDet;
-
-    return R;
+    return result;
 }
 
 inline Matrix4 Matrix4::Frustum(float i_left, float i_right, float i_bottom, float i_top, float i_near, float i_far)
@@ -294,6 +294,20 @@ inline Matrix4 Matrix4::Scale(const Vector3& i_sc)
             0.f,     i_sc.y,  0.f,     0.f,
             0.f,     0.f,     i_sc.z,  0.f,
             0.f,     0.f,     0.f,     1.f
+    };
+}
+
+inline Matrix4 Matrix4::LookAt(const Vector3& i_eye, const Vector3& i_center, const Vector3& i_up)
+{
+    Vector3 Z = (i_center - i_eye).Normalize();
+    Vector3 X = Vector3::CrossProduct(Z, i_up).Normalize();
+    Vector3 Y = Vector3::CrossProduct(X, Z);
+
+    return Matrix4{
+        X.x, Y.x, -Z.x, 0.f,
+        X.y, Y.y, -Z.y, 0.f,
+        X.z, Y.z, -Z.z, 0.f,
+        -Vector3::DotProduct(X, i_eye), -Vector3::DotProduct(Y, i_eye), Vector3::DotProduct(Z, i_eye), 1.f
     };
 }
 

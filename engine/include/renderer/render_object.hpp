@@ -13,12 +13,17 @@ namespace Renderer
 		/**
 		 * Create a RenderObject using a set of shaders.
 		 */
-		RenderObject(const std::string& i_shaderName);
+		RenderObject(const std::string& i_name,
+			const std::string& i_shaderFilePath,
+			const std::initializer_list<const std::string>& i_defines = {});
 
 		/**
 		 * Create a RenderObject using seperate shaders.
 		 */
-		RenderObject(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName);
+		RenderObject(const std::string& i_name,
+			const std::string& i_vertexShaderFilePath,
+			const std::string& i_fragmentShaderFilePath,
+			const std::initializer_list<const std::string>& i_defines = {});
 
 		/**
 		 * @Summary send value to the shader program
@@ -32,16 +37,6 @@ namespace Renderer
 		 * Use this RenderObject's shader.
 		 */
 		void UseShader() const;
-
-		/**
-		 * Give this RenderObject a shader program based on a set of shaders.
-		 */
-		void SetCoupleShader(const std::string& i_shaderName);
-
-		/**
-		 * Give this RenderObject a shader program based on two seperate shaders.
-		 */
-		void SetSingleShaders(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName);
 
 	private:
 		std::shared_ptr<Resources::Shader> shader;

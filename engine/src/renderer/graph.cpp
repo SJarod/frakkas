@@ -96,7 +96,10 @@ void Graph::SetGameCameraAuto() noexcept
 
 void Graph::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio)
 {
-    UpdateGlobalUniform(i_renderer, i_aspectRatio, editorCamera);
+    UpdateGlobalUniform(i_renderer,
+        i_aspectRatio,
+        editorCamera,
+        editorCamera.transform.position);
     Render(i_renderer);
     RenderColliders(i_renderer);
 }
@@ -109,38 +112,72 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
         return;
     }
 
-    UpdateGlobalUniform(i_renderer, i_aspectRatio, gameCamera->camera);
+    UpdateGlobalUniform(i_renderer,
+        i_aspectRatio,
+        gameCamera->camera,
+        gameCamera->camera.transform.parent.get()->position);
     Render(i_renderer);
 }
 
 void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
 {
+    // light depth map
+    i_renderer.BeginFrame(*i_renderer.depthMapFBO);
+
+    for (Drawable* drawable : renderEntities)
+    {
+        if (drawable && drawable->enabled)
+            drawable->DrawDepthMap(i_renderer, drawable->owner.get()->transform);
+    }
+
+    i_renderer.EndFrame();
+
+    // normal rendering
+    i_renderer.BeginFrame(*i_renderer.firstPassFBO);
+
     for (Drawable* drawable : renderEntities)
     {
         if (drawable && drawable->enabled)
             drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
     }
+
+    i_renderer.EndFrame();
+
+    // post processing
+    i_renderer.BeginFrame(*i_renderer.secondPassFBO);
+
+    i_renderer.EndFrame();
 }
 
 void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
 {
+    i_renderer.ContinueFrame(*i_renderer.firstPassFBO);
+
     for (Collider* collider : Physic::PhysicScene::colliders)
     {
         if (collider && collider->enabled)
             collider->DebugDraw(i_renderer, collider->owner.get()->transform);
     }
+
+    i_renderer.EndFrame();
 }
 
-void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio,
-                                Renderer::LowLevel::Camera& i_camera) const noexcept
+void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio, Renderer::LowLevel::Camera& i_camera, const Vector3& i_cameraPos) const noexcept
 {
 // An entity with CameraComponent should be added to render
     // projection
-    i_renderer.SetUniformToNamedBlock("uProjView", 0, editorCamera.GetProjectionMatrix(i_aspectRatio));
+    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 0, i_camera.GetProjectionMatrix(i_aspectRatio));
     // view
-    i_renderer.SetUniformToNamedBlock("uProjView", 64, i_camera.GetViewMatrix());
-    // cameraView
-    i_renderer.SetUniformToNamedBlock("uRendering", 96, i_camera.transform.position.get());
+    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 64, i_camera.GetViewMatrix());
+
+    float shadowRange = i_renderer.shadowRange;
+    float shadowDepth = i_renderer.shadowDepth;
+    // lightProjection
+    i_renderer.SetUniformToNamedBlock("uLightMatrices", 0, Matrix4::Orthographic(-shadowRange, shadowRange, -shadowRange, shadowRange, -shadowDepth, shadowDepth));
+    // lightView
+    i_renderer.SetUniformToNamedBlock("uLightMatrices", 64, Matrix4::LookAt(Vector3(light.position) + i_cameraPos, i_cameraPos, Vector3::up));
+    // cameraPos
+    i_renderer.SetUniformToNamedBlock("uRendering", 112, i_cameraPos);
 
     // Use last light as default
     // light.enabled
@@ -156,8 +193,19 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
 
     // toonShading
     i_renderer.SetUniformToNamedBlock("uRendering", 80, light.toonShading);
-    // fiveTone
-    i_renderer.SetUniformToNamedBlock("uRendering", 88, light.fiveTone);
+    // stepAmount
+    i_renderer.SetUniformToNamedBlock("uRendering", 84, light.stepAmount);
+    // stepSize
+    i_renderer.SetUniformToNamedBlock("uRendering", 88, light.stepSize);
+    // specSize
+    i_renderer.SetUniformToNamedBlock("uRendering", 92, light.specSize);
+
+    // shadow
+    i_renderer.SetUniformToNamedBlock("uRendering", 96, light.shadow);
+    // adaptativeBias
+    i_renderer.SetUniformToNamedBlock("uRendering", 100, light.adaptativeBias);
+    // shadowBias
+    i_renderer.SetUniformToNamedBlock("uRendering", 104, light.shadowBias);
 }
 
 void Graph::ReloadScene()

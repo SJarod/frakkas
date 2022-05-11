@@ -5,16 +5,33 @@
 
 #include "resources/program_shader.hpp"
 
-Resources::Shader::Shader(const std::string& i_shaderName)
-	: vertexShaderName(i_shaderName), fragmentShaderName(i_shaderName)
+Resources::Shader::Shader(const std::string& i_name,
+	const std::string& i_shaderFilePath,
+	const std::initializer_list<const std::string>& i_defines)
+	: vertexShaderName(i_shaderFilePath), fragmentShaderName(i_shaderFilePath)
 {
-	name = i_shaderName;
+	name = i_name;
+
+	int size = i_defines.size();
+	for (int i = 0; i < size; ++i)
+	{
+		defines.emplace_back(*(i_defines.begin() + i));
+	}
 }
 
-Resources::Shader::Shader(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName)
-	: vertexShaderName(i_vertexShaderName), fragmentShaderName(i_fragmentShaderName)
+Resources::Shader::Shader(const std::string& i_name,
+	const std::string& i_vertexShaderFilePath,
+	const std::string& i_fragmentShaderFilePath,
+	const std::initializer_list<const std::string>& i_defines)
+	: vertexShaderName(i_vertexShaderFilePath), fragmentShaderName(i_fragmentShaderFilePath)
 {
-	name = i_vertexShaderName + "+" + i_fragmentShaderName;
+	name = i_name;
+
+	int size = i_defines.size();
+	for (int i = 0; i < size; ++i)
+	{
+		defines.emplace_back(*(i_defines.begin() + i));
+	}
 }
 
 Resources::Shader::~Shader()
@@ -37,16 +54,31 @@ void Resources::Shader::LoadFromInfo()
 	std::string vs((std::istreambuf_iterator<char>(vsStream)), std::istreambuf_iterator<char>());
 	std::string fs((std::istreambuf_iterator<char>(fsStream)), std::istreambuf_iterator<char>());
 
-	const char* vertexShaderSource = vs.c_str();
-	const char* fragmentShaderSource = fs.c_str();
+	std::string version = "#version 450 core\n";
+
+	std::vector<const char*> uberVertexShaderSources;
+	uberVertexShaderSources.emplace_back(version.c_str());
+	for (const std::string& def : defines)
+	{
+		uberVertexShaderSources.emplace_back(def.c_str());
+	}
+	uberVertexShaderSources.emplace_back(vs.c_str());
+
+	std::vector<const char*> uberFragmentShaderSources;
+	uberFragmentShaderSources.emplace_back(version.c_str());
+	for (const std::string& def : defines)
+	{
+		uberFragmentShaderSources.emplace_back(def.c_str());
+	}
+	uberFragmentShaderSources.emplace_back(fs.c_str());
 
 	//shaders
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+	glShaderSource(vertexShader, uberVertexShaderSources.size(), &uberVertexShaderSources[0], nullptr);
 	glCompileShader(vertexShader);
 
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+	glShaderSource(fragmentShader, uberFragmentShaderSources.size(), &uberFragmentShaderSources[0], nullptr);
 	glCompileShader(fragmentShader);
 
 	int  success[2];
@@ -93,65 +125,35 @@ void Resources::Shader::Use() const
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const bool& i_value) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniform1i(location, i_value);
 }
 
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const float& i_value) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniform1f(location, i_value);
 }
 
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Matrix4& i_value, const bool i_transpose) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniformMatrix4fv(location, 1, i_transpose, i_value.element);
 }
 
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const int i_num, const float* i_array, const bool i_transpose) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniformMatrix4fv(location, i_num, i_transpose, i_array);
 }
 
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Vector3& i_value) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniform3fv(location, 1, i_value.element);
 }
 
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const Vector4& i_value) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());
-	if (location < 0)
-	{
-		Log::Info(std::string(i_uniformName) + " is not a shader uniform in " + name);
-		return;
-	}
 	glUniform4fv(location, 1, i_value.element);
 }

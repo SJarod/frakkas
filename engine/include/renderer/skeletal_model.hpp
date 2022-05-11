@@ -20,11 +20,13 @@ namespace Renderer
 	class SkeletalModel : public Renderer::RenderObject
 	{
 	public:
+		std::shared_ptr<Resources::Shader> lightDepthShader;
+
 		std::shared_ptr<Resources::SkeletalMesh>	skmesh;
 		Animation::Animator							player;
 		std::shared_ptr<SkeletalAnimationPack>		skpack;
 
-		SkeletalModel() : RenderObject("engine/shaders/animation", "engine/shaders/basic") {}
+		SkeletalModel();
 
 		/**
 		 * @Summary Create a model that contains submeshes with embedded textures using Assimp.

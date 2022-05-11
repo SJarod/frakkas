@@ -5,15 +5,29 @@
 
 #include "renderer/skeletal_model.hpp"
 
-Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename)
-	: RenderObject("engine/shaders/animation", "engine/shaders/basic")
+Renderer::SkeletalModel::SkeletalModel()
+	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
 {
+	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
+	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
+		"engine/shaders/light_depth", defines);
+}
+
+Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename)
+	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
+{
+	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
+	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
+		"engine/shaders/light_depth", defines);
 	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename);
 }
 
 Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
-	: RenderObject("engine/shaders/animation", "engine/shaders/basic")
+	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
 {
+	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
+	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
+		"engine/shaders/light_depth", defines);
 	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename, i_textureFilename, i_flipTexture);
 }
 

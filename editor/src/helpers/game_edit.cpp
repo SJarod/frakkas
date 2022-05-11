@@ -10,6 +10,7 @@
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 #include "renderer/skeletal_model.hpp"
+#include "renderer/graph.hpp"
 
 #include "resources/sound.hpp"
 #include "resources/mesh.hpp"
@@ -220,42 +221,68 @@ void Helpers::Edit(Renderer::LowLevel::Camera& io_camera)
     DragScalar("Far", &io_camera.far, 1, 100.f, 5000.f, 10.f);
 }
 
-void Helpers::Edit(Renderer::Light& io_light)
+void Helpers::Edit(Engine& io_engine, const float i_menuWidth)
 {
-    ImGui::Checkbox("ToonShading", &io_light.toonShading);
+    Renderer::Light& light = io_engine.graph->light;
+    ImGui::Checkbox("ToonShading", &light.toonShading);
 
-    if (io_light.toonShading)
+    if (light.toonShading)
     {
-        ImGui::SameLine();
-        ImGui::Checkbox("FiveTone", &io_light.fiveTone);
-        ImGui::Checkbox("Outline", &io_light.outline);
-        ImGui::SliderInt("Outline size", &io_light.outlineSize, 1, 10);
+        ImGui::SliderInt("Step amount", &light.stepAmount, 1, 20);
+        ImGui::SliderFloat("Step size", &light.stepSize, 0.05f, 1.f);
+        ImGui::SliderFloat("Spec size", &light.specSize, 0.f, 1.f);
+        ImGui::Separator();
     }
-    else
-    {
-        ImGui::Spacing();
 
-        io_light.outline = false;
-        io_light.fiveTone = false;
+    ImGui::Spacing();
 
-        ImGui::ColorEdit3("Ambient", io_light.ambient.element);
-        ImGui::ColorEdit3("Diffuse", io_light.diffuse.element);
-        ImGui::ColorEdit3("Specular", io_light.specular.element);
-    }
+    ImGui::ColorEdit3("Ambient", light.ambient.element);
+    ImGui::ColorEdit3("Diffuse", light.diffuse.element);
+    ImGui::ColorEdit3("Specular", light.specular.element);
     
     ImGui::Spacing();
 
-    ImGui::SliderFloat3("Position", io_light.position.element, -1.f, 1.f);
+    ImGui::SliderFloat3("Position", light.position.element, -1.f, 1.f);
 
     ImGui::Spacing();
     ImGui::Separator();
 
+    ImGui::Checkbox("Cast shadows", &light.shadow);
+    ImGui::Checkbox("Adaptative bias", &light.adaptativeBias);
+    ImGui::SliderFloat("Shadow bias", &light.shadowBias, 0.f, 0.05f);
+
+    ImGui::Separator();
+
     if (ImGui::Button("Reset light"))
     {
-        io_light.position = {};
-        io_light.ambient = {1.0f, 1.0f, 1.0f};
-        io_light.diffuse = {};
-        io_light.specular = {};
+        light.position = { 1.f, 1.f, 1.f, 0.f };
+        light.ambient = { 0.3f, 0.3f, 0.3f };
+        light.diffuse = { 1.f, 1.f, 1.f };
+        light.specular = { 0.5f, 0.5f, 0.5f };
+
+        light.toonShading = true;
+
+        light.stepAmount = 5;
+        light.stepSize = 0.1;
+
+        light.specSize = 0.1;
+
+        light.shadow = true;
+        light.adaptativeBias = false;
+        light.shadowBias = 0.005f;
+    }
+
+    ImGui::Separator();
+
+    ImGui::DragFloat("Shadow rendering range", &io_engine.renderer->shadowRange);
+    ImGui::DragFloat("Shadow rendering depth", &io_engine.renderer->shadowDepth);
+
+    static bool show = false;
+    ImGui::Checkbox("Show light's depth map", &show);
+    if (show)
+    {
+        ImVec2 windowSize = { i_menuWidth, i_menuWidth };
+        ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.renderer->depthMapFBO->GetDepthMap()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
     }
 }
 

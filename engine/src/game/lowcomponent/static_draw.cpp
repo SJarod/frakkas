@@ -24,9 +24,6 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
 
-        // outline
-        i_renderer.SetUniformToNamedBlock("uRendering", 84, false);
-
         Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
         model.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
@@ -44,23 +41,30 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
             smesh->vertices.size(),
             texToBeBinded);
 
-        if (i_light.outline)
-        {
-            // outline
-            i_renderer.SetUniformToNamedBlock("uRendering", 84, true);
-            i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size(), i_light.outlineSize);
-        }
+		if (i_renderer.outline)
+		{
+			model.SetUniform("uOutline", true);
+			i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size());
+			model.SetUniform("uOutline", false);
+		}
     }
 }
 
-void StaticDraw::OnUpdate()
+void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
 {
-    auto& descriptors = GetMetaData().descriptors;
-    auto it = std::find_if(descriptors.begin(), descriptors.end(), [](const DataDescriptor& desc)
-    {
-        return "meshPath" == desc.name;
-    });
-    if (it != descriptors.end())
-    {
-    }
+	if (!model.mesh)
+		return;
+
+	model.lightDepthShader->Use();
+
+	for (std::shared_ptr<Submesh>& smesh : model.mesh->submeshes)
+	{
+		if (smesh == nullptr || smesh->gpu.VAO == 0)
+			continue;
+
+		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+		model.lightDepthShader->SetUniform("uModel", modelMat);
+		assert(smesh->gpu.VAO != 0);
+		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
+	}
 }

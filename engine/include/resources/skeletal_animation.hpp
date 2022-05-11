@@ -34,7 +34,7 @@ namespace Resources
         std::vector<KeyFrameRot> rotations;
         std::vector<KeyFrameScl> scales;
 
-        std::string_view name;
+        std::string name;
         int id;
 
         /**
@@ -87,7 +87,7 @@ namespace Resources
         /**
          * Get this bone name.
          */
-        const std::string_view& GetName() const;
+        const std::string& GetName() const;
     };
 
     /**
@@ -96,7 +96,7 @@ namespace Resources
     struct SkeletonNodeData
     {
         Matrix4 transform;
-        std::string_view name;
+        std::string name;
 
         int childrenCount;
         std::vector<SkeletonNodeData> children;
@@ -110,7 +110,7 @@ namespace Resources
     private:
         std::vector<KeyFrameBone> kfBones;
         SkeletonNodeData rootNode;
-        std::unordered_map<std::string_view, Bone> boneInfoMap;
+        std::unordered_map<std::string, Bone> boneInfoMap;
 
         const int animationIndex = 0;
 
@@ -141,7 +141,7 @@ namespace Resources
         /**
          * Get a reference to the entire bone map.
          */
-        const std::unordered_map<std::string_view, Bone>& GetBoneMap() const;
+        const std::unordered_map<std::string, Bone>& GetBoneMap() const;
 
         /**
          * Get the root node of the skeleton's data.
@@ -158,7 +158,7 @@ namespace Resources
     {
     private:
 #ifdef ANIMATION_MAP
-        std::unordered_map<std::string_view, SkeletalAnimation> animations;
+        std::unordered_map<std::string, SkeletalAnimation> animations;
 #else
         std::vector<SkeletalAnimation> animations;
 #endif
