@@ -12,9 +12,7 @@ namespace Game
         KK_FIELD(Renderer::Model, model);
 
     protected:
-        void SetOwner(Entity* owner) override;
-
-        void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) override;
+        void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform = {}) override;
 
         void OnUpdate() override;
 

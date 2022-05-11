@@ -12,13 +12,7 @@
 KK_COMPONENT_IMPL(StaticDraw)
 KK_FIELD_IMPL(StaticDraw, model, EDataType::MODEL)
 
-void StaticDraw::SetOwner(Entity* owner)
-{
-    model.transform.parent = &owner->transform;
-    Component::SetOwner(owner);
-}
-
-void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light)
+void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
     if (!model.mesh)
         return;
@@ -33,7 +27,7 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
         // outline
         i_renderer.SetUniformToNamedBlock("uRendering", 84, false);
 
-        Matrix4 modelMat = smesh->localTransform * model.transform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
         model.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         model.SetUniform("uModelNormal", modelNormal);

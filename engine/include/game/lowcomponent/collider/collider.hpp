@@ -57,7 +57,8 @@ namespace Game
         /**
          * Draw the collider on the scene.
          */
-        virtual void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const {};
+        virtual void
+        DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const {};
 
     protected:
         JPH::Body* collider = nullptr;

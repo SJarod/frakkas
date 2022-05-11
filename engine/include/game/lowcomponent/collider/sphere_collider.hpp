@@ -8,11 +8,9 @@ namespace Game
 {
     KK_COMPONENT_FROM(SphereCollider, Collider);
 
-        KK_FIELD(float, radius) = 1.f;
-
         void ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface) override;
 
-        void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const override;
+        void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const override;
 
         void OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
 

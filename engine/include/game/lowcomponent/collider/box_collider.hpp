@@ -7,14 +7,13 @@ namespace Game
 {
     KK_COMPONENT_FROM(BoxCollider, Collider);
 
-        KK_FIELD(Vector3, halfExtension) = Vector3(1.f, 1.f, 1.f);
-
         void ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface) override;
 
-        void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const override;
+        void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const override;
 
     private:
-        Vector3 prevExtension = Vector3(1.f, 1.f, 1.f);
+        Vector3 prevExtension;
+
         /**
          * Check collider scale and create new scaled shape if needed.
          */
