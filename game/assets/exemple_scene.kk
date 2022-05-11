@@ -51,6 +51,11 @@
 >StaticDraw
 >enabled
 	1
+>model
+>mesh_path
+	game/assets/bp.fbx
+>texture_path
+	game/assets/bp.jpg
 >SphereCollider
 >enabled
 	1
@@ -78,6 +83,11 @@
 >StaticDraw
 >enabled
 	1
+>model
+>mesh_path
+	game/assets/bp.fbx
+>texture_path
+	game/assets/bp.jpg
 >SphereCollider
 >enabled
 	1
@@ -124,16 +134,17 @@
 >enabled
 	1
 >isTrigger
-	257
+	256
 >isStatic
 	1
 >halfExtension
 	10, 1, 10
->SoundComponent
+>Bar
 >enabled
 	1
->sound
->sound_path
-	game/assets\GameWin.mp3
->volume
-	4
+>speed
+	5
+>originPos
+	0, 0, 0
+>destPos
+	2, 2, 0

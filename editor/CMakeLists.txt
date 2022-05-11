@@ -34,7 +34,6 @@ target_include_directories(EditorFrakkas
                            PRIVATE ${imgui_SOURCE_DIR}/backends
 						   PRIVATE ${tracy_SOURCE_DIR}
 						   PRIVATE ${imguizmo_SOURCE_DIR}
-						   PRIVATE ${PROJECT_SOURCE_DIR}/lib/Jolt
 )
 
 set_target_properties(EditorFrakkas PROPERTIES

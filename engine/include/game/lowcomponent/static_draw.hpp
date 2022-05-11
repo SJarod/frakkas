@@ -9,12 +9,14 @@ namespace Game
 {
     KK_COMPONENT_FROM(StaticDraw, Drawable)
 
-        Renderer::Model model;
+        KK_FIELD(Renderer::Model, model);
 
     protected:
         void SetOwner(Entity* owner) override;
 
         void Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light) override;
+
+        void OnUpdate() override;
 
     KK_COMPONENT_END
 }

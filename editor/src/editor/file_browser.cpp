@@ -70,9 +70,9 @@ void FileBrowser::OnImGuiRender()
 
         if (ImGui::BeginDragDropSource())
         {
-            static std::string itemPath;
-            itemPath = std::string(entry.path().string());
-            ImGui::SetDragDropPayload("FILE_BROWSER_ITEM", &itemPath, sizeof(std::string));
+            static std::filesystem::path itemPath;
+            itemPath = entry.path();
+            ImGui::SetDragDropPayload("FILE_BROWSER_ITEM", &itemPath, sizeof(std::filesystem::path));
             ImGui::EndDragDropSource();
         }
 

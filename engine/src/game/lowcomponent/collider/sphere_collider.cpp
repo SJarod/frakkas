@@ -12,7 +12,7 @@
 #include "game/lowcomponent/collider/sphere_collider.hpp"
 
 KK_COMPONENT_IMPL(SphereCollider)
-KK_FIELD_IMPL(SphereCollider, radius, EDataType::FLOAT, 1)
+KK_FIELD_IMPL(SphereCollider, radius, EDataType::FLOAT)
 
 void SphereCollider::UpdateSphereShape()
 {

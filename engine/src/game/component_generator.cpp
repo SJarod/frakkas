@@ -1,7 +1,4 @@
 #include <string>
-#include <sstream>
-#include <algorithm>
-#include <fstream>
 
 #include "helpers/string_helpers.hpp"
 #include "helpers/path_constants.hpp"
@@ -35,7 +32,7 @@ bool CreateNewComponentScript(const std::string& compName)
 
 	std::ifstream checkFile(GetComponentIncludeFullPath(fileName));
     std::string lowComponentList = "drawable camera_component component";
-	if (checkFile.is_open() || lowComponentList.find(fileName) != lowComponentList.npos)
+	if (checkFile.is_open() || lowComponentList.find(fileName) != std::string::npos)
 	{
 		checkFile.close();
 		return false;

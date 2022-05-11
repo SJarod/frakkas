@@ -4,7 +4,7 @@
 
 using namespace Game;
 KK_COMPONENT_IMPL(FollowCamera)
-KK_FIELD_IMPL(FollowCamera, offset, EDataType::FLOAT, 3)
+KK_FIELD_VECTOR_IMPL(FollowCamera, offset, EDataType::FLOAT, 3)
 
 void FollowCamera::OnUpdate()
 {

@@ -228,6 +228,14 @@ SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name, const st
 void SkeletalAnimationPack::LoadFromInfo()
 {
 	ResourcesManager::AddCPULoadingTask([this]() {
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
+		if (!scene || !scene->mRootNode)
+		{
+			Log::Info(animationFilename, " is not an animation file");
+			return;
+		}
+
 		while (mappedSkmesh.submeshes.size() == 0)
 		{
 			if (!mappedSkmesh.meshSuccess)
@@ -240,10 +248,6 @@ void SkeletalAnimationPack::LoadFromInfo()
 				std::this_thread::yield();
 			}
 		}
-
-		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
-		assert(scene && scene->mRootNode);
 
 		if (!scene->HasAnimations())
 		{
@@ -293,3 +297,8 @@ const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const unsigned int 
 	return &animations[i];
 }
 #endif
+
+const int SkeletalAnimationPack::GetPackSize() const
+{
+	return animations.size();
+}

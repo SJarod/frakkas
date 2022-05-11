@@ -143,10 +143,22 @@ public:                                               \
  * @param type an EDataType parameter to specify the kind of the data.
  * @param count The count of EDataType element, so that you can define arrays.
  */
-#define KK_FIELD_IMPL(compClass, fieldName, type, count) \
+#define KK_FIELD_VECTOR_IMPL(compClass, fieldName, type, count) \
     _Pragma("GCC diagnostic push")                                                         \
     _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
     compClass::FieldMetaData compClass::field_##fieldName{compClass::MetaData(), #fieldName, type, count, offsetof(compClass, fieldName)};\
+    _Pragma("GCC diagnostic pop")
+
+/**
+ * @brief Define a FieldMetaData that had been declare in the compClass, with only 1 scalar.
+ * @param compClass The component class name.
+ * @param fieldName Name of the field.
+ * @param type an EDataType parameter to specify the kind of the data.
+ */
+#define KK_FIELD_IMPL(compClass, fieldName, type) \
+    _Pragma("GCC diagnostic push")                                                         \
+    _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
+    compClass::FieldMetaData compClass::field_##fieldName{compClass::MetaData(), #fieldName, type, 1, offsetof(compClass, fieldName)};\
     _Pragma("GCC diagnostic pop")
 
 /**

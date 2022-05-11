@@ -18,6 +18,7 @@ namespace Renderer
 	{
 	public:
 		std::shared_ptr<Resources::Mesh> mesh;
+
 		Game::Transform transform;
 
 		Model() : RenderObject("engine/shaders/basic") {}
@@ -58,7 +59,14 @@ namespace Renderer
 		 * @param i_flipTexture
 		 * @param i_submeshIndex
 		 */
-		void SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_submeshIndex);
+		void SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_submeshIndex) const;
+
+		/**
+		 * @brief Set one texture to every submesh of the model's mesh.
+		 * @param i_textureFilename The path from Engine root to the texture
+		 * @param i_flipTexture Is the texture flip horizontally or not:
+		 */
+		void SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const;
 
         /**
          * @Summary Setup entity components from input file.

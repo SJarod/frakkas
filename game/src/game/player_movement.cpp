@@ -7,8 +7,8 @@
 using namespace Game;
 
 KK_COMPONENT_IMPL(PlayerMovement)
-KK_FIELD_IMPL(PlayerMovement, startPosition, EDataType::FLOAT, 3)
-KK_FIELD_IMPL(PlayerMovement, speed, EDataType::FLOAT, 1)
+KK_FIELD_VECTOR_IMPL(PlayerMovement, startPosition, EDataType::FLOAT, 3)
+KK_FIELD_IMPL(PlayerMovement, speed, EDataType::FLOAT)
 
 void PlayerMovement::OnUpdate()
 {

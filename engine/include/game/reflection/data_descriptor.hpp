@@ -14,7 +14,9 @@ enum class EDataType
 	BOOL,
 	STRING,
 	CAMERA,
-    SOUND
+    SOUND,
+    MODEL,
+	SKELETALMODEL
 };
 
 /**
@@ -29,6 +31,8 @@ struct DataDescriptor
 	EDataType dataType;
 	int count = 1;
 	size_t offset = 0;
+
+    mutable bool changed {false};
 	bool viewOnly = false;
     Vector2 range;
 };

@@ -80,6 +80,7 @@ set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
 set(LIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib
                     ${PROJECT_SOURCE_DIR}/lib/stb_image
                     ${PROJECT_SOURCE_DIR}/lib/miniaudio
+                    ${PROJECT_SOURCE_DIR}/lib/Jolt
 )
 
 option(EXECUTION_SOURCE_IN_BUILD_DIRECTORY "The directory where the program will be executed and find ressources from" OFF)

@@ -51,8 +51,6 @@ namespace Resources
 		static constexpr char cubeColliderMesh[] = "ProceduralCubeLines";
 		static constexpr char sphereColliderMesh[] = "ProceduralSphereLines";
 	protected:
-		std::string textureName = "";
-		bool		flipTexture = false;
 
 		////////////////////////////////////////////// ASSIMP
 
@@ -132,6 +130,9 @@ namespace Resources
         void LoadLineSphere(float i_radius = 1.f);
 
 	public:
+        std::string textureName = "";
+        bool		flipTexture = false;
+
 		// Every submeshes that this mesh possesses.
 		std::list<std::shared_ptr<Submesh>> submeshes;
 

@@ -23,6 +23,9 @@ namespace Game
 namespace Renderer
 {
     class Light;
+    class Model;
+    class SkeletalModel;
+
     namespace LowLevel
     {
         class Camera;
@@ -99,7 +102,6 @@ namespace Helpers
             return DragScalar(i_label, io_data, i_count);
     }
 
-
 	/**
     * @brief ImGui editing function. Allows the player to edit a string variable.
      * @param io_string The string to display and edit.
@@ -138,6 +140,18 @@ namespace Helpers
     * @param io_sound the sound to edit
     */
     void Edit(Resources::Sound& io_sound);
+
+    /**
+    * @brief ImGui editing function. Allows the player to change model resources.
+    * @param io_model the model to edit
+    */
+    void Edit(Renderer::Model& io_model);
+
+    /**
+    * @brief ImGui editing function. Allows the player to change skeletal model resources.
+    * @param io_skmodel the skeletal model to edit
+    */
+    void Edit(Renderer::SkeletalModel& io_skmodel);
 
     /**
      * @brief Get a string from a pointer of scalars to render it with ImGui::Text()

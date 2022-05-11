@@ -11,7 +11,7 @@
 #include "game/lowcomponent/collider/box_collider.hpp"
 
 KK_COMPONENT_IMPL(BoxCollider)
-KK_FIELD_IMPL(BoxCollider, halfExtension, EDataType::FLOAT, 3)
+KK_FIELD_VECTOR_IMPL(BoxCollider, halfExtension, EDataType::FLOAT, 3)
 
 void BoxCollider::UpdateBoxScale()
 {

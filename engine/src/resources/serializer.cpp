@@ -9,10 +9,17 @@
 
 #include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
+#include "renderer/model.hpp"
+#include "renderer/skeletal_model.hpp"
 
+#include "resources/mesh.hpp"
+#include "resources/skeletal_mesh.hpp"
+#include "resources/skeletal_animation.hpp"
 #include "resources/serializer.hpp"
 
 using namespace Resources;
+
+std::string Serializer::attribute;
 
 ///////////////////////// READ FUNCTIONS
 
@@ -32,7 +39,6 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::str
 
 void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
 {
-    std::string attribute;
     GetAttribute(i_file, attribute);
     Read(i_file, o_entity.name);
 
@@ -48,7 +54,7 @@ void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
         GetAttribute(i_file, attribute); // name of component
 
         auto& registry = Game::Component::GetRegistry();
-        auto it = std::find_if(registry.begin(), registry.end(), [&attribute](ClassMetaData* md){return attribute == md->className;});
+        auto it = std::find_if(registry.begin(), registry.end(), [](ClassMetaData* md){return attribute == md->className;});
         if (it == registry.end())
         {
             Log::Error("Can't read " + attribute + " component's data.");
@@ -74,7 +80,6 @@ void Serializer::ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_ent
 
 void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData, bool& o_enabled)
 {
-    std::string attribute;
     GetAttribute(i_file, attribute);
     Read(i_file, o_enabled);
     Read(i_file, o_component, i_metaData);
@@ -82,7 +87,6 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
 
 void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData)
 {
-    std::string attribute;
     if (!i_metaData.parentClassName.empty())
         Read(i_file, o_component, *Game::Component::FindMetaData(i_metaData.parentClassName));
 
@@ -115,6 +119,12 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
                 case EDataType::SOUND:
                     Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
                     break;
+                case EDataType::MODEL:
+                    Read(i_file, *reinterpret_cast<Renderer::Model*>(componentData));
+                    break;
+                case EDataType::SKELETALMODEL:
+                    Read(i_file, *reinterpret_cast<Renderer::SkeletalModel*>(componentData));
+                    break;
                 default:
                     break;
             }
@@ -138,7 +148,6 @@ void Serializer::Read(std::ifstream& i_file, bool& o_value)
 
 void Serializer::Read(std::ifstream& i_file, Game::Transform& o_transform)
 {
-    std::string attribute;
     for(int i = 0; i < 3; i++)
     {
         GetAttribute(i_file, attribute);
@@ -165,7 +174,6 @@ void Serializer::Read(std::ifstream& i_file, Game::Transform& o_transform)
 
 void Serializer::Read(std::ifstream& i_file, Renderer::LowLevel::Camera& o_camera)
 {
-    std::string attribute;
     for(int i = 0; i < 4; i++)
     {
         GetAttribute(i_file, attribute);
@@ -182,7 +190,6 @@ void Serializer::Read(std::ifstream& i_file, Renderer::LowLevel::Camera& o_camer
 
 void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
 {
-    std::string attribute;
     for (int i = 0; i < 7; i++)
     {
         GetAttribute(i_file, attribute);
@@ -205,7 +212,6 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
 
 void Serializer::Read(std::ifstream& i_file, Sound& o_sound)
 {
-    std::string attribute;
     for (int i = 0; i < 2; ++i)
     {
         GetAttribute(i_file, attribute);
@@ -219,6 +225,49 @@ void Serializer::Read(std::ifstream& i_file, Sound& o_sound)
     o_sound.SetVolume();
 }
 
+void Serializer::Read(std::ifstream& i_file, Renderer::Model& o_model)
+{
+    std::string meshPath, texturePath;
+    for (int i = 0; i < 2; ++i)
+    {
+        GetAttribute(i_file, attribute);
+        if (attribute == "mesh_path")
+            Read(i_file, meshPath);
+        else if (attribute == "texture_path")
+            Read(i_file, texturePath);
+    }
+
+    if (meshPath != "none")
+    {
+        o_model.SetMeshFromFile(meshPath);
+        if (texturePath != "none")
+            o_model.SetTextureToAllSubmesh(texturePath, false);
+    }
+}
+
+void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
+{
+    std::string meshPath, texturePath, animationPath;
+    for (int i = 0; i < 3; ++i)
+    {
+        GetAttribute(i_file, attribute);
+        if (attribute == "mesh_path")
+            Read(i_file, meshPath);
+        else if (attribute == "texture_path")
+            Read(i_file, texturePath);
+        else if (attribute == "animation_path")
+            Read(i_file, animationPath);
+    }
+
+    if (meshPath != "none")
+    {
+        o_skmodel.SetSkeletalMeshFromFile(meshPath);
+        if (texturePath != "none")
+            o_skmodel.SetTextureToAllSubmesh(texturePath, false);
+        if (animationPath != "none")
+            o_skmodel.LoadAnimationsForThis(animationPath);
+    }
+}
 
 ///////////////////////// WRITE FUNCTIONS
 
@@ -282,6 +331,12 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
                 break;
             case EDataType::SOUND:
                 Write(io_file, desc.name, *reinterpret_cast<Resources::Sound*>(componentData));
+                break;
+            case EDataType::MODEL:
+                Write(io_file, desc.name, *reinterpret_cast<Renderer::Model*>(componentData));
+                break;
+            case EDataType::SKELETALMODEL:
+                Write(io_file, desc.name, *reinterpret_cast<Renderer::SkeletalModel*>(componentData));
                 break;
             default:
                 break;
@@ -363,4 +418,21 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     WriteAttribute(io_file, i_attributeName);
     Write(io_file, "sound_path", i_sound.soundPath);
     Write(io_file, "volume", &i_sound.volume);
+}
+
+void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Model& i_model)
+{
+    bool meshExists = i_model.mesh ? true : false;
+    WriteAttribute(io_file, i_attributeName);
+    Write(io_file, "mesh_path", meshExists ? i_model.mesh->name : "none");
+    Write(io_file, "texture_path", meshExists ? i_model.mesh->textureName : "none");
+}
+
+void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)
+{
+    bool meshExists = i_skmodel.skmesh ? true : false;
+    WriteAttribute(io_file, i_attributeName);
+    Write(io_file, "mesh_path", meshExists ? i_skmodel.skmesh->name : "none");
+    Write(io_file, "texture_path", meshExists ? i_skmodel.skmesh->textureName : "none");
+    Write(io_file, "animation_path", i_skmodel.skpack ? i_skmodel.skpack->animationFilename : "none");
 }
