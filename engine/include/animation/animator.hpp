@@ -38,7 +38,7 @@ namespace Animation
 
 	public:
 		const SkeletalAnimation* anim = nullptr;
-		const std::unordered_map<std::string_view, Resources::Bone>* animBoneInfo = nullptr;
+		const std::unordered_map<std::string, Resources::Bone>* animBoneInfo = nullptr;
 
 		/**
 		 * Create the animator, allocating memory for MAX_BONES matrices.

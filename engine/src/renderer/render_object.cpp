@@ -2,27 +2,25 @@
 
 #include "renderer/render_object.hpp"
 
-Renderer::RenderObject::RenderObject(const std::string& i_shaderName)
+Renderer::RenderObject::RenderObject(const std::string& i_name,
+	const std::string & i_shaderFilePath,
+	const std::initializer_list<const std::string>& i_defines)
 {
-	SetCoupleShader(i_shaderName);
+	shader = ResourcesManager::LoadResource<Resources::Shader>(i_name, i_shaderFilePath, i_defines);
 }
 
-Renderer::RenderObject::RenderObject(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName)
+Renderer::RenderObject::RenderObject(const std::string& i_name,
+	const std::string& i_vertexShaderFilePath,
+	const std::string& i_fragmentShaderFilePath,
+	const std::initializer_list<const std::string>& i_defines)
 {
-	SetSingleShaders(i_vertexShaderName, i_fragmentShaderName);
+	shader = ResourcesManager::LoadResource<Resources::Shader>(i_name,
+		i_vertexShaderFilePath,
+		i_fragmentShaderFilePath,
+		i_defines);
 }
 
 void Renderer::RenderObject::UseShader() const
 {
 	shader->Use();
-}
-
-void Renderer::RenderObject::SetCoupleShader(const std::string& i_shaderName)
-{
-	shader = ResourcesManager::LoadResource<Resources::Shader>(i_shaderName);
-}
-
-void Renderer::RenderObject::SetSingleShaders(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName)
-{
-	shader = ResourcesManager::LoadResource<Resources::Shader>(i_vertexShaderName, i_fragmentShaderName);
 }

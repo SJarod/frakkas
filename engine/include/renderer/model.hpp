@@ -17,9 +17,11 @@ namespace Renderer
 	class Model : public Renderer::RenderObject
 	{
 	public:
+		std::shared_ptr<Resources::Shader> lightDepthShader;
+
 		std::shared_ptr<Resources::Mesh> mesh;
 
-		Model() : RenderObject("engine/shaders/basic") {}
+		Model();
 
 		/**
 		 * @Summary Create a model that contains submeshes with embedded textures using Assimp.

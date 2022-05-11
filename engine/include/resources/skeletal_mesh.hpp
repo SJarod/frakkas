@@ -41,7 +41,7 @@ namespace Resources
 		// Can the mesh be loaded?
 		bool meshSuccess = true;
 
-		std::unordered_map<std::string_view, Bone> boneInfoMap;
+		std::unordered_map<std::string, Bone> boneInfoMap;
 		int boneCounter = 0;
 
 		SkeletalMesh(const std::string& i_name);

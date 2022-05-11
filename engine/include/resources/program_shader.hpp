@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 
+#include <vector>
 #include <string>
 #include <type_traits>
 
@@ -17,12 +18,17 @@ namespace Resources
 		 * @Summary Create a shader from a couple of shader files.
 		 * @param i_shaderName : Shader name
 		 */
-		Shader(const std::string &i_shaderName);
+		Shader(const std::string& i_name,
+			const std::string &i_shaderFilePath,
+			const std::initializer_list<const std::string>& i_defines = {});
 
 		/**
 		 * @Summary Create a shader from a vertex shader file and a fragment shader file seperately.
 		 */
-		Shader(const std::string& i_vertexShaderName, const std::string& i_fragmentShaderName);
+		Shader(const std::string& i_name,
+			const std::string& i_vertexShaderFilePath,
+			const std::string& i_fragmentShaderFilePath,
+			const std::initializer_list<const std::string>& i_defines = {});
 
 		~Shader();
 
@@ -66,6 +72,8 @@ namespace Resources
 	private:
 		const std::string vertexShaderName;
 		const std::string fragmentShaderName;
+
+		std::vector<std::string> defines;
 
 		GLuint program = 0;
 	};

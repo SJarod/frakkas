@@ -190,7 +190,8 @@ void Serializer::Read(std::ifstream& i_file, Renderer::LowLevel::Camera& o_camer
 
 void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
 {
-    for (int i = 0; i < 7; i++)
+    std::string attribute;
+    for (int i = 0; i < 11; i++)
     {
         GetAttribute(i_file, attribute);
         if (attribute == "position")
@@ -203,10 +204,18 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
             Read(i_file, o_light.specular.element, 3);
         else if (attribute == "toonShading")
             Read(i_file, o_light.toonShading);
-        else if (attribute == "fiveTone")
-            Read(i_file, o_light.fiveTone);
-        else if (attribute == "outline")
-            Read(i_file, o_light.outline);
+        else if (attribute == "stepAmount")
+            Read(i_file, &o_light.stepAmount, 1);
+        else if (attribute == "stepSize")
+            Read(i_file, &o_light.stepSize, 1);
+        else if (attribute == "specSize")
+            Read(i_file, &o_light.specSize, 1);
+        else if (attribute == "shadow")
+            Read(i_file, o_light.shadow);
+        else if (attribute == "adaptativeBias")
+            Read(i_file, o_light.adaptativeBias);
+        else if (attribute == "shadowBias")
+            Read(i_file, &o_light.shadowBias, 1);
     }
 }
 
@@ -409,8 +418,12 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "diffuse", i_light.diffuse.element, 3);
     Write(io_file, "specular", i_light.specular.element, 3);
     Write(io_file, "toonShading", &i_light.toonShading, 1);
-    Write(io_file, "fiveTone", &i_light.fiveTone, 1);
-    Write(io_file, "outline", &i_light.outline, 1);
+    Write(io_file, "stepAmount", &i_light.stepAmount, 1);
+    Write(io_file, "stepSize", &i_light.stepSize, 1);
+    Write(io_file, "specSize", &i_light.specSize, 1);
+    Write(io_file, "outline", &i_light.shadow, 1);
+    Write(io_file, "outline", &i_light.adaptativeBias, 1);
+    Write(io_file, "outline", &i_light.shadowBias, 1);
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound)

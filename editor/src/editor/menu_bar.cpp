@@ -40,7 +40,7 @@ void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* 
 
     GameField(io_engine, o_loadScene);
 
-    LightingField(*io_engine.graph);
+    LightingField(io_engine);
 
     ImGui::EndMainMenuBar();
 }
@@ -379,15 +379,21 @@ void MenuBar::CreateComponentPopup()
 }
 
 
-void Editor::MenuBar::LightingField(Renderer::Graph& io_graph)
+void Editor::MenuBar::LightingField(Engine& io_engine)
 {
     if (ImGui::BeginMenu("Lighting"))
     {
-        ImGui::Checkbox("Activate", &io_graph.lightEnabled);
+        float menuWidth = ImGui::GetItemRectSize().x * 0.95f;
+
+        ImGui::Checkbox("Outline", &io_engine.renderer->outline);
 
         ImGui::Separator();
 
-        Helpers::Edit(io_graph.light);
+        ImGui::Checkbox("Activate", &io_engine.graph->lightEnabled);
+
+        ImGui::Separator();
+
+        Helpers::Edit(io_engine, menuWidth);
 
         ImGui::EndMenu();
     }

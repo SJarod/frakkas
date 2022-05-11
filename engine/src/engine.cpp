@@ -151,7 +151,7 @@ void Engine::RunEditor()
     while(running)
     {
         BeginFrame();
-
+        
         /// OnUpdate
         if (runMode & RunFlag_Gaming)
         {
@@ -169,16 +169,13 @@ void Engine::RunEditor()
         physicScene.Update(runMode & RunFlag_Gaming);
 
         /// Draw
-        renderer->BeginFrame(*editorFBO);
         graph->RenderEditor(*renderer, editorFBO->aspectRatio);
+        renderer->RenderScreen(*editorFBO);
 
-        renderer->BeginFrame(*gameFBO);
-        graph->RenderGame(*renderer, gameFBO->aspectRatio);
+		graph->RenderGame(*renderer, gameFBO->aspectRatio);
+        renderer->RenderScreen(*gameFBO);
 
-        renderer->EndFrame();
-
-
-        running = EndFrame();
+		running = EndFrame();
     }
 }
 
@@ -194,17 +191,16 @@ void Engine::RunGame()
         BeginFrame();
 
 		entityManager.Update();
-
-        renderer->BeginFrame();
-        graph->RenderGame(*renderer, gameFBO->aspectRatio);
-		
-        renderer->EndFrame();
-
+      
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
         physicScene.Update();
 
+		// TODO : adaptative viewport
+        //glViewport(0, 0, 1280, 720);
+        renderer->RenderScreen();
+        
         /// ENDFRAME
         running = EndFrame();
     }

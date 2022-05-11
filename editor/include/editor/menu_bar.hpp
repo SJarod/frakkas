@@ -1,5 +1,7 @@
 #pragma once
 
+class Engine;
+
 namespace Game
 {
     class Entity;
@@ -47,7 +49,10 @@ namespace Editor
         void GameField(Engine& io_engine, bool& o_loadScene);
         static void CreateComponentPopup();
 
-        // Edit the lighting
-        void LightingField(Renderer::Graph& io_graph);
+        /**
+         * @brief Edit lighting
+         * @param io_engine The class that posseses the graph, the light, and the depth map.
+         */
+        void LightingField(Engine& io_engine);
     };
 }

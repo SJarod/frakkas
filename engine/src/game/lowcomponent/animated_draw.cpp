@@ -31,9 +31,6 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
 
-        // outline
-        i_renderer.SetUniformToNamedBlock("uRendering", 84, false);
-
         Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
         skmodel.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
@@ -51,11 +48,33 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
             smesh->vertices.size(),
             texToBeBinded);
 
-        if (i_light.outline)
-        {
-            // outline
-            i_renderer.SetUniformToNamedBlock("uRendering", 84, true);
-            i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size(), i_light.outlineSize);
-        }
+		if (i_renderer.outline)
+		{
+			skmodel.SetUniform("uOutline", true);
+			i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size());
+			skmodel.SetUniform("uOutline", false);
+		}
     }
+}
+
+void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
+{
+	if (!skmodel.skmesh)
+		return;
+
+	skmodel.lightDepthShader->Use();
+	skmodel.lightDepthShader->SetUniform("uBoneTransforms",
+		MAX_BONES,
+		skmodel.player.GetBoneMatrices().data()->element);
+
+	for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh->submeshes)
+	{
+		if (smesh == nullptr || smesh->gpu.VAO == 0)
+			continue;
+
+		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+		skmodel.lightDepthShader->SetUniform("uModel", modelMat);
+		assert(smesh->gpu.VAO != 0);
+		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
+	}
 }

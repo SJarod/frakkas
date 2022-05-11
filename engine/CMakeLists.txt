@@ -21,6 +21,7 @@ add_library(EngineFrakkas STATIC
 			src/renderer/model.cpp
 			src/renderer/skeletal_model.cpp
 			src/renderer/point.cpp
+			src/renderer/screen.cpp
         	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
         	src/renderer/graph.cpp

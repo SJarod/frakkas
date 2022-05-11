@@ -19,7 +19,7 @@ void SkeletalMesh::LoadFromInfo()
 {
 	ResourcesManager::AddCPULoadingTask([this](/*void* userData*/) {
 		//ResourceSubmeshTaskData* data = static_cast<ResourceSubmeshTaskData*>(userData);
-		// ... data.meshes.push_back(); ...
+		// ... data.meshes.emplace_back(); ...
 
 		Assimp::Importer importer;
 		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
@@ -67,7 +67,7 @@ void SkeletalMesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_submesh,
 		if (i_aim.mTextureCoords[0]) // does the mesh contain texture coordinates?
 			vertex.uv = { i_aim.mTextureCoords[0][i].x, i_aim.mTextureCoords[0][i].y };
 
-		o_submesh->vertices.push_back(vertex);
+		o_submesh->vertices.emplace_back(vertex);
 	}
 	ExtractBoneWeightForVertices(o_submesh, i_aim, i_scene);
 
@@ -76,7 +76,7 @@ void SkeletalMesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_submesh,
 	{
 		aiFace face = i_aim.mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; ++j)
-			o_submesh->indices.push_back(face.mIndices[j]);
+			o_submesh->indices.emplace_back(face.mIndices[j]);
 	}
 
 	//if no texture file specified, try to load embedded textures
@@ -117,7 +117,7 @@ void SkeletalMesh::ExtractBoneWeightForVertices(std::shared_ptr<Submesh>& o_subm
 	for (int boneIndex = 0; boneIndex < i_aim.mNumBones; ++boneIndex)
 	{
 		int boneID = -1;
-		std::string boneName = i_aim.mBones[boneIndex]->mName.C_Str();
+		std::string boneName(i_aim.mBones[boneIndex]->mName.C_Str());
 		if (boneInfoMap.find(boneName) == boneInfoMap.end())
 		{
 			Bone newBoneInfo;

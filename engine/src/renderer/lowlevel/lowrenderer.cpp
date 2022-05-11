@@ -1,4 +1,6 @@
 #include "resources/texture.hpp"
+#include "renderer/point.hpp"
+#include "renderer/screen.hpp"
 
 #include "resources/resources_manager.hpp"
 
@@ -69,6 +71,36 @@ int Framebuffer::GetHeight() const
 	return height;
 }
 
+DepthFramebuffer::DepthFramebuffer(const int i_width, const int i_height)
+	: Framebuffer(i_width, i_height)
+{
+	glDeleteFramebuffers(1, &FBO);
+	glCreateFramebuffers(1, &FBO);
+
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (void*)0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	// attaching texture to the framebuffer's depth buffer department
+	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+GLuint DepthFramebuffer::GetDepthMap() const
+{
+	return depthMap;
+}
+
 UniformBuffer::UniformBuffer(const int i_binding, const int i_size)
 	: blockBinding(i_binding), blockSize(i_size)
 {
@@ -79,11 +111,25 @@ UniformBuffer::UniformBuffer(const int i_binding, const int i_size)
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::SetUniformToBlock(const int i_offset, const bool& i_value) const
+void UniformBuffer::SetUniformToBlock(const int i_offset, const bool i_value) const
 {
 	int b = static_cast<int>(i_value);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 	glBufferSubData(GL_UNIFORM_BUFFER, i_offset, sizeof(int), &b);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void UniformBuffer::SetUniformToBlock(const int i_offset, const int i_value) const
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, i_offset, sizeof(int), &i_value);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void UniformBuffer::SetUniformToBlock(const int i_offset, const float i_value) const
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+	glBufferSubData(GL_UNIFORM_BUFFER, i_offset, sizeof(float), &i_value);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -103,6 +149,8 @@ void UniformBuffer::SetUniformToBlock(const int i_offset, const Vector4& i_value
 
 void UniformBuffer::SetUniformToBlock(const int i_offset, const Matrix4& i_value) const
 {
+    Framebuffer::Unbind();
+    glViewport(0, 0, 1920, 1080);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
 	glBufferSubData(GL_UNIFORM_BUFFER, i_offset, sizeof(Matrix4), i_value.element);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -110,8 +158,12 @@ void UniformBuffer::SetUniformToBlock(const int i_offset, const Matrix4& i_value
 
 LowRenderer::LowRenderer()
 {
-	shaderUBOs.insert({ "uProjView", UniformBuffer(shaderUBOs.size(), 2 * sizeof(Matrix4)) });
-	shaderUBOs.insert({ "uRendering", UniformBuffer(shaderUBOs.size(), 112) });
+	shaderUBOs.insert({ "uRenderMatrices", UniformBuffer(shaderUBOs.size(), 2 * sizeof(Matrix4)) });
+	shaderUBOs.insert({ "uRendering", UniformBuffer(shaderUBOs.size(), 128) });
+	shaderUBOs.insert({ "uLightMatrices", UniformBuffer(shaderUBOs.size(), 2 * sizeof(Matrix4)) });
+	depthMapFBO = std::make_unique<Renderer::LowLevel::DepthFramebuffer>(shadowMapResolution, shadowMapResolution);
+	firstPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+	secondPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
 }
 
 void LowRenderer::BeginFrame(const Framebuffer& i_fbo) const
@@ -126,16 +178,11 @@ void LowRenderer::BeginFrame(const Framebuffer& i_fbo) const
 	glEnable(GL_CULL_FACE);
 }
 
-void LowRenderer::BeginFrame() const
+void LowRenderer::ContinueFrame(const Framebuffer& i_fbo) const
 {
-    Framebuffer::Unbind();
-    glViewport(0, 0, 1920, 1080);
-
-    glClearColor(0.4f, 0.4f, 0.4f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    i_fbo.Bind();
+    glViewport(0, 0, i_fbo.GetWidth(), i_fbo.GetHeight());
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
 }
 
 void LowRenderer::EndFrame() const
@@ -146,7 +193,7 @@ void LowRenderer::EndFrame() const
 	Framebuffer::Unbind();
 }
 
-void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size)
+void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size) const
 {
 	static Point point;
 	point.UseShader();
@@ -160,24 +207,28 @@ void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, cons
 	glDisable(GL_PROGRAM_POINT_SIZE);
 }
 
-void LowRenderer::RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture)
+void LowRenderer::RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture) const
 {
 	glBindTextureUnit(0, i_texture);
+	glBindTextureUnit(1, depthMapFBO->GetDepthMap());
+
 	glBindVertexArray(i_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, i_count);
 
 	// unbind
 	glBindTextureUnit(0, 0);
+	glBindTextureUnit(1, 0);
+
 	glBindVertexArray(0);
 }
 
-void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count, int i_lineWidth)
+void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count) const
 {
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glLineWidth(i_lineWidth);
+	glLineWidth(10);
 
 	glBindVertexArray(i_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, i_count);
@@ -205,4 +256,23 @@ void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_cou
 
     // unbind
     glBindVertexArray(0);
+}
+
+void LowRenderer::RenderScreen(const LowLevel::Framebuffer& i_fbo) const
+{
+	BeginFrame(i_fbo);
+
+	RenderScreen();
+
+	EndFrame();
+}
+
+void LowRenderer::RenderScreen() const
+{
+	static ScreenQuad sq;
+	sq.UseShader();
+	glBindTexture(GL_TEXTURE_2D, firstPassFBO->GetColor0());
+	glBindVertexArray(sq.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 }
