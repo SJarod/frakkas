@@ -24,8 +24,6 @@ namespace Renderer
 		Animation::Animator							player;
 		std::shared_ptr<SkeletalAnimationPack>		skpack;
 
-		Game::Transform transform;
-
 		SkeletalModel() : RenderObject("engine/shaders/animation", "engine/shaders/basic") {}
 
 		/**

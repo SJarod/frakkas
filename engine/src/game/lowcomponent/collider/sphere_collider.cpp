@@ -12,20 +12,19 @@
 #include "game/lowcomponent/collider/sphere_collider.hpp"
 
 KK_COMPONENT_IMPL(SphereCollider)
-KK_FIELD_IMPL(SphereCollider, radius, EDataType::FLOAT)
 
 void SphereCollider::UpdateSphereShape()
 {
-    Vector3 scale = owner.get()->transform.scale.get();
-    float fullRadius = radius * Maths::Max(scale.x, scale.y, scale.z);
-    if (fullRadius == prevRadius)
+    const Vector3& scale = owner.get()->transform.scale;
+
+    float radius = Maths::Max(scale.x, scale.y, scale.z);
+    if (radius == prevRadius)
         return;
 
-    auto* sphere = new JPH::SphereShape(fullRadius);
+    auto* sphere = new JPH::SphereShape(radius);
     collider->SetShapeInternal(sphere, false);
 
-    prevRadius = fullRadius;
-    debugModel.transform.scale = {radius, radius, radius};
+    prevRadius = radius;
 }
 
 void SphereCollider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
@@ -35,17 +34,14 @@ void SphereCollider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
     UpdateSphereShape();
 }
 
-void SphereCollider::DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer) const
+void SphereCollider::DebugDraw(LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const
 {
     if (!debugModel.mesh)
-    {
         debugModel.SetMeshFromFile(Resources::Mesh::sphereColliderMesh);
-        debugModel.transform.parent = &owner.get()->transform;
-    }
 
     Resources::Submesh* smesh = debugModel.mesh->submeshes.front().get();
 
-    Matrix4 modelMat = smesh->localTransform *  debugModel.transform.GetModelMatrixUniformScale();
+    Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
 
     i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 1, {0.5f, 1.f, 0.5f}, false);
 }

@@ -44,11 +44,10 @@ World::World(Engine& engine)
 #if true
 	{
 		entity = em.CreateEntity("Bagpack");
+		entity->transform.scale = Vector3(0.01f, 0.01f, 0.01f);
 
 		auto staticDraw = entity->AddComponent<StaticDraw>();
-		auto& model = staticDraw->model;
-		model.SetMeshFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
-		model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
+        staticDraw->model.SetMeshFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
 
 		auto collider = entity->AddComponent<SphereCollider>();
 		collider->isStatic = false;
@@ -60,11 +59,10 @@ World::World(Engine& engine)
 	{
 		entity = em.CreateEntity("Super Bagpack");
 		entity->transform.position = Vector3(0.f, 5.f, 0.f);
+        entity->transform.scale = Vector3(0.01f, 0.01f, 0.01f);
 
-		auto staticDraw = entity->AddComponent<StaticDraw>();
-		auto& model = staticDraw->model;
-		model.SetMeshFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
-		model.transform.scale = Vector3(0.01f, 0.01f, 0.01f);
+        auto staticDraw = entity->AddComponent<StaticDraw>();
+        staticDraw->model.SetMeshFromFile("game/assets/bp.fbx", "game/assets/bp.jpg", false);
 
 		auto collider = entity->AddComponent<SphereCollider>();
 		collider->velocity = { 0.f, -5.f, 0.f };
@@ -88,7 +86,7 @@ World::World(Engine& engine)
 	{
 		entity = em.CreateEntity("Ground");
 		auto collider = entity->AddComponent<BoxCollider>();
-		collider->halfExtension = Vector3(10.f, 1.f, 10.f);
+		entity->transform.scale = Vector3(10.f, 1.f, 10.f);
 
 		entity->transform.position = Vector3(0.f, -3.f, 0.f);
 

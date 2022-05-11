@@ -19,8 +19,6 @@ namespace Renderer
 	public:
 		std::shared_ptr<Resources::Mesh> mesh;
 
-		Game::Transform transform;
-
 		Model() : RenderObject("engine/shaders/basic") {}
 
 		/**

@@ -45,14 +45,14 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
     else if (ID == BoxCollider::MetaData().className)
     {
         auto box = reinterpret_cast<BoxCollider*>(i_newComponent);
-        box->SetCollider(physicScene->CreateBody(box->halfExtension));
-        physicScene->colliders.emplace_back(box);
+        box->SetCollider(physicScene->CreateBody(Vector3(1.f, 1.f, 1.f)));
+        Physic::PhysicScene::colliders.emplace_back(box);
     }
     else if (ID == SphereCollider::MetaData().className)
     {
         auto sphere = reinterpret_cast<SphereCollider*>(i_newComponent);
-        sphere->SetCollider(physicScene->CreateBody(sphere->radius));
-        physicScene->colliders.emplace_back(sphere);
+        sphere->SetCollider(physicScene->CreateBody(1.f));
+        Physic::PhysicScene::colliders.emplace_back(sphere);
     }
 }
 
@@ -118,7 +118,7 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
     for (Drawable* drawable : renderEntities)
     {
         if (drawable && drawable->enabled)
-            drawable->Draw(i_renderer, light);
+            drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
     }
 }
 
@@ -127,7 +127,7 @@ void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
     for (Collider* collider : Physic::PhysicScene::colliders)
     {
         if (collider && collider->enabled)
-            collider->DebugDraw(i_renderer);
+            collider->DebugDraw(i_renderer, collider->owner.get()->transform);
     }
 }
 

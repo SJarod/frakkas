@@ -116,9 +116,7 @@ void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::G
                 Game::Entity* entity = io_entityManager.CreateEntity();
 
                 auto staticDraw = entity->AddComponent<Game::StaticDraw>();
-                auto& model = staticDraw->model;
-                model.SetMeshFromFile(path.string(), "", false);
-                model.transform.scale = Vector3(1.f, 1.f, 1.f);
+                staticDraw->model.SetMeshFromFile(path.string());
             }
 
             else if (path.extension() == ".kk" )

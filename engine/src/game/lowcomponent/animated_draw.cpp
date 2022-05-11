@@ -13,18 +13,12 @@
 KK_COMPONENT_IMPL(AnimatedDraw)
 KK_FIELD_IMPL(AnimatedDraw, skmodel, EDataType::SKELETALMODEL)
 
-void AnimatedDraw::SetOwner(Entity* owner)
-{
-	skmodel.transform.parent = &owner->transform;
-	Component::SetOwner(owner);
-}
-
 void AnimatedDraw::OnUpdate()
 {
 	skmodel.player.UpdatePlayer(Game::Time::GetDeltaTime());
 }
 
-void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light)
+void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
     if (!skmodel.skmesh)
         return;
@@ -40,7 +34,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         // outline
         i_renderer.SetUniformToNamedBlock("uRendering", 84, false);
 
-        Matrix4 modelMat = smesh->localTransform * skmodel.transform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
         skmodel.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         skmodel.SetUniform("uModelNormal", modelNormal);

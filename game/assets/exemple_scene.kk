@@ -38,70 +38,6 @@
 >childs
 	0
 >name
-	Bagpack
->component_count
-	2
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->mesh_path
-	game/assets/bp.fbx
->texture_path
-	game/assets/bp.jpg
->SphereCollider
->enabled
-	1
->isTrigger
-	0
->isStatic
-	0
->radius
-	1
-
->entity
->childs
-	0
->name
-	Super Bagpack
->component_count
-	2
->transform
->position
-	0, 5, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->mesh_path
-	game/assets/bp.fbx
->texture_path
-	game/assets/bp.jpg
->SphereCollider
->enabled
-	1
->isTrigger
-	0
->isStatic
-	0
->radius
-	1
-
->entity
->childs
-	0
->name
 	Banana
 >component_count
 	1
@@ -125,11 +61,11 @@
 	2
 >transform
 >position
-	0, -3, 0
+	-1.21216, -1.21216, 0
 >rotation
 	0, 0, 0
 >scale
-	1, 1, 1
+	10, 1, 10
 >BoxCollider
 >enabled
 	1
@@ -137,8 +73,6 @@
 	256
 >isStatic
 	1
->halfExtension
-	10, 1, 10
 >Bar
 >enabled
 	1
@@ -148,3 +82,93 @@
 	0, 0, 0
 >destPos
 	2, 2, 0
+
+>entity
+>childs
+	1
+>name
+	Collider
+>component_count
+	1
+>transform
+>position
+	2.23598e-07, 0.764586, 2.24984e-07
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>SphereCollider
+>enabled
+	1
+>isTrigger
+	0
+>isStatic
+	0
+
+>entity
+>childs
+	0
+>name
+	Bagpack
+>component_count
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	0.01, 0.01, 0.01
+>StaticDraw
+>enabled
+	1
+>model
+>mesh_path
+	game/assets/bp.fbx
+>texture_path
+	game/assets/bp.jpg
+
+>entity
+>childs
+	1
+>name
+	Super collider
+>component_count
+	1
+>transform
+>position
+	3.43847e-05, 2.71892, -3.29576e-05
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>SphereCollider
+>enabled
+	1
+>isTrigger
+	0
+>isStatic
+	0
+
+>entity
+>childs
+	0
+>name
+	Super Bagpack
+>component_count
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	0.01, 0.01, 0.01
+>StaticDraw
+>enabled
+	1
+>model
+>mesh_path
+	game/assets/bp.fbx
+>texture_path
+	game/assets/bp.jpg
