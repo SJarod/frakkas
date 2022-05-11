@@ -228,6 +228,8 @@ void Helpers::Edit(Resources::Sound& io_sound)
 {
     ImGui::Text("Sound");
 
+    ImGui::Checkbox("Loop", &io_sound.loop);
+    
     ImGui::InputText("Sound file", const_cast<char *>(io_sound.soundPath.c_str()), 64, ImGuiInputTextFlags_CharsNoBlank);
 
     if (ImGui::BeginDragDropTarget())
@@ -253,7 +255,7 @@ void Helpers::Edit(Resources::Sound& io_sound)
     if (ImGui::Button("Stop"))
         io_sound.Stop();
 
-    ImGui::InputInt("Volume", &io_sound.volume);
+    ImGui::SliderFloat("Volume", &io_sound.volume, 0.f, 1.f);
     io_sound.SetVolume();
 }
 

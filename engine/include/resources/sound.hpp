@@ -15,7 +15,8 @@ namespace Resources
 
         ma_sound soundObject;
         std::string soundPath;
-        int volume = 1;
+        float volume = 1.f;
+        bool loop = false;
 
         /**
          * Set soundPath
