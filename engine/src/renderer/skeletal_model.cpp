@@ -27,12 +27,21 @@ void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmes
 	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename, i_textureFilename, i_flipTexture);
 }
 
-void Renderer::SkeletalModel::SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_skmeshIndex)
+void Renderer::SkeletalModel::SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_skmeshIndex) const
 {
 	assert(i_skmeshIndex < skmesh->submeshes.size() && "out of range");
 
 	Submesh* smesh = std::next(skmesh->submeshes.begin(), i_skmeshIndex)->get();
 	smesh->diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
+}
+
+void Renderer::SkeletalModel::SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const
+{
+	skmesh->flipTexture = i_flipTexture;
+	skmesh->textureName = i_textureFilename;
+
+	for (int i = 0; i < static_cast<int>(skmesh->submeshes.size()); i++)
+		SetTextureToSubmesh(i_textureFilename, i_flipTexture, i);
 }
 
 void Renderer::SkeletalModel::LoadAnimationsForThis(const std::string& i_animationFilename)

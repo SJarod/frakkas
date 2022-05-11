@@ -18,14 +18,12 @@ namespace Game
     class EntityManager;
 }
 
-namespace Resources
-{
-    class Sound;
-}
-
 namespace Renderer
 {
     class Light;
+    class Model;
+    class SkeletalModel;
+
     namespace LowLevel
     {
         class Camera;
@@ -34,6 +32,7 @@ namespace Renderer
 
 namespace Resources
 {
+    class Sound;
     class Serializer
     {
     public: /// READ FUNCTIONS
@@ -123,6 +122,18 @@ namespace Resources
          * @param o_sound the sound to build
          */
         static void Read(std::ifstream& i_file, Resources::Sound& o_sound);
+        /**
+         * @brief read a model in the next line of i_file
+         * @param i_file the opened input file
+         * @param o_model the model to build
+         */
+        static void Read(std::ifstream& i_file, Renderer::Model& o_model);
+        /**
+         * @brief read a skeletal model in the next line of i_file
+         * @param i_file the opened input file
+         * @param o_skmodel the skeletal model to build
+         */
+        static void Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel);
 
     public: /// WRITE FUNCTIONS
 
@@ -194,7 +205,19 @@ namespace Resources
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound);
+        /**
+         * @brief SaveScene a model in frakkas text format
+         * @param io_file the opened output file to write in
+         */
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Model& i_model);
+        /**
+         * @brief SaveScene a skeletal model in frakkas text format
+         * @param io_file the opened output file to write in
+         */
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel);
     private:
+
+        static std::string attribute;
 
         /**
          * @return '\t', so a tabulation in character format. Useful to write tabulation with std::cout

@@ -10,6 +10,7 @@
 #include "game/lowcomponent/static_draw.hpp"
 
 KK_COMPONENT_IMPL(StaticDraw)
+KK_FIELD_IMPL(StaticDraw, model, EDataType::MODEL)
 
 void StaticDraw::SetOwner(Entity* owner)
 {
@@ -55,5 +56,17 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
             i_renderer.SetUniformToNamedBlock("uRendering", 84, true);
             i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size(), i_light.outlineSize);
         }
+    }
+}
+
+void StaticDraw::OnUpdate()
+{
+    auto& descriptors = GetMetaData().descriptors;
+    auto it = std::find_if(descriptors.begin(), descriptors.end(), [](const DataDescriptor& desc)
+    {
+        return "meshPath" == desc.name;
+    });
+    if (it != descriptors.end())
+    {
     }
 }

@@ -48,7 +48,6 @@ target_include_directories(EngineFrakkas
 						   PRIVATE ${imgui_SOURCE_DIR}
 		                   PRIVATE ${sdl_INCLUDE_DIR}
 						   PRIVATE ${tracy_SOURCE_DIR}
-						   PRIVATE ${PROJECT_SOURCE_DIR}/lib/Jolt
 )
 
 # Include jolt and assimp libraries
@@ -60,7 +59,7 @@ target_link_libraries(EngineFrakkas
 					  PUBLIC TracyClient
 )
 
-set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${LIB_INCLUDE_DIR})
+set_target_properties(EngineFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 add_custom_target(copy_shaders
 				  COMMAND ${CMAKE_COMMAND} -E copy_directory

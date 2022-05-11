@@ -9,7 +9,7 @@ namespace Game
 {
     KK_COMPONENT_FROM(AnimatedDraw, Drawable)
 
-        Renderer::SkeletalModel skmodel;
+        KK_FIELD(Renderer::SkeletalModel, skmodel);
 
 protected:
     void SetOwner(Entity* owner) override;

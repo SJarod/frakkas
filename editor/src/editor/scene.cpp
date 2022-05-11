@@ -101,28 +101,28 @@ void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::G
     {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
         {
-            std::string dataName = *static_cast<std::string*>(payload->Data);
+            std::filesystem::path path = *static_cast<std::filesystem::path*>(payload->Data);
 
-            if (dataName.find(".wav") != std::string::npos || dataName.find(".mp3") != std::string::npos)
+            if (path.extension() == ".wav" || path.extension() == ".mp3")
             {
                 Game::Entity* entity = io_entityManager.CreateEntity("Sound entity");
                 entity->transform.position = Vector3::zero;
                 auto soundComp = entity->AddComponent<Game::SoundComponent>();
-                soundComp->sound.SetSound(dataName);
+                soundComp->sound.SetSound(path.string());
             }
 
-            else if (dataName.find(".obj") != std::string::npos || dataName.find(".fbx") != std::string::npos || dataName.find(".gltf") != std::string::npos)
+            else if (path.extension() == ".obj" || path.extension() == ".fbx" || path.extension() == ".gltf")
             {
                 Game::Entity* entity = io_entityManager.CreateEntity();
 
                 auto staticDraw = entity->AddComponent<Game::StaticDraw>();
                 auto& model = staticDraw->model;
-                model.SetMeshFromFile(dataName, "", false);
+                model.SetMeshFromFile(path.string(), "", false);
                 model.transform.scale = Vector3(1.f, 1.f, 1.f);
             }
 
-            else if (dataName.find(".kk") != std::string::npos )
-                io_graph.LoadScene(dataName);
+            else if (path.extension() == ".kk" )
+                io_graph.LoadScene(path.string());
         }
 
         ImGui::EndDragDropTarget();

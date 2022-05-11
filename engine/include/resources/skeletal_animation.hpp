@@ -113,7 +113,6 @@ namespace Resources
         std::unordered_map<std::string_view, Bone> boneInfoMap;
 
         const int animationIndex = 0;
-        const std::string animationName;
 
         /**
          * Load the skeleton node data with Assimp's data.
@@ -126,6 +125,8 @@ namespace Resources
         void ReadMissingBones(const aiAnimation* i_animation, SkeletalMesh& io_skmesh);
 
     public:
+        const std::string animationName;
+
         float duration = 0.f;
         //framerate
         float tick = 0.f;
@@ -163,9 +164,10 @@ namespace Resources
 #endif
 
         SkeletalMesh& mappedSkmesh;
-        const std::string animationFilename;
 
     public:
+        const std::string animationFilename;
+
         SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& i_skmesh);
 
         void LoadFromInfo() override;
@@ -181,5 +183,7 @@ namespace Resources
          */
         const SkeletalAnimation* GetAnimation(const unsigned int i_index) const;
 #endif
+
+        const int GetPackSize() const;
     };
 }

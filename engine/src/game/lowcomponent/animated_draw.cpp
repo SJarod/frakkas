@@ -11,6 +11,7 @@
 #include "game/lowcomponent/animated_draw.hpp"
 
 KK_COMPONENT_IMPL(AnimatedDraw)
+KK_FIELD_IMPL(AnimatedDraw, skmodel, EDataType::SKELETALMODEL)
 
 void AnimatedDraw::SetOwner(Entity* owner)
 {

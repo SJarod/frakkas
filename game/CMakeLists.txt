@@ -15,7 +15,6 @@ target_include_directories(GameFrakkas
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${sdl_INCLUDE_DIR}
                            PRIVATE ${LIB_INCLUDE_DIR}
-						   PRIVATE ${PROJECT_SOURCE_DIR}/lib/Jolt
 )
 
 target_link_directories(GameFrakkas PRIVATE EngineFrakkas)
