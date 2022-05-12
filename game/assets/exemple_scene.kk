@@ -13,7 +13,7 @@
 	-0.927295, 0, -0
 >scale
 	1, 1, 1
->CameraComponent
+>Camera
 >enabled
 	1
 >camera

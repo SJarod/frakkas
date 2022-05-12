@@ -77,10 +77,12 @@ void Entity::NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* 
 
 void Entity::RegisterIntoGraph(Component* i_newComponent)
 {
-    Renderer::Graph::RegisterComponent(i_newComponent);
+    if (id != 0)
+        Renderer::Graph::RegisterComponent(i_newComponent);
 }
 
 void Entity::UnregisterIntoGraph(Component* i_oldComponent)
 {
-    Renderer::Graph::UnregisterComponent(i_oldComponent);
+    if (id != 0)
+        Renderer::Graph::UnregisterComponent(i_oldComponent);
 }

@@ -1,6 +1,6 @@
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/animated_draw.hpp"
-#include "game/lowcomponent/camera_component.hpp"
+#include "game/lowcomponent/camera.hpp"
 
 #include "game/lowcomponent/sound_component.hpp"
 #include "game/fps_movement.hpp"
@@ -16,7 +16,7 @@ ComponentRegister::ComponentRegister()
 {
     greedEntity.AddComponent<StaticDraw>();
     greedEntity.AddComponent<AnimatedDraw>();
-    //greedEntity.AddComponent<CameraComponent>();
+    //greedEntity.AddComponent<Camera>();
 
     greedEntity.AddComponent<SoundComponent>();
     greedEntity.AddComponent<FPSMovement>();

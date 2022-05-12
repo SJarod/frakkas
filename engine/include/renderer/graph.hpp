@@ -3,13 +3,14 @@
 #include <queue>
 #include <filesystem>
 
+#include "game/entity.hpp"
+
 #include "renderer/light.hpp"
-#include "renderer/lowlevel/camera.hpp"
 
 namespace Game
 {
     class Component;
-    class CameraComponent;
+    class Camera;
     class Drawable;
     class Collider;
 
@@ -37,8 +38,9 @@ namespace Renderer
         bool lightEnabled = true;
         Renderer::Light light;
 
-        Renderer::LowLevel::Camera editorCamera;
-        Game::CameraComponent* gameCamera = nullptr;
+        Game::Entity editorCameraman;
+        Game::Camera* editorCamera = nullptr;
+        Game::Camera* gameCamera = nullptr;
 
         /**
          * @brief Inform the graph that a new component had been added.
@@ -88,13 +90,13 @@ namespace Renderer
         static Physic::PhysicScene* physicScene;
 
         static bool updateCamera;
-        static std::vector<Game::CameraComponent*> gameCameras;
+        static std::vector<Game::Camera*> gameCameras;
         static std::vector<Game::Drawable*> renderEntities;
 
         std::filesystem::path currentScenePath = "game/assets/exemple_scene.kk";
 
         /**
-         * Searches for the first CameraComponent enabled. Set game camera to nullptr if not found.
+         * Searches for the first Camera enabled. Set game camera to nullptr if not found.
          * This function is used when the current game camera is disabled.
          */
         void SetGameCameraAuto() noexcept;
@@ -106,9 +108,9 @@ namespace Renderer
          * @param i_camera The camera to project the scene from.
         */
         void UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer,
-            float i_aspectRatio,
-            Renderer::LowLevel::Camera& i_camera,
-            const Vector3& i_cameraPos) const noexcept;
+                                 float i_aspectRatio,
+                                 Game::Camera& i_camera,
+                                 const Vector3& i_cameraPos) const noexcept;
 
         /**
          * @brief Renders each entity for real.

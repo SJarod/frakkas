@@ -7,12 +7,11 @@
 #include "maths.hpp"
 #include "debug/log.hpp"
 #include "game/entity.hpp"
-#include "game/lowcomponent/camera_component.hpp"
+#include "game/lowcomponent/camera.hpp"
 
 #include "resources/resources_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
-#include "renderer/lowlevel/camera.hpp"
 #include "renderer/graph.hpp"
 
 #include "engine.hpp"
@@ -243,17 +242,20 @@ void Engine::SetCursorPosition(const Vector2& i_position)
     SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
 }
 
-
-Renderer::LowLevel::Camera* Engine::GetEditorGamera() const
+Game::Camera* Engine::GetEditorGamera() const
 {
-    return &graph->editorCamera;
+    return graph->editorCamera;
 }
 
-Renderer::LowLevel::Camera* Engine::GetGameCamera() const
+Game::Camera* Engine::GetGameCamera() const
 {
-    return graph->gameCamera ? &graph->gameCamera->camera : nullptr;
+    return graph->gameCamera;
 }
 
+Game::Transform& Engine::GetEditorCameraTransform() const
+{
+    return graph->editorCameraman.transform;
+}
 
 
 

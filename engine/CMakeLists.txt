@@ -6,7 +6,7 @@ add_library(EngineFrakkas STATIC
         	src/game/transform.cpp
             src/game/lowcomponent/static_draw.cpp
 			src/game/lowcomponent/animated_draw.cpp
-            src/game/lowcomponent/camera_component.cpp
+			src/game/lowcomponent/camera.cpp
             src/game/lowcomponent/component.cpp
             src/game/lowcomponent/sound_component.cpp
 			src/game/lowcomponent/drawable.cpp
@@ -22,7 +22,6 @@ add_library(EngineFrakkas STATIC
 			src/renderer/skeletal_model.cpp
 			src/renderer/point.cpp
 			src/renderer/screen.cpp
-        	src/renderer/lowlevel/camera.cpp
 			src/renderer/lowlevel/lowrenderer.cpp
         	src/renderer/graph.cpp
 			src/resources/program_shader.cpp

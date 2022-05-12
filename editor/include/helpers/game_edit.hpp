@@ -124,12 +124,6 @@ namespace Helpers
     void Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperation);
 
     /**
-     * @brief ImGui editing function. Allows the player to change camera parameters.
-     * @param io_camera the camera to edit
-     */
-    void Edit(Renderer::LowLevel::Camera& io_camera);
-
-    /**
      * @brief ImGui editing function. Allows the player to change light parameters.
      * @param io_engine the engine containing the light
      * @param i_menuWidth a float measuring the size of the menu, used for displaying the depth map

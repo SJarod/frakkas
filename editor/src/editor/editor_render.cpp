@@ -8,6 +8,7 @@
 
 #include "engine.hpp"
 
+#include "Renderer/graph.hpp"
 #include "editor/editor_render.hpp"
 
 
@@ -56,14 +57,14 @@ void EditorRender::InitImGui(Engine& io_engine)
     {
         if (!m_scene.isMoving) return;
 
-        Renderer::LowLevel::Camera& cam = *io_engine.GetEditorGamera();
+        Game::Transform& camTrs = io_engine.GetEditorCameraTransform();
         float frameSpeed = 20.f * Game::Time::GetDeltaTime();
 
         float forwardVelocity = Game::Inputs::GetAxis("forward") * frameSpeed;
         float strafeVelocity = Game::Inputs::GetAxis("horizontal") * frameSpeed;
 
-        Vector3 pos = cam.transform.position;
-        Vector3 rot = cam.transform.rotation;
+        Vector3 pos = camTrs.position;
+        Vector3 rot = camTrs.rotation;
 
         pos.x += Maths::Sin(rot.y) * forwardVelocity + Maths::Cos(rot.y) * strafeVelocity;
         pos.z += Maths::Sin(rot.y) * strafeVelocity - Maths::Cos(rot.y) * forwardVelocity;
@@ -76,8 +77,8 @@ void EditorRender::InitImGui(Engine& io_engine)
 
         pos.y += frameSpeed * Game::Inputs::GetAxis("vertical");
 
-        cam.transform.position = pos;
-        cam.transform.rotation = rot;
+        camTrs.position = pos;
+        camTrs.rotation = rot;
     };
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
 

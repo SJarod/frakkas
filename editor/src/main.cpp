@@ -2,9 +2,6 @@
 
 #include "game/world.hpp"
 
-#include "renderer/lowlevel/lowrenderer.hpp"
-#include "renderer/lowlevel/camera.hpp"
-
 #include "engine.hpp"
 
 #undef main

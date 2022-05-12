@@ -2,13 +2,12 @@
 
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
-#include "game/lowcomponent/camera_component.hpp"
+#include "game/lowcomponent/camera.hpp"
 #include "game/lowcomponent/collider/box_collider.hpp"
 #include "game/lowcomponent/collider/sphere_collider.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
-#include "renderer/lowlevel/camera.hpp"
 
 #include "resources/resources_manager.hpp"
 #include "resources/serializer.hpp"
@@ -24,15 +23,16 @@ using namespace Renderer;
 
 Physic::PhysicScene* Graph::physicScene = nullptr;
 
-std::vector<Game::CameraComponent*> Graph::gameCameras;
+std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
 bool Graph::updateCamera = true;
 
 Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene)
-    :entityManager(io_entityManager)
+    :entityManager(io_entityManager), editorCameraman(0, "Editor cameraman")
 {
     physicScene = i_physicScene;
-    editorCamera.transform.position = Vector3::forward * 4.f;
+    editorCameraman.transform.position = Vector3::forward * 4.f;
+    editorCamera = editorCameraman.AddComponent<Game::Camera>();
 }
 
 void Graph::RegisterComponent(Game::Component* i_newComponent)
@@ -40,8 +40,8 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
     std::string ID = i_newComponent->GetID();
     if (ID == "StaticDraw" || ID == "AnimatedDraw")
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
-    else if (ID == CameraComponent::MetaData().className)
-        gameCameras.emplace_back(reinterpret_cast<CameraComponent*>(i_newComponent));
+    else if (ID == Game::Camera::MetaData().className)
+        gameCameras.emplace_back(reinterpret_cast<Game::Camera*>(i_newComponent));
     else if (ID == BoxCollider::MetaData().className)
     {
         auto box = reinterpret_cast<BoxCollider*>(i_newComponent);
@@ -65,9 +65,9 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
         if (it != renderEntities.end())
             renderEntities.erase(it);
     }
-    else if (ID == CameraComponent::MetaData().className)
+    else if (ID == Game::Camera::MetaData().className)
     {
-        auto it = std::find(gameCameras.begin(), gameCameras.end(), reinterpret_cast<CameraComponent*>(i_oldComponent));
+        auto it = std::find(gameCameras.begin(), gameCameras.end(), reinterpret_cast<Game::Camera*>(i_oldComponent));
         if (it != gameCameras.end())
             gameCameras.erase(it);
         updateCamera = true;
@@ -82,7 +82,7 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
 void Graph::SetGameCameraAuto() noexcept
 {
     updateCamera = false;
-    for (CameraComponent* cameraComponent : gameCameras)
+    for (Game::Camera* cameraComponent : gameCameras)
     {
         if (cameraComponent->enabled)
         {
@@ -98,8 +98,8 @@ void Graph::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_as
 {
     UpdateGlobalUniform(i_renderer,
         i_aspectRatio,
-        editorCamera,
-        editorCamera.transform.position);
+        *editorCamera,
+        editorCameraman.transform.position);
     Render(i_renderer);
     RenderColliders(i_renderer);
 }
@@ -114,8 +114,8 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
 
     UpdateGlobalUniform(i_renderer,
         i_aspectRatio,
-        gameCamera->camera,
-        gameCamera->camera.transform.parent.get()->position);
+        *gameCamera,
+        gameCamera->owner.get()->transform.position);
     Render(i_renderer);
 }
 
@@ -162,9 +162,9 @@ void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
     i_renderer.EndFrame();
 }
 
-void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio, Renderer::LowLevel::Camera& i_camera, const Vector3& i_cameraPos) const noexcept
+void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio, Game::Camera& i_camera, const Vector3& i_cameraPos) const noexcept
 {
-// An entity with CameraComponent should be added to render
+// An entity with Camera should be added to render
     // projection
     i_renderer.SetUniformToNamedBlock("uRenderMatrices", 0, i_camera.GetProjectionMatrix(i_aspectRatio));
     // view
