@@ -127,7 +127,7 @@ void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::Bod
     Game::Collider* collider2 = *std::find_if(colliders.begin(), colliders.end(), findPredicate2);
 
     // Check if collider is trigger or not
-    ECollisionEvent event = collider1->isTrigger || collider2->isTrigger ? ECollisionEvent::TRIGGER_EXIT : ECollisionEvent::COLLISION_EXIT;
+    ECollisionEvent event = collider1->trigger || collider2->trigger ? ECollisionEvent::TRIGGER_EXIT : ECollisionEvent::COLLISION_EXIT;
     collider1->owner.get()->NotifyCollision(event, collider1, collider2);
     collider2->owner.get()->NotifyCollision(event, collider2, collider1);
 }

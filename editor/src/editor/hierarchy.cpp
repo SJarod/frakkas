@@ -39,18 +39,8 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
         io_entityManager.UnsetEntityParent(*selected);
     }
 
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ENTITY"))
-        {
-            Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
-            if (child)
-            {
-                io_entityManager.UnsetEntityParent(*selected);
-            }
-        }
-        ImGui::EndDragDropTarget();
-    }
+    ParentUnsetDragDropTarget(io_entityManager);
+
     // reset remove id
     removeID = -1;
 
@@ -70,7 +60,11 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
 
         ImGui::EndTable();
     }
-     
+
+    // Create a dummy item to enable dragDropTarget
+    ImGui::InvisibleButton("InvisibleDropTarget", ImVec2(500, 500));
+    ParentUnsetDragDropTarget(io_entityManager);
+
     // Remove an entity if remove ID had been modify
     if (removeID != -1)
         io_entityManager.RemoveEntityAt(removeID);
@@ -169,4 +163,20 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
 
     if (treeOpen)
         ImGui::TreePop();
+}
+
+void Hierarchy::ParentUnsetDragDropTarget(Game::EntityManager& io_entityManager) const
+{
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ENTITY"))
+        {
+            Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
+            if (child)
+            {
+                io_entityManager.UnsetEntityParent(*selected);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
 }

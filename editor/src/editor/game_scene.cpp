@@ -17,7 +17,7 @@ void GameScene::OnImGuiRender(Engine& io_engine)
 
     bool focusOnGaming = !(io_engine.GetRunMode() & Engine::RunFlag_Editing);
     bool canPlayGame = (io_engine.GetRunMode() & Engine::RunFlag_Gaming) && ImGui::IsWindowHovered()
-                       && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed("pause"));
+                       && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed(EButton::P));
     if (!focusOnGaming && canPlayGame) // User right click on game window to play
     {
         mouseLockPosition = Inputs::GetMousePosition();

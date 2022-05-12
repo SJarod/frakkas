@@ -1,6 +1,5 @@
 add_library(GameFrakkas STATIC
-		src/game/bar.cpp
-		src/game/world.cpp
+        src/game/world.cpp
 		src/game/fps_movement.cpp
 		src/game/player_movement.cpp
 		src/game/follow_camera.cpp

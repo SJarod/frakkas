@@ -14,6 +14,6 @@ void PlayerMovement::OnUpdate()
 {
     float xTranslation = Inputs::GetAxis("horizontal") * speed * Time::GetDeltaTime();
     float zTranslation = Inputs::GetAxis("forward") * speed * Time::GetDeltaTime();
-    Vector3 translation = Vector3(xTranslation, 0.f, zTranslation);
-    owner.get()->transform.position = owner.get()->transform.position .get() + translation;
+    Vector3 translation = Vector3(xTranslation, 0.f, -zTranslation);
+    Position() = Position().get() + translation;
 }

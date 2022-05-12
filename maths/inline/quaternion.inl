@@ -155,7 +155,8 @@ inline Quaternion Quaternion::Invert() const
 
 inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 {
-    Matrix4 m = i_mat.Transpose();
+#if true
+    Matrix4 m = i_mat;
     float m00 = m.line[0].element[0];
     float m11 = m.line[1].element[1];
     float m22 = m.line[2].element[2];
@@ -166,13 +167,44 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     float m10 = m.line[1].element[0];
     float m01 = m.line[0].element[1];
 
-    Quaternion q;
+    Quaternion q = {0.f, 0.f, 0.f, 0.f};
     q.w = Maths::Sqrt(1.f + m00 + m11 + m22) * 0.5f;
     q.x = (m21 - m12) / (4.f * q.w);
     q.y = (m20 - m02) / (4.f * q.w);
     q.z = (m10 - m01) / (4.f * q.w);
 
     return q;
+#else
+    Quaternion result;
+
+    if ((i_mat.element[0] > i_mat.element[5]) && (i_mat.element[0] > i_mat.element[10]))
+    {
+        float s = sqrtf(1.0f + i_mat.element[0] - i_mat.element[5] - i_mat.element[10])*2.f;
+
+        result.x = 0.25f*s;
+        result.y = (i_mat.element[4] + i_mat.element[1]) / s;
+        result.z = (i_mat.element[2] + i_mat.element[8]) / s;
+        result.w = (i_mat.element[9] - i_mat.element[6]) / s;
+    }
+    else if (i_mat.element[5] > i_mat.element[10])
+    {
+        float s = sqrtf(1.0f + i_mat.element[5] - i_mat.element[0] - i_mat.element[10])*2;
+        result.x = (i_mat.element[4] + i_mat.element[1]) / s;
+        result.y = 0.25f*s;
+        result.z = (i_mat.element[9] + i_mat.element[6]) / s;
+        result.w = (i_mat.element[2] - i_mat.element[8]) / s;
+    }
+    else
+    {
+        float s = sqrtf(1.0f + i_mat.element[10] - i_mat.element[0] - i_mat.element[5])*2;
+        result.x = (i_mat.element[2] + i_mat.element[8]) / s;
+        result.y = (i_mat.element[9] + i_mat.element[6]) / s;
+        result.z = 0.25f*s;
+        result.w = (i_mat.element[4] - i_mat.element[1]) / s;
+    }
+
+    return result;
+#endif
 }
 
 inline Quaternion Quaternion::QuatFromEuler(const float& i_yaw, const float& i_pitch, const float& i_roll)

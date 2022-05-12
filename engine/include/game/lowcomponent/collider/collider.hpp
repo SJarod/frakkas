@@ -30,7 +30,7 @@ namespace Game
         KK_FIELD(Vector3, velocity);
         KK_FIELD(Vector3, angularVelocity);
 
-        KK_FIELD(bool, isTrigger) = false;
+        KK_FIELD(bool, trigger) = false;
         KK_FIELD(bool, isStatic) = true;
 
         /**

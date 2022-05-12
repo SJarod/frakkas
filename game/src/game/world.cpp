@@ -7,7 +7,6 @@
 #include "game/lowcomponent/animated_draw.hpp"
 #include "game/lowcomponent/collider/box_collider.hpp"
 #include "game/lowcomponent/collider/sphere_collider.hpp"
-#include "game/bar.hpp"
 #include "game/fps_movement.hpp"
 #include "game/lowcomponent/camera_component.hpp"
 
@@ -23,7 +22,6 @@ World::World(Engine& engine)
 {
 	// ADD DEFAULT AXIS AND BUTTON
 	Game::Inputs::SetButtonAction("quit", { Game::EButton::ESCAPE });
-	Game::Inputs::SetButtonAction("pause", { Game::EButton::P });
 	Game::Inputs::SetAxisAction("horizontal", { Game::EButton::ARROW_RIGHT, Game::EButton::D }, { Game::EButton::ARROW_LEFT, Game::EButton::A });
 	Game::Inputs::SetAxisAction("vertical", { Game::EButton::SPACE }, { Game::EButton::LEFT_CTRL });
 	Game::Inputs::SetAxisAction("forward", { Game::EButton::ARROW_UP, Game::EButton::W }, { Game::EButton::ARROW_DOWN, Game::EButton::S });
@@ -89,8 +87,6 @@ World::World(Engine& engine)
 		entity->transform.scale = Vector3(10.f, 1.f, 10.f);
 
 		entity->transform.position = Vector3(0.f, -3.f, 0.f);
-
-        entity->AddComponent<Bar>();
 	}
 #endif
 

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "utils/properties.hpp"
+
 #include "game/reflection/data_descriptor.hpp"
 
 namespace Resources
@@ -15,6 +16,7 @@ namespace Resources
 namespace Game
 {
     class Entity;
+    class EntityContainer;
     class Collider;
     class Component
     {
@@ -108,19 +110,6 @@ namespace Game
          */
         virtual const ClassMetaData& GetMetaData() const = 0;
 
-        /**
-         * @Summary Setup component parameters from input file.
-         * @param i_file the opened input file.
-         */
-        virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
-
-        /**
-         * @Summary SaveScene the component parameters in scene text format.
-         * @param o_file teh opened output file.
-         */
-        virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
-
-
     protected:
 
         /**
@@ -139,5 +128,23 @@ namespace Game
          * Not called when entity destroyed
          */
         virtual void OnDisable() {};
+
+        /**
+         * @return A reference to owner's transform position
+         */
+        Property<Vector3>& Position() const;
+        /**
+         * @return A reference to owner's transform scale
+         */
+        Property<Vector3>& Scale() const;
+        /**
+         * @return A reference to owner's transform rotation
+         */
+        Property<Vector3>& Rotation() const;
+
+        /**
+         * @return The owner's entity container that gives access to all entities and useful find function.
+         */
+        EntityContainer& GetEntityContainer() const;
     };
 }

@@ -25,13 +25,17 @@ std::string Serializer::attribute;
 
 std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::string &o_attribute)
 {
-    std::getline(i_file, o_attribute);
-
-    if (o_attribute.length() == 0)
+    if (i_file.eof())
     {
-        Log::Error("A scene attribute is not valid : '", o_attribute, "' l.", GetCurrentLine(i_file));
+        o_attribute = "End of file";
         return o_attribute;
     }
+
+    std::getline(i_file, o_attribute);
+
+    if (o_attribute.empty() || o_attribute[0] != '>')
+        return GetAttribute(i_file, o_attribute); // Call Get attribute until we find an attribute.
+
 
     o_attribute = o_attribute.substr(1);
     return o_attribute;
@@ -326,6 +330,8 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
         switch (desc.dataType)
         {
             case EDataType::BOOL:
+                Write(io_file, desc.name, *reinterpret_cast<bool*>(componentData));
+                break;
             case EDataType::INT:
                 Write(io_file, desc.name, reinterpret_cast<int*>(componentData), desc.count);
                 break;

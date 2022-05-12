@@ -46,5 +46,11 @@ namespace Editor
          * We setup all the possible interaction with this tree node.
          */
         void RenderEntity(Game::EntityManager& io_entityManager, Game::Entity& io_entity);
+
+        /**
+         * @brief Useful function to set an ImGui Item as a drag drop target to unset entity's parent
+         * @param io_entityManager The entity manager which will unlinks the selected entity to its parent.
+         */
+        void ParentUnsetDragDropTarget(Game::EntityManager& io_entityManager) const;
     };
 }

@@ -12,18 +12,42 @@
 
 using namespace Game;
 
-EntityIdentifier EntityManager::maxID = 1; // Begin at 1, because '0' is index none
+EntityIdentifier EntityContainer::maxID = 1; // Begin at 1, because '0' is index none
+
+Entity* EntityContainer::CreateEntity(const std::string_view& i_name)
+{
+    entities.emplace_back(std::make_unique<Entity>(maxID++,  i_name));
+
+    Entity* entity = entities.back().get();
+    Log::Info("Create new entity : '", entity->name, "'");
+    entity->entityStore = this;
+    return entity;
+}
+
+Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
+{
+    auto findPredicate = [&i_id](const std::unique_ptr<Entity>& entity)
+    {
+        return i_id == entity->GetID();
+    };
+    const auto& it = std::find_if(entities.begin(), entities.end(), findPredicate);
+
+    if (it != entities.end())
+        return it->get();
+
+    return nullptr;
+}
 
 void EntityManager::Start()
 {
-    for (const auto& entity : entities)
+    for (const auto& entity : entityStore.entities)
         for (const std::unique_ptr<Component>& comp: entity->components)
             comp->OnStart();
 }
 
 void EntityManager::Update()
 {
-    for (const auto& entity : entities)
+    for (const auto& entity : entityStore.entities)
     {
         for (const std::unique_ptr<Component>& comp: entity->components)
         {
@@ -39,9 +63,9 @@ void Game::EntityManager::RemoveEntityAt(const EntityIdentifier& i_id)
 
     if (index != -1)
     {
-        Log::Info("Remove entity '", entities[index]->name, "'");
+        Log::Info("Remove entity '", entityStore.entities[index]->name, "'");
 
-        ForgetEntity(*entities[index].get());
+        ForgetEntity(*entityStore.entities[index].get());
     }
 }
 
@@ -76,33 +100,20 @@ void Game::EntityManager::ForgetEntity(Entity& io_entity)
     if (rootEntities.find(io_entity.GetID()) != rootEntities.end())
         rootEntities.erase(io_entity.GetID());
 
-    entities.erase(entities.begin() + FindEntityIndex(io_entity.GetID()));
+    entityStore.entities.erase(entityStore.entities.begin() + FindEntityIndex(io_entity.GetID()));
 }
 
 Entity* EntityManager::CreateEntity(const std::string_view& i_name)
 {
-    entities.emplace_back(std::make_unique<Entity>(maxID++,  i_name));
-
-
-    Entity* entity = entities.back().get();
-    Log::Info("Create new entity : '", entity->name, "'");
+    Entity* entity = entityStore.CreateEntity(i_name);
     // Set entity as root by default
     rootEntities[entity->GetID()] = entity;
     return entity;
 }
 
-Entity* Game::EntityManager::GetEntityAt(const EntityIdentifier& i_id)
+Entity* Game::EntityManager::FindEntityWithID(const EntityIdentifier& i_id)
 {
-    auto findPredicate = [&i_id](const std::unique_ptr<Entity>& entity)
-    {
-        return i_id == entity->GetID();
-    };
-    const auto& it = std::find_if(entities.begin(), entities.end(), findPredicate);
-
-    if (it != entities.end())
-        return it->get();
-
-    return nullptr;
+    return entityStore.FindEntityWithID(i_id);
 }
 
 void EntityManager::LoadEntity(std::ifstream& i_file, Entity* i_parent)
@@ -110,7 +121,13 @@ void EntityManager::LoadEntity(std::ifstream& i_file, Entity* i_parent)
     std::string attribute;
     int childCount = 0;
     Resources::Serializer::GetAttribute(i_file, attribute); // '>entity'
+    if (attribute != "entity")
+        return;
+
     Resources::Serializer::GetAttribute(i_file, attribute); // '>childs'
+    if (attribute != "childs")
+        return;
+
     Resources::Serializer::Read(i_file, &childCount, 1);
 
     Entity* entity = CreateEntity();
@@ -141,7 +158,7 @@ void EntityManager::LoadEntities(std::ifstream& i_file)
 
 void Game::EntityManager::ClearEntities()
 {
-    entities.clear();
+    entityStore.entities.clear();
     rootEntities.clear();
 }
 
@@ -180,7 +197,7 @@ void Game::EntityManager::UnsetEntityParent(Entity& io_child)
 
 const std::vector<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
 {
-    return entities;
+    return entityStore.entities;
 }
 
 const std::unordered_map<EntityIdentifier, Entity*>& Game::EntityManager::GetRootEntities() const
@@ -195,9 +212,9 @@ int Game::EntityManager::FindEntityIndex(const EntityIdentifier& i_id)
         return i_id == entity->GetID();
     };
 
-    int index = std::find_if(entities.begin(), entities.end(), findPredicate) - entities.begin();
+    int index = std::find_if(entityStore.entities.begin(), entityStore.entities.end(), findPredicate) - entityStore.entities.begin();
 
-    if (index >= entities.size())
+    if (index >= entityStore.entities.size())
     {
         Log::Warning("Try accessing an entity with index ", index, ". Index out of bound.");
         return -1;

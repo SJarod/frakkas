@@ -11,6 +11,7 @@
 
 #include "engine.hpp"
 
+#include "helpers/game_edit.hpp" // This include is for ROTATION_GUIZMO define, don't remove it
 #include "editor/scene.hpp"
 
 
@@ -38,8 +39,10 @@ void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImG
         else if(Game::Inputs::IsPressed(Game::EButton::W))
             i_gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 
+#ifdef ROTATION_GUIZMO
         else if(Game::Inputs::IsPressed(Game::EButton::E))
             i_gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+#endif
 
         else if(Game::Inputs::IsPressed(Game::EButton::R))
             i_gizmoOperation = ImGuizmo::OPERATION::SCALE;
