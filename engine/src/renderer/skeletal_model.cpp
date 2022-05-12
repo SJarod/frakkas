@@ -51,6 +51,9 @@ void Renderer::SkeletalModel::SetTextureToSubmesh(const std::string& i_textureFi
 
 void Renderer::SkeletalModel::SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const
 {
+    if (!skmesh)
+        return;
+
 	skmesh->flipTexture = i_flipTexture;
 	skmesh->textureName = i_textureFilename;
 

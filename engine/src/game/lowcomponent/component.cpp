@@ -1,4 +1,5 @@
-
+#include "game/entity.hpp"
+#include "game/entity_manager.hpp"
 #include "game/lowcomponent/component.hpp"
 
 using namespace Game;
@@ -38,5 +39,26 @@ void Component::SetOwner(Entity* entity)
 {
     owner.set(entity);
 }
+
+Property<Vector3>& Component::Position() const
+{
+    return owner.get()->transform.position;
+}
+
+Property<Vector3>& Component::Scale() const
+{
+    return owner.get()->transform.scale;
+}
+
+Property<Vector3>& Component::Rotation() const
+{
+    return owner.get()->transform.rotation;
+}
+
+EntityContainer& Component::GetEntityContainer() const
+{
+    return *owner.get()->entityStore;
+}
+
 
 

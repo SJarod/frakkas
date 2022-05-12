@@ -47,6 +47,9 @@ void Renderer::Model::SetTextureToSubmesh(const std::string& i_textureFilename, 
 
 void Renderer::Model::SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const
 {
+    if (!mesh)
+        return;
+
     mesh->flipTexture = i_flipTexture;
     mesh->textureName = i_textureFilename;
 

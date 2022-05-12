@@ -9,7 +9,7 @@
 
 #include <unordered_map>
 
-#include "entity.hpp"
+#include "entity_container.hpp"
 
 namespace Renderer::LowLevel
 {
@@ -20,10 +20,9 @@ namespace Resources
 {
     class Serializer;
 }
+
 namespace Game
 {
-    class Transform;
-
     class EntityManager
     {
 
@@ -54,16 +53,9 @@ namespace Game
         Entity* CreateEntity(const std::string_view& i_name = "");
 
         /**
-         * @summary Creates an unique-pointer-empty-entity and emplace it in entities array
-         * @param i_id Force a specific ID. If the ID is not accessible, it will generates another one.
-         * @return the created entity, you can add component to it.
-         */
-        Entity* CreateEntity(const uint64_t& i_id, const std::string_view& i_name = "");
-
-        /**
          * @return The entity with the input ID, thinks about checking if return value is not nullptr.
          */
-        Entity* GetEntityAt(const EntityIdentifier& i_id);
+        Entity* FindEntityWithID(const EntityIdentifier& i_id);
 
         /**
          * @brief read all entities from the file, then create and store them in this manager
@@ -93,10 +85,8 @@ namespace Game
         const std::unordered_map<EntityIdentifier, Entity*>& GetRootEntities() const;
 
     private:
-        std::vector<std::unique_ptr<Entity>> entities;
+        EntityContainer entityStore;
         std::unordered_map<EntityIdentifier, Entity*> rootEntities;
-
-        static EntityIdentifier maxID;
 
         /**
          * @brief Remove entity from all arrays, and forget about its existence.

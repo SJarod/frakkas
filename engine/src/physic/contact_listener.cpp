@@ -2,6 +2,8 @@
 
 #include "debug/log.hpp"
 
+#include "game/lowcomponent/collider/collider.hpp"
+
 #include "physic/physic_scene.hpp"
 #include "physic/contact_listener.hpp"
 
@@ -34,5 +36,12 @@ void JPH::MyContactListener::OnContactPersisted(const Body& i_body1, const Body&
 // OnColllisionExit
 void JPH::MyContactListener::OnContactRemoved(const SubShapeIDPair& i_subShapePair)
 {
-	Physic::PhysicScene::NotifyCollisionExit(i_subShapePair.GetBody1ID(), i_subShapePair.GetBody2ID());
+    auto colliders = Physic::PhysicScene::colliders;
+    auto it =std::find_if(colliders.begin(), colliders.end(), [&i_subShapePair](const Game::Collider* collider)
+    {
+        return i_subShapePair.GetBody1ID() == collider->GetPhysicBodyID();
+    });
+    // if it does not find a collider, cancel the remove
+    if (it != colliders.end())
+	    Physic::PhysicScene::NotifyCollisionExit(i_subShapePair.GetBody1ID(), i_subShapePair.GetBody2ID());
 }

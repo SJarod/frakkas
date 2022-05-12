@@ -4,15 +4,14 @@
 #include <Physics/Body/Body.h>
 #include <Physics/Body/BodyInterface.h>
 
-#include "game/time_manager.hpp"
 #include "game/transform.hpp"
 #include "game/entity.hpp"
 
 #include "game/lowcomponent/collider/collider.hpp"
 
 KK_COMPONENT_IMPL(Collider)
-KK_FIELD_IMPL(Collider, isTrigger, EDataType::BOOL)
 KK_FIELD_IMPL(Collider, isStatic, EDataType::BOOL)
+KK_FIELD_IMPL(Collider, trigger, EDataType::BOOL)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, velocity, EDataType::FLOAT, 3)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
 
@@ -96,11 +95,11 @@ void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
 
     SetStaticState(isStatic, i_bodyInterface);
 
-    if (isTrigger)
+    if (trigger)
         isStatic = true;
 
 
-    SetTriggerState(isTrigger, i_bodyInterface);
+    SetTriggerState(trigger, i_bodyInterface);
 
     if (!isStatic)
     {

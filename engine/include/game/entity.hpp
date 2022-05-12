@@ -23,6 +23,7 @@ namespace Game
     using EntityIdentifier = uint64_t;
 
     class Collider;
+    class EntityContainer;
 
     class Entity
     {
@@ -38,6 +39,7 @@ namespace Game
         std::list<Entity*> childs;
         Entity* parent = nullptr;
 
+        EntityContainer* entityStore = nullptr;
         std::vector<std::unique_ptr<Component>> components;
 
         /**

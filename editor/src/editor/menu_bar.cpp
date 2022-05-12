@@ -30,10 +30,10 @@ void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* 
     Engine::RunFlag rFlag = io_engine.GetRunMode();
     if (Inputs::IsPressed(EButton::P))
     {
-        if (rFlag & Engine::RunFlag_Editing)
-            io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
-        else
+        if (rFlag & Engine::RunFlag_Gaming)
             io_engine.SetRunMode(Engine::RunFlag_Editing);
+        else
+            io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
     }
 
     OptionsField();
@@ -328,6 +328,7 @@ void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
         if (ImGui::MenuItem("Play", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming); }
         if (isGaming && ImGui::MenuItem("Pause", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing); }
         if (isGaming && ImGui::MenuItem("Stop", "CTRL+P"))  { reloadSceneFunc(); }
+        if (!isGaming && ImGui::MenuItem("Reset", "CTRL+P")) { reloadSceneFunc(); }
 
         ImGui::EndMenu();
     }

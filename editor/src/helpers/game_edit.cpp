@@ -19,6 +19,7 @@
 
 #include "helpers/game_edit.hpp"
 
+//#define ROTATION_GUIZMO
 /**
  * @brief Useful function to receive resource path from a drag drop imgui event
  * @param i_extensions The list of extension that allowed.
@@ -133,8 +134,10 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
     ImGui::SameLine();
     ImGui::RadioButton("Translate", &guizmoOperation, ImGuizmo::OPERATION::TRANSLATE);
 
+#ifdef ROTATION_GUIZMO
     ImGui::SameLine();
     ImGui::RadioButton("Rotate", &guizmoOperation, ImGuizmo::OPERATION::ROTATE);
+#endif
 
     ImGui::SameLine();
     ImGui::RadioButton("Scale", &guizmoOperation, ImGuizmo::OPERATION::SCALE);
