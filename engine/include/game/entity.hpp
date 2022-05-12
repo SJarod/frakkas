@@ -95,16 +95,16 @@ namespace Game
 
     private:
 
-        EntityIdentifier id;
+        EntityIdentifier id = 0;
 
         /**
          * @brief Send the component to the graph register system.
          */
-        static void RegisterIntoGraph(Component* i_newComponent);
+        void RegisterIntoGraph(Component* i_newComponent);
         /**
          * @brief Send the component to the graph unregister system.
          */
-        static void UnregisterIntoGraph(Component* i_oldComponent);
+        void UnregisterIntoGraph(Component* i_oldComponent);
 
     };
 }

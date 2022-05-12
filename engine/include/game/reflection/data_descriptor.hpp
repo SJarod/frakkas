@@ -13,7 +13,6 @@ enum class EDataType
 	FLOAT,
 	BOOL,
 	STRING,
-	CAMERA,
     SOUND,
     MODEL,
 	SKELETALMODEL

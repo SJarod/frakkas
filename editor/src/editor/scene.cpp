@@ -6,7 +6,6 @@
 #include "game/lowcomponent/static_draw.hpp"
 
 #include "renderer/graph.hpp"
-#include "renderer/lowlevel/camera.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 
 #include "engine.hpp"
@@ -20,7 +19,7 @@ using namespace Editor;
 void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImGuizmo::OPERATION& i_gizmoOperation)
 {
     Renderer::LowLevel::Framebuffer& sceneFBO = *io_engine.editorFBO;
-    Renderer::LowLevel::Camera& editorCamera = *io_engine.GetEditorGamera();
+    Game::Camera& editorCamera = *io_engine.GetEditorGamera();
 
     ImGui::Begin("Scene");
 

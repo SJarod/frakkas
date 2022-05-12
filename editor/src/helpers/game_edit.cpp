@@ -7,7 +7,6 @@
 #include "game/transform.hpp"
 #include "game/component_generator.hpp"
 
-#include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 #include "renderer/skeletal_model.hpp"
 #include "renderer/graph.hpp"
@@ -209,19 +208,6 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 
         ImGui::EndPopup();
     }
-}
-
-void Helpers::Edit(Renderer::LowLevel::Camera& io_camera)
-{
-    Helpers::Edit(io_camera.transform);
-    ImGui::Spacing();
-
-    float fovy = Maths::ToDegrees(io_camera.fovY);
-    DragScalar("Field of view Y", &fovy, 1, 0.f, 180.f);
-    io_camera.fovY = Maths::ToRadians(fovy);
-
-    DragScalar("Near", &io_camera.near, 1, 0.001f, 10.f, 0.005f);
-    DragScalar("Far", &io_camera.far, 1, 100.f, 5000.f, 10.f);
 }
 
 void Helpers::Edit(Engine& io_engine, const float i_menuWidth)
@@ -464,9 +450,6 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
                     break;
                 case EDataType::STRING:
                     desc.changed = Edit(*reinterpret_cast<std::string*>(componentData), desc.name.c_str());
-                    break;
-                case EDataType::CAMERA:
-                    Edit(*reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
                     break;
                 case EDataType::SOUND:
                     Edit(*reinterpret_cast<Resources::Sound*>(componentData));

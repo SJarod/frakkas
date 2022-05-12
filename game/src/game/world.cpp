@@ -8,7 +8,7 @@
 #include "game/lowcomponent/collider/box_collider.hpp"
 #include "game/lowcomponent/collider/sphere_collider.hpp"
 #include "game/fps_movement.hpp"
-#include "game/lowcomponent/camera_component.hpp"
+#include "game/lowcomponent/camera.hpp"
 
 #include "game/world.hpp"
 
@@ -33,7 +33,7 @@ World::World(Engine& engine)
 	{
 		entity = em.CreateEntity("Camera entity");
 		entity->transform.position = Vector3(0.f, 2.f, 5.f);
-		entity->AddComponent<CameraComponent>();
+		entity->AddComponent<Camera>();
         entity->AddComponent<FPSMovement>();
 	}
 #endif

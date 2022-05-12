@@ -12,6 +12,7 @@
 #include "game/entity_manager.hpp"
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
+#include "game/lowcomponent/camera.hpp"
 
 namespace Renderer
 {
@@ -94,11 +95,15 @@ public:
     /**
      * @return The editor camera from Graph class. never return nullptr.
      */
-    Renderer::LowLevel::Camera* GetEditorGamera() const;
+    Game::Camera* GetEditorGamera() const;
     /**
      * @return The current game camera from Graph class. Can return nullptr.
      */
-    Renderer::LowLevel::Camera* GetGameCamera() const;
+    Game::Camera* GetGameCamera() const;
+    /**
+     * @return The transform of the editor camera from Graph class.
+     */
+    Game::Transform& GetEditorCameraTransform() const;
 
 private:
     RunFlag runMode = RunFlag_Editing;

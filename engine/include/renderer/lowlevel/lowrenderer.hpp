@@ -3,7 +3,6 @@
 #include "maths.hpp"
 #include "renderer/model.hpp"
 #include "renderer/point.hpp"
-#include "renderer/lowlevel/camera.hpp"
 
 #include "debug/log.hpp"
 

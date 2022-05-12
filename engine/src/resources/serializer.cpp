@@ -7,7 +7,6 @@
 
 #include "resources/sound.hpp"
 
-#include "renderer/lowlevel/camera.hpp"
 #include "renderer/light.hpp"
 #include "renderer/model.hpp"
 #include "renderer/skeletal_model.hpp"
@@ -117,9 +116,6 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
                 case EDataType::STRING:
                     Read(i_file, *reinterpret_cast<std::string*>(componentData));
                     break;
-                case EDataType::CAMERA:
-                    Read(i_file, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
-                    break;
                 case EDataType::SOUND:
                     Read(i_file, *reinterpret_cast<Resources::Sound*>(componentData));
                     break;
@@ -173,22 +169,6 @@ void Serializer::Read(std::ifstream& i_file, Game::Transform& o_transform)
             Read(i_file, scale.element, 3);
             o_transform.scale = scale;
         }
-    }
-}
-
-void Serializer::Read(std::ifstream& i_file, Renderer::LowLevel::Camera& o_camera)
-{
-    for(int i = 0; i < 4; i++)
-    {
-        GetAttribute(i_file, attribute);
-        if (attribute == "transform")
-            Read(i_file, o_camera.transform);
-        else if (attribute == "fovy")
-            Read(i_file, &o_camera.targetFovY, 1);
-        else if (attribute == "near")
-            Read(i_file, &o_camera.near, 1);
-        else if (attribute == "far")
-            Read(i_file, &o_camera.far, 1);
     }
 }
 
@@ -341,9 +321,6 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
             case EDataType::STRING:
                 Write(io_file, desc.name, *reinterpret_cast<std::string*>(componentData));
                 break;
-            case EDataType::CAMERA:
-                Write(io_file, desc.name, *reinterpret_cast<Renderer::LowLevel::Camera*>(componentData));
-                break;
             case EDataType::SOUND:
                 Write(io_file, desc.name, *reinterpret_cast<Resources::Sound*>(componentData));
                 break;
@@ -404,16 +381,6 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "position", i_transform.position.get().element, 3);
     Write(io_file, "rotation", i_transform.rotation.get().element, 3);
     Write(io_file, "scale", i_transform.scale.get().element, 3);
-}
-
-void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName,
-                       const Renderer::LowLevel::Camera& i_camera)
-{
-    WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "transform", i_camera.transform);
-    Write(io_file, "fovy", &i_camera.targetFovY, 1);
-    Write(io_file, "near", &i_camera.near, 1);
-    Write(io_file, "far", &i_camera.far, 1);
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Light& i_light)
