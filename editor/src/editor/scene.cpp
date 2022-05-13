@@ -10,7 +10,9 @@
 
 #include "engine.hpp"
 
+#include "helpers/string_helpers.hpp"
 #include "helpers/game_edit.hpp" // This include is for ROTATION_GUIZMO define, don't remove it
+#include "helpers/drop_component.hpp"
 #include "editor/scene.hpp"
 
 
@@ -95,34 +97,7 @@ void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImG
 
 void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::Graph& io_graph)
 {
-    if (ImGui::BeginDragDropTarget())
-    {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
-        {
-            std::filesystem::path path = *static_cast<std::filesystem::path*>(payload->Data);
-
-            if (path.extension() == ".wav" || path.extension() == ".mp3")
-            {
-                Game::Entity* entity = io_entityManager.CreateEntity("Sound entity");
-                entity->transform.position = Vector3::zero;
-                auto soundComp = entity->AddComponent<Game::SoundComponent>();
-                soundComp->sound.SetSound(path.string());
-            }
-
-            else if (path.extension() == ".obj" || path.extension() == ".fbx" || path.extension() == ".gltf")
-            {
-                Game::Entity* entity = io_entityManager.CreateEntity();
-
-                auto staticDraw = entity->AddComponent<Game::StaticDraw>();
-                staticDraw->model.SetMeshFromFile(path.string());
-            }
-
-            else if (path.extension() == ".kk" )
-                io_graph.LoadScene(path.string());
-        }
-
-        ImGui::EndDragDropTarget();
-    }
+    Helpers::DragDropTargetComponent(io_entityManager, &io_graph);
 }
 
 void Scene::CheckMouseAction()

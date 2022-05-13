@@ -2,7 +2,7 @@
 #include "maths.hpp"
 #include "engine.hpp"
 
-#include "game/fps_movement.hpp"
+#include "fps_movement.hpp"
 
 KK_COMPONENT_IMPL(FPSMovement)
 

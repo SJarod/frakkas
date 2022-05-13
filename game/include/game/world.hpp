@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/lowcomponent/component_register.hpp"
+#include "component_register.hpp"
 
 class Engine;
 

@@ -7,9 +7,9 @@ namespace Game
 {
     KK_COMPONENT($name);
 
-        void Start() override;
+        void OnStart() override;
 
-        void Update() override;
+        void OnUpdate() override;
 
     KK_COMPONENT_END
 }

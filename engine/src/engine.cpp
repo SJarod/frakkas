@@ -16,7 +16,7 @@
 
 #include "engine.hpp"
 
-#if WIN32
+#ifndef __linux__
 // Run on laptop high perf GPU
 extern "C"
 {

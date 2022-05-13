@@ -5,10 +5,10 @@
 >name
 	Camera entity
 >component_count
-	2
+	1
 >transform
 >position
-	0.0195347, 9.99953, 9.17656
+	0, 9.99953, 9.17656
 >rotation
 	-0.927295, 0, -0
 >scale
@@ -16,27 +16,12 @@
 >Camera
 >enabled
 	1
->camera
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->fovy
-	1.5708
 >near
 	0.001
 >far
 	1000
->FollowCamera
->enabled
-	1
->offset
-	0, 8, 6
->lerpFactor
-	0.1
+>fovY
+	90
 
 >entity
 >childs
@@ -47,7 +32,7 @@
 	2
 >transform
 >position
-	0.0195346, 1.99953, 3.18024
+	-3.78, 1.99953, 3.18024
 >rotation
 	0, 0, 0
 >scale

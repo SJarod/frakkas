@@ -2,7 +2,7 @@
 #include "engine.hpp"
 #include "game/entity.hpp"
 #include "game/time_manager.hpp"
-#include "game/player_movement.hpp"
+#include "player_movement.hpp"
 
 using namespace Game;
 

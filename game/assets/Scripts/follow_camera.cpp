@@ -1,7 +1,7 @@
 #include "game/entity.hpp"
 
-#include "game/follow_camera.hpp"
-#include "game/player_movement.hpp"
+#include "follow_camera.hpp"
+#include "player_movement.hpp"
 
 using namespace Game;
 KK_COMPONENT_IMPL(FollowCamera)
