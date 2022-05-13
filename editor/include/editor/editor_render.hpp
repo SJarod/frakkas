@@ -8,6 +8,7 @@
 #include "editor/scene.hpp"
 #include "editor/game_scene.hpp"
 #include "editor/debugger.hpp"
+#include "editor/resources_viewer.hpp"
 #include "engine.hpp"
 
 
@@ -50,6 +51,7 @@ namespace Editor
         Scene m_scene;
         GameScene m_game;
         Debugger m_debugger;
+        ResourcesViewer m_resources;
 
         void UpdateImGui();
     };

@@ -7,21 +7,33 @@
 
 void Resources::Texture::LoadFromInfo()
 {
+	resourceType = EResourceType::TEXTURE;
+
 	ResourcesManager::AddCPULoadingTask([this]() {
 		stbi_set_flip_vertically_on_load(flip);
-		data = stbi_load(name.c_str(), &width, &height, &bpp, 0);
+		data = stbi_load(name.c_str(), &width, &height, &channels, 0);
 
 		if (data)
 		{
 			ResourcesManager::CreateGPUTexture(*this);
 
 			Log::Info("Successfully loaded texture file : " + name);
+
+			ComputeMemorySize();
 		}
 		else
 		{
 			Log::Warning("Could not load texture file : " + name);
 		}
 		});
+}
+
+void Resources::Texture::ComputeMemorySize()
+{
+	ram = 0;
+	vram = 0;
+
+	vram += width * height * channels * sizeof(unsigned char);
 }
 
 Resources::DefaultTexture::DefaultTexture()

@@ -143,6 +143,23 @@ const std::string& KeyFrameBone::GetName() const
 	return name;
 }
 
+size_t SkeletonNodeData::GetMemorySize() const
+{
+	int size = 0;
+	size += sizeof(SkeletonNodeData);
+
+	//size += sizeof(Matrix4);
+	//size += sizeof(std::string);
+
+	int numChildren = children.size();
+	for (int i = 0; i < numChildren; ++i)
+	{
+		size += children[i].GetMemorySize();
+	}
+
+	return size;
+}
+
 void SkeletalAnimation::ReadHierarchyData(SkeletonNodeData& dest, const aiNode* src)
 {
 	assert(src);
@@ -222,6 +239,21 @@ const SkeletonNodeData* SkeletalAnimation::GetRootNode() const
 	return &rootNode;
 }
 
+size_t SkeletalAnimation::GetMemorySize() const
+{
+	int size = 0;
+
+	size += kfBones.size() * sizeof(KeyFrameBone);
+	size += rootNode.GetMemorySize();
+
+	for (const auto& info : boneInfoMap)
+	{
+		size += sizeof(info);
+	}
+
+	return size;
+}
+
 SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& skmesh)
 	: animationFilename(i_animationFilename), mappedSkmesh(skmesh)
 {
@@ -230,6 +262,8 @@ SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name, const st
 
 void SkeletalAnimationPack::LoadFromInfo()
 {
+	resourceType = EResourceType::ANIMPACK;
+
 	ResourcesManager::AddCPULoadingTask([this]() {
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
@@ -274,7 +308,20 @@ void SkeletalAnimationPack::LoadFromInfo()
 		animations = std::move(buffer);
 
 		Log::Info("Successfully loaded animation pack in file : " + animationFilename);
+
+		ComputeMemorySize();
 		});
+}
+
+void Resources::SkeletalAnimationPack::ComputeMemorySize()
+{
+	ram = 0;
+	vram = 0;
+
+	for (const auto& anim : animations)
+	{
+		ram += anim.GetMemorySize();
+	}
 }
 
 #ifdef ANIMATION_MAP
