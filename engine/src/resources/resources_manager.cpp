@@ -25,6 +25,7 @@ void Resources::ResourcesManager::CreateGPUSubmesh(Submesh& io_mesh)
 
 	std::lock_guard<std::mutex> guard(rm.loadMX);
 	rm.gpuLoadQueue.emplace_back([&]() {
+		//io_mesh.GPULoad();
 		glGenBuffers(1, &io_mesh.gpu.VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, io_mesh.gpu.VBO);
 		glBufferData(GL_ARRAY_BUFFER, io_mesh.vertices.size() * sizeof(Vertex), io_mesh.vertices.data(), GL_STATIC_DRAW);
@@ -59,6 +60,7 @@ void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
 
 	std::lock_guard<std::mutex> guard(rm.loadMX);
 	rm.gpuLoadQueue.emplace_back([&]() {
+		//io_texture.GPULoad();
 		io_texture.gpu = std::make_unique<GPUTexture>();
 		glGenTextures(1, &io_texture.gpu->data);
 
@@ -69,8 +71,8 @@ void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		if (io_texture.data)
 		{
-			GLint bpp = io_texture.bpp == 1 ? GL_RED : io_texture.bpp == 2 ? GL_RG : io_texture.bpp == 3 ? GL_RGB : GL_RGBA;
-			glTexImage2D(GL_TEXTURE_2D, 0, bpp, io_texture.width, io_texture.height, 0, bpp, GL_UNSIGNED_BYTE, io_texture.data);
+			GLint format = io_texture.channels == 1 ? GL_RED : io_texture.channels == 2 ? GL_RG : io_texture.channels == 3 ? GL_RGB : GL_RGBA;
+			glTexImage2D(GL_TEXTURE_2D, 0, format, io_texture.width, io_texture.height, 0, format, GL_UNSIGNED_BYTE, io_texture.data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		}
 		});
@@ -79,6 +81,11 @@ void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
 const DefaultTexture& Resources::ResourcesManager::GetDefaultTexture()
 {
 	return ResourcesManager::Instance().defaultTexture;
+}
+
+const std::unordered_map<std::string, std::shared_ptr<Resource>>& Resources::ResourcesManager::ViewAllResources()
+{
+	return ResourcesManager::Instance().resources;
 }
 
 void Resources::ResourcesManager::AddCPULoadingTask(Task io_task)

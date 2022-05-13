@@ -125,6 +125,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     }
 
     m_debugger.OnImGuiRender();
+    m_resources.OnImGuiRender();
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
     m_console.OnImGuiRender();
     m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);

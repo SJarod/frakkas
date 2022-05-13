@@ -3,6 +3,17 @@
 
 #include "resources/mesh.hpp"
 
+size_t Resources::Submesh::GetMemorySize() const
+{
+	size_t size = 0;
+
+	size += vertices.size() * sizeof(Vertex);
+	size += indices.size() * sizeof(unsigned int);
+	size += sizeof(Matrix4);
+
+	return size;
+}
+
 Resources::Mesh::Mesh(const std::string& i_name)
 {
 	name = i_name;
@@ -16,14 +27,16 @@ Resources::Mesh::Mesh(const std::string& i_name, const std::string& i_textureFil
 
 void Resources::Mesh::LoadFromInfo()
 {
+	resourceType = EResourceType::MESH;
+
 	if (name == cubeMesh)
 		LoadCube();
-    if (name == cubeColliderMesh)
-        LoadLineCube();
+	if (name == cubeColliderMesh)
+		LoadLineCube();
 	else if (name == sphereMesh)
 		LoadSphere();
-    else if (name == sphereColliderMesh)
-        LoadLineSphere();
+	else if (name == sphereColliderMesh)
+		LoadLineSphere();
 	else
 		ResourcesManager::AddCPULoadingTask([this](/*void* userData*/) {
 			//ResourceSubmeshTaskData* data = static_cast<ResourceSubmeshTaskData*>(userData);
@@ -48,8 +61,21 @@ void Resources::Mesh::LoadFromInfo()
 				submeshes = buffer;
 
 				Log::Info("Successfully loaded model file : " + name);
+
+				ComputeMemorySize();
 			}
 			});
+}
+
+void Resources::Mesh::ComputeMemorySize()
+{
+	ram = 0;
+	vram = 0;
+
+	for (const std::shared_ptr<Submesh>& smesh : submeshes)
+	{
+		ram += smesh->GetMemorySize();
+	}
 }
 
 void Resources::Mesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_mesh,
@@ -211,50 +237,52 @@ void Resources::Mesh::LoadCube()
 	ParseSubmesh(mesh);
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
 	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ComputeMemorySize();
 }
 
 void Mesh::LoadLineCube()
 {
-    Submesh mesh;
+	Submesh mesh;
 
-    float ver[] = {
-            -1.f,  1.f,  1.f,
-            1.f,  1.f,  1.f,
-            1.f, -1.f,  1.f,
-            -1.f, -1.f,  1.f,
-            -1.f, -1.f, -1.f,
-            -1.f,  1.f, -1.f,
-            1.f,  1.f, -1.f,
-            1.f, -1.f, -1.f,
-    };
+	float ver[] = {
+			-1.f,  1.f,  1.f,
+			1.f,  1.f,  1.f,
+			1.f, -1.f,  1.f,
+			-1.f, -1.f,  1.f,
+			-1.f, -1.f, -1.f,
+			-1.f,  1.f, -1.f,
+			1.f,  1.f, -1.f,
+			1.f, -1.f, -1.f,
+	};
 
-    for (int i = 0; i < 8; ++i)
-    {
-        Vertex v;
-        v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
+	for (int i = 0; i < 8; ++i)
+	{
+		Vertex v;
+		v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
 
-        mesh.vertices.emplace_back(v);
-    }
+		mesh.vertices.emplace_back(v);
+	}
 
-    unsigned int ind[] = {
-            0, 1,
-            2, 3,
-            0, 5,
-            6, 7,
-            4, 5,
-            6, 1,
-            2, 7,
-            4, 3
-    };
+	unsigned int ind[] = {
+			0, 1,
+			2, 3,
+			0, 5,
+			6, 7,
+			4, 5,
+			6, 1,
+			2, 7,
+			4, 3
+	};
 
-    for (int i = 0; i < 16; ++i)
-    {
-        mesh.indices.emplace_back(ind[i]);
-    }
+	for (int i = 0; i < 16; ++i)
+	{
+		mesh.indices.emplace_back(ind[i]);
+	}
 
-    ParseSubmesh(mesh);
-    submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-    ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ParseSubmesh(mesh);
+	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
+	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ComputeMemorySize();
 }
 
 void Resources::Mesh::LoadSphere(const float i_radius,
@@ -304,70 +332,72 @@ void Resources::Mesh::LoadSphere(const float i_radius,
 	ParseSubmesh(mesh);
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
 	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ComputeMemorySize();
 }
 
 void Mesh::LoadLineSphere(float i_radius)
 {
-    Submesh mesh;
+	Submesh mesh;
 
-    float r = i_radius;
-    float res = 30;
+	float r = i_radius;
+	float res = 30;
 
-    float angle = Maths::Constants::doublePi / res;
+	float angle = Maths::Constants::doublePi / res;
 
-    Vertex v;
-    // X axis
-    for (int i = 0; i < res; i++)
-    {
-        v.position = { 0.f, r * Maths::Sin(i * angle), r * Maths::Cos(i * angle) };
-        mesh.vertices.emplace_back(v);
-        if ( i < res-1)
-        {
-            mesh.indices.emplace_back(i);
-            mesh.indices.emplace_back(i+1);
-        }
-        else
-        {
-            mesh.indices.emplace_back(i);
-            mesh.indices.emplace_back(0);
-        }
-    }
+	Vertex v;
+	// X axis
+	for (int i = 0; i < res; i++)
+	{
+		v.position = { 0.f, r * Maths::Sin(i * angle), r * Maths::Cos(i * angle) };
+		mesh.vertices.emplace_back(v);
+		if (i < res - 1)
+		{
+			mesh.indices.emplace_back(i);
+			mesh.indices.emplace_back(i + 1);
+		}
+		else
+		{
+			mesh.indices.emplace_back(i);
+			mesh.indices.emplace_back(0);
+		}
+	}
 
 
-    // Y axis
-    for (int i = 0; i < res; i++)
-    {
-        v.position = { r * Maths::Sin(i * angle), 0.f, r * Maths::Cos(i * angle) };
-        mesh.vertices.emplace_back(v);
-        if ( i < res-1)
-        {
-            mesh.indices.emplace_back(i+res);
-            mesh.indices.emplace_back(i+res+1);
-        }
-        else
-        {
-            mesh.indices.emplace_back(i+res);
-            mesh.indices.emplace_back(0+res);
-        }
-    }
-    // Z axis
-    for (int i = 0; i < res; i++)
-    {
-        v.position = { r * Maths::Cos(i * angle), r * Maths::Sin(i * angle), 0.f };
-        mesh.vertices.emplace_back(v);
-        if ( i < res-1)
-        {
-            mesh.indices.emplace_back(i+res+res);
-            mesh.indices.emplace_back(i+res+res+1);
-        }
-        else
-        {
-            mesh.indices.emplace_back(i+res+res);
-            mesh.indices.emplace_back(0+res+res);
-        }
-    }
+	// Y axis
+	for (int i = 0; i < res; i++)
+	{
+		v.position = { r * Maths::Sin(i * angle), 0.f, r * Maths::Cos(i * angle) };
+		mesh.vertices.emplace_back(v);
+		if (i < res - 1)
+		{
+			mesh.indices.emplace_back(i + res);
+			mesh.indices.emplace_back(i + res + 1);
+		}
+		else
+		{
+			mesh.indices.emplace_back(i + res);
+			mesh.indices.emplace_back(0 + res);
+		}
+	}
+	// Z axis
+	for (int i = 0; i < res; i++)
+	{
+		v.position = { r * Maths::Cos(i * angle), r * Maths::Sin(i * angle), 0.f };
+		mesh.vertices.emplace_back(v);
+		if (i < res - 1)
+		{
+			mesh.indices.emplace_back(i + res + res);
+			mesh.indices.emplace_back(i + res + res + 1);
+		}
+		else
+		{
+			mesh.indices.emplace_back(i + res + res);
+			mesh.indices.emplace_back(0 + res + res);
+		}
+	}
 
-    ParseSubmesh(mesh);
-    submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-    ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ParseSubmesh(mesh);
+	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
+	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ComputeMemorySize();
 }

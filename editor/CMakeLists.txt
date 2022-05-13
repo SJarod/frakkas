@@ -14,6 +14,7 @@ add_executable(EditorFrakkas
 			   src/editor/scene.cpp
 			   src/editor/game_scene.cpp
 			   src/editor/debugger.cpp
+			   src/editor/resources_viewer.cpp
                src/helpers/game_edit.cpp
 )
 

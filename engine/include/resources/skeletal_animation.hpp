@@ -100,6 +100,11 @@ namespace Resources
 
         int childrenCount;
         std::vector<SkeletonNodeData> children;
+
+        /**
+         * Get the size of this submesh.
+         */
+        size_t GetMemorySize() const;
     };
 
     /**
@@ -147,6 +152,11 @@ namespace Resources
          * Get the root node of the skeleton's data.
          */
         const SkeletonNodeData* GetRootNode() const;
+
+        /**
+         * Get the size of this submesh.
+         */
+        size_t GetMemorySize() const;
     };
 
     /**
@@ -171,6 +181,8 @@ namespace Resources
         SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& i_skmesh);
 
         void LoadFromInfo() override;
+
+        void ComputeMemorySize() override;
 
 #ifdef ANIMATION_MAP
         /**

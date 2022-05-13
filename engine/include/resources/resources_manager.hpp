@@ -66,6 +66,11 @@ namespace Resources
 		*/
 		static const DefaultTexture& GetDefaultTexture();
 
+		/**
+		 * Get a reference to the resources map without options for changing it.
+		 */
+		static const std::unordered_map<std::string, std::shared_ptr<Resource>>& ViewAllResources();
+
 	private:
 		ThreadPool tp;
 

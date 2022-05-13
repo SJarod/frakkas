@@ -41,6 +41,8 @@ Resources::Shader::~Shader()
 
 void Resources::Shader::LoadFromInfo()
 {
+	resourceType = EResourceType::SHADER;
+
 	//vertex shader
 	std::ifstream vsStream(vertexShaderName + ".vs");
 	std::ifstream fsStream(fragmentShaderName + ".fs");
@@ -115,6 +117,18 @@ void Resources::Shader::LoadFromInfo()
 
 	vsStream.close();
 	fsStream.close();
+
+	ComputeMemorySize();
+}
+
+void Resources::Shader::ComputeMemorySize()
+{
+	ram = 0;
+	vram = 0;
+
+	int size;
+	glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &size);
+	vram = size;
 }
 
 void Resources::Shader::Use() const

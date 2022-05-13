@@ -17,6 +17,8 @@ SkeletalMesh::SkeletalMesh(const std::string& i_name, const std::string& i_textu
 
 void SkeletalMesh::LoadFromInfo()
 {
+	resourceType = EResourceType::SKELETALMESH;
+
 	ResourcesManager::AddCPULoadingTask([this](/*void* userData*/) {
 		//ResourceSubmeshTaskData* data = static_cast<ResourceSubmeshTaskData*>(userData);
 		// ... data.meshes.emplace_back(); ...
@@ -41,8 +43,23 @@ void SkeletalMesh::LoadFromInfo()
 			submeshes = buffer;
 
 			Log::Info("Successfully loaded model file : " + name);
+
+			ComputeMemorySize();
 		}
 		});
+}
+
+void SkeletalMesh::ComputeMemorySize()
+{
+	ram = 0;
+	vram = 0;
+
+	Mesh::ComputeMemorySize();
+
+	for (const auto& info : boneInfoMap)
+	{
+		ram += sizeof(info);
+	}
 }
 
 void SkeletalMesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_submesh,

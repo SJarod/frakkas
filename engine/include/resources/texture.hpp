@@ -28,7 +28,7 @@ namespace Resources
 
 		int				width = 0;
 		int				height = 0;
-		int				bpp = 0;
+		int				channels = 0;
 
 		void*			data = nullptr;
 
@@ -41,6 +41,8 @@ namespace Resources
 		}
 
 		void LoadFromInfo() override;
+
+		void ComputeMemorySize() override;
 	};
 
 	class DefaultTexture

@@ -40,6 +40,11 @@ namespace Resources
 
 		// TODO : vector of Texture
 		std::shared_ptr<Texture> diffuseTex;
+
+		/**
+		 * Get the size of this submesh.
+		 */
+		size_t GetMemorySize() const;
 	};
 
 	class Mesh : public Resource
@@ -141,5 +146,7 @@ namespace Resources
 		Mesh(const std::string& i_name, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		void LoadFromInfo() override;
+
+		void ComputeMemorySize() override;
 	};
 }

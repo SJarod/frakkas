@@ -48,5 +48,7 @@ namespace Resources
 		SkeletalMesh(const std::string& i_name, const std::string& i_textureName, const bool i_flipTexture);
 
 		void LoadFromInfo() override;
+
+		void ComputeMemorySize() override;
 	};
 }

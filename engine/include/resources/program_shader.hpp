@@ -34,6 +34,8 @@ namespace Resources
 
 		void LoadFromInfo() override;
 
+		void ComputeMemorySize() override;
+
 		/**
 		 * @Summary Use shader program.
 		 */
