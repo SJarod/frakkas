@@ -182,32 +182,6 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 
     if (ImGui::Button("Add Component", ImVec2(200, 0)))
         ImGui::OpenPopup("Add component.");
-
-    /// ADD NEW COMPONENT POPUP
-    ImGui::SetNextWindowSize(ImVec2(0, 200));
-    if (ImGui::BeginPopup("Add component.", ImGuiWindowFlags_AlwaysUseWindowPadding | ImGuiWindowFlags_AlwaysVerticalScrollbar))
-    {
-        static ImGuiTextFilter filter;
-
-        // Set keyboard focus on filter only when window popup
-        static bool firstTime = true;
-        if (firstTime) ImGui::SetKeyboardFocusHere();
-        firstTime = false;
-
-        filter.Draw("Component", 180);
-
-        for (const ClassMetaData* metaData : Game::Component::GetRegistry())
-        {
-            std::string name = metaData->className;
-            if (!metaData->publicClass || !filter.PassFilter(name.c_str()))
-                continue;
-
-            if (ImGui::Selectable(name.c_str()))
-                io_entity.AddComponent(std::unique_ptr<Game::Component>(metaData->constructor()));
-        }
-
-        ImGui::EndPopup();
-    }
 }
 
 void Helpers::Edit(Engine& io_engine, const float i_menuWidth)

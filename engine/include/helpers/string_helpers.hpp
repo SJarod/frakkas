@@ -55,18 +55,40 @@ namespace Helpers
         if (!IsCamelCase(i_camelStr)) return i_camelStr;
 
         std::string snakeStr;
+        snakeStr.reserve(i_camelStr.size());
         for (int i = 0; i < i_camelStr.size(); i++)
         {
             if (std::isupper(i_camelStr[i]))
             {
                 if (i != 0)
                     snakeStr += '_';
-                snakeStr += static_cast<char>(i_camelStr[i] + 32);
+                snakeStr += std::tolower(i_camelStr[i]);
             }
             else
                 snakeStr += i_camelStr[i];
         }
 
         return snakeStr;
+    }
+
+    /**
+     * Modify a snake_case string into CamelCase string.
+     * @param i_snakeStr A snake_case string.
+     * @return A CamelCase string.
+     */
+    inline std::string SnakeCaseToCamelCase(const std::string& i_snakeStr)
+    {
+        std::string camelStr;
+        camelStr.reserve(i_snakeStr.size());
+        for (int i = 0; i < i_snakeStr.size(); i++)
+        {
+            if (i == 0)
+                camelStr += std::toupper(i_snakeStr[i]);
+            else if (i_snakeStr[i] == '_')
+                camelStr += std::toupper(i_snakeStr[++i]);
+            else
+                camelStr += i_snakeStr[i];
+        }
+        return camelStr;
     }
 }

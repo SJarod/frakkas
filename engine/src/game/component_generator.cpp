@@ -6,19 +6,19 @@
 #include "game/component_generator.hpp"
 
 static constexpr char lowComponentDirectoryPath[] = "game/lowcomponent/";
-static constexpr char cmakeAddLibraryString[] = "add_library(GameFrakkas";
+static constexpr char cmakeAddLibraryString[] = "add_library(GameFrakkas STATIC";
 static constexpr char templateComponentName[] = "$name";
 static constexpr char templateFileName[] = "$file";
 
 
 inline std::string GetComponentSourceFullPath(const std::string& name)
 {
-    return Helpers::gameDirectoryPath + std::string("src/game/") + name + ".cpp";
+    return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".cpp";
 }
 
 inline std::string GetComponentIncludeFullPath(const std::string& name)
 {
-	return Helpers::gameDirectoryPath + std::string("include/game/") + name + ".hpp";
+	return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".hpp";
 }
 
 inline std::string GetCMakeFullPath()
@@ -98,7 +98,7 @@ bool CreateNewComponentScript(const std::string& compName)
 	strCmake = stream.str();
 
 	int addLibraryLine = strCmake.find(cmakeAddLibraryString) + (sizeof(cmakeAddLibraryString) / sizeof(char));
-	strCmake.insert(addLibraryLine + 1, "\t\tsrc/game/" + fileName + ".cpp\n");
+	strCmake.insert(addLibraryLine + 1, "\t\tassets/Scripts/" + fileName + ".cpp\n");
 
 	std::ofstream outCMake(GetCMakeFullPath());
 
@@ -106,12 +106,12 @@ bool CreateNewComponentScript(const std::string& compName)
 	outCMake.close();
 
     /// UPDATE COMPONENT REGISTER
-    std::string registerPath = Helpers::gameDirectoryPath + std::string("src/") + lowComponentDirectoryPath + std::string("component_register.cpp");
+    std::string registerPath = Helpers::gameDirectoryPath + std::string("src/") + Helpers::gameDirectoryPath + std::string("component_register.cpp");
     std::ifstream inRegisterSource(registerPath);
 
     if (!inRegisterSource.is_open())
     {
-        Log::Warning("Could not open component register file \"game/src/game/lowcomponent/component_register.cpp\"");
+        Log::Warning("Could not open component register file \"game/src/game/component_register.cpp\"");
         return false;
     }
 
@@ -120,7 +120,7 @@ bool CreateNewComponentScript(const std::string& compName)
     registerStream << inRegisterSource.rdbuf();
     std::string registerString(registerStream.str());
 
-    registerString.insert(0, "#include \"game/" + fileName + ".hpp\"\n");
+    registerString.insert(0, "#include \"" + fileName + ".hpp\"\n");
     registerString.insert(registerString.find('$')+2, "\tgreedEntity.AddComponent<" + compName + ">();\n");
 
     inRegisterSource.close();

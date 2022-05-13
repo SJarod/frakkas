@@ -7,7 +7,7 @@
 #include "game/lowcomponent/animated_draw.hpp"
 #include "game/lowcomponent/collider/box_collider.hpp"
 #include "game/lowcomponent/collider/sphere_collider.hpp"
-#include "game/fps_movement.hpp"
+#include "fps_movement.hpp"
 #include "game/lowcomponent/camera.hpp"
 
 #include "game/world.hpp"
