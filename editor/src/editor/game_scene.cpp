@@ -24,7 +24,7 @@ void GameScene::OnImGuiRender(Engine& io_engine)
         ImGui::SetWindowFocus(nullptr);
         io_engine.SetRunMode(Engine::RunFlag_Gaming);
     }
-    else if (focusOnGaming && Inputs::IsPressed(EButton::MOUSE_RIGHT)) // User right click to exit play mode
+    else if (focusOnGaming && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed(EButton::ESCAPE))) // User right click to exit play mode
     {
         Engine::SetCursorPosition(mouseLockPosition);
         io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);

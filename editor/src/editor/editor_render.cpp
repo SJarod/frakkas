@@ -14,7 +14,8 @@
 
 using namespace Editor;
 
-bool EditorRender::isEditingDrag = false;
+bool EditorRender::editingDrag = false;
+bool EditorRender::editingText = false;
 Vector2 EditorRender::mouseLockPosition {};
 
 void EditorRender::InitImGui(Engine& io_engine)
@@ -104,16 +105,18 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-    if (isEditingDrag && Game::Inputs::IsReleased(Game::EButton::MOUSE_LEFT))
+    if (editingDrag && Game::Inputs::IsReleased(Game::EButton::MOUSE_LEFT))
     {
         Engine::SetCursorGameMode(false);
         Engine::SetCursorPosition(mouseLockPosition);
-        isEditingDrag = false;
+        editingDrag = false;
     }
 
-    // TODO Remove if no longer needed
-    bool ShowDemoWindow = true;
-    ImGui::ShowDemoWindow(&ShowDemoWindow);
+    if (Game::Inputs::IsPressed(Game::EButton::ESCAPE))
+        ImGui::SetWindowFocus(nullptr);
+
+    if (editingText)
+        io_engine.DisableInputs();
 
     bool reloadScene = false;
     m_menuBar.OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
@@ -132,6 +135,8 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_fileBrowser.OnImGuiRender();
     m_game.OnImGuiRender(io_engine);
     m_scene.OnImGuiRender(io_engine, m_hierarchy.selected, guizmoOperation);
+
+    io_engine.EnableInputs();
 
     UpdateImGui();
 }

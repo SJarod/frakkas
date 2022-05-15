@@ -68,10 +68,10 @@ namespace Helpers
 
         if (ImGui::DragScalarN(i_label.data(), dataType, io_data, i_count, i_speed, &i_min, &i_max))
         {
-            if (!Editor::EditorRender::isEditingDrag)
+            if (!Editor::EditorRender::editingDrag)
             {
                 Engine::SetCursorGameMode(true);
-                Editor::EditorRender::isEditingDrag = true;
+                Editor::EditorRender::editingDrag = true;
                 Editor::EditorRender::mouseLockPosition = Game::Inputs::GetMousePosition();
             }
             return true;

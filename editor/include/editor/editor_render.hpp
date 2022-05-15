@@ -29,6 +29,11 @@ namespace Editor
     class EditorRender
     {
     public:
+        static bool editingDrag;
+        static bool editingText;
+        static Vector2 mouseLockPosition;
+
+
         void InitImGui(Engine& io_engine);
         void QuitImGui();
         /**
@@ -36,9 +41,6 @@ namespace Editor
          * @param io_engine The engine to edit.
          */
         void UpdateAndRender(Engine& io_engine);
-
-        static bool isEditingDrag;
-        static Vector2 mouseLockPosition;
 
     private:
         ImGuizmo::OPERATION guizmoOperation = ImGuizmo::OPERATION::BOUNDS;

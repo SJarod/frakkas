@@ -47,13 +47,16 @@ void EntityManager::Start()
 
 void EntityManager::Update()
 {
-    for (const auto& entity : entityStore.entities)
+    for (int i = entityStore.entities.size()-1; i >= 0; i--)
     {
+        Entity* entity = entityStore.entities[i].get();
         for (const std::unique_ptr<Component>& comp: entity->components)
         {
             if (comp->enabled)
                 comp->OnUpdate();
         }
+        if (entity->destroy)
+            RemoveEntityAt(entity->GetID());
     }
 }
 
@@ -127,10 +130,15 @@ void EntityManager::LoadEntity(std::ifstream& i_file, Entity* i_parent)
     Resources::Serializer::GetAttribute(i_file, attribute); // '>childs'
     if (attribute != "childs")
         return;
-
     Resources::Serializer::Read(i_file, &childCount, 1);
 
-    Entity* entity = CreateEntity();
+    std::string entityName;
+    Resources::Serializer::GetAttribute(i_file, attribute); // '>name'
+    if (attribute != "name")
+        return;
+    Resources::Serializer::Read(i_file, entityName);
+
+    Entity* entity = CreateEntity(entityName);
 
     if (i_parent)
         SetEntityParent(*entity, *i_parent);

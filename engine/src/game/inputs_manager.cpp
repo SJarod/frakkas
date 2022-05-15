@@ -113,13 +113,28 @@ Inputs::Inputs()
     keys[SDLK_y] = EButton::Y;
     keys[SDLK_z] = EButton::Z;
     keys[SDLK_LSHIFT] = EButton::LEFT_SHIFT;
+    keys[SDLK_RSHIFT] = EButton::RIGHT_SHIFT;
     keys[SDLK_LCTRL] = EButton::LEFT_CTRL;
+    keys[SDLK_RCTRL] = EButton::RIGHT_CTRL;
+    keys[SDLK_LALT] = EButton::ALT;
     keys[SDLK_SPACE] = EButton::SPACE;
     keys[SDLK_DOWN] = EButton::ARROW_DOWN;
     keys[SDLK_UP] = EButton::ARROW_UP;
     keys[SDLK_RIGHT] = EButton::ARROW_RIGHT;
     keys[SDLK_LEFT] = EButton::ARROW_LEFT;
     keys[SDLK_ESCAPE] = EButton::ESCAPE;
+    keys[SDLK_F1] = EButton::F1;
+    keys[SDLK_F2] = EButton::F2;
+    keys[SDLK_F3] = EButton::F3;
+    keys[SDLK_F4] = EButton::F4;
+    keys[SDLK_F5] = EButton::F5;
+    keys[SDLK_F6] = EButton::F6;
+    keys[SDLK_F7] = EButton::F7;
+    keys[SDLK_F8] = EButton::F8;
+    keys[SDLK_F9] = EButton::F9;
+    keys[SDLK_F10] = EButton::F10;
+    keys[SDLK_F11] = EButton::F11;
+    keys[SDLK_F12] = EButton::F12;
 
     positiveJoysticks[SDL_CONTROLLER_AXIS_LEFTX] = EButton::LEFT_JOYSTICK_RIGHT;
     positiveJoysticks[SDL_CONTROLLER_AXIS_LEFTY] = EButton::LEFT_JOYSTICK_DOWN;
@@ -235,6 +250,8 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
                 break;
         }
     }
+
+    quit |= IsAlterateCommandPressed(EButton::F4);
 }
 
 #pragma region Action Getter
@@ -287,8 +304,15 @@ bool Inputs::IsReleased(EButton i_button)
 
 bool Game::Inputs::IsControlCommandPressed(EButton i_button)
 {
-    return buttonStates[EButton::LEFT_CTRL] != EButtonState::RELEASED 
-        && buttonStates[i_button] == EButtonState::PRESSED;
+    return (buttonStates[EButton::LEFT_CTRL] != EButtonState::RELEASED
+            || buttonStates[EButton::RIGHT_CTRL] != EButtonState::RELEASED)
+           && buttonStates[i_button] == EButtonState::PRESSED;
+}
+
+bool Game::Inputs::IsAlterateCommandPressed(EButton i_button)
+{
+    return buttonStates[EButton::ALT] != EButtonState::RELEASED
+          && buttonStates[i_button] == EButtonState::PRESSED;
 }
 
 float Inputs::GetAxis(const std::string& i_name)
