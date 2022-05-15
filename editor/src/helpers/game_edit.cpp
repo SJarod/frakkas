@@ -16,7 +16,10 @@
 #include "resources/skeletal_mesh.hpp"
 #include "resources/skeletal_animation.hpp"
 
+#include "editor/editor_render.hpp"
+
 #include "helpers/game_edit.hpp"
+
 
 //#define ROTATION_GUIZMO
 /**
@@ -60,6 +63,13 @@ bool Helpers::Edit(std::string& io_string, const char* i_label)
 #endif
     bool returnValue = ImGui::InputText(i_label, strCopy, 255, ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll);
     io_string = std::string(strCopy);
+
+    // Editing text while item is activated
+    if (ImGui::IsAnyItemActive())
+        Editor::EditorRender::editingText = true;
+    // Stop editing text when pressed enter
+    else if (returnValue || !ImGui::IsAnyItemActive())
+        Editor::EditorRender::editingText = false;
 
     return returnValue;
 }

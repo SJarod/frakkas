@@ -55,7 +55,10 @@ void Inspector::AddComponentPopup(Game::Entity* io_selectedEntity)
                 continue;
 
             if (ImGui::Selectable(name.c_str()))
+            {
                 io_selectedEntity->AddComponent(std::unique_ptr<Game::Component>(metaData->constructor()));
+                firstTime = true;
+            }
         }
 
         ImGui::EndPopup();

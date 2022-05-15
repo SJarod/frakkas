@@ -42,9 +42,6 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::str
 
 void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
 {
-    GetAttribute(i_file, attribute);
-    Read(i_file, o_entity.name);
-
     int componentCount = 0;
     GetAttribute(i_file, attribute);
     Read(i_file, &componentCount, 1);

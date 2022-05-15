@@ -141,7 +141,7 @@ bool Engine::EndFrame()
     SDL_GL_SwapWindow(window);
     FrameMark
 
-    return  Game::Inputs::IsReleased("quit") && !Game::Inputs::quit;
+    return  !Game::Inputs::quit;
 }
 
 void Engine::RunEditor()
@@ -156,12 +156,12 @@ void Engine::RunEditor()
         {
             // Disable inputs for game update if editing
             if (runMode & RunFlag_Editing)
-                inputsManager.SetInputsListening(false);
+                DisableInputs();
 
             entityManager.Update();
         }
 
-        inputsManager.SetInputsListening(true);
+        EnableInputs();
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
@@ -240,6 +240,16 @@ void Engine::SetCursorGameMode(bool i_gameMode)
 void Engine::SetCursorPosition(const Vector2& i_position)
 {
     SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
+}
+
+void Engine::EnableInputs()
+{
+    inputsManager.SetInputsListening(true);
+}
+
+void Engine::DisableInputs()
+{
+    inputsManager.SetInputsListening(false);
 }
 
 Game::Camera* Engine::GetEditorGamera() const

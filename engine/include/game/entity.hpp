@@ -42,6 +42,8 @@ namespace Game
         EntityContainer* entityStore = nullptr;
         std::vector<std::unique_ptr<Component>> components;
 
+        bool destroy = false;
+
         /**
          * Push back the input unique component in components array. You must use std::move().
          * Don't add a same component twice, updating process won't be correct.
@@ -78,18 +80,6 @@ namespace Game
          */
         template<typename T>
         std::vector<T*> GetComponents();
-
-        /**
-         * Setup entity components from input file.
-         * @param i_file the opened input file.
-         */
-        virtual void Read(std::ifstream& i_file, const Resources::Serializer& i_serializer) {};
-
-        /**
-         * SaveScene the entity components in scene text format.
-         * @param o_file the opened output file.
-         */
-        virtual void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 
         const EntityIdentifier& GetID() const { return id; }
 

@@ -93,6 +93,15 @@ public:
     static void SetCursorPosition(const Vector2& i_position);
 
     /**
+     * @brief Activate keyboard/mouse inputs listening with Inputs class
+     */
+    void EnableInputs();
+    /**
+     * @brief Deactivate keyboard/mouse inputs listening with Inputs class
+     */
+    void DisableInputs();
+
+    /**
      * @return The editor camera from Graph class. never return nullptr.
      */
     Game::Camera* GetEditorGamera() const;

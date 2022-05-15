@@ -116,9 +116,15 @@ namespace Game
 
         /**
          * @param i_button The button input to associate with CTRL
-         * @return true if CTRL down and i_button PRESSED
+         * @return true if LEFT_CTRL or RIGHT_CTRL are DOWN and i_button PRESSED
          */
         static bool IsControlCommandPressed(EButton i_button);
+
+        /**
+         * @param i_button The button input to associate with CTRL
+         * @return true if ALT down and i_button PRESSED
+         */
+        static bool IsAlterateCommandPressed(EButton i_button);
 
         /**
          * Create or Modify an axis action map

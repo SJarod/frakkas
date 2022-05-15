@@ -21,7 +21,6 @@ const char* World::defaultScene = "default.kk";
 World::World(Engine& engine)
 {
 	// ADD DEFAULT AXIS AND BUTTON
-	Inputs::SetButtonAction("quit", { EButton::ESCAPE });
 	Inputs::SetAxisAction("horizontal",
                                 { EButton::ARROW_RIGHT, EButton::LEFT_JOYSTICK_RIGHT, EButton::D, EButton::GAMEPAD_DPAD_RIGHT },
                                 { EButton::ARROW_LEFT, EButton::LEFT_JOYSTICK_LEFT, EButton::A, EButton::GAMEPAD_DPAD_LEFT });
