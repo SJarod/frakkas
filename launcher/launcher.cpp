@@ -1,6 +1,3 @@
-#include "maths.hpp"
-#include "renderer/lowlevel/camera.hpp"
-
 #include "game/world.hpp"
 
 #include "engine.hpp"

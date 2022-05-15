@@ -74,7 +74,7 @@ static void DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity
 
 void Engine::InitSDL()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0)
     {
         Log::Error("SDL: Can't init SDL - " + static_cast<std::string>(SDL_GetError()));
         exit(1);

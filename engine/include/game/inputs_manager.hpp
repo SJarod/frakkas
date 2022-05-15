@@ -43,10 +43,17 @@ namespace Game
         Vector2 deltaMotion;
     };
 
+    struct JoystickAction
+    {
+        Vector2 leftJoystick;
+        Vector2 rightJoystick;
+    };
+
     class Inputs
     {
     public:
         Inputs();
+        ~Inputs();
 
         static bool quit;
 
@@ -141,16 +148,19 @@ namespace Game
 
     private:
         static std::unordered_map<SDL_KeyCode, EButton> keys;
+        static std::unordered_map<SDL_GameControllerAxis , EButton> positiveJoysticks;
+        static std::unordered_map<SDL_GameControllerAxis , EButton> negativeJoysticks;
 
         static std::unordered_map<std::string, ButtonAction> buttonActions;
         static std::unordered_map<std::string, AxisAction> axisActions;
 
         static std::list<EButtonState*> keyPressed;
 
-        static EnumArray < EButton, EButtonState, static_cast<size_t>(EButton::KEY_COUNT)> buttonStates;
+        static EnumArray < EButton, EButtonState, static_cast<size_t>(EButton::BUTTON_COUNT)> buttonStates;
 
         static MouseAction mouse;
         static bool allowListeningInputs;
+        static SDL_GameController* gamepad;
 
         /**
          * Change input's state to PRESSED and emplace a pointer into n pressed-key array.
