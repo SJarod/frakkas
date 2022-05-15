@@ -11,13 +11,16 @@ bool Inputs::quit = false;
 bool Inputs::allowListeningInputs = false;
 
 std::unordered_map<SDL_KeyCode, EButton> Inputs::keys {};
+std::unordered_map<SDL_GameControllerAxis , EButton> Inputs::positiveJoysticks {};
+std::unordered_map<SDL_GameControllerAxis , EButton> Inputs::negativeJoysticks {};
 
 std::unordered_map<std::string, ButtonAction> Inputs::buttonActions {};
 std::unordered_map<std::string, AxisAction> Inputs::axisActions {};
 std::list<EButtonState*> Inputs::keyPressed {};
 MouseAction Inputs::mouse {};
+SDL_GameController* Inputs::gamepad = nullptr;
 
-EnumArray<EButton, EButtonState, static_cast<size_t>(EButton::KEY_COUNT)> Inputs::buttonStates {};
+EnumArray<EButton, EButtonState, static_cast<size_t>(EButton::BUTTON_COUNT)> Inputs::buttonStates {};
 #pragma endregion
 
 void Inputs::KeyPressed(EButtonState& o_state)
@@ -38,7 +41,6 @@ void Inputs::CheckKeyPressed()
         it = keyPressed.erase(it);
     }
 }
-
 
 EButtonState* Inputs::GetButtonState(Game::EButton i_button)
 {
@@ -118,6 +120,22 @@ Inputs::Inputs()
     keys[SDLK_RIGHT] = EButton::ARROW_RIGHT;
     keys[SDLK_LEFT] = EButton::ARROW_LEFT;
     keys[SDLK_ESCAPE] = EButton::ESCAPE;
+
+    positiveJoysticks[SDL_CONTROLLER_AXIS_LEFTX] = EButton::LEFT_JOYSTICK_RIGHT;
+    positiveJoysticks[SDL_CONTROLLER_AXIS_LEFTY] = EButton::LEFT_JOYSTICK_DOWN;
+    positiveJoysticks[SDL_CONTROLLER_AXIS_RIGHTX] = EButton::RIGHT_JOYSTICK_RIGHT;
+    positiveJoysticks[SDL_CONTROLLER_AXIS_RIGHTY] = EButton::RIGHT_JOYSTICK_DOWN;
+
+    negativeJoysticks[SDL_CONTROLLER_AXIS_LEFTX] = EButton::LEFT_JOYSTICK_LEFT;
+    negativeJoysticks[SDL_CONTROLLER_AXIS_LEFTY] = EButton::LEFT_JOYSTICK_UP;
+    negativeJoysticks[SDL_CONTROLLER_AXIS_RIGHTX] = EButton::RIGHT_JOYSTICK_LEFT;
+    negativeJoysticks[SDL_CONTROLLER_AXIS_RIGHTY] = EButton::RIGHT_JOYSTICK_UP;
+}
+
+Inputs::~Inputs()
+{
+    //if (gamepad)
+    //    SDL_GameControllerClose(gamepad);
 }
 
 void Inputs::PollEvent(const InputsEvent& editorEvent)
@@ -132,24 +150,39 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
     mouse.position = Vector2(x, y);
     mouse.deltaMotion = Vector2(relX, relY);
 
+    /// OPEN GAMEPAD
+    if (!gamepad)
+    {
+        for (int i = 0; i < SDL_NumJoysticks(); i++)
+        {
+            if (SDL_IsGameController(i))
+            {
+                gamepad = SDL_GameControllerOpen(i);
+                break;
+            }
+        }
+    }
+
     /// INPTUS EVENT
     while (SDL_PollEvent(&event))
     {
         if (editorEvent) editorEvent(&event);
-        EButton key;
+        EButton button;
+        SDL_GameControllerAxis axis;
         switch(event.type)
         {
             case SDL_QUIT:
                 Inputs::quit = true;
                 break;
             case SDL_KEYDOWN:
-                key = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
-                KeyPressed(buttonStates[key]);
+                button = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
+                KeyPressed(buttonStates[button]);
                 break;
             case SDL_KEYUP:
-                key = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
-                buttonStates[key] = EButtonState::RELEASED;
+                button = keys[static_cast<SDL_KeyCode>(event.key.keysym.sym)];
+                buttonStates[button] = EButtonState::RELEASED;
                 break;
+
             case SDL_MOUSEMOTION:
                 //Log::Info(std::to_string(mouse.deltaMotion.x) + ", " + std::to_string(mouse.deltaMotion.y));
                 break;
@@ -173,6 +206,30 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
                     case SDL_BUTTON_RIGHT:  buttonStates[EButton::MOUSE_RIGHT] = EButtonState::RELEASED; break;
                     default: break;
                 }
+                break;
+
+            case SDL_CONTROLLERBUTTONDOWN:
+                button = static_cast<EButton>(event.cbutton.button + static_cast<Uint8>(EButton::GAMEPAD_A));
+                KeyPressed(buttonStates[button]);
+                break;
+            case SDL_CONTROLLERBUTTONUP:
+                button = static_cast<EButton>(event.cbutton.button + static_cast<Uint8>(EButton::GAMEPAD_A));
+                buttonStates[button] = EButtonState::RELEASED;
+                break;
+            case SDL_CONTROLLERAXISMOTION:
+                axis = static_cast<SDL_GameControllerAxis>(event.caxis.axis);
+
+                if (event.caxis.value < 0)
+                    button = negativeJoysticks[axis];
+                else
+                    button = positiveJoysticks[axis];
+
+
+                if (event.caxis.value < -20000 || event.caxis.value > 20000)
+                    KeyPressed(buttonStates[button]);
+                else
+                    buttonStates[button] = EButtonState::RELEASED;
+
                 break;
             default:
                 break;

@@ -21,13 +21,20 @@ const char* World::defaultScene = "default.kk";
 World::World(Engine& engine)
 {
 	// ADD DEFAULT AXIS AND BUTTON
-	Game::Inputs::SetButtonAction("quit", { Game::EButton::ESCAPE });
-	Game::Inputs::SetAxisAction("horizontal", { Game::EButton::ARROW_RIGHT, Game::EButton::D }, { Game::EButton::ARROW_LEFT, Game::EButton::A });
-	Game::Inputs::SetAxisAction("vertical", { Game::EButton::SPACE }, { Game::EButton::LEFT_CTRL });
-	Game::Inputs::SetAxisAction("forward", { Game::EButton::ARROW_UP, Game::EButton::W }, { Game::EButton::ARROW_DOWN, Game::EButton::S });
+	Inputs::SetButtonAction("quit", { EButton::ESCAPE });
+	Inputs::SetAxisAction("horizontal",
+                                { EButton::ARROW_RIGHT, EButton::LEFT_JOYSTICK_RIGHT, EButton::D, EButton::GAMEPAD_DPAD_RIGHT },
+                                { EButton::ARROW_LEFT, EButton::LEFT_JOYSTICK_LEFT, EButton::A, EButton::GAMEPAD_DPAD_LEFT });
+
+	Inputs::SetAxisAction("vertical",
+                          { EButton::SPACE }, { EButton::LEFT_CTRL });
+
+	Inputs::SetAxisAction("forward",
+                          { EButton::ARROW_UP, EButton::LEFT_JOYSTICK_UP, EButton::W, EButton::GAMEPAD_DPAD_UP },
+                          { EButton::ARROW_DOWN,EButton::LEFT_JOYSTICK_DOWN, EButton::S, EButton::GAMEPAD_DPAD_DOWN });
 
 	EntityManager& em = engine.entityManager;
-	Game::Entity* entity = nullptr;
+	Entity* entity = nullptr;
 	// CAMERA ENTITY
 #if true
 	{
