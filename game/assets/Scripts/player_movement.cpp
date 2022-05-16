@@ -12,8 +12,14 @@ KK_FIELD_IMPL(PlayerMovement, speed, EDataType::FLOAT)
 
 void PlayerMovement::OnUpdate()
 {
-    float xTranslation = Inputs::GetAxis("horizontal") * speed * Time::GetDeltaTime();
-    float zTranslation = Inputs::GetAxis("forward") * speed * Time::GetDeltaTime();
+    float xTranslation = Inputs::GetAxis("horizontal");
+    float zTranslation = Inputs::GetAxis("forward");
+
+    Vector2 gamepadDir = Inputs::GetLeftJoystickDirection();
+
+    xTranslation = Maths::Clamp( xTranslation + gamepadDir.x, -1.f, 1.f) * speed * Time::GetDeltaTime();
+    zTranslation = Maths::Clamp( zTranslation + gamepadDir.y, -1.f, 1.f) * speed * Time::GetDeltaTime();
+
     Vector3 translation = Vector3(xTranslation, 0.f, -zTranslation);
     Position() = Position().get() + translation;
 }

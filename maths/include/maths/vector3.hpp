@@ -2,6 +2,7 @@
 
 #include "maths/constants.hpp"
 
+struct Vector2;
 struct Vector4;
 struct Quaternion;
 
@@ -19,6 +20,7 @@ struct Vector3
 
     Vector3();
     Vector3(const float& i_x, const float& i_y, const float& i_z);
+    Vector3(const Vector2& i_v2);
     Vector3(const Vector4& i_v4);
 
 ////////////////////////////// CONSTANTS
@@ -112,6 +114,15 @@ struct Vector3
      * @param i_max maximum value to compare against
      */
     static Vector3 Clamp(const Vector3& i_v, float i_min, float i_max);
+
+    /**
+     * @breif Clamps the length of the input vector. This will change each coordinates.
+     * @param i_v The input constant vector to copy and clamp
+     * @param i_min The minimum length to clamp at
+     * @param i_max The maximum length to clamp at
+     * @return The length-clamped vector.
+     */
+    static Vector3 ClampLength(const Vector3& i_v, float i_min, float i_max);
 };
 
 template<typename T>

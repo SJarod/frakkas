@@ -1,5 +1,7 @@
 #pragma once
 
+struct Vector3;
+
 struct Vector2
 {
     union
@@ -13,6 +15,7 @@ struct Vector2
 
     Vector2();
     Vector2(const float& i_x, const float& i_y);
+    Vector2(const Vector3& i_v);
 
 ////////////////////////////// OPERATORS
 

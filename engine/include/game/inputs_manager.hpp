@@ -152,7 +152,20 @@ namespace Game
          */
         static Vector2 GetMouseDelta();
 
+        /**
+         * @return The normalized inclination-direction of the left joystick of the gamepad.
+         * Return null vector2 if no gamepad connected.
+         */
+        static Vector2 GetLeftJoystickDirection();
+        /**
+         * @return The normalized inclination-direction of the right joystick of the gamepad.
+         * Return null vector2 if no gamepad connected.
+         */
+        static Vector2 GetRightJoystickDirection();
+
     private:
+        static constexpr float SDLAxisMaxValue = static_cast<float>(SDL_MAX_SINT16);
+
         static std::unordered_map<SDL_KeyCode, EButton> keys;
         static std::unordered_map<SDL_GameControllerAxis , EButton> positiveJoysticks;
         static std::unordered_map<SDL_GameControllerAxis , EButton> negativeJoysticks;
@@ -165,6 +178,7 @@ namespace Game
         static EnumArray < EButton, EButtonState, static_cast<size_t>(EButton::BUTTON_COUNT)> buttonStates;
 
         static MouseAction mouse;
+        static JoystickAction joysticks;
         static bool allowListeningInputs;
         static SDL_GameController* gamepad;
 
@@ -198,6 +212,13 @@ namespace Game
          */
         static bool CheckAxisAction(const std::string& i_name);
 
+        /**
+         * @param i_currentValue The boolean to return if listening is enabled.
+         * @return false if listening disabled, else return the input value.
+         */
         static bool ApplyListeningCheck(bool i_currentValue = true);
+
+        // Update joysticks direction according to inputs down.
+        static void UpdateJoysticksDirection();
     };
 }

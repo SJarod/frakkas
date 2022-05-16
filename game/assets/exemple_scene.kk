@@ -3,12 +3,12 @@
 >childs
 	0
 >name
-	Camera entity
+	Camera
 >component_count
 	2
 >transform
 >position
-	0, 2, 5
+	0, 0, 0
 >rotation
 	0, 0, 0
 >scale
@@ -22,15 +22,19 @@
 	1000
 >fovY
 	90
->FPSMovement
+>FollowCamera
 >enabled
 	1
+>offset
+	0, 8, 6
+>lerpFactor
+	0.08
 
 >entity
 >childs
-	0
+	2
 >name
-	Bagpack
+	Player
 >component_count
 	2
 >transform
@@ -39,15 +43,7 @@
 >rotation
 	0, 0, 0
 >scale
-	0.01, 0.01, 0.01
->StaticDraw
->enabled
-	1
->model
->mesh_path
-	game/assets/bp.fbx
->texture_path
-	game/assets/bp.jpg
+	1, 1, 1
 >SphereCollider
 >enabled
 	1
@@ -55,42 +51,19 @@
 	0
 >trigger
 	0
-
->entity
->childs
-	0
->name
-	Super Bagpack
->component_count
-	2
->transform
->position
-	0, 5, 0
->rotation
+>PlayerMovement
+>enabled
+	1
+>startPosition
 	0, 0, 0
->scale
-	0.01, 0.01, 0.01
->StaticDraw
->enabled
-	1
->model
->mesh_path
-	game/assets/bp.fbx
->texture_path
-	game/assets/bp.jpg
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
+>speed
+	10
 
 >entity
 >childs
 	0
 >name
-	Banana
+	PlayerFX
 >component_count
 	1
 >transform
@@ -100,16 +73,36 @@
 	0, 0, 0
 >scale
 	1, 1, 1
->AnimatedDraw
+>StaticDraw
 >enabled
 	1
->skmodel
+>model
 >mesh_path
-	game/assets/fortnite.fbx
+	ProceduralSphere
 >texture_path
-	game/assets/fortnite.png
->animation_path
-	game/assets/fortnite.fbx
+	
+
+>entity
+>childs
+	0
+>name
+	PlayerTrigger
+>component_count
+	1
+>transform
+>position
+	0, 1, 0
+>rotation
+	0, 0, 0
+>scale
+	0.5, 2, 0.5
+>BoxCollider
+>enabled
+	1
+>isStatic
+	1
+>trigger
+	1
 
 >entity
 >childs
@@ -117,14 +110,22 @@
 >name
 	Ground
 >component_count
-	1
+	2
 >transform
 >position
-	0, -3, 0
+	0, -3.7, 0
 >rotation
-	0, 0, 0
+	0, 0.750492, 0
 >scale
-	10, 1, 10
+	20, 1, 20
+>StaticDraw
+>enabled
+	1
+>model
+>mesh_path
+	ProceduralCube
+>texture_path
+	
 >BoxCollider
 >enabled
 	1

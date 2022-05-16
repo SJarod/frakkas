@@ -18,6 +18,7 @@ std::unordered_map<std::string, ButtonAction> Inputs::buttonActions {};
 std::unordered_map<std::string, AxisAction> Inputs::axisActions {};
 std::list<EButtonState*> Inputs::keyPressed {};
 MouseAction Inputs::mouse {};
+JoystickAction Inputs::joysticks {};
 SDL_GameController* Inputs::gamepad = nullptr;
 
 EnumArray<EButton, EButtonState, static_cast<size_t>(EButton::BUTTON_COUNT)> Inputs::buttonStates {};
@@ -165,6 +166,11 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
     mouse.position = Vector2(x, y);
     mouse.deltaMotion = Vector2(relX, relY);
 
+    /// GAMEPAD JOYSTICKS RESET
+
+    if (gamepad)
+        UpdateJoysticksDirection();
+
     /// OPEN GAMEPAD
     if (!gamepad)
     {
@@ -178,12 +184,14 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
         }
     }
 
+
+    EButton button;
+    SDL_GameControllerAxis axis;
     /// INPTUS EVENT
     while (SDL_PollEvent(&event))
     {
         if (editorEvent) editorEvent(&event);
-        EButton button;
-        SDL_GameControllerAxis axis;
+
         switch(event.type)
         {
             case SDL_QUIT:
@@ -238,7 +246,6 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
                     button = negativeJoysticks[axis];
                 else
                     button = positiveJoysticks[axis];
-
 
                 if (event.caxis.value < -20000 || event.caxis.value > 20000)
                     KeyPressed(buttonStates[button]);
@@ -338,6 +345,18 @@ Vector2 Inputs::GetMouseDelta()
         return {};
 }
 
+Vector2 Inputs::GetLeftJoystickDirection()
+{
+    joysticks.leftJoystick = Vector3::ClampLength(joysticks.leftJoystick, 0.f, 1.f);
+    return joysticks.leftJoystick;
+}
+
+Vector2 Inputs::GetRightJoystickDirection()
+{
+    joysticks.leftJoystick = Vector3::ClampLength(joysticks.rightJoystick, 0.f, 1.f);
+    return joysticks.rightJoystick;
+}
+
 #pragma endregion
 
 bool Game::Inputs::CheckButtonAction(const std::string& i_name)
@@ -403,4 +422,22 @@ void Inputs::SetInputsListening(bool i_listening) noexcept
 bool Inputs::ApplyListeningCheck(bool i_currentValue)
 {
     return allowListeningInputs && i_currentValue;
+}
+
+void Inputs::UpdateJoysticksDirection()
+{
+    joysticks.leftJoystick = Vector2();
+    joysticks.rightJoystick = Vector2();
+
+    float normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTX)) / SDLAxisMaxValue;
+    joysticks.leftJoystick.x = normalizedAxisValue;
+
+    normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTY)) / SDLAxisMaxValue;
+    joysticks.leftJoystick.y = -normalizedAxisValue;
+
+    normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_RIGHTX)) / SDLAxisMaxValue;
+    joysticks.rightJoystick.x = normalizedAxisValue;
+
+    normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_RIGHTY)) / SDLAxisMaxValue;
+    joysticks.rightJoystick.y = -normalizedAxisValue;
 }
