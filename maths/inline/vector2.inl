@@ -1,3 +1,4 @@
+#include "maths/vector3.hpp"
 #include "maths/utils.hpp"
 
 ////////////////////////////// CONSTRUCTORS
@@ -8,6 +9,11 @@ inline Vector2::Vector2()
 inline Vector2::Vector2(const float& _x, const float& _y)
         : x(_x), y(_y)
 {}
+
+inline Vector2::Vector2(const Vector3& i_v)
+    :x(i_v.x), y(i_v.y)
+{}
+
 
 ////////////////////////////// OPERATORS
 

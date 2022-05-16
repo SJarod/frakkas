@@ -1,6 +1,9 @@
+#include "maths/vector2.hpp"
 #include "maths/vector4.hpp"
 #include "maths/quaternion.hpp"
 #include "maths/utils.hpp"
+#include "maths/vector3.hpp"
+
 
 ////////////////////////////// CONSTRUCTORS
 
@@ -12,6 +15,10 @@ inline Vector3::Vector3(const float& i_x, const float& i_y, const float& i_z)
 {}
 inline Vector3::Vector3(const Vector4& i_v4)
             : x(i_v4.x), y(i_v4.y), z(i_v4.z)
+{}
+
+inline Vector3::Vector3(const Vector2& i_v2)
+            : x(i_v2.x), y(i_v2.y), z(0.f)
 {}
 
 ////////////////////////////// VARIABLES
@@ -173,12 +180,12 @@ inline std::ostream& operator<<(std::ostream& o, const Vector3& vec)
 
 inline Vector3 Vector3::Normalize() const
 {
-    float mag = this->Length();
+    float length = Length();
 
-    if (mag == 0.f)
+    if (length == 0.f)
         return *this;
 
-    return *this / mag;
+    return *this / length;
 }
 
 inline Vector3 Vector3::Abs() const
@@ -228,4 +235,15 @@ inline Vector3 Vector3::Clamp(const Vector3& i_v, float i_min, float i_max)
     return Vector3(Maths::Clamp(i_v.x, i_min, i_max),
                    Maths::Clamp(i_v.y, i_min, i_max),
                    Maths::Clamp(i_v.z, i_min, i_max));
+}
+
+inline Vector3 Vector3::ClampLength(const Vector3& i_v, float i_min, float i_max)
+{
+    float length = i_v.Length();
+    if (length < i_min)
+        return i_v.Normalize() * i_min;
+    else if (length > i_max)
+        return i_v.Normalize() * i_max;
+
+    return i_v;
 }

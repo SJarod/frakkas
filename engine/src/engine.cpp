@@ -198,6 +198,7 @@ void Engine::RunGame()
 
 		// TODO : adaptative viewport
         //glViewport(0, 0, 1280, 720);
+        graph->RenderGame(*renderer, gameFBO->aspectRatio);
         renderer->RenderScreen();
         
         /// ENDFRAME
