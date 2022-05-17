@@ -8,7 +8,7 @@
 
 #include "engine.hpp"
 
-#include "Renderer/graph.hpp"
+#include "renderer/graph.hpp"
 #include "editor/editor_render.hpp"
 
 

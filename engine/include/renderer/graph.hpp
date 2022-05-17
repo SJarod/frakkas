@@ -32,7 +32,7 @@ namespace Renderer
     class Graph
     {
     public:
-        Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene);
+        Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer);
         ~Graph() = default;
 
         bool lightEnabled = true;
@@ -87,6 +87,7 @@ namespace Renderer
         static std::filesystem::path GetSceneFullPath(const std::string& i_sceneName) ;
     private:
         Game::EntityManager* entityManager;
+        Renderer::LowLevel::LowRenderer* renderer;
         static Physic::PhysicScene* physicScene;
 
         static bool updateCamera;

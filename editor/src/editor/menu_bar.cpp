@@ -206,17 +206,11 @@ void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_
             copyFile.close();
         }
     };
-    auto pastFunc = [&io_entityManager, &io_selectedEntity](){
-        if (io_selectedEntity)
-        {
-            std::ifstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
+    auto pastFunc = [&io_entityManager](){
+        std::ifstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
 
-            if (copyFile.is_open())
-            {
-                Game::Entity* entity = io_entityManager.CreateEntity("newEntity");
-                Resources::Serializer::ReadStandaloneEntity(copyFile, *entity);
-            }
-        }
+        if (copyFile.is_open())
+            Resources::Serializer::CreateAndReadEntity(copyFile, io_entityManager);
     };
 
     if (ImGui::BeginMenu("Edit"))
@@ -378,7 +372,6 @@ void MenuBar::CreateComponentPopup()
         ImGui::EndPopup();
     }
 }
-
 
 void Editor::MenuBar::LightingField(Engine& io_engine)
 {

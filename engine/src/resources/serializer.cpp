@@ -4,6 +4,7 @@
 #include "game/transform.hpp"
 #include "game/entity.hpp"
 #include "game/lowcomponent/component.hpp"
+#include "game/entity_manager.hpp"
 
 #include "resources/sound.hpp"
 
@@ -22,36 +23,36 @@ std::string Serializer::attribute;
 
 ///////////////////////// READ FUNCTIONS
 
-std::string& Resources::Serializer::GetAttribute(std::ifstream &i_file, std::string &o_attribute)
+std::string& Resources::Serializer::GetAttribute(std::ifstream& i_file)
 {
     if (i_file.eof())
     {
-        o_attribute = "End of file";
-        return o_attribute;
+        attribute = "End of file";
+        return attribute;
     }
 
-    std::getline(i_file, o_attribute);
+    std::getline(i_file, attribute);
 
-    if (o_attribute.empty() || o_attribute[0] != '>')
-        return GetAttribute(i_file, o_attribute); // Call Get attribute until we find an attribute.
+    if (attribute.empty() || attribute[0] != '>')
+        return GetAttribute(i_file); // Call Get attribute until we find an attribute.
 
 
-    o_attribute = o_attribute.substr(1);
-    return o_attribute;
+    attribute = attribute.substr(1);
+    return attribute;
 }
 
 void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
 {
     int componentCount = 0;
-    GetAttribute(i_file, attribute);
+    GetAttribute(i_file);
     Read(i_file, &componentCount, 1);
 
-    GetAttribute(i_file, attribute);
+    GetAttribute(i_file);
     Read(i_file, o_entity.transform);
 
     for (int i = 0; i < componentCount; i++)
     {
-        GetAttribute(i_file, attribute); // name of component
+        GetAttribute(i_file); // name of component
 
         auto& registry = Game::Component::GetRegistry();
         auto it = std::find_if(registry.begin(), registry.end(), [](ClassMetaData* md){return attribute == md->className;});
@@ -68,19 +69,41 @@ void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
     }
 }
 
-void Serializer::ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_entity)
+void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager& io_entityManager, Game::Entity* i_parent)
 {
-    std::string consumerStr;
-    std::getline(i_file, consumerStr); // empty line
-    std::getline(i_file, consumerStr); // useless entity flag attribute
-    std::getline(i_file, consumerStr); // useless childs attribute
-    std::getline(i_file, consumerStr); // childs value
-    Read(i_file, o_entity);
+    int childCount = 0;
+    GetAttribute(i_file); // '>entity'
+    if (attribute != "entity")
+        return;
+
+    GetAttribute(i_file); // '>childs'
+    if (attribute != "childs")
+        return;
+    Read(i_file, &childCount, 1);
+
+    std::string entityName;
+    GetAttribute(i_file); // '>name'
+    if (attribute != "name")
+        return;
+    Read(i_file, entityName);
+
+    Game::Entity* entity = io_entityManager.CreateEntity(entityName);
+
+    if (i_parent)
+        io_entityManager.SetEntityParent(*entity, *i_parent);
+
+    Read(i_file, *entity); // Read components
+
+    i_file.ignore(); // skip lines
+
+    // Load child which are the next written entities, and set this entity as parent.
+    for (int i = 0; i < childCount; i++)
+        CreateAndReadEntity(i_file, io_entityManager, entity);
 }
 
 void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const ClassMetaData& i_metaData, bool& o_enabled)
 {
-    GetAttribute(i_file, attribute);
+    GetAttribute(i_file);
     Read(i_file, o_enabled);
     Read(i_file, o_component, i_metaData);
 }
@@ -96,7 +119,7 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
 
         unsigned char* componentData = o_component + desc.offset;
 
-        GetAttribute(i_file, attribute);
+        GetAttribute(i_file);
         if (attribute == desc.name)
         {
             switch (desc.dataType)
@@ -147,7 +170,7 @@ void Serializer::Read(std::ifstream& i_file, Game::Transform& o_transform)
 {
     for(int i = 0; i < 3; i++)
     {
-        GetAttribute(i_file, attribute);
+        GetAttribute(i_file);
         if (attribute == "position")
         {
             Vector3 position = o_transform.position;
@@ -171,10 +194,9 @@ void Serializer::Read(std::ifstream& i_file, Game::Transform& o_transform)
 
 void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
 {
-    std::string attribute;
     for (int i = 0; i < 11; i++)
     {
-        GetAttribute(i_file, attribute);
+        GetAttribute(i_file);
         if (attribute == "position")
             Read(i_file, o_light.position.element, 4);
         else if (attribute == "ambient")
@@ -204,8 +226,8 @@ void Serializer::Read(std::ifstream& i_file, Sound& o_sound)
 {
     for (int i = 0; i < 2; ++i)
     {
-        GetAttribute(i_file, attribute);
-        if(attribute == "sound_path")
+        GetAttribute(i_file);
+        if(attribute == "soundPath")
             Read(i_file, o_sound.soundPath);
         else if (attribute == "volume")
             Read(i_file, &o_sound.volume);
@@ -220,10 +242,10 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Model& o_model)
     std::string meshPath, texturePath;
     for (int i = 0; i < 2; ++i)
     {
-        GetAttribute(i_file, attribute);
-        if (attribute == "mesh_path")
+        GetAttribute(i_file);
+        if (attribute == "name")
             Read(i_file, meshPath);
-        else if (attribute == "texture_path")
+        else if (attribute == "textureName")
             Read(i_file, texturePath);
     }
 
@@ -240,12 +262,12 @@ void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
     std::string meshPath, texturePath, animationPath;
     for (int i = 0; i < 3; ++i)
     {
-        GetAttribute(i_file, attribute);
-        if (attribute == "mesh_path")
+        GetAttribute(i_file);
+        if (attribute == "name")
             Read(i_file, meshPath);
-        else if (attribute == "texture_path")
+        else if (attribute == "textureName")
             Read(i_file, texturePath);
-        else if (attribute == "animation_path")
+        else if (attribute == "animationFilename")
             Read(i_file, animationPath);
     }
 
@@ -284,6 +306,9 @@ void Serializer::Write(std::ofstream& io_file, const Game::Entity& i_entity)
 
     for(const std::unique_ptr<Game::Component>& comp : i_entity.components)
         Write(io_file, reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), comp->enabled.get());
+
+    for (const Game::Entity* child : i_entity.childs)
+        Write(io_file, *child);
 }
 
 void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const ClassMetaData& i_metaData, bool i_enabled)
@@ -387,19 +412,19 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "ambient", i_light.ambient.element, 3);
     Write(io_file, "diffuse", i_light.diffuse.element, 3);
     Write(io_file, "specular", i_light.specular.element, 3);
-    Write(io_file, "toonShading", &i_light.toonShading, 1);
-    Write(io_file, "stepAmount", &i_light.stepAmount, 1);
-    Write(io_file, "stepSize", &i_light.stepSize, 1);
-    Write(io_file, "specSize", &i_light.specSize, 1);
-    Write(io_file, "outline", &i_light.shadow, 1);
-    Write(io_file, "outline", &i_light.adaptativeBias, 1);
-    Write(io_file, "outline", &i_light.shadowBias, 1);
+    Write(io_file, "toonShading", &i_light.toonShading);
+    Write(io_file, "stepAmount", &i_light.stepAmount);
+    Write(io_file, "stepSize", &i_light.stepSize);
+    Write(io_file, "specSize", &i_light.specSize);
+    Write(io_file, "shadow", &i_light.shadow);
+    Write(io_file, "adapativeBias", &i_light.adaptativeBias);
+    Write(io_file, "shadowBias", &i_light.shadowBias);
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound)
 {
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "sound_path", i_sound.soundPath);
+    Write(io_file, "soundPath", i_sound.soundPath);
     Write(io_file, "volume", &i_sound.volume);
 }
 
@@ -407,15 +432,15 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
 {
     bool meshExists = i_model.mesh ? true : false;
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "mesh_path", meshExists ? i_model.mesh->name : "none");
-    Write(io_file, "texture_path", meshExists ? i_model.mesh->textureName : "none");
+    Write(io_file, "name", meshExists ? i_model.mesh->name : "none");
+    Write(io_file, "textureName", meshExists ? i_model.mesh->textureName : "none");
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)
 {
     bool meshExists = i_skmodel.skmesh ? true : false;
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "mesh_path", meshExists ? i_skmodel.skmesh->name : "none");
-    Write(io_file, "texture_path", meshExists ? i_skmodel.skmesh->textureName : "none");
-    Write(io_file, "animation_path", i_skmodel.skpack ? i_skmodel.skpack->animationFilename : "none");
+    Write(io_file, "name", meshExists ? i_skmodel.skmesh->name : "none");
+    Write(io_file, "textureName", meshExists ? i_skmodel.skmesh->textureName : "none");
+    Write(io_file, "animationFilename", i_skmodel.skpack ? i_skmodel.skpack->animationFilename : "none");
 }
