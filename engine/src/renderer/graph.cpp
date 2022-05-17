@@ -27,8 +27,8 @@ std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
 bool Graph::updateCamera = true;
 
-Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene)
-    :entityManager(io_entityManager), editorCameraman(0, "Editor cameraman")
+Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer)
+    :entityManager(io_entityManager), editorCameraman(0, "Editor cameraman"), renderer(i_renderer)
 {
     physicScene = i_physicScene;
     editorCameraman.transform.position = Vector3::forward * 4.f;
@@ -227,6 +227,15 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath)
         renderEntities.clear();
         physicScene->Clear();
 
+        // Read light information
+        if (Serializer::GetAttribute(file) == "light")
+            Serializer::Read(file, light);
+
+        if (Serializer::GetAttribute(file) == "shadowRange")
+            Serializer::Read(file, &renderer->shadowRange);
+        if (Serializer::GetAttribute(file) == "shadowDepth")
+            Serializer::Read(file, &renderer->shadowDepth);
+
         // Parse file to create entities
         entityManager->LoadEntities(file);
 
@@ -241,20 +250,17 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath)
     }
 }
 
-// Save an entity in text format, function to simplify SaveScene()
-inline void SaveEntity(std::ofstream& i_file, const Entity& i_entity)
-{
-    Serializer::Write(i_file, i_entity);
-    for (const Entity* child : i_entity.childs)
-        SaveEntity(i_file, *child);
-}
-
 void Graph::SaveScene() const
 {
     std::ofstream file(currentScenePath);
 
+    Serializer::Write(file, "light", light);
+
+    Serializer::Write(file, "shadowRange", renderer->shadowRange);
+    Serializer::Write(file, "shadowDepth", renderer->shadowDepth);
+
     for (const auto& pair : entityManager->GetRootEntities())
-        SaveEntity(file, *pair.second);
+        Serializer::Write(file, *pair.second);
 
     Log::Info("Save scene ", currentScenePath);
 }

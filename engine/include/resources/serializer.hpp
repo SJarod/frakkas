@@ -35,15 +35,18 @@ namespace Resources
     class Sound;
     class Serializer
     {
-    public: /// READ FUNCTIONS
+    public:
+        // Store the current read-variable name
+        static std::string attribute;
 
+    public: /// READ FUNCTIONS
         /**
          *
          * @param i_file the opened input file to read line
          * @param o_attribute the output attribute's name
          * @return the output attribute's name. So that we can use this function in condition structure.
          */
-        static std::string& GetAttribute(std::ifstream& i_file, std::string& o_attribute);
+        static std::string& GetAttribute(std::ifstream& i_file);
 
         /**
          * @brief read all the components of an Entity
@@ -53,11 +56,12 @@ namespace Resources
         static void Read(std::ifstream& i_file, Game::Entity& o_entity);
 
         /**
-         * @brief read all the information about an Entity not store in a scene file.
+         * @brief Read all the information about an Entity and create it into entity manager.
          * @param i_file The opened input file
-         * @param o_entity The entity to build
+         * @param io_entityManager The entity manager to create entity
+         * @param i_parent A parent entity to set to the created entity. Can be nullptr.
          */
-        static void ReadStandaloneEntity(std::ifstream& i_file, Game::Entity& o_entity);
+        static void CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager& io_entityManager, Game::Entity* i_parent = nullptr);
 
         /**
          * @brief read a component and store data in an unsigned char pointer.
@@ -216,9 +220,6 @@ namespace Resources
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel);
     private:
-
-        static std::string attribute;
-
         /**
          * @return '\t', so a tabulation in character format. Useful to write tabulation with std::cout
          */

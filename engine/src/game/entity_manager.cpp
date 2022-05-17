@@ -1,4 +1,3 @@
-#include <cassert>
 #include <fstream>
 
 #include "resources/serializer.hpp"
@@ -68,7 +67,7 @@ void Game::EntityManager::RemoveEntityAt(const EntityIdentifier& i_id)
     {
         Log::Info("Remove entity '", entityStore.entities[index]->name, "'");
 
-        ForgetEntity(*entityStore.entities[index].get());
+        ForgetEntity(*entityStore.entities[index]);
     }
 }
 
@@ -119,39 +118,6 @@ Entity* Game::EntityManager::FindEntityWithID(const EntityIdentifier& i_id)
     return entityStore.FindEntityWithID(i_id);
 }
 
-void EntityManager::LoadEntity(std::ifstream& i_file, Entity* i_parent)
-{
-    std::string attribute;
-    int childCount = 0;
-    Resources::Serializer::GetAttribute(i_file, attribute); // '>entity'
-    if (attribute != "entity")
-        return;
-
-    Resources::Serializer::GetAttribute(i_file, attribute); // '>childs'
-    if (attribute != "childs")
-        return;
-    Resources::Serializer::Read(i_file, &childCount, 1);
-
-    std::string entityName;
-    Resources::Serializer::GetAttribute(i_file, attribute); // '>name'
-    if (attribute != "name")
-        return;
-    Resources::Serializer::Read(i_file, entityName);
-
-    Entity* entity = CreateEntity(entityName);
-
-    if (i_parent)
-        SetEntityParent(*entity, *i_parent);
-
-    Resources::Serializer::Read(i_file, *entity); // Read components 
-
-    i_file.ignore(); // skip lines
-
-    // Load child which are the next written entities, and set this entity as parent.
-    for (int i = 0; i < childCount; i++)
-        LoadEntity(i_file, entity);
-}
-
 void EntityManager::LoadEntities(std::ifstream& i_file)
 {
     // Reset
@@ -159,9 +125,7 @@ void EntityManager::LoadEntities(std::ifstream& i_file)
     // Load
     i_file.ignore(); // skip empty lines
     while (!i_file.eof())
-    {
-        LoadEntity(i_file, nullptr);
-    }
+        Resources::Serializer::CreateAndReadEntity(i_file, *this, nullptr);
 }
 
 void Game::EntityManager::ClearEntities()

@@ -99,12 +99,5 @@ namespace Game
          * @return The index in the entities array. Return -1 if index out of bound.
          */
         int FindEntityIndex(const EntityIdentifier& i_id);
-
-        /**
-         * @brief Read the entity's data from an input file, and set the parent if exists.
-         * @param i_file The opened input file.
-         * @param i_parent The parent to set if it is not nullptr.
-         */
-        void LoadEntity(std::ifstream& i_file, Entity* i_parent);
     };
 }

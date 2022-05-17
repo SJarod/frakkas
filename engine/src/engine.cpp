@@ -39,7 +39,7 @@ Engine::Engine()
     editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
 
-    graph = std::make_unique<Renderer::Graph>(&entityManager, &physicScene);
+    graph = std::make_unique<Renderer::Graph>(&entityManager, &physicScene, renderer.get());
 }
 
 Engine::~Engine()

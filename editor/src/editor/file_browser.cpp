@@ -1,27 +1,37 @@
 #include <imgui.h>
 
-#include "resources/resources_manager.hpp"
-
 #include "editor/file_browser.hpp"
-
 
 using namespace Editor;
 
-
 extern const std::filesystem::path g_assetPath = "game/assets";
 
-FileBrowser::FileBrowser() : m_currentDirectory(g_assetPath)
+FileBrowser::FileBrowser() : m_currentDirectory(g_assetPath),
+    m_directoryIcon("editor/assets/DirectoryIcon.png", true),
+    m_fileIcon("editor/assets/FileIcon.png", true),
+    m_wavIcon("editor/assets/WAVicon.png", true),
+    m_mp3Icon("editor/assets/MP3icon.png", true),
+    m_objIcon("editor/assets/OBJicon.png", true),
+    m_fbxIcon("editor/assets/FBXicon.png", true),
+    m_gltfIcon("editor/assets/GLTFicon.png", true),
+    m_pngIcon("editor/assets/PNGicon.png", true),
+    m_jpgIcon("editor/assets/JPGicon.png", true),
+    m_kkIcon("editor/assets/KKicon.png", true),
+    m_cppIcon("editor/assets/CPPicon.png", true),
+    m_hppIcon("editor/assets/HPPicon.png", true)
 {
-    m_directoryIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/DirectoryIcon.png", true);
-    m_fileIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/FileIcon.png", true);
-    m_wavIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/WAVicon.png", true);
-    m_mp3Icon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/MP3icon.png", true);
-    m_objIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/OBJicon.png", true);
-    m_fbxIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/FBXicon.png", true);
-    m_gltfIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/GLTFicon.png", true);
-    m_pngIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/PNGicon.png", true);
-    m_jpgIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/JPGicon.png", true);
-    m_kkIcon = ResourcesManager::LoadResource<Resources::Texture>("editor/assets/KKicon.png", true);
+    m_directoryIcon.LoadFromInfo();
+    m_fileIcon.LoadFromInfo();
+    m_wavIcon.LoadFromInfo();
+    m_mp3Icon.LoadFromInfo();
+    m_objIcon.LoadFromInfo();
+    m_fbxIcon.LoadFromInfo();
+    m_gltfIcon.LoadFromInfo();
+    m_pngIcon.LoadFromInfo();
+    m_jpgIcon.LoadFromInfo();
+    m_kkIcon.LoadFromInfo();
+    m_cppIcon.LoadFromInfo();
+    m_hppIcon.LoadFromInfo();
 }
 
 void FileBrowser::OnImGuiRender()
@@ -50,23 +60,24 @@ void FileBrowser::OnImGuiRender()
 	if (columnCount < 1)
 		columnCount = 1;
 
-	ImGui::Columns(columnCount, 0, false);
+	ImGui::Columns(columnCount, nullptr, false);
 
 	// Navigate through assets directory
 	for (const auto& entry : std::filesystem::directory_iterator(m_currentDirectory))
     {
-        const std::filesystem::path& path = entry.path();
+        std::filesystem::path path = entry.path();
+        path.make_preferred();
         std::string filenameString = entry.path().filename().string();
 
         ImGui::PushID(filenameString.c_str());
 
         // Add button texture
-        std::shared_ptr<Resources::Texture> icon = ButtonIcon(entry);
+        Resources::Texture& icon = ButtonIcon(entry);
 
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
-        if (icon && icon->gpu)
-            ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon->gpu->data), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+        if (icon.gpu)
+            ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon.gpu->data), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
 
         if (ImGui::BeginDragDropSource())
         {
@@ -82,6 +93,11 @@ void FileBrowser::OnImGuiRender()
         {
             if (entry.is_directory())
                 m_currentDirectory /= path.filename();
+            else
+            {
+                std::string openPath = "\"" + path.string() + "\"";
+                std::system(openPath.c_str());
+            }
         }
         ImGui::TextWrapped("%s", filenameString.c_str());
 
@@ -114,7 +130,7 @@ void FileBrowser::OptionsField(float* io_padding, float* io_thumbnailSize)
 	ImGui::EndMainMenuBar();
 }
 
-std::shared_ptr<Resources::Texture> FileBrowser::ButtonIcon(const std::filesystem::directory_entry& entry)
+Resources::Texture& FileBrowser::ButtonIcon(const std::filesystem::directory_entry& entry)
 {
     if (entry.is_directory())
         return m_directoryIcon;
@@ -134,6 +150,10 @@ std::shared_ptr<Resources::Texture> FileBrowser::ButtonIcon(const std::filesyste
         return m_jpgIcon;
     else if (entry.path().extension() == ".kk")
         return m_kkIcon;
+    else if (entry.path().extension() == ".cpp")
+        return m_cppIcon;
+    else if (entry.path().extension() == ".hpp")
+        return m_hppIcon;
     else
         return m_fileIcon;
 }

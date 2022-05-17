@@ -21,17 +21,19 @@ namespace Editor
     private:
         std::filesystem::path m_currentDirectory;
 
-        std::shared_ptr<Resources::Texture> m_directoryIcon;
-        std::shared_ptr<Resources::Texture> m_fileIcon;
+        Resources::Texture m_directoryIcon;
+        Resources::Texture m_fileIcon;
 
-        std::shared_ptr<Resources::Texture> m_wavIcon;
-        std::shared_ptr<Resources::Texture> m_mp3Icon;
-        std::shared_ptr<Resources::Texture> m_objIcon;
-        std::shared_ptr<Resources::Texture> m_fbxIcon;
-        std::shared_ptr<Resources::Texture> m_gltfIcon;
-        std::shared_ptr<Resources::Texture> m_pngIcon;
-        std::shared_ptr<Resources::Texture> m_jpgIcon;
-        std::shared_ptr<Resources::Texture> m_kkIcon;
+        Resources::Texture m_wavIcon;
+        Resources::Texture m_mp3Icon;
+        Resources::Texture m_objIcon;
+        Resources::Texture m_fbxIcon;
+        Resources::Texture m_gltfIcon;
+        Resources::Texture m_pngIcon;
+        Resources::Texture m_jpgIcon;
+        Resources::Texture m_kkIcon;
+        Resources::Texture m_cppIcon;
+        Resources::Texture m_hppIcon;
 
         /**
         * @summary Add "Options" field to Main menu bar to modify buttons size and padding
@@ -43,6 +45,6 @@ namespace Editor
         /**
         * @summary Change button texture depending file extension
         */
-        std::shared_ptr<Resources::Texture> ButtonIcon(const std::filesystem::directory_entry& entry);
+        Resources::Texture& ButtonIcon(const std::filesystem::directory_entry& entry);
     };
 }
