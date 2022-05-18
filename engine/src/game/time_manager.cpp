@@ -14,7 +14,7 @@ void Time::NewFrame()
 {
     previousTime = time;
     time = SDL_GetTicks() / 1000.f;
-    deltaTime = (time - previousTime) * timeScale;
+    deltaTime = (time - previousTime);
 }
 
 float Time::GetTime()
@@ -24,12 +24,22 @@ float Time::GetTime()
 
 float Time::GetDeltaTime()
 {
+    return deltaTime * timeScale;
+}
+
+float Time::GetRawDeltaTime()
+{
     return deltaTime;
 }
 
 float Time::GetFixedDeltaTime()
 {
     return fixedDeltaTime * timeScale;
+}
+
+float Time::GetRawFixedDeltaTime()
+{
+    return fixedDeltaTime;
 }
 
 float Time::GetTimeScale()

@@ -104,38 +104,35 @@ void KeyFrameBone::InterpolateTransform(const float animationTime, Matrix4& t, M
 
 int KeyFrameBone::GetPositionKeyFrame(const float animationTime) const
 {
-	int size = positions.size() - 1;
-	for (int index = 0; index < size; ++index)
+	int size = positions.size();
+	for (int index = 0; index < size - 1; ++index)
 	{
 		if (animationTime < positions[index + 1].timeStamp)
 			return index;
 	}
-	assert(0);
-    return -1;
+    return size - 1;
 }
 
 int KeyFrameBone::GetRotationKeyFrame(const float animationTime) const
 {
-	int size = rotations.size() - 1;
-	for (int index = 0; index < size; ++index)
+	int size = rotations.size();
+	for (int index = 0; index < size - 1; ++index)
 	{
 		if (animationTime < rotations[index + 1].timeStamp)
 			return index;
 	}
-	assert(0);
-    return -1;
+    return size - 1;
 }
 
 int KeyFrameBone::GetScaleKeyFrame(const float animationTime) const
 {
-	int size = scales.size() - 1;
-	for (int index = 0; index < size; ++index)
+	int size = scales.size();
+	for (int index = 0; index < size - 1; ++index)
 	{
 		if (animationTime < scales[index + 1].timeStamp)
 			return index;
 	}
-	assert(0);
-    return -1;
+    return size - 1;
 }
 
 const std::string& KeyFrameBone::GetName() const
@@ -266,6 +263,7 @@ void SkeletalAnimationPack::LoadFromInfo()
 
 	ResourcesManager::AddCPULoadingTask([this]() {
 		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 		const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
 		if (!scene || !scene->mRootNode)
 		{

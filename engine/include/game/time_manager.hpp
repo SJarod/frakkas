@@ -11,22 +11,35 @@ namespace Game
         void NewFrame();
 
         /**
-         * @return the time passed from the launch of the program
+         * @return the program execution time
          */
         static float GetTime();
+
         /**
-         * @return the current frame time, useful to
+         * @return the current frame time, affected by the time scale
          */
         static float GetDeltaTime();
+
         /**
-         * @return the time passed from the launch of the program
+         * @return the real frame time, not affected by the time scale
+         */
+        static float GetRawDeltaTime();
+
+        /**
+         * @return the fixed frame time, affected by the time scale
          */
         static float GetFixedDeltaTime();
+
+        /**
+         * @return the fixed frame time, not affected by the time scale
+         */
+        static float GetRawFixedDeltaTime();
 
         /**
          * @return the time scale factor that is applied on delta time to control frame speed.
          */
         static float GetTimeScale();
+
         /**
          * @brief set the time scale factor, should stay 1 to have regular speed but you can make slow/fast motion or even pause the game.
          */

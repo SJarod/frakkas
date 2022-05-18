@@ -109,8 +109,7 @@ namespace Renderer
 		public:
 			bool outline = true;
 			//shadow rendering values
-			float shadowRange = 50.f;
-			float shadowDepth = 50.f;
+			float shadowDistance = 20.f;
 
 			std::unique_ptr<Renderer::LowLevel::DepthFramebuffer> depthMapFBO;
 			std::unique_ptr<Renderer::LowLevel::Framebuffer> firstPassFBO;

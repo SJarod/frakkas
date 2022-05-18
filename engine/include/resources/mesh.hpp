@@ -38,9 +38,6 @@ namespace Resources
 
 		GPUMesh gpu;
 
-		// TODO : vector of Texture
-		std::shared_ptr<Texture> diffuseTex;
-
 		/**
 		 * Get the size of this submesh.
 		 */
@@ -95,21 +92,6 @@ namespace Resources
 		 */
 		void ParseSubmesh(Submesh& io_submesh);
 
-		/**
-		 * Load texture from Assimp's meshes.
-		 *
-		 * @param o_texture
-		 * @param i_aiMaterial
-		 * @param i_aiScene
-		 * @param i_aiType
-		 * @param i_type
-		 */
-		void LoadEmbeddedTexture(std::shared_ptr<Texture>& o_texture,
-			const aiMaterial& i_mat,
-			const aiScene& i_scene,
-			const aiTextureType i_aiType,
-			const ETextureType i_type);
-
 		////////////////////////////////////////////// PROCEDURAL LOADING
 
 		/**
@@ -136,14 +118,10 @@ namespace Resources
         void LoadLineSphere(float i_radius = 1.f);
 
 	public:
-        std::string textureName = "";
-        bool		flipTexture = false;
-
 		// Every submeshes that this mesh possesses.
 		std::list<std::shared_ptr<Submesh>> submeshes;
 
 		Mesh(const std::string& i_name);
-		Mesh(const std::string& i_name, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		void LoadFromInfo() override;
 

@@ -126,9 +126,9 @@ namespace Helpers
     /**
      * @brief ImGui editing function. Allows the player to change light parameters.
      * @param io_engine the engine containing the light
-     * @param i_menuWidth a float measuring the size of the menu, used for displaying the depth map
+     * @param o_showMap should the shadow map be displayed ?
      */
-    void Edit(Engine& io_engine, const float i_menuWidth);
+    void Edit(Engine& io_engine, bool& o_showMap);
 
     /**
     * @brief ImGui editing function. Allows the player to change sound parameters.

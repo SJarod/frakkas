@@ -19,12 +19,6 @@ Resources::Mesh::Mesh(const std::string& i_name)
 	name = i_name;
 }
 
-Resources::Mesh::Mesh(const std::string& i_name, const std::string& i_textureFilename, const bool i_flipTexture)
-	: textureName(i_textureFilename), flipTexture(i_flipTexture)
-{
-	name = i_name;
-}
-
 void Resources::Mesh::LoadFromInfo()
 {
 	resourceType = EResourceType::MESH;
@@ -110,23 +104,6 @@ void Resources::Mesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_mesh,
 		for (unsigned int j = 0; j < face.mNumIndices; ++j)
 			o_mesh->indices.emplace_back(face.mIndices[j]);
 	}
-
-	//if no texture file specified, try to load embedded textures
-	if (textureName == "")
-	{
-		// process materials/textures
-		for (unsigned int i = 0; i < i_scene.mNumMaterials; ++i)
-		{
-			aiMaterial* material = i_scene.mMaterials[i_aim.mMaterialIndex];
-
-			// TODO : give mesh an array of textures
-			LoadEmbeddedTexture(o_mesh->diffuseTex, *material, i_scene, aiTextureType_DIFFUSE, ETextureType::TEXTURE_DIFFUSE);
-		}
-	}
-	else
-	{
-		o_mesh->diffuseTex = ResourcesManager::LoadResource<Texture>(textureName, flipTexture);
-	}
 }
 
 void Resources::Mesh::ProcessAiNode(std::list<std::shared_ptr<Submesh>>& o_meshes,
@@ -176,21 +153,6 @@ void Resources::Mesh::ParseSubmesh(Submesh& io_mesh)
 	}
 }
 
-void Resources::Mesh::LoadEmbeddedTexture(std::shared_ptr<Texture>& o_texture,
-	const aiMaterial& i_mat,
-	const aiScene& i_scene,
-	const aiTextureType i_aiType,
-	const ETextureType i_type)
-{
-	for (unsigned int i = 0; i < i_mat.GetTextureCount(i_aiType); ++i)
-	{
-		aiString str;
-		i_mat.GetTexture(i_aiType, i, &str);
-
-		o_texture = ResourcesManager::LoadResource<Texture>(std::string(str.C_Str()), flipTexture);
-	}
-}
-
 void Resources::Mesh::LoadCube()
 {
 	Submesh mesh;
@@ -210,6 +172,7 @@ void Resources::Mesh::LoadCube()
 	{
 		Vertex v;
 		v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
+		v.normal = v.position;
 
 		mesh.vertices.emplace_back(v);
 	}
@@ -235,6 +198,44 @@ void Resources::Mesh::LoadCube()
 	}
 
 	ParseSubmesh(mesh);
+
+	mesh.vertices[0].uv  = {  0.5f, 0.33f };
+	mesh.vertices[1].uv  = {  0.5f,   0.f };
+	mesh.vertices[2].uv  = { 0.25f,   0.f };
+	mesh.vertices[3].uv  = { 0.25f,   0.f };
+	mesh.vertices[4].uv  = { 0.25f, 0.33f };
+	mesh.vertices[5].uv  = {  0.5f, 0.33f };
+	mesh.vertices[6].uv  = { 0.25f,   1.f };
+	mesh.vertices[7].uv  = {  0.5f,   1.f };
+	mesh.vertices[8].uv  = {  0.5f, 0.66f };
+	mesh.vertices[9].uv  = {  0.5f, 0.66f };
+	mesh.vertices[10].uv = { 0.25f, 0.66f };
+	mesh.vertices[11].uv = { 0.25f,   1.f };
+	mesh.vertices[12].uv = { 0.25f, 0.33f };
+	mesh.vertices[13].uv = { 0.25f, 0.66f };
+	mesh.vertices[14].uv = {  0.5f, 0.66f };
+	mesh.vertices[15].uv = {  0.5f, 0.66f };
+	mesh.vertices[16].uv = {  0.5f, 0.33f };
+	mesh.vertices[17].uv = { 0.25f, 0.33f };
+	mesh.vertices[18].uv = { 0.75f, 0.66f };
+	mesh.vertices[19].uv = {   1.f, 0.66f };
+	mesh.vertices[20].uv = {   1.f, 0.33f };
+	mesh.vertices[21].uv = {   1.f, 0.33f };
+	mesh.vertices[22].uv = { 0.75f, 0.33f };
+	mesh.vertices[23].uv = { 0.75f, 0.66f };
+	mesh.vertices[24].uv = { 0.75f, 0.33f };
+	mesh.vertices[25].uv = {  0.5f, 0.33f };
+	mesh.vertices[26].uv = {  0.5f, 0.66f };
+	mesh.vertices[27].uv = {  0.5f, 0.66f };
+	mesh.vertices[28].uv = { 0.75f, 0.66f };
+	mesh.vertices[29].uv = { 0.75f, 0.33f };
+	mesh.vertices[30].uv = {   0.f, 0.33f };
+	mesh.vertices[31].uv = {   0.f, 0.66f };
+	mesh.vertices[32].uv = { 0.25f, 0.66f };
+	mesh.vertices[33].uv = { 0.25f, 0.66f };
+	mesh.vertices[34].uv = { 0.25f, 0.33f };
+	mesh.vertices[35].uv = {   0.f, 0.33f };
+
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
 	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
 	ComputeMemorySize();

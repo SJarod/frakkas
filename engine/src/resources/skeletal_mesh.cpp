@@ -10,11 +10,6 @@ SkeletalMesh::SkeletalMesh(const std::string& i_name)
 {
 }
 
-SkeletalMesh::SkeletalMesh(const std::string& i_name, const std::string& i_textureName, const bool i_flipTexture)
-	: Mesh(i_name, i_textureName, i_flipTexture)
-{
-}
-
 void SkeletalMesh::LoadFromInfo()
 {
 	resourceType = EResourceType::SKELETALMESH;
@@ -94,23 +89,6 @@ void SkeletalMesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_submesh,
 		aiFace face = i_aim.mFaces[i];
 		for (unsigned int j = 0; j < face.mNumIndices; ++j)
 			o_submesh->indices.emplace_back(face.mIndices[j]);
-	}
-
-	//if no texture file specified, try to load embedded textures
-	if (textureName == "")
-	{
-		// process materials/textures
-		for (unsigned int i = 0; i < i_scene.mNumMaterials; ++i)
-		{
-			aiMaterial* material = i_scene.mMaterials[i_aim.mMaterialIndex];
-
-			// TODO : give mesh an array of textures
-			LoadEmbeddedTexture(o_submesh->diffuseTex, *material, i_scene, aiTextureType_DIFFUSE, ETextureType::TEXTURE_DIFFUSE);
-		}
-	}
-	else
-	{
-		o_submesh->diffuseTex = ResourcesManager::LoadResource<Texture>(textureName, flipTexture);
 	}
 }
 

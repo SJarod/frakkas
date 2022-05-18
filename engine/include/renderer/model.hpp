@@ -9,6 +9,7 @@
 namespace Resources
 {
     class Mesh;
+	class Texture;
     class Serializer;
 }
 
@@ -20,6 +21,12 @@ namespace Renderer
 		std::shared_ptr<Resources::Shader> lightDepthShader;
 
 		std::shared_ptr<Resources::Mesh> mesh;
+
+		std::string textureName = "";
+		bool		flipTexture = false;
+
+		// TODO : vector of Texture
+		std::shared_ptr<Resources::Texture> diffuseTex;
 
 		Model();
 
@@ -53,20 +60,11 @@ namespace Renderer
 		void SetMeshFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
-		 * @Summary Set a texture after the creation of this model object.
-		 *
-		 * @param i_textureFilename
-		 * @param i_flipTexture
-		 * @param i_submeshIndex
-		 */
-		void SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_submeshIndex) const;
-
-		/**
 		 * @brief Set one texture to every submesh of the model's mesh.
 		 * @param i_textureFilename The path from Engine root to the texture
 		 * @param i_flipTexture Is the texture flip horizontally or not:
 		 */
-		void SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const;
+		void SetTexture(const std::string& i_textureFilename, const bool i_flipTexture);
 
         /**
          * @Summary Setup entity components from input file.

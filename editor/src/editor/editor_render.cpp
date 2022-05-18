@@ -59,7 +59,7 @@ void EditorRender::InitImGui(Engine& io_engine)
         if (!m_scene.isMoving) return;
 
         Game::Transform& camTrs = io_engine.GetEditorCameraTransform();
-        float frameSpeed = 20.f * Game::Time::GetDeltaTime();
+        float frameSpeed = 20.f * Game::Time::GetRawDeltaTime();
 
         float forwardVelocity = Game::Inputs::GetAxis("forward") * frameSpeed;
         float strafeVelocity = Game::Inputs::GetAxis("horizontal") * frameSpeed;
