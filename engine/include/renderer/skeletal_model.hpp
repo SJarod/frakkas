@@ -9,6 +9,8 @@
 
 namespace Resources
 {
+	class Texture;
+
 	struct Bone;
 	class SkeletalMesh;
 
@@ -25,6 +27,12 @@ namespace Renderer
 		std::shared_ptr<Resources::SkeletalMesh>	skmesh;
 		Animation::Animator							player;
 		std::shared_ptr<SkeletalAnimationPack>		skpack;
+
+		std::string textureName = "";
+		bool		flipTexture = false;
+
+		// TODO : vector of Texture
+		std::shared_ptr<Resources::Texture> diffuseTex;
 
 		SkeletalModel();
 
@@ -58,20 +66,11 @@ namespace Renderer
 		void SetSkeletalMeshFromFile(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
-		 * @Summary Set a texture after the creation of this model object.
-		 *
-		 * @param i_textureFilename
-		 * @param i_flipTexture
-		 * @param i_submeshIndex
-		 */
-		void SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_submeshIndex) const;
-
-		/**
 		 * @brief Set one texture to every submesh of the model's mesh.
 		 * @param i_textureFilename The path from Engine root to the texture
 		 * @param i_flipTexture Is the texture flip horizontally or not:
 		 */
-		void SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const;
+		void SetTexture(const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
 		 * @Summary Load every animations from a file into the SkeletalAnimationPack.

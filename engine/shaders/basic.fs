@@ -55,6 +55,7 @@ layout(std140, binding = 1) uniform uRendering
     bool shadow;            //4                 //96
     bool adaptativeBias;    //4                 //100
     float shadowBias;       //4                 //104
+    int shadowPCF;          //4                 //108
 
     vec3 cameraPos;         //16                //112
 };
@@ -147,7 +148,7 @@ LightShadeResult LightShade(Light l, float shininess, vec3 eyePosition, vec3 pos
         float bias = shadowBias;
         if (adaptativeBias)
             bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.0);
-        lit = Enlighten(vLightSpace, bias, 10);
+        lit = Enlighten(vLightSpace, bias, shadowPCF);
     }
 
     // Process the common light vectors

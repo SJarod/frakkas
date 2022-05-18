@@ -375,10 +375,10 @@ void MenuBar::CreateComponentPopup()
 
 void Editor::MenuBar::LightingField(Engine& io_engine)
 {
+    static bool show = false;
+
     if (ImGui::BeginMenu("Lighting"))
     {
-        float menuWidth = ImGui::GetItemRectSize().x * 0.95f;
-
         ImGui::Checkbox("Outline", &io_engine.renderer->outline);
 
         ImGui::Separator();
@@ -387,8 +387,18 @@ void Editor::MenuBar::LightingField(Engine& io_engine)
 
         ImGui::Separator();
 
-        Helpers::Edit(io_engine, menuWidth);
+        Helpers::Edit(io_engine, show);
 
         ImGui::EndMenu();
+    }
+
+    if (show)
+    {
+        ImGui::Begin("Shadow map");
+        ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.renderer->depthMapFBO->GetDepthMap()),
+            ImGui::GetContentRegionAvail(),
+            ImVec2(0, 1),
+            ImVec2(1, 0));
+        ImGui::End();
     }
 }

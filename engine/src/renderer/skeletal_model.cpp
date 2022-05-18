@@ -28,7 +28,8 @@ Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename, cons
 	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
 	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
 		"engine/shaders/light_depth", defines);
-	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename, i_textureFilename, i_flipTexture);
+	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename);
+	SetTexture(i_textureFilename, i_flipTexture);
 }
 
 void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmeshFilename)
@@ -38,27 +39,19 @@ void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmes
 
 void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmeshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
 {
-	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename, i_textureFilename, i_flipTexture);
+	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename);
+	SetTexture(i_textureFilename, i_flipTexture);
 }
 
-void Renderer::SkeletalModel::SetTextureToSubmesh(const std::string& i_textureFilename, const bool i_flipTexture, const unsigned int i_skmeshIndex) const
-{
-	assert(i_skmeshIndex < skmesh->submeshes.size() && "out of range");
-
-	Submesh* smesh = std::next(skmesh->submeshes.begin(), i_skmeshIndex)->get();
-	smesh->diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
-}
-
-void Renderer::SkeletalModel::SetTextureToAllSubmesh(const std::string& i_textureFilename, const bool i_flipTexture) const
+void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, const bool i_flipTexture)
 {
     if (!skmesh)
         return;
 
-	skmesh->flipTexture = i_flipTexture;
-	skmesh->textureName = i_textureFilename;
+	flipTexture = i_flipTexture;
+	textureName = i_textureFilename;
 
-	for (int i = 0; i < static_cast<int>(skmesh->submeshes.size()); i++)
-		SetTextureToSubmesh(i_textureFilename, i_flipTexture, i);
+	diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
 }
 
 void Renderer::SkeletalModel::LoadAnimationsForThis(const std::string& i_animationFilename)

@@ -164,18 +164,61 @@ void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
 
 void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio, Game::Camera& i_camera, const Vector3& i_cameraPos) const noexcept
 {
-// An entity with Camera should be added to render
-    // projection
-    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 0, i_camera.GetProjectionMatrix(i_aspectRatio));
-    // view
-    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 64, i_camera.GetViewMatrix());
+    // An entity with Camera should be added to render
+    
+    Matrix4 proj = i_camera.GetProjectionMatrix(i_aspectRatio);
+    Matrix4 cascadeProj = i_camera.GetCascadeProjectionMatrix(i_aspectRatio, i_camera.near, i_renderer.shadowDistance);
+    Matrix4 view = i_camera.GetViewMatrix();
 
-    float shadowRange = i_renderer.shadowRange;
-    float shadowDepth = i_renderer.shadowDepth;
+    // projection
+    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 0, proj);
+    // view
+    i_renderer.SetUniformToNamedBlock("uRenderMatrices", 64, view);
+
+    // Camera view frustum
+    Matrix4 invProjView = (view * cascadeProj).Inverse();
+
+    Vector4 corners[8];
+    {
+        int i = 0;
+        for (int x = 0; x < 2; ++x)
+            for (int y = 0; y < 2; ++y)
+                for (int z = 0; z < 2; ++z)
+                {
+                    int index = i++;
+                    corners[index] = invProjView * Vector4{ 2.f * x - 1.f, 2.f * y - 1.f, 2.f * z - 1.f, 1.f };
+                    corners[index] = corners[index] / corners[index].w;
+                }
+    }
+
+    Vector3 frustumCenter = { 0.f, 0.f, 0.f };
+    for (int i = 0; i < 8; ++i)
+        frustumCenter = frustumCenter + Vector3(corners[i]);
+    frustumCenter = frustumCenter / 8.f;
+
+    // Light view frustum
+    Matrix4 lightView = Matrix4::LookAt(light.position + frustumCenter, frustumCenter, { 0.f, 1.f, 0.f });
+
+    // Light view frustum AABB
+    Vector3 aabbMin = { std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max() };
+    Vector3 aabbMax = { std::numeric_limits<float>::min(), std::numeric_limits<float>::min(), std::numeric_limits<float>::min() };
+    for (int i = 0; i < 8; ++i)
+    {
+        Vector4 lightCorner = lightView * corners[i];
+        aabbMin.x = Maths::Min(aabbMin.x, lightCorner.x);
+        aabbMax.x = Maths::Max(aabbMax.x, lightCorner.x);
+        aabbMin.y = Maths::Min(aabbMin.y, lightCorner.y);
+        aabbMax.y = Maths::Max(aabbMax.y, lightCorner.y);
+        aabbMin.z = Maths::Min(aabbMin.z, lightCorner.z);
+        aabbMax.z = Maths::Max(aabbMax.z, lightCorner.z);
+    }
+
     // lightProjection
-    i_renderer.SetUniformToNamedBlock("uLightMatrices", 0, Matrix4::Orthographic(-shadowRange, shadowRange, -shadowRange, shadowRange, -shadowDepth, shadowDepth));
+    i_renderer.SetUniformToNamedBlock("uLightMatrices", 0, Matrix4::Orthographic(aabbMin.x, aabbMax.x,
+        aabbMin.y, aabbMax.y,
+        aabbMin.z, aabbMax.z));
     // lightView
-    i_renderer.SetUniformToNamedBlock("uLightMatrices", 64, Matrix4::LookAt(Vector3(light.position) + i_cameraPos, i_cameraPos, Vector3::up));
+    i_renderer.SetUniformToNamedBlock("uLightMatrices", 64, lightView);
     // cameraPos
     i_renderer.SetUniformToNamedBlock("uRendering", 112, i_cameraPos);
 
@@ -206,6 +249,8 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
     i_renderer.SetUniformToNamedBlock("uRendering", 100, light.adaptativeBias);
     // shadowBias
     i_renderer.SetUniformToNamedBlock("uRendering", 104, light.shadowBias);
+    // shadowPCF
+    i_renderer.SetUniformToNamedBlock("uRendering", 108, light.shadowPCF);
 }
 
 void Graph::ReloadScene()
@@ -231,10 +276,8 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath)
         if (Serializer::GetAttribute(file) == "light")
             Serializer::Read(file, light);
 
-        if (Serializer::GetAttribute(file) == "shadowRange")
-            Serializer::Read(file, &renderer->shadowRange);
         if (Serializer::GetAttribute(file) == "shadowDepth")
-            Serializer::Read(file, &renderer->shadowDepth);
+            Serializer::Read(file, &renderer->shadowDistance);
 
         // Parse file to create entities
         entityManager->LoadEntities(file);
@@ -256,8 +299,7 @@ void Graph::SaveScene() const
 
     Serializer::Write(file, "light", light);
 
-    Serializer::Write(file, "shadowRange", renderer->shadowRange);
-    Serializer::Write(file, "shadowDepth", renderer->shadowDepth);
+    Serializer::Write(file, "shadowDepth", renderer->shadowDistance);
 
     for (const auto& pair : entityManager->GetRootEntities())
         Serializer::Write(file, *pair.second);

@@ -45,7 +45,6 @@ namespace Resources
 		int boneCounter = 0;
 
 		SkeletalMesh(const std::string& i_name);
-		SkeletalMesh(const std::string& i_name, const std::string& i_textureName, const bool i_flipTexture);
 
 		void LoadFromInfo() override;
 

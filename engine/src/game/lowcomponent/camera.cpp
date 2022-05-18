@@ -21,3 +21,8 @@ Matrix4 Camera::GetProjectionMatrix(float i_aspectRatio) const
 {
     return Matrix4::Perspective(Maths::ToRadians(fovY), i_aspectRatio, near, far, false);
 }
+
+Matrix4 Camera::GetCascadeProjectionMatrix(float i_aspectRatio, float i_near, float i_far) const
+{
+    return Matrix4::Perspective(Maths::ToRadians(fovY), i_aspectRatio, i_near, i_far, false);
+}

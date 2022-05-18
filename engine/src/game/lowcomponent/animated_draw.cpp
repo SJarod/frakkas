@@ -26,6 +26,13 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
     skmodel.UseShader();
     skmodel.SetUniform("uBoneTransforms", MAX_BONES, skmodel.player.GetBoneMatrices().data()->element);
 
+	GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+
+	Resources::Texture* diffuseTex = skmodel.diffuseTex.get();
+	if (diffuseTex != nullptr)
+		if (diffuseTex->gpu.get())
+			texToBeBinded = diffuseTex->gpu->data;
+
     for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh->submeshes)
     {
         if (smesh == nullptr || smesh->gpu.VAO == 0)
@@ -35,13 +42,6 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         skmodel.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         skmodel.SetUniform("uModelNormal", modelNormal);
-
-        GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
-
-        Resources::Texture* diffuseTex = smesh->diffuseTex.get();
-        if (diffuseTex != nullptr)
-            if (diffuseTex->gpu.get())
-                texToBeBinded = diffuseTex->gpu->data;
 
         assert(smesh->gpu.VAO != 0);
         i_renderer.RenderMeshOnce(smesh->gpu.VAO,

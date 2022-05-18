@@ -29,7 +29,7 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
         Game::Entity* entity = io_entityManager.CreateEntity();
         auto drawable = entity->AddComponent<Game::StaticDraw>();
         drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-        drawable->model.SetTextureToSubmesh("game/assets/gold.jpg", true, 0);
+        drawable->model.SetTexture("game/assets/gold.jpg", true);
     }
 
     ImGui::SameLine();

@@ -194,7 +194,7 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
         ImGui::OpenPopup("Add component.");
 }
 
-void Helpers::Edit(Engine& io_engine, const float i_menuWidth)
+void Helpers::Edit(Engine& io_engine, bool& o_showMap)
 {
     Renderer::Light& light = io_engine.graph->light;
     ImGui::Checkbox("ToonShading", &light.toonShading);
@@ -223,6 +223,7 @@ void Helpers::Edit(Engine& io_engine, const float i_menuWidth)
     ImGui::Checkbox("Cast shadows", &light.shadow);
     ImGui::Checkbox("Adaptative bias", &light.adaptativeBias);
     ImGui::SliderFloat("Shadow bias", &light.shadowBias, 0.f, 0.05f);
+    ImGui::DragInt("Shadow PCF", &light.shadowPCF, 1.f, 0.f, 100.f);
 
     ImGui::Separator();
 
@@ -243,20 +244,14 @@ void Helpers::Edit(Engine& io_engine, const float i_menuWidth)
         light.shadow = true;
         light.adaptativeBias = false;
         light.shadowBias = 0.005f;
+        light.shadowPCF = 10;
     }
 
     ImGui::Separator();
 
-    ImGui::DragFloat("Shadow rendering range", &io_engine.renderer->shadowRange);
-    ImGui::DragFloat("Shadow rendering depth", &io_engine.renderer->shadowDepth);
+    ImGui::DragFloat("Shadow rendering distance (depending on view frustum)", &io_engine.renderer->shadowDistance);
 
-    static bool show = false;
-    ImGui::Checkbox("Show light's depth map", &show);
-    if (show)
-    {
-        ImVec2 windowSize = { i_menuWidth, i_menuWidth };
-        ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.renderer->depthMapFBO->GetDepthMap()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
-    }
+    ImGui::Checkbox("Show light's depth map", &o_showMap);
 }
 
 void Helpers::Edit(Resources::Sound& io_sound)
@@ -299,13 +294,13 @@ void Helpers::Edit(Renderer::Model& io_model)
     if (DragDropTarget({".fbx", ".obj"}, path))
         io_model.SetMeshFromFile(meshPath);
 
-    std::string texturePath = io_model.mesh ? io_model.mesh->textureName : "none";
+    std::string texturePath = io_model.mesh ? io_model.textureName : "none";
 
     if (Edit(texturePath, "Texture file"))
-        io_model.SetTextureToAllSubmesh(texturePath, false);
+        io_model.SetTexture(texturePath, false);
 
     if (DragDropTarget({".jpg", ".png"}, path))
-        io_model.SetTextureToAllSubmesh(path.string(), false);
+        io_model.SetTexture(path.string(), false);
 }
 
 void Helpers::Edit(Renderer::SkeletalModel& io_skmodel)
@@ -321,18 +316,18 @@ void Helpers::Edit(Renderer::SkeletalModel& io_skmodel)
     if (DragDropTarget({".fbx", ".obj"}, path))
         io_skmodel.SetSkeletalMeshFromFile(path.string());
 
-    std::string texturePath = io_skmodel.skmesh ? io_skmodel.skmesh->textureName : "none";
+    std::string texturePath = io_skmodel.skmesh ? io_skmodel.textureName : "none";
 
     if (Edit(texturePath, "Texture file"))
-        io_skmodel.SetTextureToAllSubmesh(texturePath, false);
+        io_skmodel.SetTexture(texturePath, false);
 
     if (DragDropTarget({".jpg", ".png"}, path))
-        io_skmodel.SetTextureToAllSubmesh(path.string(), false);
+        io_skmodel.SetTexture(path.string(), false);
 
     std::string animPath = io_skmodel.skpack ? io_skmodel.skpack->animationFilename : "none";
 
     if (Edit(animPath, "Animations file"))
-        io_skmodel.SetTextureToAllSubmesh(animPath, false);
+        io_skmodel.SetTexture(animPath, false);
 
     if (DragDropTarget({".fbx"}, path))
         io_skmodel.LoadAnimationsForThis(path.string());
@@ -355,7 +350,7 @@ void Helpers::Edit(Renderer::SkeletalModel& io_skmodel)
                 if (ImGui::Selectable(animationNames[comboIndex], selected))
                 {
                     currentAnim = animationNames[comboIndex];
-                    io_skmodel.player.UploadAnimation(comboIndex == 0 ? io_skmodel.skpack->GetAnimation(comboIndex - 1) : nullptr);
+                    io_skmodel.player.UploadAnimation(comboIndex == 0 ? nullptr : io_skmodel.skpack->GetAnimation(comboIndex - 1));
                 }
 
                 if (selected)

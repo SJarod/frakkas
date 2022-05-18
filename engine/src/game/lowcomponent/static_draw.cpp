@@ -19,6 +19,13 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
 
     model.UseShader();
 
+    GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+
+    Resources::Texture* diffuseTex = model.diffuseTex.get();
+    if (diffuseTex != nullptr)
+        if (diffuseTex->gpu.get())
+            texToBeBinded = diffuseTex->gpu->data;
+
     for (std::shared_ptr<Submesh>& smesh : model.mesh->submeshes)
     {
         if (smesh == nullptr || smesh->gpu.VAO == 0)
@@ -28,13 +35,6 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
         model.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         model.SetUniform("uModelNormal", modelNormal);
-
-        GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
-
-        Resources::Texture* diffuseTex = smesh->diffuseTex.get();
-        if (diffuseTex != nullptr)
-            if (diffuseTex->gpu.get())
-                texToBeBinded = diffuseTex->gpu->data;
 
         assert(smesh->gpu.VAO != 0);
         i_renderer.RenderMeshOnce(smesh->gpu.VAO,

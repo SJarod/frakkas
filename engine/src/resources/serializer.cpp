@@ -219,6 +219,8 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
             Read(i_file, o_light.adaptativeBias);
         else if (attribute == "shadowBias")
             Read(i_file, &o_light.shadowBias, 1);
+        else if (attribute == "shadowPCF")
+            Read(i_file, &o_light.shadowPCF, 1);
     }
 }
 
@@ -253,7 +255,7 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Model& o_model)
     {
         o_model.SetMeshFromFile(meshPath);
         if (texturePath != "none")
-            o_model.SetTextureToAllSubmesh(texturePath, false);
+            o_model.SetTexture(texturePath, false);
     }
 }
 
@@ -275,7 +277,7 @@ void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
     {
         o_skmodel.SetSkeletalMeshFromFile(meshPath);
         if (texturePath != "none")
-            o_skmodel.SetTextureToAllSubmesh(texturePath, false);
+            o_skmodel.SetTexture(texturePath, false);
         if (animationPath != "none")
             o_skmodel.LoadAnimationsForThis(animationPath);
     }
@@ -419,6 +421,7 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "shadow", &i_light.shadow);
     Write(io_file, "adapativeBias", &i_light.adaptativeBias);
     Write(io_file, "shadowBias", &i_light.shadowBias);
+    Write(io_file, "shadowPCF", &i_light.shadowPCF);
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Sound& i_sound)
@@ -432,15 +435,15 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
 {
     bool meshExists = i_model.mesh ? true : false;
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "name", meshExists ? i_model.mesh->name : "none");
-    Write(io_file, "textureName", meshExists ? i_model.mesh->textureName : "none");
+    Write(io_file, "mesh_path", meshExists ? i_model.mesh->name : "none");
+    Write(io_file, "texture_path", meshExists ? i_model.textureName : "none");
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)
 {
     bool meshExists = i_skmodel.skmesh ? true : false;
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "name", meshExists ? i_skmodel.skmesh->name : "none");
-    Write(io_file, "textureName", meshExists ? i_skmodel.skmesh->textureName : "none");
-    Write(io_file, "animationFilename", i_skmodel.skpack ? i_skmodel.skpack->animationFilename : "none");
+    Write(io_file, "mesh_path", meshExists ? i_skmodel.skmesh->name : "none");
+    Write(io_file, "texture_path", meshExists ? i_skmodel.textureName : "none");
+    Write(io_file, "animation_path", i_skmodel.skpack ? i_skmodel.skpack->animationFilename : "none");
 }
