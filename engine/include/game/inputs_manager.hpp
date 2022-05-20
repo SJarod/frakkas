@@ -51,6 +51,7 @@ namespace Game
 
     class Inputs
     {
+        static constexpr float joystickAxisMinimumValue = 0.2f;
     public:
         Inputs();
         ~Inputs();
@@ -162,6 +163,23 @@ namespace Game
          * Return null vector2 if no gamepad connected.
          */
         static Vector2 GetRightJoystickDirection();
+
+        /**
+         * @brief Rumble the linked gamepad
+         * @param i_time The rumbling duration
+         * @param i_power The % force of vibration. Clamped in [0,1]
+         * @return true if gamepad supposed to rumble, false if cannot rumble.
+         */
+        static bool RumbleGamepad(float i_time = 1.f, float i_power = 0.4f);
+
+        /**
+         * @brief Rumble the linked gamepad with different power for each side
+         * @param i_time The rumbling duration
+         * @param i_leftPower The % force of vibration in left side. Clamped in [0,1]
+         * @param i_rightPower The % force of vibration in right side. Clamped in [0,1]
+         * @return true if gamepad supposed to rumble, false if cannot rumble.
+         */
+        static bool RumbleGamepadPro(float i_time = 1.f, float i_leftPower = 0.4f, float i_rightPower = 0.4f);
 
     private:
         static constexpr float SDLAxisMaxValue = static_cast<float>(SDL_MAX_SINT16);

@@ -77,6 +77,12 @@ struct Quaternion
  */
     static Quaternion QuatFromEuler(const float& i_yaw, const float& i_pitch, const float& i_roll);
 
+    /**
+     * @brief Create a quaternion from traditional radian angles.
+     * @param i_eulerRadAngles Euler angles in one vector. x : yaw, y : pitch, z : roll
+     */
+    static Quaternion QuatFromEuler(const Vector3& i_eulerRadAngles);
+
 /**
 * @summary Get the Euler angles equivalent to quaternion (yaw, pitch, roll)
 * @return Return a Vector3 in radians
@@ -94,6 +100,11 @@ struct Quaternion
  * @summary Get the axis and angle of rotation from a quaternion
  */
     void QuatToAxisAngle(Vector3& o_outAxis, float& o_outAngle);
+
+    /**
+     * @return The rotation quaternion from a vector to another
+     */
+    static Quaternion VectorToVector(const Vector3& i_from, const Vector3& i_to);
 
 /**
  * @summary Calculate linear interpolation between two quaternions.

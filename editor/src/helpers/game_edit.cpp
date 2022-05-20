@@ -56,7 +56,7 @@ bool Helpers::Edit(std::string& io_string, const char* i_label)
 {
     char strCopy[256] = "";
 
-#if WIN32
+#ifdef KK_WINDOWS
     strcpy_s(strCopy, io_string.data());
 #else
     strcpy(strCopy, io_string.data());
@@ -68,7 +68,7 @@ bool Helpers::Edit(std::string& io_string, const char* i_label)
     if (ImGui::IsAnyItemActive())
         Editor::EditorRender::editingText = true;
     // Stop editing text when pressed enter
-    else if (returnValue || !ImGui::IsAnyItemActive())
+    else if (returnValue)
         Editor::EditorRender::editingText = false;
 
     return returnValue;

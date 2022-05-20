@@ -4,6 +4,8 @@
 #include "renderer/model.hpp"
 #include "renderer/point.hpp"
 
+#include "utils/properties.hpp"
+
 #include "debug/log.hpp"
 
 namespace Renderer
@@ -13,12 +15,23 @@ namespace Renderer
 		class Framebuffer
 		{
 		public:
-			float aspectRatio = 16.f / 9.f;
+            enum class ERenderMode
+            {
+                FREE_ASPECT,
+                LOCK_ASPECT
+            };
+
+            ERenderMode renderMode = ERenderMode::FREE_ASPECT;
+            Property<Vector2> size;
+
+            // Render mode parameters
+            float lockAspectRatio = 16.f / 9.f;
+            Vector2 offset;
 
 			/**
 			 * @Summary Create a framebuffer specifying its dimensions.
 			 */
-			Framebuffer(const int i_width, const int i_height);
+            Framebuffer(float i_width, float i_height, ERenderMode i_renderMode= ERenderMode::FREE_ASPECT);
 
 			/**
 			 * @Summary Use this framebuffer.
@@ -50,19 +63,23 @@ namespace Renderer
 			 */
 			int GetHeight() const;
 
+            /**
+             * @return A reference framebuffer size ratio according to its render mode.
+             * WINDOW_ASPECT | FREE_ASPECT = aspectRatio
+             * LOCK_ASPECT = lockAspectRatio
+             */
+            float& AspectRatio();
+
 		protected:
 			GLuint FBO = 0;
 
-		private:
+            float aspectRatio = 16.f / 9.f;
+
+        private:
 			GLuint color0 = 0;
 			GLuint depthStencil = 0;
 
-		protected:
-			//framebuffer's dimensions (width)
-			int width = 0;
-
-			//framebuffer's dimensions (height)
-			int height = 0;
+            void SetSize(const Vector2& i_value);
 		};
 
 		class DepthFramebuffer : public Framebuffer
@@ -137,6 +154,12 @@ namespace Renderer
 			 * @Summary Render is ready to be displayed.
 			 */
 			void EndFrame() const;
+
+            /**
+             * @brief Update framebuffer size
+             * @param i_size The new window size to set.
+             */
+            void SetWindowSize(const Vector2& i_size) const;
 
 			template<typename TUniformType>
 			void SetUniformToNamedBlock(const std::string_view& i_blockName, const int i_offset, const TUniformType& i_value) const;

@@ -32,7 +32,7 @@ namespace Editor
         static bool editingDrag;
         static bool editingText;
         static Vector2 mouseLockPosition;
-
+        static Vector2 gameWindowSize;
 
         void InitImGui(Engine& io_engine);
         void QuitImGui();

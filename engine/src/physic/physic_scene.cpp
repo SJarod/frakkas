@@ -15,6 +15,7 @@
 #include "debug/log.hpp"
 
 #include "physic/physic_scene.hpp"
+#include "engine.hpp"
 
 using namespace Physic;
 
@@ -44,18 +45,16 @@ PhysicScene::PhysicScene()
 }
 
 
-void PhysicScene::Update(bool i_gaming) const
+void PhysicScene::Update(unsigned int i_runMode) const
 {
     ZoneScoped
-
-    float dt = Game::Time::GetDeltaTime();
 
     for (Game::Collider* collider : colliders)
         collider->ApplyEditorUpdate(bodyInterface);
 
-    if (i_gaming)
+    if (i_runMode & Engine::RunFlag_Gaming && Game::Time::GetTime() >= firstUpdateTimer)
     {
-        physicsSystem->Update(dt, 1, 1, tempAllocator.get(), jobSystem.get());
+        physicsSystem->Update(Game::Time::GetDeltaTime(), 1, 1, tempAllocator.get(), jobSystem.get());
 
         for (Game::Collider* collider : colliders)
             collider->ApplyPhysicUpdate();

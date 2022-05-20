@@ -11,7 +11,7 @@ namespace Game
         void NewFrame();
 
         /**
-         * @return the program execution time
+         * @return the program execution time in seconds
          */
         static float GetTime();
 

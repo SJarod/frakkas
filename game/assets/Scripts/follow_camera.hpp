@@ -13,7 +13,7 @@ namespace Game
         KK_FIELD(Vector3, offset) = Vector3::zero;
         KK_FIELD(float, lerpFactor) = 0.08f;
 
-        void OnStart() override;
+        void OnEnable() override;
 
         void OnUpdate() override;
     KK_COMPONENT_END

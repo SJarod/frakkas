@@ -50,6 +50,9 @@ namespace Physic
 
     class PhysicScene
     {
+        // Time before we update physic scene in seconds.
+        // This is important to let the physics system creates all the colliders.
+        static constexpr float firstUpdateTimer = 1.f;
     public:
         PhysicScene();
         ~PhysicScene() = default;
@@ -58,9 +61,9 @@ namespace Physic
 
         /**
          * @brief Update physic scene (apply velocity and process collision), and Update colliders transform.
-         * @param i_gaming The current gaming state of the engine.
+         * @param i_runMode The current gaming state of the engine.
          */
-        void Update(bool i_gaming = true) const;
+        void Update(unsigned int i_runMode = 1 << 1) const;
 
         /**
          * @brief Generate a jolt physic body with box shape. Added to jolt's BodyInterface

@@ -1,34 +1,30 @@
-
->entity
->childs
-	0
->name
-	Camera
->component_count
-	2
->transform
+>light
 >position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
+	1, 1, 1, 0
+>ambient
+	0.3, 0.3, 0.3
+>diffuse
 	1, 1, 1
->Camera
->enabled
+>specular
+	0.5, 0.5, 0.5
+>toonShading
 	1
->near
-	0.001
->far
-	1000
->fovY
-	90
->FollowCamera
->enabled
+>stepAmount
+	5
+>stepSize
+	0.1
+>specSize
+	0.1
+>shadow
 	1
->offset
-	0, 8, 6
->lerpFactor
-	0.08
+>adapativeBias
+	0
+>shadowBias
+	0.005
+>shadowRange
+	1
+>shadowDepth
+	1
 
 >entity
 >childs
@@ -39,7 +35,7 @@
 	2
 >transform
 >position
-	0, 0, 0
+	0.489967, -1.72, 6.50009
 >rotation
 	0, 0, 0
 >scale
@@ -77,10 +73,10 @@
 >enabled
 	1
 >model
->mesh_path
+>name
 	ProceduralSphere
->texture_path
-	
+>textureName
+	game/assets\gold.jpg
 
 >entity
 >childs
@@ -122,10 +118,74 @@
 >enabled
 	1
 >model
->mesh_path
+>name
 	ProceduralCube
->texture_path
-	
+>textureName
+	game/assets\gold.jpg
+>BoxCollider
+>enabled
+	1
+>isStatic
+	1
+>trigger
+	0
+
+>entity
+>childs
+	0
+>name
+	Camera
+>component_count
+	3
+>transform
+>position
+	0.489967, 6.28, 15.2001
+>rotation
+	-0.743507, 0, -0
+>scale
+	1, 1, 1
+>Camera
+>enabled
+	1
+>near
+	0.001
+>far
+	1000
+>fovY
+	90
+>FollowCamera
+>enabled
+	1
+>offset
+	0, 8, 8.7
+>lerpFactor
+	0.08
+>FPSMovement
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	BigGround
+>component_count
+	2
+>transform
+>position
+	0, -6.6, 0
+>rotation
+	0, 0, 0
+>scale
+	30, 1.5, 30
+>StaticDraw
+>enabled
+	1
+>model
+>name
+	ProceduralCube
+>textureName
+	game/assets\gold.jpg
 >BoxCollider
 >enabled
 	1

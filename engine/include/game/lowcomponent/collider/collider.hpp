@@ -33,6 +33,9 @@ namespace Game
         KK_FIELD(bool, trigger) = false;
         KK_FIELD(bool, isStatic) = true;
 
+        void OnEnable() override;
+        void OnDisable() override;
+
         /**
          * @return ID of collider in jolt physic system.
          */
@@ -87,10 +90,10 @@ namespace Game
          */
         void SetPosition(const Vector3& i_position);
         /**
-         * @param i_rotation Apply a rotation to the collider.
+         * @param i_rot Apply a rotation to the collider.
          * In fact, we force the jolt body to be to the input rotation, and keep the same position.
          */
-        void SetRotation(const Quaternion& i_rotation);
+        void SetRotation(const Quaternion& i_rot);
 
         /**
         * @param i_velocity Apply this new input velocity to the collider.

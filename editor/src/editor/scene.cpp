@@ -92,7 +92,7 @@ void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImG
 
     ImGui::End();
 
-    io_engine.editorFBO->aspectRatio = windowSize.x / windowSize.y;
+    io_engine.editorFBO->size = {windowSize.x, windowSize.y};
 }
 
 void Scene::DragDropResources(Game::EntityManager& io_entityManager, Renderer::Graph& io_graph)

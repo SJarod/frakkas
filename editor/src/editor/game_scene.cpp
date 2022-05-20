@@ -2,8 +2,11 @@
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 
+#include "helpers/game_edit.hpp"
+
 #include "engine.hpp"
 
+#include "editor/editor_render.hpp"
 #include "editor/game_scene.hpp"
 
 
@@ -13,7 +16,7 @@ using namespace Game;
 
 void GameScene::OnImGuiRender(Engine& io_engine)
 {
-    ImGui::Begin("GameScene");
+    ImGui::Begin("GameScene", nullptr, ImGuiWindowFlags_NoScrollbar);
 
     bool focusOnGaming = !(io_engine.GetRunMode() & Engine::RunFlag_Editing);
     bool canPlayGame = (io_engine.GetRunMode() & Engine::RunFlag_Gaming) && ImGui::IsWindowHovered()
@@ -30,8 +33,16 @@ void GameScene::OnImGuiRender(Engine& io_engine)
         io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
     }
 
-    ImVec2 windowSize = ImGui::GetContentRegionAvail();
-    ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.gameFBO->GetColor0()), windowSize, ImVec2(0, 1), ImVec2(1, 0));
+    //ImVec2 windowSize = ImGui::GetWindowSize();
+    //io_engine.gameFBO->size = {windowSize.x, windowSize.y};
+
+    EditorRender::gameWindowSize = {ImGui::GetWindowSize().x, ImGui::GetWindowSize().y};
+
+    Vector2 offset = io_engine.gameFBO->offset;
+    Vector2 size = io_engine.gameFBO->size;
+    ImGui::SetCursorPos({offset.x, offset.y});
+
+    ImGui::Image(reinterpret_cast<ImTextureID>(io_engine.gameFBO->GetColor0()), {size.x, size.y}, ImVec2(0, 1), ImVec2(1, 0));
 
     ImGui::End();
 }

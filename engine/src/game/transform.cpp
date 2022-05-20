@@ -111,3 +111,8 @@ void Transform::ClearChilds()
 
     childs.clear();
 }
+
+Quaternion Transform::GetQuaternionRotation() const
+{
+    return Quaternion::QuatFromEuler(-rotation.get());
+}

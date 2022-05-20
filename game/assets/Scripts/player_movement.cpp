@@ -17,6 +17,13 @@ void PlayerMovement::OnUpdate()
 
     Vector2 gamepadDir = Inputs::GetLeftJoystickDirection();
 
+    if (Inputs::IsDown(EButton::GAMEPAD_A))
+        Inputs::RumbleGamepad(Time::GetDeltaTime(), 0.3f);
+    else if (Inputs::IsDown(EButton::GAMEPAD_X))
+        Inputs::RumbleGamepadPro(Time::GetDeltaTime(), 0.3f, 0.f);
+    else if (Inputs::IsDown(EButton::GAMEPAD_B))
+        Inputs::RumbleGamepadPro(Time::GetDeltaTime(), 0.0f, 0.3f);
+
     xTranslation = Maths::Clamp( xTranslation + gamepadDir.x, -1.f, 1.f) * speed * Time::GetDeltaTime();
     zTranslation = Maths::Clamp( zTranslation + gamepadDir.y, -1.f, 1.f) * speed * Time::GetDeltaTime();
 
