@@ -122,6 +122,11 @@ namespace Renderer
 			 */
 			void BeginFrame(const Framebuffer& i_fbo) const;
 
+			/**
+			 * @Summary Begin depth drawing following a specific depth bias (offset) on the specified the framebuffer.
+			 */
+			void BeginFrame(const DepthFramebuffer& i_fbo, const float i_bias = 1.f) const;
+
             /**
              * @brief Drawing on a specified the framebuffer without clearing.
              * @param i_fbo The FBO to bind.

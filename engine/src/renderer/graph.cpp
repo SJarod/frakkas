@@ -122,7 +122,8 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
 void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
 {
     // light depth map
-    i_renderer.BeginFrame(*i_renderer.depthMapFBO);
+    float bias = static_cast<float>(light.shadowPCF) + 1.f;
+    i_renderer.BeginFrame(*i_renderer.depthMapFBO, bias);
 
     for (Drawable* drawable : renderEntities)
     {
@@ -245,12 +246,8 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
 
     // shadow
     i_renderer.SetUniformToNamedBlock("uRendering", 96, light.shadow);
-    // adaptativeBias
-    i_renderer.SetUniformToNamedBlock("uRendering", 100, light.adaptativeBias);
-    // shadowBias
-    i_renderer.SetUniformToNamedBlock("uRendering", 104, light.shadowBias);
     // shadowPCF
-    i_renderer.SetUniformToNamedBlock("uRendering", 108, light.shadowPCF);
+    i_renderer.SetUniformToNamedBlock("uRendering", 100, light.shadowPCF);
 }
 
 void Graph::ReloadScene()
@@ -276,7 +273,7 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath)
         if (Serializer::GetAttribute(file) == "light")
             Serializer::Read(file, light);
 
-        if (Serializer::GetAttribute(file) == "shadowDepth")
+        if (Serializer::GetAttribute(file) == "shadowDistance")
             Serializer::Read(file, &renderer->shadowDistance);
 
         // Parse file to create entities
@@ -299,7 +296,7 @@ void Graph::SaveScene() const
 
     Serializer::Write(file, "light", light);
 
-    Serializer::Write(file, "shadowDepth", renderer->shadowDistance);
+    Serializer::Write(file, "shadowDistance", renderer->shadowDistance);
 
     for (const auto& pair : entityManager->GetRootEntities())
         Serializer::Write(file, *pair.second);

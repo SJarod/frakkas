@@ -26,8 +26,6 @@ namespace Renderer
         float specSize = 0.1;
 
         bool shadow = true;
-        bool adaptativeBias = false;
-        float shadowBias = 0.005f;
-        int shadowPCF = 10;
+        int shadowPCF = 0;
     };
 }

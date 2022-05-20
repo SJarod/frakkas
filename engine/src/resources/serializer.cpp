@@ -215,10 +215,6 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
             Read(i_file, &o_light.specSize, 1);
         else if (attribute == "shadow")
             Read(i_file, o_light.shadow);
-        else if (attribute == "adaptativeBias")
-            Read(i_file, o_light.adaptativeBias);
-        else if (attribute == "shadowBias")
-            Read(i_file, &o_light.shadowBias, 1);
         else if (attribute == "shadowPCF")
             Read(i_file, &o_light.shadowPCF, 1);
     }
@@ -419,8 +415,6 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "stepSize", &i_light.stepSize);
     Write(io_file, "specSize", &i_light.specSize);
     Write(io_file, "shadow", &i_light.shadow);
-    Write(io_file, "adapativeBias", &i_light.adaptativeBias);
-    Write(io_file, "shadowBias", &i_light.shadowBias);
     Write(io_file, "shadowPCF", &i_light.shadowPCF);
 }
 
