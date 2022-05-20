@@ -63,6 +63,17 @@ namespace Game
         virtual void OnDestroy(){};
 
         /**
+         * @brief Called when change enabled state. Could be consider as a OnStart() but can be call many times.
+         * Not called when entity started
+         */
+        virtual void OnEnable() {};
+        /**
+         * @brief Call when change enabled state. Could be consider as a OnDestroy() but can be call many times.
+         * Not called when entity destroyed
+         */
+        virtual void OnDisable() {};
+
+        /**
          * @brief Called when two colliders collide. You should have a non static collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
@@ -117,17 +128,6 @@ namespace Game
          * @param entity an entity floating pointer, should be store somewhere else as smart pointer.
          */
         virtual void SetOwner(Entity* entity);
-
-        /**
-         * @brief Called when change enabled state. Could be consider as a OnStart() but can be call many times.
-         * Not called when entity started
-         */
-        virtual void OnEnable() {};
-        /**
-         * @brief Call when change enabled state. Could be consider as a OnDestroy() but can be call many times.
-         * Not called when entity destroyed
-         */
-        virtual void OnDisable() {};
 
         /**
          * @return A reference to owner's transform position

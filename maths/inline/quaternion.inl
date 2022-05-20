@@ -169,6 +169,9 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 
     Quaternion q = {0.f, 0.f, 0.f, 0.f};
     q.w = Maths::Sqrt(1.f + m00 + m11 + m22) * 0.5f;
+    if (q.w == 0.f)
+        return {0.f, 0.f, 0.f, 1.f};
+
     q.x = (m21 - m12) / (4.f * q.w);
     q.y = (m20 - m02) / (4.f * q.w);
     q.z = (m10 - m01) / (4.f * q.w);
@@ -209,19 +212,24 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 
 inline Quaternion Quaternion::QuatFromEuler(const float& i_yaw, const float& i_pitch, const float& i_roll)
 {
-    float x0 = Maths::Cos(i_yaw * 0.5f);
-    float x1 = Maths::Sin(i_yaw * 0.5f);
-    float y0 = Maths::Cos(i_pitch * 0.5f);
-    float y1 = Maths::Sin(i_pitch * 0.5f);
-    float z0 = Maths::Cos(i_roll * 0.5f);
-    float z1 = Maths::Sin(i_roll * 0.5f);
+    float cosYaw = Maths::Cos(i_yaw * 0.5f);
+    float sinYaw = Maths::Sin(i_yaw * 0.5f);
+    float cosPitch = Maths::Cos(i_pitch * 0.5f);
+    float sinPitch = Maths::Sin(i_pitch * 0.5f);
+    float cosRoll = Maths::Cos(i_roll * 0.5f);
+    float sinRoll = Maths::Sin(i_roll * 0.5f);
 
     return {
-            x1 * y0 * z0 - x0 * y1 * z1,
-            x0 * y1 * z0 + x1 * y0 * z1,
-            x0 * y0 * z1 - x1 * y1 * z0,
-            x0 * y0 * z0 + x1 * y1 * z1
+            sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll,
+            sinYaw * cosPitch * sinRoll + cosYaw * sinPitch * cosRoll,
+            cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll,
+            cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll
     };
+}
+
+inline Quaternion Quaternion::QuatFromEuler(const Vector3& i_eulerRadAngles)
+{
+    return QuatFromEuler(i_eulerRadAngles.x, i_eulerRadAngles.y, i_eulerRadAngles.z);
 }
 
 inline Vector3 Quaternion::QuatToEuler()
@@ -291,6 +299,21 @@ inline void Quaternion::QuatToAxisAngle(Vector3& o_outAxis, float& o_outAngle)
 
     o_outAxis = resAxis;
     o_outAngle = resAngle;
+}
+
+inline Quaternion Quaternion::VectorToVector(const Vector3& i_from, const Vector3& i_to)
+{
+    Quaternion result = { 0.f, 0.f, 0.f, 0.f};
+
+    float dot = Vector3::DotProduct(i_from, i_to);
+    Vector3 cross = Vector3::CrossProduct(i_from, i_to);
+
+    result.x = cross.x;
+    result.y = cross.y;
+    result.z = cross.z;
+    result.w = 1.0f + dot;
+
+    return result.Normalize();
 }
 
 inline Quaternion Quaternion::Lerp(const Quaternion& i_q1, const Quaternion& i_q2, float i_factor)

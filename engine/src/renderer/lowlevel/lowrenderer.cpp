@@ -8,37 +8,78 @@
 
 using namespace Renderer::LowLevel;
 
-Framebuffer::Framebuffer(const int i_width, const int i_height)
+Framebuffer::Framebuffer(float i_width, float i_height, ERenderMode i_renderMode)
 {
-	width = i_width;
-	height = i_height;
+    renderMode = i_renderMode;
+
+    size.setter = [&](const Vector2& i_value) { SetSize(i_value); };
 
 	glCreateFramebuffers(1, &FBO);
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &color0);
+    glCreateTextures(GL_TEXTURE_2D, 1, &color0);
+    glTextureParameteri(color0, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(color0, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(color0, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTextureParameteri(color0, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-	glTextureParameteri(color0, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTextureParameteri(color0, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTextureParameteri(color0, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTextureParameteri(color0, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTextureStorage2D(color0, 1, GL_RGBA8, width, height);
+    glCreateTextures(GL_TEXTURE_2D, 1, &depthStencil);
+    glTextureParameteri(depthStencil, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTextureParameteri(depthStencil, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
+    // Set size property to generate framebuffer texture storage
+    size = {i_width, i_height};
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &depthStencil);
+    // attaching textures to the framebuffer's corresponding department
+    glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, color0, 0);
+    glNamedFramebufferTexture(FBO, GL_DEPTH_STENCIL_ATTACHMENT, depthStencil, 0);
 
-	glTextureParameteri(depthStencil, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTextureParameteri(depthStencil, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTextureParameteri(depthStencil, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+}
 
-	glTextureStorage2D(depthStencil, 1, GL_DEPTH24_STENCIL8, width, height);
+void Framebuffer::SetSize(const Vector2& i_value)
+{
+    if (i_value.x > 0.f && i_value.y > 0.f && i_value != size)
+    {
+        Vector2 oldSize = i_value, newSize = i_value;
+        float newAspect = i_value.x / i_value.y;
+        switch(renderMode)
+        {
 
+            case ERenderMode::LOCK_ASPECT:              // CHANGE ONLY SIZE
+                if (newAspect > AspectRatio())
+                    newSize.x = AspectRatio() * oldSize.y;
+                else if (newAspect < AspectRatio())
+                    newSize.y = oldSize.x / AspectRatio();
 
-	// attaching textures to the framebuffer's corresponding department
-	glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, color0, 0);
-	glNamedFramebufferTexture(FBO, GL_DEPTH_STENCIL_ATTACHMENT, depthStencil, 0);
+                offset.x = (oldSize.x - newSize.x) / 2.f;
+                offset.y = (oldSize.y - newSize.y) / 2.f;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                size.set(newSize);
+
+                glBindTexture(GL_TEXTURE_2D, color0);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, GetWidth(), GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                glBindTexture(GL_TEXTURE_2D, depthStencil);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, GetWidth(), GetHeight(), 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
+
+                break;
+
+            case ERenderMode::FREE_ASPECT:              // CHANGE BOTH
+            default:
+                if (size == Vector2(0.f, 0.f))
+                {
+                    size.set(i_value);
+
+                    glBindTexture(GL_TEXTURE_2D, color0);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, GetWidth(), GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                    glBindTexture(GL_TEXTURE_2D, depthStencil);
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, GetWidth(), GetHeight(), 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
+                }
+
+                AspectRatio() = i_value.x / i_value.y;
+                break;
+        }
+    }
 }
 
 void Framebuffer::Bind() const
@@ -63,16 +104,21 @@ GLuint Framebuffer::GetDepthStencilMap() const
 
 int Framebuffer::GetWidth() const
 {
-	return width;
+	return size.get().x;
 }
 
 int Framebuffer::GetHeight() const
 {
-	return height;
+	return size.get().y;
+}
+
+float& Framebuffer::AspectRatio()
+{
+    return renderMode == ERenderMode::LOCK_ASPECT ? lockAspectRatio : aspectRatio;
 }
 
 DepthFramebuffer::DepthFramebuffer(const int i_width, const int i_height)
-	: Framebuffer(i_width, i_height)
+	: Framebuffer(i_width, i_height, ERenderMode::FREE_ASPECT)
 {
 	glDeleteFramebuffers(1, &FBO);
 	glCreateFramebuffers(1, &FBO);
@@ -80,7 +126,7 @@ DepthFramebuffer::DepthFramebuffer(const int i_width, const int i_height)
 	glGenTextures(1, &depthMap);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (void*)0);
+		GetWidth(), GetHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (void*)0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -162,8 +208,8 @@ LowRenderer::LowRenderer()
 	shaderUBOs.insert({ "uRendering", UniformBuffer(shaderUBOs.size(), 128) });
 	shaderUBOs.insert({ "uLightMatrices", UniformBuffer(shaderUBOs.size(), 2 * sizeof(Matrix4)) });
 	depthMapFBO = std::make_unique<Renderer::LowLevel::DepthFramebuffer>(shadowMapResolution, shadowMapResolution);
-	firstPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
-	secondPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+	firstPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080, Framebuffer::ERenderMode::FREE_ASPECT);
+	secondPassFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080, Framebuffer::ERenderMode::FREE_ASPECT);
 }
 
 void LowRenderer::BeginFrame(const Framebuffer& i_fbo) const
@@ -207,6 +253,12 @@ void LowRenderer::EndFrame() const
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	Framebuffer::Unbind();
+}
+
+void LowRenderer::SetWindowSize(const Vector2& i_size) const
+{
+    firstPassFBO->size = i_size;
+    secondPassFBO->size = i_size;
 }
 
 void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size) const
@@ -287,7 +339,7 @@ void LowRenderer::RenderScreen() const
 {
 	static ScreenQuad sq;
 	sq.UseShader();
-	glBindTexture(GL_TEXTURE_2D, firstPassFBO->GetColor0());
+    glBindTexture(GL_TEXTURE_2D, firstPassFBO->GetColor0());
 	glBindVertexArray(sq.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);

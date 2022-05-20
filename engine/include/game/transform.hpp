@@ -35,10 +35,16 @@ namespace Game
 
 
         Property<Vector3> position;
+        // Rotation angles in radians. x : yaw, y : pitch, z : roll
         Property<Vector3> rotation;
         Property<Vector3> scale;
 
         Property<Transform*> parent;
+
+        /**
+         * @return A rotation quaternion from transform's vector3 rotation.
+         */
+        Quaternion GetQuaternionRotation() const;
 
 		/**
 		 * @brief Get a model matrix from a transform. If model matrix not update, compute the matrix.

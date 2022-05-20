@@ -40,8 +40,15 @@ Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
 void EntityManager::Start()
 {
     for (const auto& entity : entityStore.entities)
+    {
         for (const std::unique_ptr<Component>& comp: entity->components)
+        {
             comp->OnStart();
+
+            if (comp->enabled)
+                comp->OnEnable();
+        }
+    }
 }
 
 void EntityManager::Update()

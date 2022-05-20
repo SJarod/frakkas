@@ -15,6 +15,16 @@ KK_FIELD_IMPL(Collider, trigger, EDataType::BOOL)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, velocity, EDataType::FLOAT, 3)
 KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
 
+void Collider::OnEnable()
+{
+
+}
+
+void Collider::OnDisable()
+{
+
+}
+
 Vector3 Collider::GetPosition() const
 {
     JPH::Vec3 pos = collider->GetPosition();
@@ -45,10 +55,9 @@ void Collider::SetPosition(const Vector3& i_position)
     collider->SetPositionAndRotationInternal(pos, collider->GetRotation());
 }
 
-void Collider::SetRotation(const Quaternion& i_rotation)
+void Collider::SetRotation(const Quaternion& i_rot)
 {
-    JPH::Quat rot = { i_rotation.x, i_rotation.y, i_rotation.z, i_rotation.w};
-    collider->SetPositionAndRotationInternal(collider->GetPosition(), rot);
+    collider->SetPositionAndRotationInternal(collider->GetPosition(),{i_rot.x, i_rot.y, i_rot.z, i_rot.w});
 }
 
 void Collider::SetCollider(JPH::Body* i_collider)
@@ -91,13 +100,12 @@ void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
 {
     Transform& trs = owner.get()->transform;
     SetPosition(trs.position);
-    SetRotation(Quaternion::QuatFromEuler(trs.rotation.get().x, trs.rotation.get().y, trs.rotation.get().z));
+    SetRotation(trs.GetQuaternionRotation());
 
     SetStaticState(isStatic, i_bodyInterface);
 
     if (trigger)
         isStatic = true;
-
 
     SetTriggerState(trigger, i_bodyInterface);
 

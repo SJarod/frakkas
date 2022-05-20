@@ -205,11 +205,7 @@ inline float Vector3::DotProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 
 inline Vector3 Vector3::CrossProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
-    return	{
-            i_vecA.y * i_vecB.z - i_vecA.z * i_vecB.y,
-            i_vecA.z * i_vecB.x - i_vecA.x * i_vecB.z,
-            i_vecA.x * i_vecB.y - i_vecA.y * i_vecB.x
-    };
+    return i_vecA ^ i_vecB;
 }
 
 inline Vector3 Vector3::VecFromPt(const Vector3& i_ptA, const Vector3& i_ptB)

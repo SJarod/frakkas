@@ -7,6 +7,8 @@
 #include <SDL.h>
 #include <miniaudio.h>
 
+#include "utils/platform.hpp"
+
 #include "physic/physic_scene.hpp"
 
 #include "game/entity_manager.hpp"
@@ -21,7 +23,6 @@ namespace Renderer
     {
         class LowRenderer;
         class Framebuffer;
-        class Camera;
     }
 }
 

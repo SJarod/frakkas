@@ -16,7 +16,7 @@
 
 #include "engine.hpp"
 
-#ifndef __linux__
+#ifdef KK_WINDOWS
 // Run on laptop high perf GPU
 extern "C"
 {
@@ -28,6 +28,21 @@ extern "C"
 SDL_Window* Engine::window = nullptr;
 ma_engine Engine::soundEngine {};
 
+inline Vector2 AdaptSize(Vector2& size, float aspectRatio)
+{
+    Vector2 oldSize = size, offset;
+    float newAspect = size.x / size.y;
+    if (newAspect > aspectRatio)
+        size.x = aspectRatio * size.y;
+    else if (newAspect < aspectRatio)
+        size.y = size.x / aspectRatio;
+
+    offset.x = (oldSize.x - size.x) / 2.f;
+    offset.y = (oldSize.y - size.y) / 2.f;
+
+    return offset;
+}
+
 Engine::Engine()
 {
     Log::Init();
@@ -36,8 +51,8 @@ Engine::Engine()
     InitMiniaudio();
 
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>();
-    editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
-    gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080);
+    editorFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080, Renderer::LowLevel::Framebuffer::ERenderMode::FREE_ASPECT);
+    gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080, Renderer::LowLevel::Framebuffer::ERenderMode::LOCK_ASPECT);
 
     graph = std::make_unique<Renderer::Graph>(&entityManager, &physicScene, renderer.get());
 }
@@ -168,10 +183,10 @@ void Engine::RunEditor()
         physicScene.Update(runMode & RunFlag_Gaming);
 
         /// Draw
-        graph->RenderEditor(*renderer, editorFBO->aspectRatio);
+        graph->RenderEditor(*renderer, editorFBO->AspectRatio());
         renderer->RenderScreen(*editorFBO);
 
-		graph->RenderGame(*renderer, gameFBO->aspectRatio);
+		graph->RenderGame(*renderer, gameFBO->AspectRatio());
         renderer->RenderScreen(*gameFBO);
 
 		running = EndFrame();
@@ -180,9 +195,13 @@ void Engine::RunEditor()
 
 void Engine::RunGame()
 {
-    inputsManager.SetInputsListening(true);
-
+    EnableInputs();
     SetRunMode(RunFlag_Gaming);
+
+    int width = 0, height = 0;
+    Vector2 windowSize(width, height);
+
+    gameFBO->lockAspectRatio = true;
 
     bool running = true;
     while(running)
@@ -190,15 +209,19 @@ void Engine::RunGame()
         BeginFrame();
 
 		entityManager.Update();
-      
+
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
         physicScene.Update();
 
-		// TODO : adaptative viewport
-        //glViewport(0, 0, 1280, 720);
-        graph->RenderGame(*renderer, gameFBO->aspectRatio);
+        SDL_GetWindowSize(window, &width, &height);
+        windowSize = {static_cast<float>(width), static_cast<float>(height)};
+
+        renderer->SetWindowSize(windowSize);
+
+        graph->RenderGame(*renderer, renderer->firstPassFBO->AspectRatio());
+        glViewport(renderer->firstPassFBO->offset.x, renderer->firstPassFBO->offset.y, windowSize.x, windowSize.y);
         renderer->RenderScreen();
         
         /// ENDFRAME

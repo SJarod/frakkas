@@ -17,6 +17,7 @@ using namespace Editor;
 bool EditorRender::editingDrag = false;
 bool EditorRender::editingText = false;
 Vector2 EditorRender::mouseLockPosition {};
+Vector2 EditorRender::gameWindowSize {};
 
 void EditorRender::InitImGui(Engine& io_engine)
 {
@@ -25,7 +26,6 @@ void EditorRender::InitImGui(Engine& io_engine)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -105,6 +105,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
+    // Reset drag edit state
     if (editingDrag && Game::Inputs::IsReleased(Game::EButton::MOUSE_LEFT))
     {
         Engine::SetCursorGameMode(false);
@@ -112,12 +113,23 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
         editingDrag = false;
     }
 
+    // Unfocus whatever item with ESCAPE
     if (Game::Inputs::IsPressed(Game::EButton::ESCAPE))
         ImGui::SetWindowFocus(nullptr);
 
+    // Reset editing text if needed
+    if(!ImGui::IsAnyItemActive())
+        Editor::EditorRender::editingText = false;
+
+    // Edit entities with inputs
+    m_hierarchy.OnImGuiRender(io_engine.entityManager);
+    m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
+
+    // Disable inputs if typing
     if (editingText)
         io_engine.DisableInputs();
 
+    // reload scene if menu bar call scene reloading
     bool reloadScene = false;
     m_menuBar.OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
     if (reloadScene)
@@ -127,18 +139,21 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
         io_engine.SetRunMode(Engine::RunFlag_Editing);
     }
 
+    // Render viewers
     m_debugger.OnImGuiRender();
     m_resources.OnImGuiRender();
-    m_hierarchy.OnImGuiRender(io_engine.entityManager);
     m_console.OnImGuiRender();
-    m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
     m_fileBrowser.OnImGuiRender();
+
+    // Render scenes
     m_game.OnImGuiRender(io_engine);
     m_scene.OnImGuiRender(io_engine, m_hierarchy.selected, guizmoOperation);
 
     io_engine.EnableInputs();
 
     UpdateImGui();
+
+    io_engine.gameFBO->size = {gameWindowSize.x, gameWindowSize.y};
 }
 
 void EditorRender::UpdateImGui()

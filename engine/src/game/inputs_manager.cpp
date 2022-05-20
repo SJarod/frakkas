@@ -347,17 +347,56 @@ Vector2 Inputs::GetMouseDelta()
 
 Vector2 Inputs::GetLeftJoystickDirection()
 {
-    joysticks.leftJoystick = Vector3::ClampLength(joysticks.leftJoystick, 0.f, 1.f);
-    return joysticks.leftJoystick;
+    if (ApplyListeningCheck())
+    {
+        joysticks.leftJoystick = Vector3::ClampLength(joysticks.leftJoystick, 0.f, 1.f);
+        return joysticks.leftJoystick;
+    }
+    else
+        return {};
 }
 
 Vector2 Inputs::GetRightJoystickDirection()
 {
+    if (ApplyListeningCheck())
+    {
     joysticks.leftJoystick = Vector3::ClampLength(joysticks.rightJoystick, 0.f, 1.f);
     return joysticks.rightJoystick;
+    }
+    else
+        return {};
 }
 
 #pragma endregion
+
+bool Inputs::RumbleGamepad(float i_time, float i_power)
+{
+    i_power = Maths::Clamp(i_power, 0.f, 1.f);
+    if (gamepad)
+    {
+        auto milliDuration = static_cast<Uint32>(i_time * 1000.f);
+        auto sdlPower = static_cast<Uint16>(i_power * static_cast<float>(std::numeric_limits<Uint16>::max()));
+        if (SDL_GameControllerRumble(gamepad, sdlPower, sdlPower, milliDuration))
+            return true;
+    }
+    return false;
+}
+
+bool Inputs::RumbleGamepadPro(float i_time, float i_leftPower, float i_rightPower)
+{
+    i_leftPower = Maths::Clamp(i_leftPower, 0.f, 1.f);
+    i_rightPower = Maths::Clamp(i_rightPower, 0.f, 1.f);
+
+    if (gamepad)
+    {
+        auto milliDuration = static_cast<Uint32>(i_time * 1000.f);
+        auto sdlLeftPower = static_cast<Uint16>(i_leftPower * static_cast<float>(std::numeric_limits<Uint16>::max()));
+        auto sdlRightPower = static_cast<Uint16>(i_rightPower * static_cast<float>(std::numeric_limits<Uint16>::max()));
+        if (SDL_GameControllerRumble(gamepad, sdlLeftPower, sdlRightPower, milliDuration))
+            return true;
+    }
+    return false;
+}
 
 bool Game::Inputs::CheckButtonAction(const std::string& i_name)
 {
@@ -430,14 +469,14 @@ void Inputs::UpdateJoysticksDirection()
     joysticks.rightJoystick = Vector2();
 
     float normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTX)) / SDLAxisMaxValue;
-    joysticks.leftJoystick.x = normalizedAxisValue;
+    joysticks.leftJoystick.x = Maths::Abs(normalizedAxisValue) < joystickAxisMinimumValue ? 0.f : normalizedAxisValue;
 
     normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_LEFTY)) / SDLAxisMaxValue;
-    joysticks.leftJoystick.y = -normalizedAxisValue;
+    joysticks.leftJoystick.y = Maths::Abs(normalizedAxisValue) < joystickAxisMinimumValue ? 0.f : -normalizedAxisValue;
 
     normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_RIGHTX)) / SDLAxisMaxValue;
-    joysticks.rightJoystick.x = normalizedAxisValue;
+    joysticks.rightJoystick.x = Maths::Abs(normalizedAxisValue) < joystickAxisMinimumValue ? 0.f : normalizedAxisValue;
 
     normalizedAxisValue = static_cast<float>(SDL_GameControllerGetAxis(gamepad, SDL_CONTROLLER_AXIS_RIGHTY)) / SDLAxisMaxValue;
-    joysticks.rightJoystick.y = -normalizedAxisValue;
+    joysticks.rightJoystick.y = Maths::Abs(normalizedAxisValue) < joystickAxisMinimumValue ? 0.f : -normalizedAxisValue;
 }

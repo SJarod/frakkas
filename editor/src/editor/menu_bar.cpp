@@ -324,6 +324,10 @@ void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
         if (isGaming && ImGui::MenuItem("Stop", "CTRL+P"))  { reloadSceneFunc(); }
         if (!isGaming && ImGui::MenuItem("Reset", "CTRL+P")) { reloadSceneFunc(); }
 
+        ImGui::Separator();
+
+        Helpers::DragScalar("Aspect ratio", &io_engine.gameFBO->AspectRatio(), 1, 0.1f, 100.f, 0.01f);
+
         ImGui::EndMenu();
     }
 
