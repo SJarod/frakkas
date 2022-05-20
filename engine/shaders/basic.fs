@@ -53,9 +53,7 @@ layout(std140, binding = 1) uniform uRendering
     float specSize;         //4                 //92
 
     bool shadow;            //4                 //96
-    bool adaptativeBias;    //4                 //100
-    float shadowBias;       //4                 //104
-    int shadowPCF;          //4                 //108
+    int shadowPCF;          //4                 //100
 
     vec3 cameraPos;         //16                //112
 };
@@ -95,7 +93,7 @@ vec3 GetLightDir(Light l)
  * @param bias : the shadow bias
  * @param pcf : the shadow's "smoothness" as pixel resolution
  */
-float Enlighten(vec4 lightSpace, float bias, int pcf)
+float Enlighten(vec4 lightSpace, int pcf)
 {
     vec3 perspective = lightSpace.xyz / lightSpace.w;
     perspective = perspective * 0.5 + 0.5;
@@ -115,7 +113,7 @@ float Enlighten(vec4 lightSpace, float bias, int pcf)
         for (int j = -pcf; j <= pcf; ++j)
         {
             float pcfDepth = texture(uShadowMap, perspective.xy + vec2(i, j) * texelSize).r;
-            lit += currentDepth - bias > pcfDepth ? 0.0 : 1.0;
+            lit += currentDepth > pcfDepth ? 0.0 : 1.0;
         }
     }
 
@@ -144,12 +142,7 @@ LightShadeResult LightShade(Light l, float shininess, vec3 eyePosition, vec3 pos
     // Process the shadow value (weather the fragment is lit or not)
     float lit = 1.0;
     if (shadow)
-    {
-        float bias = shadowBias;
-        if (adaptativeBias)
-            bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.0);
-        lit = Enlighten(vLightSpace, bias, shadowPCF);
-    }
+        lit = Enlighten(vLightSpace, shadowPCF);
 
     // Process the common light vectors
     vec3 eyeDir  = normalize(eyePosition - position);

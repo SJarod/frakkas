@@ -221,8 +221,6 @@ void Helpers::Edit(Engine& io_engine, bool& o_showMap)
     ImGui::Separator();
 
     ImGui::Checkbox("Cast shadows", &light.shadow);
-    ImGui::Checkbox("Adaptative bias", &light.adaptativeBias);
-    ImGui::SliderFloat("Shadow bias", &light.shadowBias, 0.f, 0.05f);
     ImGui::DragInt("Shadow PCF", &light.shadowPCF, 1.f, 0.f, 100.f);
 
     ImGui::Separator();
@@ -242,9 +240,7 @@ void Helpers::Edit(Engine& io_engine, bool& o_showMap)
         light.specSize = 0.1;
 
         light.shadow = true;
-        light.adaptativeBias = false;
-        light.shadowBias = 0.005f;
-        light.shadowPCF = 10;
+        light.shadowPCF = 0;
     }
 
     ImGui::Separator();

@@ -172,7 +172,6 @@ void Resources::Mesh::LoadCube()
 	{
 		Vertex v;
 		v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
-		v.normal = v.position;
 
 		mesh.vertices.emplace_back(v);
 	}
@@ -235,6 +234,43 @@ void Resources::Mesh::LoadCube()
 	mesh.vertices[33].uv = { 0.25f, 0.66f };
 	mesh.vertices[34].uv = { 0.25f, 0.33f };
 	mesh.vertices[35].uv = {   0.f, 0.33f };
+
+	mesh.vertices[0].normal  = Vector3::forward;
+	mesh.vertices[1].normal  = Vector3::forward;
+	mesh.vertices[2].normal  = Vector3::forward;
+	mesh.vertices[3].normal  = Vector3::forward;
+	mesh.vertices[4].normal  = Vector3::forward;
+	mesh.vertices[5].normal  = Vector3::forward;
+	mesh.vertices[6].normal  = Vector3::backward;
+	mesh.vertices[7].normal  = Vector3::backward;
+	mesh.vertices[8].normal  = Vector3::backward;
+	mesh.vertices[9].normal  = Vector3::backward;
+	mesh.vertices[10].normal = Vector3::backward;
+	mesh.vertices[11].normal = Vector3::backward;
+	mesh.vertices[12].normal = Vector3::down;
+	mesh.vertices[13].normal = Vector3::down;
+	mesh.vertices[14].normal = Vector3::down;
+	mesh.vertices[15].normal = Vector3::down;
+	mesh.vertices[16].normal = Vector3::down;
+	mesh.vertices[17].normal = Vector3::down;
+	mesh.vertices[18].normal = Vector3::up;
+	mesh.vertices[19].normal = Vector3::up;
+	mesh.vertices[20].normal = Vector3::up;
+	mesh.vertices[21].normal = Vector3::up;
+	mesh.vertices[22].normal = Vector3::up;
+	mesh.vertices[23].normal = Vector3::up;
+	mesh.vertices[24].normal = Vector3::right;
+	mesh.vertices[25].normal = Vector3::right;
+	mesh.vertices[26].normal = Vector3::right;
+	mesh.vertices[27].normal = Vector3::right;
+	mesh.vertices[28].normal = Vector3::right;
+	mesh.vertices[29].normal = Vector3::right;
+	mesh.vertices[30].normal = Vector3::left;
+	mesh.vertices[31].normal = Vector3::left;
+	mesh.vertices[32].normal = Vector3::left;
+	mesh.vertices[33].normal = Vector3::left;
+	mesh.vertices[34].normal = Vector3::left;
+	mesh.vertices[35].normal = Vector3::left;
 
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
 	ResourcesManager::CreateGPUSubmesh(*submeshes.back());

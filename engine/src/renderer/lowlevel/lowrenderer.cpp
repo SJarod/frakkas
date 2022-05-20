@@ -178,6 +178,21 @@ void LowRenderer::BeginFrame(const Framebuffer& i_fbo) const
 	glEnable(GL_CULL_FACE);
 }
 
+void LowRenderer::BeginFrame(const DepthFramebuffer& i_fbo, const float i_bias) const
+{
+	i_fbo.Bind();
+	glViewport(0, 0, i_fbo.GetWidth(), i_fbo.GetHeight());
+
+	glClearColor(0.4f, 0.4f, 0.4f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(i_bias, i_bias);
+}
+
 void LowRenderer::ContinueFrame(const Framebuffer& i_fbo) const
 {
     i_fbo.Bind();
@@ -189,6 +204,7 @@ void LowRenderer::EndFrame() const
 {
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	Framebuffer::Unbind();
 }
