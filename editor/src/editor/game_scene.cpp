@@ -18,19 +18,19 @@ void GameScene::OnImGuiRender(Engine& io_engine)
 {
     ImGui::Begin("GameScene", nullptr, ImGuiWindowFlags_NoScrollbar);
 
-    bool focusOnGaming = !(io_engine.GetRunMode() & Engine::RunFlag_Editing);
-    bool canPlayGame = (io_engine.GetRunMode() & Engine::RunFlag_Gaming) && ImGui::IsWindowHovered()
+    bool focusOnGaming = !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing);
+    bool canPlayGame = (io_engine.GetRunMode() & Utils::UpdateFlag_Gaming) && ImGui::IsWindowHovered()
                        && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed(EButton::P));
     if (!focusOnGaming && canPlayGame) // User right click on game window to play
     {
         mouseLockPosition = Inputs::GetMousePosition();
         ImGui::SetWindowFocus(nullptr);
-        io_engine.SetRunMode(Engine::RunFlag_Gaming);
+        io_engine.SetRunMode(Utils::UpdateFlag_Gaming);
     }
     else if (focusOnGaming && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed(EButton::ESCAPE))) // User right click to exit play mode
     {
         Engine::SetCursorPosition(mouseLockPosition);
-        io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
+        io_engine.SetRunMode(Utils::UpdateFlag_Editing | Utils::UpdateFlag_Gaming);
     }
 
     //ImVec2 windowSize = ImGui::GetWindowSize();

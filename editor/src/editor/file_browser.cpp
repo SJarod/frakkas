@@ -1,5 +1,9 @@
 #include <imgui.h>
 
+#include "debug/log.hpp"
+
+#include "game/inputs_manager.hpp"
+
 #include "editor/file_browser.hpp"
 
 using namespace Editor;
@@ -62,6 +66,7 @@ void FileBrowser::OnImGuiRender()
 
 	ImGui::Columns(columnCount, nullptr, false);
 
+    bool openDeletePopup = false;
 	// Navigate through assets directory
 	for (const auto& entry : std::filesystem::directory_iterator(m_currentDirectory))
     {
@@ -77,7 +82,14 @@ void FileBrowser::OnImGuiRender()
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
         if (icon.gpu)
+        {
             ImGui::ImageButton(reinterpret_cast<ImTextureID>(icon.gpu->data), {thumbnailSize, thumbnailSize}, {0, 1}, {1, 0});
+            if(ImGui::IsItemHovered() && Game::Inputs::IsPressed(Game::EButton::MOUSE_RIGHT))
+            {
+                m_deletePath = entry.path();
+                openDeletePopup = true;
+            }
+        }
 
         if (ImGui::BeginDragDropSource())
         {
@@ -111,6 +123,21 @@ void FileBrowser::OnImGuiRender()
 	OptionsField(&padding, &thumbnailSize);
 
 	ImGui::End();
+
+    if (openDeletePopup)
+        ImGui::OpenPopup("DELETE");
+
+    if (ImGui::BeginPopup("DELETE", ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        if (ImGui::Selectable("Delete"))
+        {
+            if (!std::filesystem::remove(m_deletePath))
+                Log::Error("Can't delete file/directory '", m_deletePath.string(), "'.");
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void FileBrowser::OptionsField(float* io_padding, float* io_thumbnailSize)

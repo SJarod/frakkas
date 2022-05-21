@@ -8,6 +8,7 @@
 #include <miniaudio.h>
 
 #include "utils/platform.hpp"
+#include "utils/update_flags.hpp"
 
 #include "physic/physic_scene.hpp"
 
@@ -33,11 +34,6 @@ class Engine
 public:
     Engine();
     ~Engine();
-
-    using RunFlag = unsigned int;
-
-    static constexpr RunFlag RunFlag_Editing = 1 << 0;
-    static constexpr RunFlag RunFlag_Gaming = 1 << 1;
 
     Game::EntityManager entityManager;
     Physic::PhysicScene physicScene;
@@ -71,11 +67,11 @@ public:
      * @brief Change engine run mode, and change settings if needed.
      * @param i_flag The new mode to set.
      */
-    void SetRunMode(RunFlag i_flag);
+    void SetRunMode(Utils::UpdateFlag i_flag);
     /**
      * @return Current run mode.
      */
-    RunFlag GetRunMode() const;
+    Utils::UpdateFlag GetRunMode() const;
 
     /**
      * Change mouse cursor visibility
@@ -116,7 +112,7 @@ public:
     Game::Transform& GetEditorCameraTransform() const;
 
 private:
-    RunFlag runMode = RunFlag_Editing;
+    Utils::UpdateFlag updateMode = Utils::UpdateFlag_Editing;
 
     Game::Time timeManager;
     Game::Inputs inputsManager;

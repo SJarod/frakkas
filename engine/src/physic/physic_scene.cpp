@@ -11,7 +11,6 @@
 #include <thread>
 
 #include "game/time_manager.hpp"
-#include "game/lowcomponent/collider/collider.hpp"
 #include "debug/log.hpp"
 
 #include "physic/physic_scene.hpp"
@@ -19,6 +18,7 @@
 
 using namespace Physic;
 
+float PhysicScene::gravityFactor = 3.f;
 
 std::vector<Game::Collider*> PhysicScene::colliders;
 
@@ -45,14 +45,14 @@ PhysicScene::PhysicScene()
 }
 
 
-void PhysicScene::Update(unsigned int i_runMode) const
+void PhysicScene::Update(Utils::UpdateFlag i_updateMode) const
 {
     ZoneScoped
 
     for (Game::Collider* collider : colliders)
-        collider->ApplyEditorUpdate(bodyInterface);
+        collider->ApplyEntityUpdate();
 
-    if (i_runMode & Engine::RunFlag_Gaming && Game::Time::GetTime() >= firstUpdateTimer)
+    if (i_updateMode & Utils::UpdateFlag_Gaming && Game::Time::GetTime() >= firstUpdateTimer)
     {
         physicsSystem->Update(Game::Time::GetDeltaTime(), 1, 1, tempAllocator.get(), jobSystem.get());
 
@@ -82,6 +82,8 @@ JPH::Body* PhysicScene::CreateBody(JPH::Shape* io_shape)
         JPH::EMotionType::Dynamic,
         JPH::Layers::MOVING
     );
+
+    bodySettings.mGravityFactor = gravityFactor;
 
     JPH::Body* body = bodyInterface->CreateBody(bodySettings);
     bodyInterface->AddBody(body->GetID(), JPH::EActivation::Activate);

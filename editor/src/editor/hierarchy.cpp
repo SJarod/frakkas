@@ -2,9 +2,12 @@
 #include <string>
 
 #include "game/lowcomponent/static_draw.hpp"
+#include "game/lowcomponent/camera.hpp"
 #include "game/entity_manager.hpp"
 
 #include "resources/mesh.hpp"
+
+#include "game/inputs_manager.hpp"
 
 #include "helpers/game_edit.hpp"
 
@@ -19,18 +22,18 @@ inline std::string BuildEntityLabel(const std::string& name, const Game::EntityI
 
 void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
 {
+    bool openAddEntityPopup = false;
+
     ImGui::Begin("Hierarchy");
 
     if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected) // Will edit name if double clicked
         editSelectedName = true;
 
     if(ImGui::Button("Add entity"))
-    {
-        Game::Entity* entity = io_entityManager.CreateEntity();
-        auto drawable = entity->AddComponent<Game::StaticDraw>();
-        drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-        drawable->model.SetTexture("game/assets/gold.jpg", true);
-    }
+        io_entityManager.CreateEntity();
+
+    if (ImGui::IsItemHovered() && Game::Inputs::IsPressed(Game::EButton::MOUSE_RIGHT))
+        openAddEntityPopup = true;
 
     ImGui::SameLine();
 
@@ -44,7 +47,6 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     // reset remove id
     removeID = -1;
 
-    // TODO : Find a better place to unset parent
     if (selected && selected->unsettingParent)
     {
         selected->unsettingParent = false;
@@ -69,8 +71,36 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     if (removeID != -1)
         io_entityManager.RemoveEntityAt(removeID);
 
-
     ImGui::End();
+
+    if(openAddEntityPopup)
+        ImGui::OpenPopup("ADDENTITY");
+
+    if (ImGui::BeginPopup("ADDENTITY", ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        if (ImGui::Selectable("Cube mesh"))
+        {
+            Game::Entity* entity = io_entityManager.CreateEntity();
+            auto drawable = entity->AddComponent<Game::StaticDraw>();
+            drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
+            drawable->model.SetTexture("game/assets/gold.jpg", true);
+        }
+        if (ImGui::Selectable("Sphere mesh"))
+        {
+            Game::Entity* entity = io_entityManager.CreateEntity();
+            auto drawable = entity->AddComponent<Game::StaticDraw>();
+            drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
+            drawable->model.SetTexture("game/assets/gold.jpg", true);
+        }
+        if (ImGui::Selectable("Camera"))
+        {
+            Game::Entity* entity = io_entityManager.CreateEntity();
+            entity->name = "Camera_" + std::to_string(entity->GetID());
+            entity->AddComponent<Game::Camera>();
+        }
+
+        ImGui::EndPopup();
+    }
 }
 
 void Hierarchy::RenderEntitiesHierarchy(Game::EntityManager& io_entityManager, const std::unordered_map<Game::EntityIdentifier, Game::Entity*>& io_entities)

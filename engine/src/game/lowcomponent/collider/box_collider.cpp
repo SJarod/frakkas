@@ -19,14 +19,14 @@ void BoxCollider::UpdateBoxScale()
         return;
 
     auto* newBox = new JPH::BoxShape(JPH::Vec3(extension.x, extension.y, extension.z));
-    collider->SetShapeInternal(newBox, false);
+    bodyInterface->SetShape(GetPhysicBodyID(), newBox, false, JPH::EActivation::Activate);
 
     prevExtension = extension;
 }
 
-void BoxCollider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
+void BoxCollider::ApplyEntityUpdate()
 {
-    Collider::ApplyEditorUpdate(i_bodyInterface);
+    Collider::ApplyEntityUpdate();
 
     UpdateBoxScale();
 }

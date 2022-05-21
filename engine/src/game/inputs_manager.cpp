@@ -311,9 +311,9 @@ bool Inputs::IsReleased(EButton i_button)
 
 bool Game::Inputs::IsControlCommandPressed(EButton i_button)
 {
-    return (buttonStates[EButton::LEFT_CTRL] != EButtonState::RELEASED
+    return ApplyListeningCheck((buttonStates[EButton::LEFT_CTRL] != EButtonState::RELEASED
             || buttonStates[EButton::RIGHT_CTRL] != EButtonState::RELEASED)
-           && buttonStates[i_button] == EButtonState::PRESSED;
+           && buttonStates[i_button] == EButtonState::PRESSED);
 }
 
 bool Game::Inputs::IsAlterateCommandPressed(EButton i_button)

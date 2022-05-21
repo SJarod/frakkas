@@ -429,8 +429,8 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
 {
     bool meshExists = i_model.mesh ? true : false;
     WriteAttribute(io_file, i_attributeName);
-    Write(io_file, "mesh_path", meshExists ? i_model.mesh->name : "none");
-    Write(io_file, "texture_path", meshExists ? i_model.textureName : "none");
+    Write(io_file, "name", meshExists ? i_model.mesh->name : "none");
+    Write(io_file, "textureName", meshExists ? i_model.textureName : "none");
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)

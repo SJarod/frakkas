@@ -1,8 +1,8 @@
 add_library(GameFrakkas STATIC
         src/game/world.cpp
-        assets/Scripts/fps_movement.cpp
-        assets/Scripts/player_movement.cpp
-        assets/Scripts/follow_camera.cpp
+        assets/scripts/fps_movement.cpp
+        assets/scripts/player_movement.cpp
+        assets/scripts/follow_camera.cpp
         src/game/component_register.cpp
         ${PROJECT_SOURCE_DIR}/lib/glad.c
 )
@@ -11,7 +11,7 @@ target_include_directories(GameFrakkas
                            PRIVATE include
                            PRIVATE ${ENGINE_INCLUDE_DIR}
                            PRIVATE ${MATHS_INCLUDE_DIR}
-                           PRIVATE ${PROJECT_SOURCE_DIR}/game/assets/Scripts
+                           PRIVATE ${PROJECT_SOURCE_DIR}/game/assets/scripts
                            PRIVATE ${imgui_SOURCE_DIR}
                            PRIVATE ${sdl_INCLUDE_DIR}
                            PRIVATE ${LIB_INCLUDE_DIR}

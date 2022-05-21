@@ -2,7 +2,6 @@
 #include <Jolt.h>
 
 #include <Physics/Body/Body.h>
-#include <Physics/Body/BodyInterface.h>
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"
@@ -17,116 +16,111 @@ KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
 
 void Collider::OnEnable()
 {
-
+    bodyInterface->ActivateBody(GetPhysicBodyID());
 }
 
 void Collider::OnDisable()
 {
-
+    bodyInterface->DeactivateBody(GetPhysicBodyID());
 }
 
-Vector3 Collider::GetPosition() const
+void Collider::ApplyPhysicPosition() const
 {
-    JPH::Vec3 pos = collider->GetPosition();
-    return Vector3(pos.GetX(), pos.GetY(), pos.GetZ());
+    JPH::Vec3 pos = bodyInterface->GetPosition(GetPhysicBodyID());
+    Position() = {pos.GetX(), pos.GetY(), pos.GetZ()};
 }
 
-Quaternion Collider::GetRotation() const
+void Collider::ApplyPhysicRotation() const
 {
-    JPH::Quat rot = collider->GetRotation();
-    return Quaternion(rot.GetX(), rot.GetY(), rot.GetZ(), rot.GetW());
+    JPH::Quat rot = bodyInterface->GetRotation(GetPhysicBodyID());
+    Rotation() = -Quaternion(rot.GetX(), rot.GetY(), rot.GetZ(), rot.GetW()).QuatToEuler();
 }
 
-Vector3 Collider::GetVelocity() const
+void Collider::ApplyPhysicVelocity()
 {
-    JPH::Vec3 vel = collider->GetLinearVelocity();
-    return Vector3(vel.GetX(), vel.GetY(), vel.GetZ());
+    JPH::Vec3 vel = bodyInterface->GetLinearVelocity(GetPhysicBodyID());
+    velocity = Vector3(vel.GetX(), vel.GetY(), vel.GetZ());
 }
 
-Vector3 Collider::GetAngularVelocity() const
+void Collider::ApplyPhysicAngularVelocity()
 {
-    JPH::Vec3 vel = collider->GetAngularVelocity();
-    return Vector3(vel.GetX(), vel.GetY(), vel.GetZ());
+    JPH::Vec3 vel = bodyInterface->GetAngularVelocity(GetPhysicBodyID());
+    angularVelocity = {vel.GetX(), vel.GetY(), vel.GetZ()};
 }
 
-void Collider::SetPosition(const Vector3& i_position)
+void Collider::ApplyEntityPosition()
 {
-    JPH::Vec3 pos = { i_position.x, i_position.y, i_position.z};
-    collider->SetPositionAndRotationInternal(pos, collider->GetRotation());
+    JPH::Vec3 pos = { Position().get().x, Position().get().y, Position().get().z};
+    bodyInterface->SetPosition(GetPhysicBodyID(), pos, JPH::EActivation::Activate);
 }
 
-void Collider::SetRotation(const Quaternion& i_rot)
+void Collider::ApplyEntityRotation()
 {
-    collider->SetPositionAndRotationInternal(collider->GetPosition(),{i_rot.x, i_rot.y, i_rot.z, i_rot.w});
+    Quaternion r = owner.get()->transform.GetQuaternionRotation();
+    JPH::Quat rot = {r.x, r.y ,r.z, r.w};
+    bodyInterface->SetRotation(GetPhysicBodyID(), rot, JPH::EActivation::Activate);
 }
 
-void Collider::SetCollider(JPH::Body* i_collider)
+void Collider::SetPhysicParameters(JPH::Body* i_body, JPH::BodyInterface* i_bodyInterface)
 {
-    collider = i_collider;
+    body = i_body;
+    bodyInterface =  i_bodyInterface;
 }
 
-void Collider::SetVelocity(const Vector3& i_velocity)
+void Collider::ApplyEntityVelocity()
 {
-    JPH::Vec3 vel = { i_velocity.x,i_velocity.y, i_velocity.z };
-    collider->SetLinearVelocity(vel);
+    JPH::Vec3 vel = { velocity.x,velocity.y, velocity.z };
+    bodyInterface->SetLinearVelocity(GetPhysicBodyID(), vel);
 }
 
-void Collider::SetAngularVelocity(const Vector3& i_angVelocity)
+void Collider::ApplyEntityAngularVelocity()
 {
-    JPH::Vec3 vel = { i_angVelocity.x,i_angVelocity.y, i_angVelocity.z };
-    collider->SetAngularVelocity(vel);
+    JPH::Vec3 vel = { angularVelocity.x,angularVelocity.y, angularVelocity.z };
+    bodyInterface->SetAngularVelocity(GetPhysicBodyID(), vel);
 }
 
-void Collider::SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterface)
+void Collider::ApplyStaticState()
 {
-    if (i_isStatic)
+    if (isStatic)
     {
-        collider->SetMotionType(JPH::EMotionType::Static);
-        i_bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::NON_MOVING);
+        bodyInterface->SetMotionType(GetPhysicBodyID(), JPH::EMotionType::Static, JPH::EActivation::DontActivate);
+        bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::NON_MOVING);
     }
     else
     {
-        collider->SetMotionType(JPH::EMotionType::Dynamic);
-        i_bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::MOVING);
+        bodyInterface->SetMotionType(GetPhysicBodyID(), JPH::EMotionType::Dynamic, JPH::EActivation::Activate);
+        bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::MOVING);
     }
 }
 
-void Collider::SetTriggerState(bool i_isTrigger, JPH::BodyInterface* i_bodyInterface)
+void Collider::ApplyTriggerState()
 {
-    collider->SetIsSensor(i_isTrigger);
+    body->SetIsSensor(trigger);
 }
 
-void Collider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
+void Collider::ApplyEntityUpdate()
 {
-    Transform& trs = owner.get()->transform;
-    SetPosition(trs.position);
-    SetRotation(trs.GetQuaternionRotation());
+    ApplyEntityPosition();
+    ApplyEntityRotation();
+    ApplyEntityVelocity();
+    ApplyEntityAngularVelocity();
 
-    SetStaticState(isStatic, i_bodyInterface);
-
+    ApplyStaticState();
     if (trigger)
         isStatic = true;
 
-    SetTriggerState(trigger, i_bodyInterface);
-
-    if (!isStatic)
-    {
-        SetVelocity(velocity);
-        SetAngularVelocity(angularVelocity);
-    }
+    ApplyTriggerState();
 }
 
 void Collider::ApplyPhysicUpdate()
 {
-    Transform& trs = owner.get()->transform;
-    trs.position = GetPosition();
-    velocity = GetVelocity();
-    //TODO Quat to Euler angles
-    // trs.rotation = GetRotation();
-
+    ApplyPhysicPosition();
+    ApplyPhysicRotation();
+    ApplyPhysicVelocity();
+    ApplyPhysicAngularVelocity();
 }
 
 const JPH::BodyID& Collider::GetPhysicBodyID() const
 {
-    return collider->GetID();
+    return body->GetID();
 }

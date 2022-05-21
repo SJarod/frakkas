@@ -243,3 +243,14 @@ inline Vector3 Vector3::ClampLength(const Vector3& i_v, float i_min, float i_max
 
     return i_v;
 }
+
+inline Vector3 Vector3::LookAt(const Vector3& i_eyePosition, const Vector3& i_targetPosition)
+{
+    Vector3 dir = Vector3::VecFromPt(i_eyePosition, i_targetPosition).Normalize();
+    Quaternion quatRot = Quaternion::VectorToVector(Vector3::backward, dir);
+
+    Vector3 rotation = quatRot.QuatToEuler();
+    rotation.z = 0.f; // discard z rotation because result is a bit awkward with it.
+
+    return rotation;
+}

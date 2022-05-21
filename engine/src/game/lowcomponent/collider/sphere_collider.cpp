@@ -22,14 +22,14 @@ void SphereCollider::UpdateSphereShape()
         return;
 
     auto* sphere = new JPH::SphereShape(radius);
-    collider->SetShapeInternal(sphere, false);
+    bodyInterface->SetShape(GetPhysicBodyID(), sphere, false, JPH::EActivation::Activate);
 
     prevRadius = radius;
 }
 
-void SphereCollider::ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface)
+void SphereCollider::ApplyEntityUpdate()
 {
-    Collider::ApplyEditorUpdate(i_bodyInterface);
+    Collider::ApplyEntityUpdate();
 
     UpdateSphereShape();
 }

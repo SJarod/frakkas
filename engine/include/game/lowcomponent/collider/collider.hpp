@@ -2,6 +2,8 @@
 
 #include <Jolt.h>
 
+#include <Jolt/Physics/Body/BodyInterface.h>
+
 #include "maths.hpp"
 
 #include "renderer/model.hpp"
@@ -10,12 +12,10 @@
 
 #include "game/component_generator.hpp"
 
-
 namespace JPH
 {
     class Body;
     class BodyID;
-    class BodyInterface;
 }
 
 namespace Renderer::LowLevel
@@ -45,17 +45,18 @@ namespace Game
          * @brief Apply changes done in the editor update (translation, change motion...)
          * @param i_bodyInterface The jolt body interface to change collider layer.
          */
-        virtual void ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface);
+        virtual void ApplyEntityUpdate();
         /**
         * @brief Apply changes done in the physic update.
         */
         virtual void ApplyPhysicUpdate();
 
         /**
-         * Give a constructed body to this collider.
-         * @param i_collider The constructed body.
+         * @brief Send body and interface to the collider for physic system access.
+         * @param i_body The collider body.
+         * @param i_bodyInterface The collider body interface to change body settings.
          */
-        void SetCollider(JPH::Body* i_collider);
+        void SetPhysicParameters(JPH::Body* i_body, JPH::BodyInterface* i_bodyInterface);
 
         /**
          * Draw the collider on the scene.
@@ -64,58 +65,61 @@ namespace Game
         DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const {};
 
     protected:
-        JPH::Body* collider = nullptr;
+        JPH::BodyInterface* bodyInterface = nullptr;
         mutable Renderer::Model debugModel;
 
         /**
          * @return The position of the collider
          */
-        Vector3 GetPosition() const;
+        void ApplyPhysicPosition() const;
         /**
          * @return The rotation of the collider
          */
-        Quaternion GetRotation() const;
+        void ApplyPhysicRotation() const;
         /**
         * @return The linear velocity of the collider.
         */
-        Vector3 GetVelocity() const;
+        void ApplyPhysicVelocity();
         /**
         * @return The angular velocity of the collider.
         */
-        Vector3 GetAngularVelocity() const;
+        void ApplyPhysicAngularVelocity();
 
         /**
          * @param i_position Apply a position to the collider.
          * In fact, we force the jolt body to be to the input position, and keep the same rotation.
          */
-        void SetPosition(const Vector3& i_position);
+        void ApplyEntityPosition();
         /**
          * @param i_rot Apply a rotation to the collider.
          * In fact, we force the jolt body to be to the input rotation, and keep the same position.
          */
-        void SetRotation(const Quaternion& i_rot);
+        void ApplyEntityRotation();
 
         /**
         * @param i_velocity Apply this new input velocity to the collider.
         */
-        void SetVelocity(const Vector3& i_velocity);
+        void ApplyEntityVelocity();
         /**
         * @param i_angVelocity Apply this new input velocity to the collider.
         */
-        void SetAngularVelocity(const Vector3& i_angVelocity);
+        void ApplyEntityAngularVelocity();
         /**
         * @brief Update the motion type and the layer if static bool is changed.
         * @param i_isStatic The static state of the body.
         * @param i_bodyInterface The Jolt body interface to change body object layer.
         */
-        void SetStaticState(bool i_isStatic, JPH::BodyInterface* i_bodyInterface);
+        void ApplyStaticState();
 
         /**
         * @brief Update the collision type and the layer if static bool is changed.
         * @param i_isSensor The sensor state of the body.
         * @param i_bodyInterface The Jolt body interface to change body object layer.
         */
-        void SetTriggerState(bool i_isTrigger, JPH::BodyInterface* i_bodyInterface);
+        void ApplyTriggerState();
+
+    private:
+        JPH::Body* body;
 
     KK_COMPONENT_END
 }

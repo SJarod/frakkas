@@ -27,13 +27,13 @@ void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* 
 
     EditField(io_engine.entityManager, io_selectedEntity);
 
-    Engine::RunFlag rFlag = io_engine.GetRunMode();
+    Utils::UpdateFlag updateFlag = io_engine.GetRunMode();
     if (Inputs::IsPressed(EButton::P))
     {
-        if (rFlag & Engine::RunFlag_Gaming)
-            io_engine.SetRunMode(Engine::RunFlag_Editing);
+        if (updateFlag & Utils::UpdateFlag_Gaming)
+            io_engine.SetRunMode(Utils::UpdateFlag_Editing);
         else
-            io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming);
+            io_engine.SetRunMode(Utils::UpdateFlag_Editing | Utils::UpdateFlag_Gaming);
     }
 
     OptionsField();
@@ -122,14 +122,10 @@ bool MenuBar::CreateScenePopup(Renderer::Graph& io_graph)
         if (ImGui::Button("Create", ImVec2(120, 0)))
         {
             std::filesystem::path path = Renderer::Graph::GetSceneFullPath(sceneName);
-            std::ofstream emptyFile(path); // CREATE BUTTON
-            if (!emptyFile.is_open())
-                Log::Warning("Can't open scene file : ", path);
+            io_graph.CreateScene(path);
 
-            emptyFile.close();
-            io_graph.LoadScene(path);
-            sceneName = "new_scene";
             ImGui::CloseCurrentPopup();
+            sceneName = "new_scene";
 
             ImGui::EndPopup();
             return true;
@@ -299,11 +295,11 @@ void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
 {
     bool createComponent = false;
 
-    bool isGaming = io_engine.GetRunMode() & Engine::RunFlag_Gaming;
+    bool isGaming = io_engine.GetRunMode() & Utils::UpdateFlag_Gaming;
 
     auto reloadSceneFunc = [&]()
             {
-                io_engine.SetRunMode(Engine::RunFlag_Editing);
+                io_engine.SetRunMode(Utils::UpdateFlag_Editing);
                 io_engine.graph->ReloadScene();
                 o_loadScene = true;
             };
@@ -319,8 +315,8 @@ void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
 
         ImGui::Separator();
 
-        if (ImGui::MenuItem("Play", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing | Engine::RunFlag_Gaming); }
-        if (isGaming && ImGui::MenuItem("Pause", "P")) { io_engine.SetRunMode(Engine::RunFlag_Editing); }
+        if (ImGui::MenuItem("Play", "P")) { io_engine.SetRunMode(Utils::UpdateFlag_Editing | Utils::UpdateFlag_Gaming); }
+        if (isGaming && ImGui::MenuItem("Pause", "P")) { io_engine.SetRunMode(Utils::UpdateFlag_Editing); }
         if (isGaming && ImGui::MenuItem("Stop", "CTRL+P"))  { reloadSceneFunc(); }
         if (!isGaming && ImGui::MenuItem("Reset", "CTRL+P")) { reloadSceneFunc(); }
 
