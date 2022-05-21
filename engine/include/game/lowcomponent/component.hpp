@@ -116,6 +116,19 @@ namespace Game
         virtual void OnTriggerExit(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
 
         /**
+         * @return A reference to owner's transform position
+         */
+        Property<Vector3>& Position() const;
+        /**
+         * @return A reference to owner's transform scale
+         */
+        Property<Vector3>& Scale() const;
+        /**
+         * @return A reference to owner's transform rotation
+         */
+        Property<Vector3>& Rotation() const;
+
+        /**
          * @brief an abstract function, every inheretid components should define this function with KK_GENERATE_COMPONENT
          * @return the meta data of the class, in other words the list of member variable readable for the engine.
          */
@@ -128,19 +141,6 @@ namespace Game
          * @param entity an entity floating pointer, should be store somewhere else as smart pointer.
          */
         virtual void SetOwner(Entity* entity);
-
-        /**
-         * @return A reference to owner's transform position
-         */
-        Property<Vector3>& Position() const;
-        /**
-         * @return A reference to owner's transform scale
-         */
-        Property<Vector3>& Scale() const;
-        /**
-         * @return A reference to owner's transform rotation
-         */
-        Property<Vector3>& Rotation() const;
 
         /**
          * @return The owner's entity container that gives access to all entities and useful find function.

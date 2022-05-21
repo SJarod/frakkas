@@ -123,6 +123,15 @@ struct Vector3
      * @return The length-clamped vector.
      */
     static Vector3 ClampLength(const Vector3& i_v, float i_min, float i_max);
+
+    /**
+     * @brief Compute a euler rotation vector from backward vector to direction vector between eye and target.
+     * @param i_eyePosition The position of the entity to rotate.
+     * @param i_targetPosition The position of the entity to look at.
+     * @return A radians-euler-angles-vector that you can apply on eye-entity transform rotation to rotate toward target.
+     * @warning THE FUNCTION RETURNS INCORRECT VALUE, YOU SHOULD NOT USE
+     */
+    static Vector3 LookAt(const Vector3& i_eyePosition, const Vector3& i_targetPosition);
 };
 
 template<typename T>

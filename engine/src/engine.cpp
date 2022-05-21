@@ -167,10 +167,10 @@ void Engine::RunEditor()
         BeginFrame();
         
         /// OnUpdate
-        if (runMode & RunFlag_Gaming)
+        if (updateMode & Utils::UpdateFlag_Gaming)
         {
             // Disable inputs for game update if editing
-            if (runMode & RunFlag_Editing)
+            if (updateMode & Utils::UpdateFlag_Editing)
                 DisableInputs();
 
             entityManager.Update();
@@ -180,7 +180,7 @@ void Engine::RunEditor()
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
-        physicScene.Update(runMode & RunFlag_Gaming);
+        physicScene.Update(updateMode);
 
         /// Draw
         graph->RenderEditor(*renderer, editorFBO->AspectRatio());
@@ -196,7 +196,7 @@ void Engine::RunEditor()
 void Engine::RunGame()
 {
     EnableInputs();
-    SetRunMode(RunFlag_Gaming);
+    SetRunMode(Utils::UpdateFlag_Gaming);
 
     int width = 0, height = 0;
     Vector2 windowSize(width, height);
@@ -229,26 +229,28 @@ void Engine::RunGame()
     }
 }
 
-void Engine::SetRunMode(RunFlag i_flag)
+void Engine::SetRunMode(unsigned int i_flag)
 {
-    runMode = i_flag;
+    updateMode = i_flag;
 
-    if (runMode & RunFlag_Gaming)
+    if (updateMode & Utils::UpdateFlag_Gaming)
         Engine::SetCursorGameMode(true);
 
-    if (runMode & RunFlag_Editing)
+    if (updateMode & Utils::UpdateFlag_Editing)
         Engine::SetCursorGameMode(false);
 
-    if (runMode & RunFlag_Gaming && gameRestart)
+    if (updateMode & Utils::UpdateFlag_Gaming && gameRestart)
     {
         gameRestart = false;
         entityManager.Start();
     }
+
+    graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 }
 
-Engine::RunFlag Engine::GetRunMode() const
+Utils::UpdateFlag Engine::GetRunMode() const
 {
-    return runMode;
+    return updateMode;
 }
 
 void Engine::SetCursorVisibility(bool i_visibility)

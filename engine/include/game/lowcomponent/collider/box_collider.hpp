@@ -7,7 +7,7 @@ namespace Game
 {
     KK_COMPONENT_FROM(BoxCollider, Collider);
 
-        void ApplyEditorUpdate(JPH::BodyInterface* i_bodyInterface) override;
+        void ApplyEntityUpdate() override;
 
         void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const override;
 

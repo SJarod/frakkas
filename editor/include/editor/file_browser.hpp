@@ -20,6 +20,7 @@ namespace Editor
 
     private:
         std::filesystem::path m_currentDirectory;
+        std::filesystem::path m_deletePath;
 
         Resources::Texture m_directoryIcon;
         Resources::Texture m_fileIcon;

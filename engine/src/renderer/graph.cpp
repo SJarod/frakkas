@@ -2,6 +2,7 @@
 
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
+#include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
 #include "game/lowcomponent/collider/box_collider.hpp"
 #include "game/lowcomponent/collider/sphere_collider.hpp"
@@ -22,6 +23,8 @@ using namespace Game;
 using namespace Renderer;
 
 Physic::PhysicScene* Graph::physicScene = nullptr;
+bool Graph::playing = false;
+
 
 std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
@@ -42,18 +45,14 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
     else if (ID == Game::Camera::MetaData().className)
         gameCameras.emplace_back(reinterpret_cast<Game::Camera*>(i_newComponent));
-    else if (ID == BoxCollider::MetaData().className)
+    else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
     {
-        auto box = reinterpret_cast<BoxCollider*>(i_newComponent);
-        box->SetCollider(physicScene->CreateBody(Vector3(1.f, 1.f, 1.f)));
-        Physic::PhysicScene::colliders.emplace_back(box);
+        auto box = reinterpret_cast<Collider*>(i_newComponent);
+        physicScene->AddCollider(box, Vector3(1.f, 1.f, 1.f));
     }
-    else if (ID == SphereCollider::MetaData().className)
-    {
-        auto sphere = reinterpret_cast<SphereCollider*>(i_newComponent);
-        sphere->SetCollider(physicScene->CreateBody(1.f));
-        Physic::PhysicScene::colliders.emplace_back(sphere);
-    }
+
+    if (playing)
+        i_newComponent->OnStart();
 }
 
 void Graph::UnregisterComponent(Game::Component* i_oldComponent)
@@ -248,6 +247,49 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
     i_renderer.SetUniformToNamedBlock("uRendering", 96, light.shadow);
     // shadowPCF
     i_renderer.SetUniformToNamedBlock("uRendering", 100, light.shadowPCF);
+}
+
+bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
+{
+    std::ofstream emptyFile(i_scenePath); // CREATE BUTTON
+    if (!emptyFile.is_open())
+    {
+        Log::Warning("Can't open scene file : ", i_scenePath);
+        emptyFile.close();
+        return false;
+    }
+
+    emptyFile.close();
+    LoadScene(i_scenePath);
+
+    /// CAMERA
+    Game::Entity* en = entityManager->CreateEntity("Camera");
+    en->AddComponent<Game::Camera>();
+
+    /// GROUND
+    en = entityManager->CreateEntity("Ground");
+    en->AddComponent<Game::BoxCollider>();
+
+    auto drawable = en->AddComponent<Game::StaticDraw>();
+    drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
+    drawable->model.SetTexture("game/assets/gold.jpg", true);
+
+    en->transform.position = {0.f, -5.f, 0.f};
+    en->transform.scale = {10.f, 1.f, 10.f};
+
+    /// PLAYER
+    en = entityManager->CreateEntity("Player");
+    auto collider = en->AddComponent<Game::SphereCollider>();
+
+    drawable = en->AddComponent<Game::StaticDraw>();
+    drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
+    drawable->model.SetTexture("game/assets/gold.jpg", true);
+
+    collider->isStatic = false;
+
+    SaveScene();
+
+    return true;
 }
 
 void Graph::ReloadScene()

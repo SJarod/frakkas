@@ -19,6 +19,36 @@ bool EditorRender::editingText = false;
 Vector2 EditorRender::mouseLockPosition {};
 Vector2 EditorRender::gameWindowSize {};
 
+inline void CheckEngineQuitEvent()
+{
+    if (Game::Inputs::quit)
+    {
+        ImGui::OpenPopup("QUIT");
+        Game::Inputs::quit = false;
+    }
+
+    /// CREATE NEW SCENE POPUP
+    if (ImGui::BeginPopupModal("QUIT", nullptr))
+    {
+        ImGui::Text("Are you sure to close the engine?\nDon't forget to save your current scene!\n");
+
+        ImGui::Separator();
+
+        if (ImGui::Button("Quit", ImVec2(120, 0)))
+        {
+            Game::Inputs::quit = true;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0)))
+        {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+}
+
 void EditorRender::InitImGui(Engine& io_engine)
 {
     // Setup Dear ImGui context
@@ -103,6 +133,13 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 
+    bool stylePushed = false;
+    if (io_engine.GetRunMode() & Utils::UpdateFlag_Gaming)
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.75f);
+        stylePushed = true;
+    }
+
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
     // Reset drag edit state
@@ -126,7 +163,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
 
     // Disable inputs if typing
-    if (editingText)
+    if (editingText || !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing) || m_scene.isMoving)
         io_engine.DisableInputs();
 
     // reload scene if menu bar call scene reloading
@@ -136,7 +173,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     {
         m_hierarchy.selected = nullptr;
         io_engine.gameRestart = true;
-        io_engine.SetRunMode(Engine::RunFlag_Editing);
+        io_engine.SetRunMode(Utils::UpdateFlag_Editing);
     }
 
     // Render viewers
@@ -146,10 +183,18 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     m_fileBrowser.OnImGuiRender();
 
     // Render scenes
-    m_game.OnImGuiRender(io_engine);
+    if (m_scene.isMoving)
+        io_engine.EnableInputs();
+
     m_scene.OnImGuiRender(io_engine, m_hierarchy.selected, guizmoOperation);
 
+    if(stylePushed)
+        ImGui::PopStyleVar();
+
     io_engine.EnableInputs();
+    m_game.OnImGuiRender(io_engine);
+
+    CheckEngineQuitEvent();
 
     UpdateImGui();
 

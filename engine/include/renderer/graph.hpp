@@ -35,6 +35,8 @@ namespace Renderer
         Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer);
         ~Graph() = default;
 
+        static bool playing;
+
         bool lightEnabled = true;
         Renderer::Light light;
 
@@ -67,6 +69,14 @@ namespace Renderer
          * @param i_aspectRatio the render's aspect ratio
          */
         void RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio);
+
+        /**
+         * @brief Create a new scene file with default entities.
+         * @param i_scenePath The path and name of the scene.
+         * @param io_entityManager The entity manager to create entities.
+         * @return true if scene created, false if an error occurred.
+         */
+        bool CreateScene(const std::filesystem::path& i_scenePath);
 
         /**
          * Reload the current scene.

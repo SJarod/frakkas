@@ -10,6 +10,10 @@
 #include <Physics/Body/BodyManager.h>
 #include <Physics/PhysicsSystem.h>
 
+#include "game/lowcomponent/collider/collider.hpp"
+
+#include "utils/update_flags.hpp"
+
 #include "maths.hpp"
 #include "layers.hpp"
 #include "contact_listener.hpp"
@@ -21,11 +25,6 @@ namespace JPH
 }
 
 using uint = unsigned int;
-
-namespace Game
-{
-    class Collider;
-}
 
 namespace Physic
 {
@@ -53,6 +52,9 @@ namespace Physic
         // Time before we update physic scene in seconds.
         // This is important to let the physics system creates all the colliders.
         static constexpr float firstUpdateTimer = 1.f;
+
+        static float gravityFactor;
+
     public:
         PhysicScene();
         ~PhysicScene() = default;
@@ -61,9 +63,18 @@ namespace Physic
 
         /**
          * @brief Update physic scene (apply velocity and process collision), and Update colliders transform.
-         * @param i_runMode The current gaming state of the engine.
+         * @param i_updateMode The current gaming state of the engine.
          */
-        void Update(unsigned int i_runMode = 1 << 1) const;
+        void Update(Utils::UpdateFlag i_updateMode = Utils::UpdateFlag_Gaming) const;
+
+        /**
+         * @brief Add a collider component to the physic scene, and create a physic body in the
+         * @tparam TShapeArgs
+         * @param io_collider
+         * @param i_shapeArgs
+         */
+        template<typename... TShapeArgs>
+        void AddCollider(Game::Collider* io_collider, TShapeArgs... i_shapeArgs);
 
         /**
          * @brief Generate a jolt physic body with box shape. Added to jolt's BodyInterface
@@ -121,4 +132,12 @@ namespace Physic
         JPH::MyBroadPhaseLayerInterface broadPhaseLayerInterface;
 
     };
+}
+
+template<typename... TShapeArgs>
+void Physic::PhysicScene::AddCollider(Game::Collider* io_collider, TShapeArgs... i_shapeArgs)
+{
+    JPH::Body* body = CreateBody(std::forward<TShapeArgs>(i_shapeArgs)...);
+    io_collider->SetPhysicParameters(body, bodyInterface);
+    colliders.emplace_back(io_collider);
 }

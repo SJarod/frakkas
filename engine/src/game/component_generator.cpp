@@ -13,12 +13,12 @@ static constexpr char templateFileName[] = "$file";
 
 inline std::string GetComponentSourceFullPath(const std::string& name)
 {
-    return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".cpp";
+    return Helpers::gameDirectoryPath + std::string("assets/scripts/") + name + ".cpp";
 }
 
 inline std::string GetComponentIncludeFullPath(const std::string& name)
 {
-	return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".hpp";
+	return Helpers::gameDirectoryPath + std::string("assets/scripts/") + name + ".hpp";
 }
 
 inline std::string GetCMakeFullPath()
@@ -98,7 +98,7 @@ bool CreateNewComponentScript(const std::string& compName)
 	strCmake = stream.str();
 
 	int addLibraryLine = strCmake.find(cmakeAddLibraryString) + (sizeof(cmakeAddLibraryString) / sizeof(char));
-	strCmake.insert(addLibraryLine + 1, "\t\tassets/Scripts/" + fileName + ".cpp\n");
+	strCmake.insert(addLibraryLine + 1, "\t\tassets/scripts/" + fileName + ".cpp\n");
 
 	std::ofstream outCMake(GetCMakeFullPath());
 
