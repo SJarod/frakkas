@@ -9,6 +9,8 @@
 
 #include "renderer/graph.hpp"
 
+#include "utils/dragdrop_constants.hpp"
+
 #include "helpers/string_helpers.hpp"
 
 namespace Helpers
@@ -23,19 +25,20 @@ namespace Helpers
      */
     inline bool ReadPath(const std::filesystem::path& i_path, Game::Entity& o_entity, Renderer::Graph* io_graph = nullptr)
     {
-        if (i_path.extension() == ".wav" || i_path.extension() == ".mp3")
+        std::string extension = i_path.extension().string();
+        if (Utils::FindExtension(extension, Utils::SoundExtensions))
         {
             auto soundComp = o_entity.AddComponent<Game::SoundComponent>();
-            soundComp->sound.SetSound(i_path.string());
+            soundComp->SetSoundPath(i_path);
             return true;;
         }
-        else if (i_path.extension() == ".obj" || i_path.extension() == ".fbx" || i_path.extension() == ".gltf")
+        else if (Utils::FindExtension(extension, Utils::MeshExtensions))
         {
             auto staticDraw = o_entity.AddComponent<Game::StaticDraw>();
             staticDraw->model.SetMeshFromFile(i_path.string());
             return true;
         }
-        else if (i_path.extension() == ".cpp" || i_path.extension() == ".hpp")
+        else if (Utils::FindExtension(extension, Utils::CodeExtensions))
         {
             std::filesystem::path fileName = i_path.filename().replace_extension();
             ClassMetaData* md = Game::Component::FindMetaData(Helpers::SnakeCaseToCamelCase(fileName.string()));
@@ -45,7 +48,7 @@ namespace Helpers
                 return true;
             }
         }
-        else if (io_graph && i_path.extension() == ".kk") // Handle .KK Loading if graph is send
+        else if (Utils::FindExtension(extension, Utils::SceneExtensions)) // Handle .KK Loading if graph is send
         {
             io_graph->LoadScene(i_path.string());
             return true;
@@ -65,7 +68,7 @@ namespace Helpers
         bool dropped = false;
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(Utils::ResourcePathDragDropID))
             {
                 std::filesystem::path path = *static_cast<std::filesystem::path*>(payload->Data);
 
@@ -87,7 +90,7 @@ namespace Helpers
         bool dropped = false;
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_BROWSER_ITEM"))
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(Utils::ResourcePathDragDropID))
             {
                 std::filesystem::path path = *static_cast<std::filesystem::path*>(payload->Data);
 
@@ -102,5 +105,4 @@ namespace Helpers
         }
         return dropped;
     }
-
 }

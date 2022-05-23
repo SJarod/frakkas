@@ -27,11 +27,11 @@ namespace Game
 {
     KK_PRIVATE_COMPONENT(Collider)
 
-        KK_FIELD(Vector3, velocity);
-        KK_FIELD(Vector3, angularVelocity);
+        Vector3 velocity;
+        Vector3 angularVelocity;
 
-        KK_FIELD(bool, trigger) = false;
-        KK_FIELD(bool, isStatic) = true;
+        bool trigger = false;
+        bool isStatic = true;
 
         void OnEnable() override;
         void OnDisable() override;

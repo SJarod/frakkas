@@ -1,53 +1,26 @@
 #pragma once
 
 #include <miniaudio.h>
+#include <filesystem>
 
 #include "maths.hpp"
+
+#include "resource.hpp"
 
 
 namespace Resources
 {
-    class Sound
+    class Sound : public Resource
     {
     public:
-        Sound() = default;
-        ~Sound() = default;
+        Sound(const std::string& i_name);
+        ~Sound();
 
         ma_sound soundObject;
-        std::string soundPath;
-        float volume = 1.f;
-        bool loop = false;
+        std::filesystem::path soundPath;
 
-        /**
-         * Set soundPath
-         * @param i_soundPath full path to the sound file
-         */
-        void SetSound(const std::string& i_soundPath);
+        void LoadFromInfo() override;
 
-        /**
-         * Play a sound
-         */
-        void Play();
-
-        /**
-         * Stop a sound
-         */
-        void Stop();
-
-        /**
-         * Pause a sound
-         */
-        void Pause();
-
-        /**
-         * Set the volume of the sound playing
-         */
-        void SetVolume() const;
-
-    private:
-        /**
-         * Init sound from file
-         */
-        void Init();
+        void ComputeMemorySize() override;
     };
 }

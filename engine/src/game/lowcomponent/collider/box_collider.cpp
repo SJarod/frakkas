@@ -9,7 +9,8 @@
 
 #include "game/lowcomponent/collider/box_collider.hpp"
 
-KK_COMPONENT_IMPL(BoxCollider)
+KK_COMPONENT_IMPL_BEGIN(BoxCollider)
+KK_COMPONENT_IMPL_END
 
 void BoxCollider::UpdateBoxScale()
 {

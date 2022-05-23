@@ -3,47 +3,36 @@
 
 #include "resources/sound.hpp"
 
-void Resources::Sound::SetSound(const std::string& i_soundPath)
+using namespace Resources;
+
+Sound::Sound(const std::string& i_name)
 {
-    if (i_soundPath.empty())
-    {
-        Log::Warning("Sound file not found.");
-        return;
-    }
+    soundPath = i_name;
+}
+
+Sound::~Sound()
+{
+    //ma_sound_uninit(&soundObject);
+}
+
+void Sound::LoadFromInfo()
+{
+    resourceType = EResourceType::SOUND;
+//    ma_sound_uninit(&soundObject);
+    if (ma_sound_init_from_file(&Engine::soundEngine, soundPath.string().c_str(), MA_SOUND_FLAG_DECODE, nullptr, nullptr, &soundObject) != MA_SUCCESS)
+        Log::Warning("Failed to init ",soundPath);
     else
-        ma_sound_uninit(&soundObject);
+        Log::Info("Successfully loaded sound file : ", soundPath);
 
-    soundPath = i_soundPath;
-    Init();
+    ComputeMemorySize();
 }
 
-void Resources::Sound::Init()
+void Sound::ComputeMemorySize()
 {
-    if (ma_sound_init_from_file(&Engine::soundEngine, soundPath.c_str(), MA_SOUND_FLAG_DECODE, nullptr, nullptr, &soundObject) != MA_SUCCESS)
-        Log::Warning("Fail to init " + soundPath);
-    else
-        Log::Info("Successfully init " + soundPath);
-}
-
-void Resources::Sound::Play()
-{
-    ma_sound_set_looping(&soundObject, loop);
-
-    ma_sound_start(&soundObject);
-}
-
-void Resources::Sound::Stop()
-{
-    ma_sound_stop(&soundObject);
-    ma_sound_seek_to_pcm_frame(&soundObject, 0);
-}
-
-void Resources::Sound::Pause()
-{
-    ma_sound_stop(&soundObject);
-}
-
-void Resources::Sound::SetVolume() const
-{
-    ma_engine_set_volume(&Engine::soundEngine, volume);
+    ram = 0;
+    vram = 0;
+    float time;
+    ma_sound_get_length_in_seconds(&soundObject, &time);
+    ram = static_cast<size_t>(ma_calculate_buffer_size_in_frames_from_milliseconds(static_cast<ma_uint32>(time * 1000.f), ma_engine_get_sample_rate(&Engine::soundEngine)));
+    // TODO: Improve size computing
 }

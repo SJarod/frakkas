@@ -4,9 +4,13 @@
 #include "follow_camera.hpp"
 
 using namespace Game;
-KK_COMPONENT_IMPL(FollowCamera)
-KK_FIELD_VECTOR_IMPL(FollowCamera, offset, EDataType::FLOAT, 3)
-KK_FIELD_RANGE_IMPL(FollowCamera, lerpFactor, EDataType::FLOAT, 1, 0.01f, 1.f)
+KK_COMPONENT_IMPL_BEGIN(FollowCamera)
+    KK_FIELD_PUSH(FollowCamera, offset, EDataType::FLOAT)
+    KK_FIELD_COUNT(3)
+
+    KK_FIELD_PUSH(FollowCamera, lerpFactor, EDataType::FLOAT)
+    KK_FIELD_RANGE(0.01f, 1.f)
+KK_COMPONENT_IMPL_END
 
 void FollowCamera::OnEnable()
 {

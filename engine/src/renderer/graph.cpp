@@ -269,8 +269,8 @@ bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
     en->AddComponent<Game::BoxCollider>();
 
     auto drawable = en->AddComponent<Game::StaticDraw>();
-    drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
-    drawable->model.SetTexture("game/assets/gold.jpg", true);
+    drawable->SetMesh(Resources::Mesh::cubeMesh);
+    drawable->SetTexture("game/assets/gold.jpg", true);
 
     en->transform.position = {0.f, -5.f, 0.f};
     en->transform.scale = {10.f, 1.f, 10.f};
@@ -280,8 +280,8 @@ bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
     auto collider = en->AddComponent<Game::SphereCollider>();
 
     drawable = en->AddComponent<Game::StaticDraw>();
-    drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-    drawable->model.SetTexture("game/assets/gold.jpg", true);
+    drawable->SetMesh(Resources::Mesh::sphereMesh);
+    drawable->SetTexture("game/assets/gold.jpg", true);
 
     collider->isStatic = false;
 
@@ -336,7 +336,7 @@ void Graph::SaveScene() const
 
     Serializer::Write(file, "light", light);
 
-    Serializer::Write(file, "shadowDistance", renderer->shadowDistance);
+    Serializer::Write(file, "shadowDistance", &renderer->shadowDistance);
 
     for (const auto& pair : entityManager->GetRootEntities())
         Serializer::Write(file, *pair.second);

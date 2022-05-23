@@ -1,16 +1,27 @@
 #include <cassert>
-
-#include "game/entity.hpp"
+#include <filesystem>
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/light.hpp"
 #include "resources/resources_manager.hpp"
 #include "resources/mesh.hpp"
 
+#include "utils/dragdrop_constants.hpp"
+
+#include "game/entity.hpp"
 #include "game/lowcomponent/static_draw.hpp"
 
-KK_COMPONENT_IMPL(StaticDraw)
-KK_FIELD_IMPL(StaticDraw, model, EDataType::MODEL)
+
+KK_COMPONENT_IMPL_BEGIN(StaticDraw)
+    KK_FIELD_PUSH(StaticDraw, meshPath, EDataType::STRING)
+    KK_FIELD_CHANGECALLBACK(OnMeshPathUpdate)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnStaticDrawComponent)
+
+    KK_FIELD_PUSH(StaticDraw, texturePath, EDataType::STRING)
+    KK_FIELD_CHANGECALLBACK(OnTexturePathUpdate)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnStaticDrawComponent)
+
+KK_COMPONENT_IMPL_END
 
 void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
@@ -69,4 +80,46 @@ void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 	}
     Shader::Unuse();
+}
+
+void StaticDraw::SetMesh(const std::string& i_path)
+{
+    meshPath = i_path;
+    model.SetMeshFromFile(meshPath);
+}
+
+void StaticDraw::SetTexture(const std::string& i_path, bool i_flip)
+{
+    texturePath = i_path;
+    model.SetTexture(texturePath, i_flip);
+}
+
+void DropOnStaticDrawComponent(unsigned char* io_component, void* io_dropData)
+{
+    auto& sd = *reinterpret_cast<StaticDraw*>(io_component);
+    auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
+    std::string extension = path.extension().string();
+    if (Utils::FindExtension(extension, Utils::MeshExtensions))
+    {
+        sd.meshPath = path.string();
+        sd.model.SetMeshFromFile(path.string());
+    }
+
+    if (Utils::FindExtension(extension, Utils::TextureExtensions))
+    {
+        sd.texturePath = path.string();
+        sd.model.SetTexture(path.string(), false);
+    }
+}
+
+void OnMeshPathUpdate(unsigned char* io_component)
+{
+    auto& sd = *reinterpret_cast<StaticDraw*>(io_component);
+    sd.SetMesh(sd.meshPath);
+}
+
+void OnTexturePathUpdate(unsigned char* io_component)
+{
+    auto& sd = *reinterpret_cast<StaticDraw*>(io_component);
+    sd.SetTexture(sd.texturePath, false);
 }

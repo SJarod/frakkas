@@ -6,11 +6,20 @@
 
 using namespace Game;
 
-KK_COMPONENT_IMPL(PlayerMovement)
-KK_FIELD_VECTOR_IMPL(PlayerMovement, startPosition, EDataType::FLOAT, 3)
-KK_FIELD_IMPL(PlayerMovement, speed, EDataType::FLOAT)
-KK_FIELD_IMPL(PlayerMovement, leftPower, EDataType::FLOAT)
-KK_FIELD_IMPL(PlayerMovement, rightPower, EDataType::FLOAT)
+KK_COMPONENT_IMPL_BEGIN(PlayerMovement)
+
+    KK_FIELD_PUSH(PlayerMovement, startPosition, EDataType::FLOAT)
+    KK_FIELD_COUNT(3)
+
+    KK_FIELD_PUSH(PlayerMovement, speed, EDataType::FLOAT)
+
+    KK_FIELD_PUSH(PlayerMovement, leftPower, EDataType::FLOAT)
+    KK_FIELD_RANGE(0.f, 1.f)
+
+    KK_FIELD_PUSH(PlayerMovement, rightPower, EDataType::FLOAT)
+    KK_FIELD_RANGE(0.f, 1.f)
+
+KK_COMPONENT_IMPL_END
 
 void PlayerMovement::OnStart()
 {

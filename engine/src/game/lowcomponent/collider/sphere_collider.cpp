@@ -10,7 +10,8 @@
 
 #include "game/lowcomponent/collider/sphere_collider.hpp"
 
-KK_COMPONENT_IMPL(SphereCollider)
+KK_COMPONENT_IMPL_BEGIN(SphereCollider)
+KK_COMPONENT_IMPL_END
 
 void SphereCollider::UpdateSphereShape()
 {

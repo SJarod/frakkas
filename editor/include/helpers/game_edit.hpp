@@ -111,6 +111,12 @@ namespace Helpers
     void Edit(Game::Transform& io_transform);
 
     /**
+     * @brief ImGui editing function. Create a combo for animation selection.
+     * @param io_skmodel The skeletal model with animations.
+     */
+    void Edit(Renderer::SkeletalModel& io_skmodel);
+
+    /**
      * @brief ImGui editing function. Allows the player to change entity parameters.
      * @param io_entity the entity to edit
      * @param i_guizmoOperation A int used by ImGui to defined which guizmo utility is being used.
@@ -124,24 +130,6 @@ namespace Helpers
      * @param o_showMap should the shadow map be displayed ?
      */
     void Edit(Engine& io_engine, bool& o_showMap);
-
-    /**
-    * @brief ImGui editing function. Allows the player to change sound parameters.
-    * @param io_sound the sound to edit
-    */
-    void Edit(Resources::Sound& io_sound);
-
-    /**
-    * @brief ImGui editing function. Allows the player to change model resources.
-    * @param io_model the model to edit
-    */
-    void Edit(Renderer::Model& io_model);
-
-    /**
-    * @brief ImGui editing function. Allows the player to change skeletal model resources.
-    * @param io_skmodel the skeletal model to edit
-    */
-    void Edit(Renderer::SkeletalModel& io_skmodel);
 
     /**
      * @brief Get a string from a pointer of scalars to render it with ImGui::Text()
@@ -174,4 +162,5 @@ namespace Helpers
      * @param io_metaData The class meta data to get access to component field properly.
      */
     void Edit(unsigned char* io_component, const ClassMetaData& io_metaData);
+
 }

@@ -13,27 +13,37 @@ enum class EDataType
 	FLOAT,
 	BOOL,
 	STRING,
-    SOUND,
-    MODEL,
-	SKELETALMODEL
+    BUTTON,
+    ANIMATION
 };
+
+using KKEditorAction = std::function<void(unsigned char*)>;
+using KKEditorDropAction = std::function<void(unsigned char*, void*)>;
 
 /**
  * @brief Store informations about a class' field, to reflect class datas.
  */
 struct DataDescriptor
 {
+    DataDescriptor() = default;
 	DataDescriptor(const std::string& name, EDataType dataType, int count, size_t offset, bool viewOnly = false, const Vector2& range = Vector2())
 		:name(name), dataType(dataType), count(count), offset(offset), viewOnly(viewOnly), range(range) {}
 
 	std::string name;
-	EDataType dataType;
-	int count = 1;
+	EDataType dataType = EDataType::INT;
 	size_t offset = 0;
-
     mutable bool changed {false};
+
+	int count = 1;
 	bool viewOnly = false;
     Vector2 range;
+
+    bool sameLine = false;
+
+    std::string dropID;
+    KKEditorDropAction onDrop;
+
+    KKEditorAction onChanged;
 };
 
 namespace Game

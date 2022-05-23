@@ -1,4 +1,5 @@
 #include <cassert>
+#include <filesystem>
 
 #include "game/entity.hpp"
 #include "game/time_manager.hpp"
@@ -8,10 +9,26 @@
 #include "resources/resources_manager.hpp"
 #include "resources/skeletal_mesh.hpp"
 
+#include "utils/dragdrop_constants.hpp"
+
 #include "game/lowcomponent/animated_draw.hpp"
 
-KK_COMPONENT_IMPL(AnimatedDraw)
-KK_FIELD_IMPL(AnimatedDraw, skmodel, EDataType::SKELETALMODEL)
+KK_COMPONENT_IMPL_BEGIN(AnimatedDraw)
+    KK_FIELD_PUSH(AnimatedDraw, meshPath, EDataType::STRING)
+    KK_FIELD_CHANGECALLBACK(OnAnimationMeshPathUpdate)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnAnimatedDrawComponent)
+
+    KK_FIELD_PUSH(AnimatedDraw, texturePath, EDataType::STRING)
+    KK_FIELD_CHANGECALLBACK(OnAnimationTexturePathUpdate)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnAnimatedDrawComponent)
+
+    KK_FIELD_PUSH(AnimatedDraw, animationPath, EDataType::STRING)
+    KK_FIELD_CHANGECALLBACK(OnAnimationPathUpdate)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnAnimatedDrawComponent)
+
+    KK_FIELD_PUSH(AnimatedDraw, skmodel, EDataType::ANIMATION)
+
+KK_COMPONENT_IMPL_END
 
 void AnimatedDraw::OnUpdate()
 {
@@ -80,4 +97,64 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 	}
     Shader::Unuse();
+}
+
+void AnimatedDraw::SetMesh(const std::string& i_path)
+{
+    meshPath = i_path;
+    skmodel.SetSkeletalMeshFromFile(i_path);
+}
+
+void AnimatedDraw::SetTexture(const std::string& i_path, bool i_flip)
+{
+    texturePath = i_path;
+    skmodel.SetTexture(i_path, i_flip);
+}
+
+void AnimatedDraw::SetAnimation(const std::string& i_path)
+{
+    animationPath = i_path;
+    skmodel.LoadAnimationsForThis(i_path);
+}
+
+void DropOnAnimatedDrawComponent(unsigned char* io_component, void* io_dropData)
+{
+    auto& sd = *reinterpret_cast<AnimatedDraw*>(io_component);
+    auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
+    std::string extension = path.extension().string();
+    if (Utils::FindExtension(extension, Utils::MeshExtensions))
+    {
+        sd.meshPath = path.string();
+        sd.skmodel.SetSkeletalMeshFromFile(sd.meshPath);
+    }
+
+    if (Utils::FindExtension(extension, Utils::TextureExtensions))
+    {
+        sd.texturePath = path.string();
+        sd.skmodel.SetTexture(sd.texturePath, false);
+    }
+
+    if (Utils::FindExtension(extension, Utils::AnimationExtensions))
+    {
+        sd.animationPath = path.string();
+        sd.skmodel.LoadAnimationsForThis(sd.animationPath);
+    }
+}
+
+void OnAnimationMeshPathUpdate(unsigned char* io_component)
+{
+    auto& sd = *reinterpret_cast<AnimatedDraw*>(io_component);
+    sd.SetMesh(sd.meshPath);
+}
+
+void OnAnimationTexturePathUpdate(unsigned char* io_component)
+{
+    auto& sd = *reinterpret_cast<AnimatedDraw*>(io_component);
+    sd.SetTexture(sd.texturePath, false);
+}
+
+void OnAnimationPathUpdate(unsigned char* io_component)
+{
+    auto& sd = *reinterpret_cast<AnimatedDraw*>(io_component);
+    sd.SetAnimation(sd.animationPath);
 }

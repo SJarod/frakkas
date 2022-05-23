@@ -7,11 +7,16 @@
 
 #include "game/lowcomponent/collider/collider.hpp"
 
-KK_COMPONENT_IMPL(Collider)
-KK_FIELD_IMPL(Collider, isStatic, EDataType::BOOL)
-KK_FIELD_IMPL(Collider, trigger, EDataType::BOOL)
-KK_FIELD_VIEW_ONLY_IMPL(Collider, velocity, EDataType::FLOAT, 3)
-KK_FIELD_VIEW_ONLY_IMPL(Collider, angularVelocity, EDataType::FLOAT, 3)
+KK_COMPONENT_IMPL_BEGIN(Collider)
+    KK_FIELD_PUSH(Collider, isStatic, EDataType::BOOL)
+    KK_FIELD_PUSH(Collider, trigger, EDataType::BOOL)
+    KK_FIELD_PUSH(Collider, velocity, EDataType::FLOAT)
+    KK_FIELD_COUNT(3)
+    KK_FIELD_VIEWONLY
+    KK_FIELD_PUSH(Collider, angularVelocity, EDataType::FLOAT)
+    KK_FIELD_COUNT(3)
+    KK_FIELD_VIEWONLY
+KK_COMPONENT_IMPL_END
 
 void Collider::OnEnable()
 {

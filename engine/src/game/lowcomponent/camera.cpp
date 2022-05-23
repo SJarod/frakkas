@@ -3,11 +3,14 @@
 #include "game/entity.hpp"
 #include "game/lowcomponent/camera.hpp"
 
-KK_COMPONENT_IMPL(Camera)
-KK_FIELD_RANGE_IMPL(Camera, near, EDataType::FLOAT, 1, 0.001f, 10.f)
-KK_FIELD_RANGE_IMPL(Camera, far, EDataType::FLOAT, 1, 100.f, 5000.f)
-KK_FIELD_RANGE_IMPL(Camera, fovY, EDataType::FLOAT, 1, 0.f, 180.f)
-
+KK_COMPONENT_IMPL_BEGIN(Camera)
+    KK_FIELD_PUSH(Camera, near, EDataType::FLOAT)
+    KK_FIELD_RANGE(0.001f, 10.f)
+    KK_FIELD_PUSH(Camera, far, EDataType::FLOAT)
+    KK_FIELD_RANGE(100.f, 5000.f)
+    KK_FIELD_PUSH(Camera, fovY, EDataType::FLOAT)
+    KK_FIELD_RANGE(0.0f, 180.0f)
+KK_COMPONENT_IMPL_END
 
 Matrix4 Camera::GetViewMatrix() const
 {
