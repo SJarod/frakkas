@@ -55,6 +55,7 @@ switch ((BroadPhaseLayer::Type)inLayer)
 {
 case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
 case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
+case (BroadPhaseLayer::Type)BroadPhaseLayers::SENSOR:		return "SENSOR";
 default:													JPH_ASSERT(false); return "INVALID";
 }
 }

@@ -99,6 +99,9 @@ void Collider::ApplyStaticState()
 
 void Collider::ApplyTriggerState()
 {
+    if (trigger)
+        bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::SENSOR);
+
     body->SetIsSensor(trigger);
 }
 
@@ -109,10 +112,10 @@ void Collider::ApplyEntityUpdate()
     ApplyEntityVelocity();
     ApplyEntityAngularVelocity();
 
-    ApplyStaticState();
     if (trigger)
         isStatic = true;
 
+    ApplyStaticState();
     ApplyTriggerState();
 }
 

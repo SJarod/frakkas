@@ -34,6 +34,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 add_custom_target(copy_editor_assets
+
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory
 				   ${CMAKE_SOURCE_DIR}/editor/assets
 		 		   ${CMAKE_SOURCE_DIR}/build/debug/editor/assets

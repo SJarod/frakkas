@@ -1,3 +1,4 @@
+#include "rumble_trigger.hpp"
 #include "fps_movement.hpp"
 #include "player_movement.hpp"
 #include "follow_camera.hpp"
@@ -15,6 +16,7 @@ ComponentRegister::ComponentRegister()
     : greedEntity(0, "greed")
 {
     // TODO:Add new component $
+	greedEntity.AddComponent<RumbleTrigger>();
     greedEntity.AddComponent<StaticDraw>();
     greedEntity.AddComponent<AnimatedDraw>();
     greedEntity.AddComponent<Camera>();

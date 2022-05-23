@@ -6,7 +6,6 @@
 #include "game/component_generator.hpp"
 
 static constexpr char lowComponentDirectoryPath[] = "game/lowcomponent/";
-static constexpr char cmakeAddLibraryString[] = "add_library(GameFrakkas STATIC";
 static constexpr char templateComponentName[] = "$name";
 static constexpr char templateFileName[] = "$file";
 
@@ -52,7 +51,7 @@ bool CreateNewComponentScript(const std::string& compName)
 
     if (!templateHeader.is_open())
     {
-        Log::Warning("Could not open the template Header 'engine/include/game/lowcomponent/template_component.hpp'.");
+        Log::Warning("Could not open the template Header 'engine/include/game/lowcomponent/component_template.hpp'.");
         return false;
     }
 
@@ -97,7 +96,8 @@ bool CreateNewComponentScript(const std::string& compName)
 
 	strCmake = stream.str();
 
-	int addLibraryLine = strCmake.find(cmakeAddLibraryString) + (sizeof(cmakeAddLibraryString) / sizeof(char));
+    // Set after the first .cpp file
+	int addLibraryLine = strCmake.find(".cpp") + (sizeof(".cpp") / sizeof(char));
 	strCmake.insert(addLibraryLine + 1, "\t\tassets/scripts/" + fileName + ".cpp\n");
 
 	std::ofstream outCMake(GetCMakeFullPath());
