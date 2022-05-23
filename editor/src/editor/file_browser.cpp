@@ -4,6 +4,8 @@
 
 #include "game/inputs_manager.hpp"
 
+#include "utils/dragdrop_constants.hpp"
+
 #include "editor/file_browser.hpp"
 
 using namespace Editor;
@@ -95,7 +97,7 @@ void FileBrowser::OnImGuiRender()
         {
             static std::filesystem::path itemPath;
             itemPath = entry.path();
-            ImGui::SetDragDropPayload("FILE_BROWSER_ITEM", &itemPath, sizeof(std::filesystem::path));
+            ImGui::SetDragDropPayload(Utils::ResourcePathDragDropID, &itemPath, sizeof(std::filesystem::path));
             ImGui::EndDragDropSource();
         }
 

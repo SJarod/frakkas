@@ -11,7 +11,8 @@ namespace Resources
 		MESH,
 		SKELETALMESH,
 		TEXTURE,
-		ANIMPACK
+		ANIMPACK,
+        SOUND
 	};
 
 	class Resource

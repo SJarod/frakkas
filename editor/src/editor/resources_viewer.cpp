@@ -28,7 +28,7 @@ void Editor::ResourcesViewer::OnImGuiRender()
 {
 	const std::unordered_map<std::string, std::shared_ptr<Resource>>& resources = ResourcesManager::ViewAllResources();
 	const int resourcesCount = resources.size();
-	static const char* typesStr[] = { "undefined", "shader", "mesh", "skeletal mesh", "texture", "animation pack" };
+	static const char* typesStr[] = { "undefined", "shader", "mesh", "skeletal mesh", "texture", "animation pack", "audio" };
 
 	ImGui::Begin("Resources Viewer");
 

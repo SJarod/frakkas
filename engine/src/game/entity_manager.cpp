@@ -130,7 +130,6 @@ void EntityManager::LoadEntities(std::ifstream& i_file)
     // Reset
     ClearEntities();
     // Load
-    i_file.ignore(); // skip empty lines
     while (!i_file.eof())
         Resources::Serializer::CreateAndReadEntity(i_file, *this, nullptr);
 }

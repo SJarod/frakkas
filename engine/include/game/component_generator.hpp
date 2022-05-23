@@ -14,20 +14,13 @@
  * @brief Define a struct in-class to reflect field,
  * declare a static metaData variable and define the constructor of the class.
  */
+
 #define KK_COMPONENT(compClass) \
 \
 class Entity;                                \
 class compClass : public Component\
 {\
 private:\
-\
-	struct FieldMetaData\
-	{\
-		FieldMetaData(ClassMetaData& md, const char* n, EDataType t, int c, size_t o, bool vo = false, const Vector2& r = Vector2())\
-		{                                                   \
-			md.descriptors.emplace_back(DataDescriptor(n, t, c, o, vo, r)); \
-		}\
-	};\
                                 \
     struct ComponentRegister       \
     {                           \
@@ -37,7 +30,10 @@ private:\
             compClass::MetaData().constructor = [](){ return new compClass(); };\
             Log::Info("Register '", #compClass, "' component.");\
             GetRegistry().push_back(&MetaData());\
-        }\
+            AddFields();\
+        }                                             \
+                                                      \
+        void AddFields();\
     };\
 	static const ComponentRegister componentRegister;                           \
 public: \
@@ -46,20 +42,13 @@ public: \
 	const ClassMetaData& GetMetaData() const override { return MetaData(); };      \
     const std::string& GetID() const override { return MetaData().className; };
 
+
 #define KK_PRIVATE_COMPONENT(compClass) \
 \
 class Entity;                                \
 class compClass : public Component\
 {\
 private:\
-\
-	struct FieldMetaData\
-	{\
-		FieldMetaData(ClassMetaData& md, const char* n, EDataType t, int c, size_t o, bool vo = false, const Vector2& r = Vector2())\
-		{                                                   \
-			md.descriptors.emplace_back(DataDescriptor(n, t, c, o, vo, r)); \
-		}\
-	};\
                                 \
     struct ComponentRegister       \
     {                           \
@@ -69,8 +58,11 @@ private:\
             compClass::MetaData().constructor = [](){ return new compClass(); };                                              \
             compClass::MetaData().publicClass = false;\
             Log::Info("Register '", #compClass, "' component.");\
-            GetRegistry().push_back(&MetaData());\
-        }\
+            GetRegistry().push_back(&MetaData());               \
+            AddFields();\
+        }                                             \
+                                                      \
+        void AddFields();\
     };\
 	static const ComponentRegister componentRegister;                           \
 public: \
@@ -88,14 +80,6 @@ class Entity;                                \
 class compClass : public parentCompClass\
 {\
 private:\
-\
-    struct FieldMetaData\
-	{\
-		FieldMetaData(ClassMetaData& md, const char* n, EDataType t, int c, size_t o, bool vo = false, const Vector2& r = Vector2())\
-		{                                                   \
-			md.descriptors.emplace_back(DataDescriptor(n, t, c, o, vo, r)); \
-		}\
-	};\
                                 \
     struct ComponentRegister       \
     {                           \
@@ -105,8 +89,11 @@ private:\
             compClass::MetaData().parentClassName = #parentCompClass;\
             compClass::MetaData().constructor = [](){ return new compClass(); };\
             GetRegistry().push_back(&MetaData());\
-            Log::Info("Register '", #compClass, "' component.");\
-        }\
+            Log::Info("Register '", #compClass, "' component.");                                                              \
+            AddFields();\
+        }                                             \
+                                                      \
+        void AddFields();\
     };\
     static const ComponentRegister componentRegister;                           \
 public:                                               \
@@ -118,77 +105,89 @@ public:                                               \
 #define KK_COMPONENT_END };
 
 /**
- * @brief Define the static component's metadata and componentRegister in .cpp
+ * @brief Define the static component's metadata and component register in .cpp.
+ * Begin the definition of the register function that will add class's field to metadata.
+ * @param compClass The class to define and push field in.
  */
-#define KK_COMPONENT_IMPL(compClass) \
+#define KK_COMPONENT_IMPL_BEGIN(compClass) \
 	using namespace Game;               \
     const compClass::ComponentRegister compClass::componentRegister;\
     ClassMetaData& compClass::MetaData()\
     {                                \
         static ClassMetaData metaData; \
         return metaData; \
-    }
-
-/**
- * @brief Add a FieldMetaData variable that will emplace back the reflected field in the static metadata in its constructor.
- */
-#define KK_FIELD(fieldType, fieldName) \
-    static FieldMetaData field_##fieldName; \
-	fieldType fieldName
-
-/**
- * @brief Define a FieldMetaData that had been declare in the compClass.
- * @param compClass The component class name.
- * @param fieldName Name of the field.
- * @param type an EDataType parameter to specify the kind of the data.
- * @param count The count of EDataType element, so that you can define arrays.
- */
-#define KK_FIELD_VECTOR_IMPL(compClass, fieldName, type, count) \
+    }\
     _Pragma("GCC diagnostic push")                                                         \
     _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
-    compClass::FieldMetaData compClass::field_##fieldName{compClass::MetaData(), #fieldName, type, count, offsetof(compClass, fieldName)};\
+    void Game::compClass::ComponentRegister::AddFields() \
+    {                                  \
+        DataDescriptor desc;           \
+        std::vector<DataDescriptor>& descriptors = compClass::MetaData().descriptors;
+
+/**
+ * @brief End the definition of metadata's field pushing.
+ */
+#define KK_COMPONENT_IMPL_END \
+    }                     \
     _Pragma("GCC diagnostic pop")
 
 /**
- * @brief Define a FieldMetaData that had been declare in the compClass, with only 1 scalar.
- * @param compClass The component class name.
- * @param fieldName Name of the field.
- * @param type an EDataType parameter to specify the kind of the data.
+ * @brief Push a new field in the metadata.
+ * @param compClass The component class to use offsetof() properly.
+ * @param fieldName The component's field to reflect.
+ * @param dataType An EDataType to define the type of reflected field.
  */
-#define KK_FIELD_IMPL(compClass, fieldName, type) \
-    _Pragma("GCC diagnostic push")                                                         \
-    _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
-    compClass::FieldMetaData compClass::field_##fieldName{compClass::MetaData(), #fieldName, type, 1, offsetof(compClass, fieldName)};\
-    _Pragma("GCC diagnostic pop")
+#define KK_FIELD_PUSH(compClass, fieldName, dataType) \
+    desc = DataDescriptor(#fieldName, dataType, 1, offsetof(compClass, fieldName)); \
+    descriptors.emplace_back(desc);
 
 /**
- * @brief Define a FieldMetaData that had been declare in the compClass. Not serialize and not edited, just print in the inspector.
- * @param compClass The component class name.
- * @param fieldName Name of the field.
- * @param type an EDataType parameter to specify the kind of the data.
- * @param count The count of EDataType element, so that you can define arrays.
+ * @brief Set the last pushed field as a vector of vectorCount element.
  */
-#define KK_FIELD_VIEW_ONLY_IMPL(compClass, fieldName, type, count) \
-    _Pragma("GCC diagnostic push")                                                         \
-    _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
-    compClass::FieldMetaData compClass::field_##fieldName{ compClass::MetaData(), #fieldName, type, count, offsetof(compClass, fieldName), true }; \
-    _Pragma("GCC diagnostic pop")
+#define KK_FIELD_COUNT(vectorCount) descriptors.back().count = vectorCount;
+
 /**
- * @brief Define a FieldMetaData that had been declare in the compClass.
- * @param compClass The component class name.
- * @param fieldName Name of the field.
- * @param type an EDataType parameter to specify the kind of the data.
- * @param count The count of EDataType element, so that you can define arrays.
- * @param valueMin The minimum float value to clamp the field.
- * @param valueMax The maximum float value to clamp the field.
+ * @brief Add a range to the last pushed field.
+ * @param valueMin The minimum scalar value to clamp field at.
+ * @param valueMax The maximum scalar value to clamp field at.
  */
-#define KK_FIELD_RANGE_IMPL(compClass, fieldName, type, count, valueMin, valueMax)\
-    _Pragma("GCC diagnostic push")                                                         \
-    _Pragma("GCC diagnostic ignored \"-Winvalid-offsetof\"")                                                         \
-    compClass::FieldMetaData compClass::field_##fieldName{ compClass::MetaData(), #fieldName, type, count, offsetof(compClass, fieldName), false, Vector2(valueMin, valueMax) }; \
-    _Pragma("GCC diagnostic pop")
+#define KK_FIELD_RANGE(valueMin, valueMax) descriptors.back().range = {valueMin, valueMax};
 
+/**
+ * @brief Mark the last pushed field as ViewOnly
+ */
+#define KK_FIELD_VIEWONLY descriptors.back().viewOnly = true;
 
+/**
+ * @brief Add a callback function to the last pushed field when field's value changed.
+ * @param changeFunc function that will be called on value changed. Signature is void(unsigned char* io_component).
+ */
+#define KK_FIELD_CHANGECALLBACK(changeFunc) descriptors.back().onChanged = [](unsigned char* io_component){changeFunc(io_component);};
+
+/**
+ * @brief Mark the last pushed field as a drop target.
+ * That means that you could receive data drag & drop on the field, according to its ID.
+ * @param ID The string ID of the drag & drop, useful to receive only the awaited data.
+ * @param dropFunc A global function with following signature : void(unsigned char* io_component, void* io_dropData)
+ */
+#define KK_FIELD_DROPTARGET(ID, dropFunc) \
+    descriptors.back().dropID = ID;    \
+    descriptors.back().onDrop = [](unsigned char* io_component, void* dropData){dropFunc(io_component, dropData);};
+
+/**
+ * @brief Push a button field for editor only that will call clickFunc when clicked.
+ * @param label The text that will appears on button.
+ * @param clickFunc The function that will be called on button clicked. Signature is void(unsigned char* io_component).
+ */
+#define KK_FIELD_PUSH_BUTTON(label, clickFunc) \
+    desc = DataDescriptor(label, EDataType::BUTTON, 1, 0); \
+    descriptors.emplace_back(desc);\
+    descriptors.back().onChanged = [](unsigned char* io_component){clickFunc(io_component);};
+
+/**
+ * @brief Set the last pushed field to the same line that the previous last pushed field.
+ */
+#define KK_FIELD_SAMELINE descriptors.back().sameLine = true;
 
 /**
  * @brief Create new .cpp/.hpp component file if does not already exist.

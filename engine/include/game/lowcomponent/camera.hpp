@@ -8,11 +8,11 @@ namespace Game
 {
     KK_COMPONENT(Camera)
 
-		KK_FIELD(float, near) = 0.1f;
-		KK_FIELD(float, far) = 1000.f;
+		float near = 0.1f;
+		float far = 1000.f;
 
 		//vertical field of view in degrees, you should convert in radians for calcul
-		KK_FIELD(float, fovY) = 90.f;
+		float fovY = 90.f;
 
 		/**
 		* @Summary Get camera's view matrix.

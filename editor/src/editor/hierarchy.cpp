@@ -3,6 +3,8 @@
 
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
+#include "game/lowcomponent/collider/box_collider.hpp"
+#include "game/lowcomponent/collider/sphere_collider.hpp"
 #include "game/entity_manager.hpp"
 
 #include "resources/mesh.hpp"
@@ -10,6 +12,8 @@
 #include "game/inputs_manager.hpp"
 
 #include "helpers/game_edit.hpp"
+
+#include "utils/dragdrop_constants.hpp"
 
 #include "editor/hierarchy.hpp"
 
@@ -22,27 +26,14 @@ inline std::string BuildEntityLabel(const std::string& name, const Game::EntityI
 
 void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
 {
-    bool openAddEntityPopup = false;
-
     ImGui::Begin("Hierarchy");
 
     if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && selected) // Will edit name if double clicked
         editSelectedName = true;
 
-    if(ImGui::Button("Add entity"))
-        io_entityManager.CreateEntity();
+    bool isWindowHovered = ImGui::IsWindowHovered() && !ImGui::IsAnyItemHovered();
 
-    if (ImGui::IsItemHovered() && Game::Inputs::IsPressed(Game::EButton::MOUSE_RIGHT))
-        openAddEntityPopup = true;
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Unset parent") && selected)
-    {
-        io_entityManager.UnsetEntityParent(*selected);
-    }
-
-    ParentUnsetDragDropTarget(io_entityManager);
+    OpenPopupAndUnselect(isWindowHovered);
 
     // reset remove id
     removeID = -1;
@@ -66,6 +57,7 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     // Create a dummy item to enable dragDropTarget
     ImGui::InvisibleButton("InvisibleDropTarget", ImVec2(500, 500));
     ParentUnsetDragDropTarget(io_entityManager);
+    OpenPopupAndUnselect(ImGui::IsItemHovered());
 
     // Remove an entity if remove ID had been modify
     if (removeID != -1)
@@ -74,33 +66,11 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     ImGui::End();
 
     if(openAddEntityPopup)
-        ImGui::OpenPopup("ADDENTITY");
-
-    if (ImGui::BeginPopup("ADDENTITY", ImGuiWindowFlags_AlwaysAutoResize))
     {
-        if (ImGui::Selectable("Cube mesh"))
-        {
-            Game::Entity* entity = io_entityManager.CreateEntity();
-            auto drawable = entity->AddComponent<Game::StaticDraw>();
-            drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
-            drawable->model.SetTexture("game/assets/gold.jpg", true);
-        }
-        if (ImGui::Selectable("Sphere mesh"))
-        {
-            Game::Entity* entity = io_entityManager.CreateEntity();
-            auto drawable = entity->AddComponent<Game::StaticDraw>();
-            drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-            drawable->model.SetTexture("game/assets/gold.jpg", true);
-        }
-        if (ImGui::Selectable("Camera"))
-        {
-            Game::Entity* entity = io_entityManager.CreateEntity();
-            entity->name = "Camera_" + std::to_string(entity->GetID());
-            entity->AddComponent<Game::Camera>();
-        }
-
-        ImGui::EndPopup();
+        ImGui::OpenPopup("ADDENTITY");
     }
+
+    AddEntityPopup(io_entityManager);
 }
 
 void Hierarchy::RenderEntitiesHierarchy(Game::EntityManager& io_entityManager, const std::unordered_map<Game::EntityIdentifier, Game::Entity*>& io_entities)
@@ -126,6 +96,7 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
     ImGui::PushID(io_entity.GetID());
 
     bool treeOpen = false;
+    bool addEntityPopup = false;
 
     std::string label = BuildEntityLabel(io_entity.name, io_entity.GetID()); // '###' avoid entity with the same name to be multi-selected
 
@@ -146,32 +117,7 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
 
         treeOpen = ImGui::TreeNodeEx(label.c_str(), nodeFlags);
 
-        if (ImGui::IsItemClicked() || ImGui::IsItemToggledOpen())
-        {
-            selected = &io_entity;
-            selectedLabel = label;
-        }
-
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
-        {
-            ImGui::SetDragDropPayload("HIERARCHY_ENTITY", selected, sizeof(Game::Entity*));
-            ImGui::Text("Drop on entity to set parent");
-            ImGui::EndDragDropSource();
-        }
-
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ENTITY"))
-            {
-                Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
-                if (child)
-                {
-                    io_entityManager.UnsetEntityParent(*selected);
-                    io_entityManager.SetEntityParent(*selected, io_entity);
-                }
-            }
-            ImGui::EndDragDropTarget();
-        }
+        SetupEntityInteraction(io_entityManager, io_entity, label);
 
         ImGui::TableSetColumnIndex(1);
 
@@ -195,11 +141,57 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
         ImGui::TreePop();
 }
 
+void Hierarchy::SetupEntityInteraction(Game::EntityManager& io_entityManager, Game::Entity& io_entity, std::string& io_label)
+{
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Left) || ImGui::IsItemToggledOpen())
+    {
+        selected = &io_entity;
+        selectedLabel = io_label;
+    }
+
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+    {
+        selected = &io_entity;
+        selectedLabel = io_label;
+        openAddEntityPopup = true;
+        selectedWhenAdd = selected;
+    }
+
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+    {
+        ImGui::SetDragDropPayload(Utils::EntityDragDropID, selected, sizeof(Game::Entity*));
+        ImGui::Text("Drop on entity to set parent");
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(Utils::EntityDragDropID))
+        {
+            Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
+            if (child)
+            {
+                auto it = std::find(io_entity.childs.begin(), io_entity.childs.end(), selected);
+                // Set parent only if selected is not already a child
+                if (it == io_entity.childs.end())
+                {
+                    io_entityManager.UnsetEntityParent(*selected);
+                    io_entityManager.SetEntityParent(*selected, io_entity);
+                }
+                else
+                    io_entityManager.UnsetEntityParent(*selected);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+}
+
 void Hierarchy::ParentUnsetDragDropTarget(Game::EntityManager& io_entityManager) const
 {
     if (ImGui::BeginDragDropTarget())
     {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ENTITY"))
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(Utils::EntityDragDropID))
         {
             Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
             if (child)
@@ -209,4 +201,77 @@ void Hierarchy::ParentUnsetDragDropTarget(Game::EntityManager& io_entityManager)
         }
         ImGui::EndDragDropTarget();
     }
+}
+
+void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
+{
+    if (ImGui::BeginPopup("ADDENTITY", ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        openAddEntityPopup = false;
+
+        ImGui::Text("Add entity");
+        ImGui::Separator();
+
+        Game::Entity* entity = nullptr;
+        if (ImGui::Selectable("Empty"))
+        {
+            entity = io_entityManager.CreateEntity();
+        }
+        else if (ImGui::Selectable("Cube mesh"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "Cube_" + std::to_string(entity->GetID());
+            auto drawable = entity->AddComponent<Game::StaticDraw>();
+            drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
+            drawable->model.SetTexture("game/assets/gold.jpg", true);
+        }
+        else if (ImGui::Selectable("Sphere mesh"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "Sphere_" + std::to_string(entity->GetID());
+            auto drawable = entity->AddComponent<Game::StaticDraw>();
+            drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
+            drawable->model.SetTexture("game/assets/gold.jpg", true);
+        }
+        else if (ImGui::Selectable("Box collider"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "BoxCollider_" + std::to_string(entity->GetID());
+            entity->AddComponent<Game::BoxCollider>();
+        }
+        else if (ImGui::Selectable("Sphere collider"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "SphereCollider_" + std::to_string(entity->GetID());
+            entity->AddComponent<Game::SphereCollider>();
+        }
+        else if (ImGui::Selectable("Camera"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "Camera_" + std::to_string(entity->GetID());
+            entity->AddComponent<Game::Camera>();
+        }
+
+        if (entity && selectedWhenAdd)
+        {
+            io_entityManager.SetEntityParent(*entity, *selectedWhenAdd);
+            selectedWhenAdd = nullptr;
+        }
+
+        selected = entity;
+
+        ImGui::EndPopup();
+    }
+}
+
+void Hierarchy::OpenPopupAndUnselect(bool i_condition)
+{
+    if (i_condition && Game::Inputs::IsPressed(Game::EButton::MOUSE_RIGHT))
+    {
+        openAddEntityPopup = true;
+        selectedWhenAdd = selected = nullptr;
+    }
+
+    if (i_condition && Game::Inputs::IsPressed(Game::EButton::MOUSE_LEFT))
+        selectedWhenAdd = selected = nullptr;
 }

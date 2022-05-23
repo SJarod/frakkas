@@ -4,7 +4,8 @@
 
 #include "fps_movement.hpp"
 
-KK_COMPONENT_IMPL(FPSMovement)
+KK_COMPONENT_IMPL_BEGIN(FPSMovement)
+KK_COMPONENT_IMPL_END
 
 void FPSMovement::OnUpdate()
 {

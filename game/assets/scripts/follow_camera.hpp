@@ -10,8 +10,8 @@ namespace Game
     KK_COMPONENT(FollowCamera)
 
         Transform* playerTransform = nullptr;
-        KK_FIELD(Vector3, offset) = Vector3::zero;
-        KK_FIELD(float, lerpFactor) = 0.08f;
+        Vector3 offset = Vector3::zero;
+        float lerpFactor = 0.08f;
 
         void OnEnable() override;
 
