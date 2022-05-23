@@ -1,10 +1,9 @@
 #include "debug/log.hpp"
 #include "engine.hpp"
-#include "maths/utils.hpp"
 
 #include "resources/sound.hpp"
 
-void Resources::Sound::SetSound(std::string i_soundPath)
+void Resources::Sound::SetSound(const std::string& i_soundPath)
 {
     if (i_soundPath.empty())
     {
@@ -44,7 +43,7 @@ void Resources::Sound::Pause()
     ma_sound_stop(&soundObject);
 }
 
-void Resources::Sound::SetVolume()
+void Resources::Sound::SetVolume() const
 {
     ma_engine_set_volume(&Engine::soundEngine, volume);
 }

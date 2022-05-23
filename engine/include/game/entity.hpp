@@ -90,11 +90,11 @@ namespace Game
         /**
          * @brief Send the component to the graph register system.
          */
-        void RegisterIntoGraph(Component* i_newComponent);
+        void RegisterIntoGraph(Component* i_newComponent) const;
         /**
          * @brief Send the component to the graph unregister system.
          */
-        void UnregisterIntoGraph(Component* i_oldComponent);
+        void UnregisterIntoGraph(Component* i_oldComponent) const;
 
     };
 }

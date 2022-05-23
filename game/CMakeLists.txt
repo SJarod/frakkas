@@ -1,34 +1,32 @@
-add_library(GameFrakkas STATIC
-        src/game/world.cpp
-        assets/scripts/fps_movement.cpp
-        assets/scripts/player_movement.cpp
-        assets/scripts/follow_camera.cpp
-        src/game/component_register.cpp
-        ${PROJECT_SOURCE_DIR}/lib/glad.c
+project(Game
+		LANGUAGES CXX C
+		VERSION 1.0
+		DESCRIPTION "Game"
 )
 
-target_include_directories(GameFrakkas
-                           PRIVATE include
-                           PRIVATE ${ENGINE_INCLUDE_DIR}
-                           PRIVATE ${MATHS_INCLUDE_DIR}
-                           PRIVATE ${PROJECT_SOURCE_DIR}/game/assets/scripts
-                           PRIVATE ${imgui_SOURCE_DIR}
-                           PRIVATE ${sdl_INCLUDE_DIR}
-                           PRIVATE ${LIB_INCLUDE_DIR}
+add_library(${PROJECT_NAME} STATIC
+        	src/game/world.cpp
+			src/game/component_register.cpp
+		    assets/scripts/fps_movement.cpp
+		    assets/scripts/player_movement.cpp
+		    assets/scripts/follow_camera.cpp
 )
 
-target_link_directories(GameFrakkas PRIVATE EngineFrakkas)
+target_include_directories(${PROJECT_NAME}
+		                   PUBLIC include
+		                   PUBLIC assets/scripts
+)
 
-set_target_properties(GameFrakkas PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+target_link_libraries(${PROJECT_NAME} PUBLIC Engine)
 
 add_custom_target(copy_game_assets
                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                  ${PROJECT_SOURCE_DIR}/game/assets
-                  ${PROJECT_SOURCE_DIR}/build/debug/game/assets
+                  ${CMAKE_SOURCE_DIR}/game/assets
+                  ${CMAKE_SOURCE_DIR}/build/debug/game/assets
 
                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                  ${PROJECT_SOURCE_DIR}/game/assets
-                  ${PROJECT_SOURCE_DIR}/build/release/game/assets
+                  ${CMAKE_SOURCE_DIR}/game/assets
+                  ${CMAKE_SOURCE_DIR}/build/release/game/assets
 )
 
-add_dependencies(GameFrakkas copy_game_assets)
+add_dependencies(${PROJECT_NAME} copy_game_assets)

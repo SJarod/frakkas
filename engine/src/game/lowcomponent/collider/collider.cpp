@@ -1,7 +1,6 @@
+#include <Jolt/Jolt.h>
 
-#include <Jolt.h>
-
-#include <Physics/Body/Body.h>
+#include <Jolt/Physics/Body/Body.h>
 
 #include "game/transform.hpp"
 #include "game/entity.hpp"

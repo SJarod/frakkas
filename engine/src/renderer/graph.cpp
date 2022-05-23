@@ -1,5 +1,3 @@
-#include <cassert>
-
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
 #include "game/lowcomponent/static_draw.hpp"

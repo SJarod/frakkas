@@ -48,7 +48,6 @@ namespace Editor
         MenuBar m_menuBar;
         Hierarchy m_hierarchy;
         Console m_console;
-        Inspector m_inspector;
         FileBrowser m_fileBrowser;
         Scene m_scene;
         GameScene m_game;

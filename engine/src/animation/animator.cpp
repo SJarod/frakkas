@@ -30,7 +30,7 @@ void Animation::Animator::UpdatePlayer(const float& deltaTime)
 	float rewindOffset = rewind * anim->duration;
 
 	playTime += deltaTime * anim->tick * playSpeed + rewindOffset;
-	playTime = std::fmodf(playTime, anim->duration);
+	playTime = fmodf(playTime, anim->duration);
 
 	UpdateBoneMatrices(anim->GetRootNode());
 }

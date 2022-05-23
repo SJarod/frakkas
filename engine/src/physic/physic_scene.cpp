@@ -1,12 +1,12 @@
 #include <Tracy.hpp>
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
-
-#include <RegisterTypes.h>
-#include <Physics/Collision/Shape/BoxShape.h>
-#include <Physics/Collision/Shape/SphereShape.h>
-#include <Physics/Body/BodyCreationSettings.h>
+#include <Jolt/RegisterTypes.h>
+#include <Jolt/Core/Factory.h>
+#include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Body/BodyCreationSettings.h>
 
 #include <thread>
 
@@ -24,6 +24,8 @@ std::vector<Game::Collider*> PhysicScene::colliders;
 
 PhysicScene::PhysicScene()
 {
+    JPH::Factory::sInstance = new JPH::Factory();
+    // Create a factory
     JPH::RegisterTypes();
 
     tempAllocator = std::make_unique<JPH::TempAllocatorImpl>(16 * 1024 * 1024);
@@ -37,11 +39,10 @@ PhysicScene::PhysicScene()
 
     physicsSystem->SetContactListener(contactListener.get());
 
-    // Call if we added body before
+    // Call if we added many bodies before
     // physicsSystem->OptimizeBroadPhase();
 
     bodyInterface = &physicsSystem->GetBodyInterfaceNoLock();
-
 }
 
 
@@ -121,6 +122,7 @@ void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_
 
 void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::BodyID& i_body2)
 {
+
     auto findPredicate1 = [&i_body1](const Game::Collider* collider) { return i_body1 == collider->GetPhysicBodyID(); };
     Game::Collider* collider1 = *std::find_if(colliders.begin(), colliders.end(), findPredicate1);
 

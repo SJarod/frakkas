@@ -55,6 +55,8 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 			skmodel.SetUniform("uOutline", false);
 		}
     }
+
+    Resources::Shader::Unuse();
 }
 
 void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
@@ -77,4 +79,5 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 		assert(smesh->gpu.VAO != 0);
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 	}
+    Shader::Unuse();
 }

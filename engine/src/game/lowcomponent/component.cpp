@@ -2,6 +2,8 @@
 #include "game/entity_manager.hpp"
 #include "game/lowcomponent/component.hpp"
 
+#include "debug/log.hpp"
+
 using namespace Game;
 
 std::vector<ClassMetaData*>& Component::GetRegistry()
@@ -17,6 +19,8 @@ ClassMetaData* Component::FindMetaData(const std::string& i_compName)
 
     if (it != registry.end())
         return *it;
+
+    Log::Error("Can't find component ", i_compName);
 
     return nullptr;
 }

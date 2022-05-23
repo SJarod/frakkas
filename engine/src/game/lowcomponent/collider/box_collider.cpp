@@ -1,11 +1,10 @@
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
-#include <Physics/Collision/Shape/BoxShape.h>
-#include <Physics/Body/Body.h>
+#include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
 
 #include "resources/mesh.hpp"
-#include "resources/resources_manager.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 
 #include "game/lowcomponent/collider/box_collider.hpp"

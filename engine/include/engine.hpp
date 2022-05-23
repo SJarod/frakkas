@@ -138,9 +138,4 @@ private:
     * Init SDL audio parameters. 
     */
     void InitMiniaudio();
-
-    /**
-     * Create entities in hard-code to test our project
-     */
-    void CreateTestEntities();
 };

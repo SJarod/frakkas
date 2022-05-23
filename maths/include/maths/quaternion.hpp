@@ -87,7 +87,7 @@ struct Quaternion
 * @summary Get the Euler angles equivalent to quaternion (yaw, pitch, roll)
 * @return Return a Vector3 in radians
 */
-    Vector3 QuatToEuler();
+    Vector3 QuatToEuler() const;
 
 /**
  * @summary Create a quaternion given an angle, in radians, and a rotation axis

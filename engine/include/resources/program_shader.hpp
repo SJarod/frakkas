@@ -30,7 +30,7 @@ namespace Resources
 			const std::string& i_fragmentShaderFilePath,
 			const std::initializer_list<const std::string>& i_defines = {});
 
-		~Shader();
+		~Shader() override;
 
 		void LoadFromInfo() override;
 
@@ -40,6 +40,11 @@ namespace Resources
 		 * @Summary Use shader program.
 		 */
 		void Use() const;
+
+        /**
+         * @Summary Un use current shader program.
+         */
+        static void Unuse();
 
         /**
         * @Summary Pass a bool to the shader as uniform.

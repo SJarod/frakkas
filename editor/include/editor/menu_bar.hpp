@@ -30,29 +30,29 @@ namespace Editor
         * @param o_loadScene An output boolean to notify editor render when the scene is reload.
         * @param io_selectedEntity The entity selected in hierarchy.
         */
-        void OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* io_selectedEntity);
-        void FrakkasColors();
+        static void OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* io_selectedEntity);
+        static void FrakkasColors();
 
     private:
         // Scene management (Save, Load, Reload, New)
-        void FileField(Renderer::Graph& io_graph, bool& o_loadScene);
+        static void FileField(Renderer::Graph& io_graph, bool& o_loadScene);
         static bool CreateScenePopup(Renderer::Graph& io_graph);
         static bool OpenScenePopup(Renderer::Graph& io_graph);
 
         // Entity editing (copy, past)
-        void EditField(Game::EntityManager& io_entityManager, Game::Entity* io_selectedEntity);
+        static void EditField(Game::EntityManager& io_entityManager, Game::Entity* io_selectedEntity);
 
         // Editor style option
-        void OptionsField();
+        static void OptionsField();
 
         // Game interaction (Add component, Play, Pause, Stop) 
-        void GameField(Engine& io_engine, bool& o_loadScene);
+        static void GameField(Engine& io_engine, bool& o_loadScene);
         static void CreateComponentPopup();
 
         /**
          * @brief Edit lighting
          * @param io_engine The class that posseses the graph, the light, and the depth map.
          */
-        void LightingField(Engine& io_engine);
+        static void LightingField(Engine& io_engine);
     };
 }

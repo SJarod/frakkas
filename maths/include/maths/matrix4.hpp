@@ -7,7 +7,7 @@ struct Matrix4
 {
     union
     {
-        float element[16];
+        float element[16] = {0.f};
 
         Vector4 line[4];
     };

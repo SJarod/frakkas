@@ -44,7 +44,7 @@ Transform::Transform()
 
         parent.set(value);
         needUpdate = needUniformUpdate = true;
-        if (value && value)
+        if (value)
             value->childs.emplace_back(this);
     };
     parent = nullptr;

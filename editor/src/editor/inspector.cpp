@@ -1,7 +1,6 @@
 #include <imgui.h>
 
 #include "game/entity.hpp"
-#include "game/entity_manager.hpp"
 
 #include "helpers/game_edit.hpp"
 #include "helpers/drop_component.hpp"

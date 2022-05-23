@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
-#include <Physics/Collision/ObjectLayer.h>
-#include <Physics/Collision/BroadPhase/BroadPhaseLayer.h>
-#include <Physics/Collision/ContactListener.h>
+#include <Jolt/Physics/Collision/ObjectLayer.h>
+#include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayer.h>
+#include <Jolt/Physics/Collision/ContactListener.h>
 
 #include "debug/log.hpp"
 
@@ -16,7 +16,7 @@ JPH_NAMESPACE_BEGIN
         static constexpr uint8 MOVING = 1;
         static constexpr uint8 SENSOR = 2;
         static constexpr uint8 NUM_LAYERS = 3;
-    };
+    }
 
     // Check the layer of two objects to tell jolt physics if objects can collide
     bool MyObjectCanCollide(ObjectLayer i_object1, ObjectLayer i_object2);
@@ -38,6 +38,10 @@ JPH_NAMESPACE_BEGIN
         uint GetNumBroadPhaseLayers() const override;
 
         BroadPhaseLayer GetBroadPhaseLayer(ObjectLayer i_layer) const override;
+
+#ifdef JPH_PROFILE_ENABLED
+        const char *	GetBroadPhaseLayerName(BroadPhaseLayer inLayer) const override;
+#endif
 
     private:
         BroadPhaseLayer objectToBroadPhase[Layers::NUM_LAYERS]{};

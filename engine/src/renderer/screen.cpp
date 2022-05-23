@@ -20,7 +20,7 @@ Renderer::ScreenQuad::ScreenQuad()
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 	glBindVertexArray(0);
 }
 

@@ -38,7 +38,7 @@ namespace Resources
 		* Add a task to the resources manager's thread pool.
 		*
 		*/
-		static void AddCPULoadingTask(Task io_task);
+		static void AddCPULoadingTask(const Task& io_task);
 
 		/**
 		* Load GPU data if they are added to the GPU load queue.

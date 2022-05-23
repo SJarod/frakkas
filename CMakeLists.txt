@@ -8,87 +8,41 @@ set(CMAKE_CXX_STANDARD 20 CACHE STRING "Language standard" FORCE)
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "Use the C++ standard" FORCE)
 set(CMAKE_CXX_EXTENSIONS OFF CACHE BOOL "" FORCE)
 
-project(EngineFrakkas
+
+find_package(Git QUIET)
+if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    # Update submodules as needed
+    option(GIT_SUBMODULE "Check submodules during build" ON)
+    if(GIT_SUBMODULE)
+        message(STATUS "Submodule update")
+        execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                        RESULT_VARIABLE GIT_SUBMOD_RESULT
+        )
+        if(NOT GIT_SUBMOD_RESULT EQUAL "0")
+            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
+        endif()
+    endif()
+endif()
+
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/extern/CMakeLists.txt")
+    message(FATAL_ERROR "The submodules were not downloaded! GIT_SUBMODULE was turned off or failed. Please update submodules and try again.")
+endif()
+
+project(Frakkas
+        LANGUAGES CXX C
         VERSION 1.0
-        DESCRIPTION "Engine"
+        DESCRIPTION "Frakkas"
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -msse4.1") # needed for Jolt
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:>:-MT>") # force static
+add_compile_definitions("$<$<CONFIG:Debug>:_DEBUG;JPH_PROFILE_ENABLED;JPH_DEBUG_RENDERER>")
 
-include(FetchContent)
-
-# Tracy
-FetchContent_Declare(tracy
-                     GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-                     GIT_TAG 9ba7171 # v0.8
-                     GIT_SHALLOW TRUE
-                     GIT_PROGRESS TRUE
-)
-FetchContent_MakeAvailable(tracy)
-
-if(NOT EXISTS ${PROJECT_SOURCE_DIR}/lib/tracy)
-file(ARCHIVE_EXTRACT INPUT ${PROJECT_SOURCE_DIR}/lib/tracy_executable.7z
-                     DESTINATION ${PROJECT_SOURCE_DIR}/lib
-)
+if (MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-# SDL2
-FetchContent_Declare(sdl
-                     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-                     GIT_TAG b424665 # release-2.0.20
-)
-
-set(SDL_LIBC ON CACHE BOOL "Use the system C library" FORCE)
-
-FetchContent_MakeAvailable(sdl)
-
-set(sdl_INCLUDE_DIR ${sdl_SOURCE_DIR}/include)
-
-# ImGui
-FetchContent_Declare(imgui
-                     GIT_REPOSITORY https://github.com/ocornut/imgui.git
-                     GIT_TAG docking # branch name
-)
-FetchContent_MakeAvailable(imgui)
-
-set(IMGUI_SOURCE_FILES ${imgui_SOURCE_DIR}/imgui.cpp
-                       ${imgui_SOURCE_DIR}/imgui_demo.cpp
-                       ${imgui_SOURCE_DIR}/imgui_draw.cpp
-                       ${imgui_SOURCE_DIR}/imgui_tables.cpp
-                       ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-)
-
-set(IMGUI_BACKENDS_FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl.cpp
-                         ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-)
-
-#ImGuizmo
-FetchContent_Declare(imguizmo
-                     GIT_REPOSITORY https://github.com/CedricGuillemet/ImGuizmo.git
-                     GIT_TAG 664cf2d # v1.83
-)
-FetchContent_MakeAvailable(imguizmo)
-
-set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/engine/include 
-					   ${PROJECT_SOURCE_DIR}/engine/include/debug
-)
-set(GAME_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/game/include)
-set(MATHS_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/maths/include
-                      ${PROJECT_SOURCE_DIR}/maths/inline
-)
-set(LIB_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/lib
-                    ${PROJECT_SOURCE_DIR}/lib/stb_image
-                    ${PROJECT_SOURCE_DIR}/lib/miniaudio
-                    ${PROJECT_SOURCE_DIR}/lib/Jolt
-)
-
-option(EXECUTION_SOURCE_IN_BUILD_DIRECTORY "The directory where the program will be executed and find ressources from" OFF)
-
-# C++ MACROS
-if (EXECUTION_SOURCE_IN_BUILD_DIRECTORY)
-    add_compile_definitions(IN_BUILD_DIRECTORY)
-endif()
+# EXTERNALS LIBRARIES
+add_subdirectory(extern)
 
 # MATHS
 set(MATHS_BUILD_EXECUTABLE OFF) 
@@ -99,6 +53,6 @@ add_subdirectory(game)
 add_subdirectory(editor)
 add_subdirectory(launcher)
 
-add_dependencies(GameFrakkas EngineFrakkas)
-add_dependencies(EditorFrakkas GameFrakkas)
-add_dependencies(Launcher GameFrakkas)
+add_dependencies(Game Engine)
+add_dependencies(Editor Game)
+add_dependencies(Launcher Game)

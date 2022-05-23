@@ -2,8 +2,6 @@
 #include "renderer/point.hpp"
 #include "renderer/screen.hpp"
 
-#include "resources/resources_manager.hpp"
-
 #include "renderer/lowlevel/lowrenderer.hpp"
 
 using namespace Renderer::LowLevel;
@@ -125,8 +123,7 @@ DepthFramebuffer::DepthFramebuffer(const int i_width, const int i_height)
 
 	glGenTextures(1, &depthMap);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
-		GetWidth(), GetHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, (void*)0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, i_width, i_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -152,7 +149,7 @@ UniformBuffer::UniformBuffer(const int i_binding, const int i_size)
 {
 	glGenBuffers(1, &UBO);
 	glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-	glBufferData(GL_UNIFORM_BUFFER, blockSize, NULL, GL_STATIC_DRAW);
+	glBufferData(GL_UNIFORM_BUFFER, blockSize, nullptr, GL_DYNAMIC_DRAW);
 	glBindBufferBase(GL_UNIFORM_BUFFER, blockBinding, UBO);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
@@ -273,6 +270,7 @@ void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, cons
 	glDrawArrays(GL_POINTS, 0, 1);
 	glBindVertexArray(0);
 	glDisable(GL_PROGRAM_POINT_SIZE);
+    Resources::Shader::Unuse();
 }
 
 void LowRenderer::RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture) const
@@ -324,6 +322,7 @@ void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_cou
 
     // unbind
     glBindVertexArray(0);
+    Resources::Shader::Unuse();
 }
 
 void LowRenderer::RenderScreen(const LowLevel::Framebuffer& i_fbo) const
@@ -343,4 +342,5 @@ void LowRenderer::RenderScreen() const
 	glBindVertexArray(sq.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
+    Resources::Shader::Unuse();
 }

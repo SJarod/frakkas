@@ -3,7 +3,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "log.hpp"
+#include "debug/log.hpp"
 #include "engine.hpp"
 
 #include "game/inputs_manager.hpp"
@@ -25,11 +25,6 @@ namespace Renderer
     class Light;
     class Model;
     class SkeletalModel;
-
-    namespace LowLevel
-    {
-        class Camera;
-    }
 }
 
 namespace Resources

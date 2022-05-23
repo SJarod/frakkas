@@ -1,20 +1,14 @@
-add_executable(Launcher launcher.cpp)
-
-target_include_directories(Launcher
-                           PRIVATE ${ENGINE_INCLUDE_DIR}
-                           PRIVATE ${GAME_INCLUDE_DIR}
-                           PRIVATE ${MATHS_INCLUDE_DIR}
-                           PRIVATE ${LIB_INCLUDE_DIR}
-                           PRIVATE ${sdl_INCLUDE_DIR}
+project(Launcher
+        LANGUAGES CXX C
+        VERSION 1.0
+        DESCRIPTION "Launcher"
 )
 
-target_link_libraries(Launcher
-        PRIVATE EngineFrakkas
-        PRIVATE GameFrakkas
-        PRIVATE SDL2-static
-)
+add_executable(${PROJECT_NAME} launcher.cpp)
 
-set_target_properties(Launcher PROPERTIES
-                               RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/build/debug
-                               RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/build/release
+target_link_libraries(${PROJECT_NAME} PRIVATE Game)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build/debug
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build/release
 )

@@ -87,7 +87,7 @@ inline Quaternion Quaternion::operator/(const Quaternion& q) const
 
 inline Quaternion Quaternion::operator*=(const Quaternion& q)
 {
-    return *this *= q;
+    return *this = *this * q;
 }
 
 inline bool Quaternion::operator==(const Quaternion& q) const
@@ -232,7 +232,7 @@ inline Quaternion Quaternion::QuatFromEuler(const Vector3& i_eulerRadAngles)
     return QuatFromEuler(i_eulerRadAngles.x, i_eulerRadAngles.y, i_eulerRadAngles.z);
 }
 
-inline Vector3 Quaternion::QuatToEuler()
+inline Vector3 Quaternion::QuatToEuler() const
 {
     Vector3 result = Vector3::zero;
 

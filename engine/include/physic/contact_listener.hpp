@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
-#include <Physics/Collision/ContactListener.h>
+#include <Jolt/Physics/Collision/ContactListener.h>
 
 JPH_NAMESPACE_BEGIN
 

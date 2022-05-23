@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
 #include <Jolt/Physics/Body/BodyInterface.h>
 
@@ -59,7 +59,9 @@ namespace Game
         void SetPhysicParameters(JPH::Body* i_body, JPH::BodyInterface* i_bodyInterface);
 
         /**
-         * Draw the collider on the scene.
+         * @brief Draw the collider on the editor scene.
+         * @param i_renderer The renderer to render the collider mesh
+         * @param i_entityTransform The transform of the owner.
          */
         virtual void
         DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const {};
@@ -114,7 +116,6 @@ namespace Game
         /**
         * @brief Update the collision type and the layer if static bool is changed.
         * @param i_isSensor The sensor state of the body.
-        * @param i_bodyInterface The Jolt body interface to change body object layer.
         */
         void ApplyTriggerState();
 

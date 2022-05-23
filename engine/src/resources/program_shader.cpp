@@ -136,6 +136,11 @@ void Resources::Shader::Use() const
 	glUseProgram(program);
 }
 
+void Resources::Shader::Unuse()
+{
+    glUseProgram(0);
+}
+
 void Resources::Shader::SetUniform(const std::string_view& i_uniformName, const bool& i_value) const
 {
 	int location = glGetUniformLocation(program, i_uniformName.data());

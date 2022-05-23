@@ -1,5 +1,3 @@
-#include <Jolt.h>
-
 #include "debug/log.hpp"
 
 #include "game/lowcomponent/collider/collider.hpp"

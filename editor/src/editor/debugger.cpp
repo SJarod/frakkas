@@ -1,7 +1,6 @@
 #include <imgui.h>
 
 #include "maths.hpp"
-#include "debug/log.hpp"
 
 #include "game/time_manager.hpp"
 

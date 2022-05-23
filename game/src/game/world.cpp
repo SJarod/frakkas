@@ -18,8 +18,6 @@
 
 using namespace Game;
 
-const char* World::defaultScene = "default.kk";
-
 World::World(Engine& engine)
 {
 	// ADD DEFAULT AXIS AND BUTTON
