@@ -8,7 +8,7 @@ namespace Editor
     {
     public:
         Console() = default;
-        ~Console() = default;
+        ~Console();
 
         /**
         * @summary Display the ImGui panel
@@ -21,7 +21,7 @@ namespace Editor
         bool                  autoScroll = true;
         bool                  scrollToBottom = true;
 
-        void AddLog(const char* i_fmt, ...);
+        void AddLog(const std::string& i_log);
         void ClearLog();
         void DisplayLogList();
     };

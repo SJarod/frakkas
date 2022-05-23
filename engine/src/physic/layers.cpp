@@ -1,5 +1,3 @@
-#include <Jolt.h>
-
 #include "physic/layers.hpp"
 
 bool JPH::MyObjectCanCollide(ObjectLayer i_object1, ObjectLayer i_object2)
@@ -50,3 +48,14 @@ JPH::BroadPhaseLayer JPH::MyBroadPhaseLayerInterface::GetBroadPhaseLayer(ObjectL
     return objectToBroadPhase[i_layer];
 }
 
+#ifdef JPH_PROFILE_ENABLED
+const char *			JPH::MyBroadPhaseLayerInterface::GetBroadPhaseLayerName(BroadPhaseLayer inLayer) const
+{
+switch ((BroadPhaseLayer::Type)inLayer)
+{
+case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
+case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
+default:													JPH_ASSERT(false); return "INVALID";
+}
+}
+#endif

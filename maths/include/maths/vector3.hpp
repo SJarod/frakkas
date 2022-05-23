@@ -13,7 +13,7 @@ struct Vector3
         struct { float x; float y; float z; };
         struct { float r; float g; float b; };
 
-        float element[3]{};
+        float element[3] = {0.f};
     };
 
 ////////////////////////////// CONSTRUCTORS

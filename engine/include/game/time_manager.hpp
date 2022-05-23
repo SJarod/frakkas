@@ -8,7 +8,7 @@ namespace Game
         /**
          * Update time and deltaTime value
          */
-        void NewFrame();
+        static void NewFrame();
 
         /**
          * @return the program execution time in seconds

@@ -70,6 +70,9 @@ static void DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity
 {
     if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
         return;
+    // Ignore issues that we can't fix
+    if (std::string(message).find("being recompiled based on GL state"))
+        return;
 
     switch (severity)
     {
@@ -141,7 +144,7 @@ void Engine::InitMiniaudio()
 
     ma_engine_start(&soundEngine);
     Log::Info("Successfully start sound engine");
-};
+}
 
 void Engine::BeginFrame()
 {

@@ -15,7 +15,7 @@ ThreadPool::ThreadPool(const unsigned int i_nThread)
 	multithread = i_nThread > 0;
 
 	for (unsigned int i = 0; i < i_nThread; ++i)
-		threads.emplace_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this, i)));
+		threads.emplace_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this)));
 }
 
 ThreadPool::~ThreadPool()
@@ -101,7 +101,7 @@ void ThreadPool::Work()
 	lastTaskTime.store(now);
 }
 
-void ThreadPool::PoolRoutine(const int i_id)
+void ThreadPool::PoolRoutine()
 {
 	while (running.test())
 	{

@@ -3,8 +3,6 @@
 #include "resources/mesh.hpp"
 #include "resources/resources_manager.hpp"
 
-#include "resources/resources_manager.hpp"
-
 #include "renderer/model.hpp"
 
 Renderer::Model::Model()

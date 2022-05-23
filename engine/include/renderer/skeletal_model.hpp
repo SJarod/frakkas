@@ -92,4 +92,4 @@ namespace Renderer
 		 */
 		void Write(std::ofstream& o_file, const Resources::Serializer& i_serializer) const {};
 	};
-};
+}

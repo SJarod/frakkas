@@ -1,8 +1,7 @@
+#include <Jolt/Jolt.h>
 
-#include <Jolt.h>
-
-#include <Physics/Collision/Shape/SphereShape.h>
-#include <Physics/Body/Body.h>
+#include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
 
 #include "resources/mesh.hpp"
 

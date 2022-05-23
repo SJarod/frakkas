@@ -5,6 +5,7 @@
 #include "game/lowcomponent/animated_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
 #include "game/lowcomponent/sound_component.hpp"
+#include "game/lowcomponent/drawable.hpp"
 
 #include "game/component_register.hpp"
 
@@ -21,4 +22,5 @@ ComponentRegister::ComponentRegister()
     greedEntity.AddComponent<FPSMovement>();
     greedEntity.AddComponent<PlayerMovement>();
     greedEntity.AddComponent<FollowCamera>();
+    greedEntity.AddComponent<Drawable>();
 }

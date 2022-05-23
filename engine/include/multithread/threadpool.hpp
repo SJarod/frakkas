@@ -91,7 +91,7 @@ public:
 	 * Main loop function
 	 *
 	 */
-	void PoolRoutine(const int i_id);
+	void PoolRoutine();
 
 	/**
 	 * Print the thread id.

@@ -17,7 +17,7 @@ Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
         name = "NewEntity_" + std::to_string(id);
     else
         name = i_name;
-};
+}
 
 Entity::~Entity()
 {
@@ -75,13 +75,13 @@ void Entity::NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* 
     }
 }
 
-void Entity::RegisterIntoGraph(Component* i_newComponent)
+void Entity::RegisterIntoGraph(Component* i_newComponent) const
 {
     if (id != 0)
         Renderer::Graph::RegisterComponent(i_newComponent);
 }
 
-void Entity::UnregisterIntoGraph(Component* i_oldComponent)
+void Entity::UnregisterIntoGraph(Component* i_oldComponent) const
 {
     if (id != 0)
         Renderer::Graph::UnregisterComponent(i_oldComponent);

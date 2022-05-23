@@ -1,8 +1,6 @@
 #include <stb_image.h>
 
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
 #include "debug/log.hpp"
 #include "maths.hpp"
@@ -88,7 +86,7 @@ const std::unordered_map<std::string, std::shared_ptr<Resource>>& Resources::Res
 	return ResourcesManager::Instance().resources;
 }
 
-void Resources::ResourcesManager::AddCPULoadingTask(Task io_task)
+void Resources::ResourcesManager::AddCPULoadingTask(const Task& io_task)
 {
 	ResourcesManager::Instance().tp.AddTask(io_task);
 }

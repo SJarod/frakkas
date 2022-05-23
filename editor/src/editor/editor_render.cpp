@@ -160,7 +160,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
     // Edit entities with inputs
     m_hierarchy.OnImGuiRender(io_engine.entityManager);
-    m_inspector.OnImGuiRender(m_hierarchy.selected, guizmoOperation);
+    Inspector::OnImGuiRender(m_hierarchy.selected, guizmoOperation);
 
     // Disable inputs if typing
     if (editingText || !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing) || m_scene.isMoving)
@@ -168,7 +168,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
     // reload scene if menu bar call scene reloading
     bool reloadScene = false;
-    m_menuBar.OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
+    MenuBar::OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
     if (reloadScene)
     {
         m_hierarchy.selected = nullptr;

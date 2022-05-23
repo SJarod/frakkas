@@ -48,6 +48,7 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
 			model.SetUniform("uOutline", false);
 		}
     }
+    Resources::Shader::Unuse();
 }
 
 void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
@@ -67,4 +68,5 @@ void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const
 		assert(smesh->gpu.VAO != 0);
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 	}
+    Shader::Unuse();
 }

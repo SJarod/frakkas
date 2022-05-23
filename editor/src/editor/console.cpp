@@ -2,12 +2,18 @@
 #include <Tracy.hpp>
 
 #include "debug/log.hpp"
+#include "utils/platform.hpp"
 
 #include "editor/console.hpp"
 
 
 using namespace Editor;
 
+
+Console::~Console()
+{
+    ClearLog();
+}
 
 void Console::OnImGuiRender()
 {
@@ -74,17 +80,15 @@ void Console::OnImGuiRender()
     ImGui::End();
 }
 
-void Console::AddLog(const char* i_fmt, ...)
+void Console::AddLog(const std::string& i_log)
 {
-    char buf[1024];
-    va_list args;
-    va_start(args, i_fmt);
-    vsnprintf(buf, IM_ARRAYSIZE(buf), i_fmt, args);
-    buf[IM_ARRAYSIZE(buf)-1] = 0;
-    va_end(args);
-    items.push_back(strdup(buf));
+#ifdef KK_WINDOWS
+    items.push_back(_strdup(i_log.c_str()));
+#else
+    items.push_back(strdup(i_log.c_str()));
+#endif
 
-    if (autoScroll == true)
+    if (autoScroll)
         scrollToBottom = true;
 }
 
@@ -102,7 +106,7 @@ void Console::DisplayLogList()
     if (!listLogs.empty())
     {
         for (int i = 0; i < listLogs.size(); i++)
-            AddLog("%s", listLogs[i].c_str());
+            AddLog(listLogs[i]);
 
         listLogs.clear();
     }

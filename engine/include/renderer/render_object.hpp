@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "resources/program_shader.hpp"
 
 namespace Renderer

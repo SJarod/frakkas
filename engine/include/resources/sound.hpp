@@ -22,7 +22,7 @@ namespace Resources
          * Set soundPath
          * @param i_soundPath full path to the sound file
          */
-        void SetSound(std::string i_soundPath);
+        void SetSound(const std::string& i_soundPath);
 
         /**
          * Play a sound
@@ -42,7 +42,7 @@ namespace Resources
         /**
          * Set the volume of the sound playing
          */
-        void SetVolume();
+        void SetVolume() const;
 
     private:
         /**

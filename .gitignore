@@ -27,9 +27,8 @@
 *.la
 *.a
 *.lib
-!lib/assimp/*.lib
-!lib/jolt/libs/*.lib
-!lib/jolt/libs/*.a
+!extern/jolt/build/Windows/*/*.lib
+!extern/jolt/build/Linux/*/*.a
 
 # Executables
 *.exe
@@ -141,10 +140,9 @@ fabric.properties
 
 # ignore specific project's files 
 
-lib/GameFrakkas.ilk
-lib/GameFrakkas.pdb
 Launcher.pdb
+EditorFrakkas.pdb
 *.manifest
 **/.vs
-EditorFrakkas.pdb
+*.json
 default.profraw

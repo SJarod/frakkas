@@ -2,13 +2,15 @@
 
 #include <memory>
 
-#include <Jolt.h>
+#include <Jolt/Jolt.h>
 
-#include <Core/TempAllocator.h>
-#include <Core/JobSystemThreadPool.h>
-#include <Physics/PhysicsSettings.h>
-#include <Physics/Body/BodyManager.h>
-#include <Physics/PhysicsSystem.h>
+#include <Jolt/Core/TempAllocator.h>
+#include <Jolt/Core/JobSystemThreadPool.h>
+#include <Jolt/Physics/PhysicsSettings.h>
+#include <Jolt/Physics/Body/BodyManager.h>
+#include <Jolt/Physics/PhysicsSystem.h>
+
+#include "game/lowcomponent/collider/collider.hpp"
 
 #include "game/lowcomponent/collider/collider.hpp"
 
@@ -76,6 +78,7 @@ namespace Physic
         template<typename... TShapeArgs>
         void AddCollider(Game::Collider* io_collider, TShapeArgs... i_shapeArgs);
 
+
         /**
          * @brief Generate a jolt physic body with box shape. Added to jolt's BodyInterface
          * @param i_scale The scale of the box.
@@ -90,7 +93,7 @@ namespace Physic
         JPH::Body* CreateBody(float i_radius = 1.f);
         /**
         * @brief Generate a jolt physic body from a generated shape.
-        * @param i_shape The generated inptu shape.
+        * @param i_shape The generated input shape.
         * @return The generated body.
         */
         JPH::Body* CreateBody(JPH::Shape* i_shape);

@@ -5,7 +5,6 @@
 #include <initializer_list>
 
 #include "game/transform.hpp"
-#include "game/component_generator.hpp"
 
 #include "renderer/light.hpp"
 #include "renderer/skeletal_model.hpp"
@@ -17,6 +16,8 @@
 #include "resources/skeletal_animation.hpp"
 
 #include "editor/editor_render.hpp"
+
+#include "utils/platform.hpp"
 
 #include "helpers/game_edit.hpp"
 
@@ -160,7 +161,11 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 
     ImGui::Separator();
 
+#ifdef KK_WINDOWS
     ImGui::Text("ID : %llu", io_entity.GetID());
+#else
+    ImGui::Text("ID : %lu", io_entity.GetID());
+#endif
 
     if (io_entity.parent && ImGui::Button("Unset parent"))
         io_entity.unsettingParent = true;

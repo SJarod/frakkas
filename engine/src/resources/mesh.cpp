@@ -25,7 +25,7 @@ void Resources::Mesh::LoadFromInfo()
 
 	if (name == cubeMesh)
 		LoadCube();
-	if (name == cubeColliderMesh)
+	else if (name == cubeColliderMesh)
 		LoadLineCube();
 	else if (name == sphereMesh)
 		LoadSphere();
