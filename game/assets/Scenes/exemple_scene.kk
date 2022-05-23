@@ -28,12 +28,12 @@
 >name
 	Camera
 >component_count
-	1
+	2
 >transform
 >position
 	0, 0, 0
 >rotation
-	0, 0, 0
+	-0.820305, 0, 0
 >scale
 	1, 1, 1
 >Camera
@@ -45,6 +45,13 @@
 	1000
 >fovY
 	90
+>FollowCamera
+>enabled
+	1
+>offset
+	0, 8, 8
+>lerpFactor
+	0.08
 
 >entity
 >childs
@@ -73,7 +80,7 @@
 >meshPath
 	ProceduralCube
 >texturePath
-	game/assets/Textures/gold.jpg
+	game/assets/gold.jpg
 
 >entity
 >childs
@@ -81,7 +88,7 @@
 >name
 	Player
 >component_count
-	2
+	3
 >transform
 >position
 	0, 0, 0
@@ -102,28 +109,47 @@
 >meshPath
 	ProceduralSphere
 >texturePath
-	game/assets/Textures/gold.jpg
+	game/assets/gold.jpg
+>PlayerMovement
+>enabled
+	1
+>startPosition
+	0, 0, 0
+>speed
+	800
+>leftPower
+	0.3
+>rightPower
+	0.3
 
 >entity
 >childs
 	0
 >name
-	NewEntity_4
+	RumbleTrigger
 >component_count
-	1
+	3
 >transform
 >position
-	0, 0, 0
+	4.4, -1.7, 0
 >rotation
 	0, 0, 0
 >scale
 	1, 1, 1
->SoundComponent
+>StaticDraw
 >enabled
 	1
->soundPath
-	game/assets/Sounds/GameWin.mp3
->loop
-	0
->volume
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets\blue.png
+>BoxCollider
+>enabled
+	1
+>isStatic
+	1
+>trigger
+	1
+>RumbleTrigger
+>enabled
 	1
