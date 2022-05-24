@@ -19,14 +19,22 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Engine)
 
-add_custom_target(copy_game_assets
-                  COMMAND ${CMAKE_COMMAND} -E copy_directory
-                  ${CMAKE_SOURCE_DIR}/game/assets
-                  ${CMAKE_SOURCE_DIR}/build/debug/game/assets
+if(${CMAKE_BUILD_TYPE} MATCHES "Debug")
+	add_custom_target(copy_game_assets
+					  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/build/debug/game/assets
 
-                  COMMAND ${CMAKE_COMMAND} -E copy_directory
-                  ${CMAKE_SOURCE_DIR}/game/assets
-                  ${CMAKE_SOURCE_DIR}/build/release/game/assets
-)
+	                  COMMAND ${CMAKE_COMMAND} -E copy_directory
+	                  ${CMAKE_SOURCE_DIR}/game/assets
+	                  ${CMAKE_SOURCE_DIR}/build/debug/game/assets
+	)
+elseif(${CMAKE_BUILD_TYPE} MATCHES "Release")
+	add_custom_target(copy_game_assets
+					  COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/build/release/game/assets
+
+	                  COMMAND ${CMAKE_COMMAND} -E copy_directory
+	                  ${CMAKE_SOURCE_DIR}/game/assets
+	                  ${CMAKE_SOURCE_DIR}/build/release/game/assets
+	)
+endif()
 
 add_dependencies(${PROJECT_NAME} copy_game_assets)
