@@ -28,6 +28,9 @@ World::World(Engine& engine)
 	Inputs::SetAxisAction("vertical",
                           { EButton::SPACE }, { EButton::LEFT_CTRL });
 
+    Inputs::SetAxisAction("verticalDebug",
+                          { EButton::SPACE, EButton::E }, { EButton::LEFT_CTRL, EButton::Q });
+
 	Inputs::SetAxisAction("forward",
                           { EButton::ARROW_UP, EButton::W, EButton::GAMEPAD_DPAD_UP },
                           { EButton::ARROW_DOWN, EButton::S, EButton::GAMEPAD_DPAD_DOWN });

@@ -187,10 +187,10 @@ void Engine::RunEditor()
 
         /// Draw
         graph->RenderEditor(*renderer, editorFBO->AspectRatio());
-        renderer->RenderScreen(*editorFBO);
+        renderer->RenderFinalScreen(*editorFBO);
 
-		graph->RenderGame(*renderer, gameFBO->AspectRatio());
-        renderer->RenderScreen(*gameFBO);
+        graph->RenderGame(*renderer, gameFBO->AspectRatio());
+        renderer->RenderFinalScreen(*gameFBO);
 
 		running = EndFrame();
     }
@@ -225,7 +225,7 @@ void Engine::RunGame()
 
         graph->RenderGame(*renderer, renderer->firstPassFBO->AspectRatio());
         glViewport(renderer->firstPassFBO->offset.x, renderer->firstPassFBO->offset.y, windowSize.x, windowSize.y);
-        renderer->RenderScreen();
+        renderer->RenderFinalScreen();
         
         /// ENDFRAME
         running = EndFrame();

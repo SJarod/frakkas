@@ -12,8 +12,9 @@ namespace Renderer
 
 		/**
 		 * Create a point and store it into a VAO.
+		 * @param i_postprocess Is this quad used for post processing?
 		 */
-		ScreenQuad();
+		ScreenQuad(const bool i_postprocess = false);
 		~ScreenQuad();
 	};
 }

@@ -43,7 +43,7 @@ void SphereCollider::DebugDraw(LowRenderer& i_renderer, const Game::Transform& i
 
     Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
 
-    i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 1, {0.5f, 1.f, 0.5f}, false);
+    i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 10, {0.5f, 1.f, 0.5f}, false);
 }
 
 void SphereCollider::OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider)

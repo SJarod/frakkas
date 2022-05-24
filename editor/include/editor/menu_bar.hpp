@@ -50,6 +50,12 @@ namespace Editor
         static void CreateComponentPopup();
 
         /**
+         * @brief Edit rendering
+         * @param io_engine The class that posseses the renderer.
+         */
+        static void RenderingField(Engine& io_engine);
+
+        /**
          * @brief Edit lighting
          * @param io_engine The class that posseses the graph, the light, and the depth map.
          */

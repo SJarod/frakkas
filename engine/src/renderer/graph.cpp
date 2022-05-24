@@ -144,6 +144,8 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
     // post processing
     i_renderer.BeginFrame(*i_renderer.secondPassFBO);
 
+    i_renderer.RenderPostProcess();
+
     i_renderer.EndFrame();
 }
 

@@ -290,6 +290,9 @@ void LowRenderer::RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_
 
 void LowRenderer::RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count) const
 {
+	if (postProcessOutline)
+		return;
+
 	glCullFace(GL_FRONT);
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -318,6 +321,7 @@ void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_cou
     line.SetUniform("uColor", i_color);
 
     glBindVertexArray(i_VAO);
+	glLineWidth(i_size);
     glDrawArrays(i_useLineStrip ? GL_LINE_STRIP : GL_LINES, 0, i_count);
 
     // unbind
@@ -325,21 +329,45 @@ void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_cou
     Resources::Shader::Unuse();
 }
 
-void LowRenderer::RenderScreen(const LowLevel::Framebuffer& i_fbo) const
+void LowRenderer::RenderPostProcess() const
+{
+	if (!outline && !postProcessOutline)
+		return;
+
+	static ScreenQuad postprocessQuad(true);
+	postprocessQuad.UseShader();
+	glBindTextureUnit(0, firstPassFBO->GetColor0());
+	glBindTextureUnit(1, firstPassFBO->GetDepthStencilMap());
+	glBindVertexArray(postprocessQuad.VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	Resources::Shader::Unuse();
+}
+
+void LowRenderer::RenderFinalScreen(const LowLevel::Framebuffer& i_fbo) const
 {
 	BeginFrame(i_fbo);
 
-	RenderScreen();
+	RenderFinalScreen();
 
 	EndFrame();
 }
 
-void LowRenderer::RenderScreen() const
+void LowRenderer::RenderFinalScreen() const
 {
-	static ScreenQuad sq;
-	sq.UseShader();
-    glBindTexture(GL_TEXTURE_2D, firstPassFBO->GetColor0());
-	glBindVertexArray(sq.VAO);
+	static ScreenQuad finalQuad;
+	finalQuad.UseShader();
+	glBindTextureUnit(0, firstPassFBO->GetColor0());
+	if (outline && postProcessOutline)
+	{
+		finalQuad.SetUniform("postprocess", true);
+		glBindTextureUnit(1, secondPassFBO->GetColor0());
+	}
+	else
+	{
+		finalQuad.SetUniform("postprocess", false);
+	}
+	glBindVertexArray(finalQuad.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
     Resources::Shader::Unuse();

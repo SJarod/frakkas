@@ -125,6 +125,7 @@ namespace Renderer
 
 		public:
 			bool outline = true;
+			bool postProcessOutline = true;
 			//shadow rendering values
 			float shadowDistance = 20.f;
 
@@ -181,9 +182,11 @@ namespace Renderer
 
 			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count) const;
 
-			void RenderScreen(const LowLevel::Framebuffer& i_fbo) const;
+			void RenderPostProcess() const;
 
-			void RenderScreen() const;
+			void RenderFinalScreen(const LowLevel::Framebuffer& i_fbo) const;
+
+			void RenderFinalScreen() const;
 		};
 	}
 }
