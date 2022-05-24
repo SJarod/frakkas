@@ -270,7 +270,7 @@ bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
 
     auto drawable = en->AddComponent<Game::StaticDraw>();
     drawable->SetMesh(Resources::Mesh::cubeMesh);
-    drawable->SetTexture("game/assets/gold.jpg", true);
+    drawable->SetTexture("game/assets/Textures/gold.jpg", true);
 
     en->transform.position = {0.f, -5.f, 0.f};
     en->transform.scale = {10.f, 1.f, 10.f};
@@ -281,7 +281,7 @@ bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
 
     drawable = en->AddComponent<Game::StaticDraw>();
     drawable->SetMesh(Resources::Mesh::sphereMesh);
-    drawable->SetTexture("game/assets/gold.jpg", true);
+    drawable->SetTexture("game/assets/Textures/gold.jpg", true);
 
     collider->isStatic = false;
 

@@ -223,7 +223,7 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
             entity->name = "Cube_" + std::to_string(entity->GetID());
             auto drawable = entity->AddComponent<Game::StaticDraw>();
             drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
-            drawable->model.SetTexture("game/assets/gold.jpg", true);
+            drawable->model.SetTexture("game/assets/Textures/gold.jpg", true);
         }
         else if (ImGui::Selectable("Sphere mesh"))
         {
@@ -231,7 +231,7 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
             entity->name = "Sphere_" + std::to_string(entity->GetID());
             auto drawable = entity->AddComponent<Game::StaticDraw>();
             drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-            drawable->model.SetTexture("game/assets/gold.jpg", true);
+            drawable->model.SetTexture("game/assets/Textures/gold.jpg", true);
         }
         else if (ImGui::Selectable("Box collider"))
         {

@@ -104,7 +104,7 @@ namespace Renderer
         static std::vector<Game::Camera*> gameCameras;
         static std::vector<Game::Drawable*> renderEntities;
 
-        std::filesystem::path currentScenePath = "game/assets/exemple_scene.kk";
+        std::filesystem::path currentScenePath = "game/assets/Scenes/exemple_scene.kk";
 
         /**
          * Searches for the first Camera enabled. Set game camera to nullptr if not found.
