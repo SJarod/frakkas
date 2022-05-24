@@ -53,11 +53,7 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
             texToBeBinded);
 
 		if (i_renderer.outline)
-		{
-			model.SetUniform("uOutline", true);
 			i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size());
-			model.SetUniform("uOutline", false);
-		}
     }
     Resources::Shader::Unuse();
 }

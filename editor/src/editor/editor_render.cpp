@@ -91,28 +91,41 @@ void EditorRender::InitImGui(Engine& io_engine)
         Game::Transform& camTrs = io_engine.GetEditorCameraTransform();
         float frameSpeed = 20.f * Game::Time::GetRawDeltaTime();
 
-        float forwardVelocity = Game::Inputs::GetAxis("forward") * frameSpeed;
-        float strafeVelocity = Game::Inputs::GetAxis("horizontal") * frameSpeed;
+        float forwardVelocity = Game::Inputs::GetAxis("forward");
+        float strafeVelocity = Game::Inputs::GetAxis("horizontal");
+        float verticalVelocity = Game::Inputs::GetAxis("verticalDebug");
 
-        Vector3 pos = camTrs.position;
         Vector3 rot = camTrs.rotation;
 
-        pos.x += Maths::Sin(rot.y) * forwardVelocity + Maths::Cos(rot.y) * strafeVelocity;
-        pos.z += Maths::Sin(rot.y) * strafeVelocity - Maths::Cos(rot.y) * forwardVelocity;
+        float invertY = Maths::Abs(rot.x) > Maths::Constants::halfPi ? -1.f : 1.f;
+        static float hold = 0.5f;
+
+        Vector3 dir = Vector3::zero;
+
+        dir.x += Maths::Sin(rot.y) * invertY * forwardVelocity + Maths::Cos(rot.y) * strafeVelocity;
+        dir.y += Maths::Sin(rot.x) * forwardVelocity;
+        dir.z += Maths::Sin(rot.y) * strafeVelocity - Maths::Cos(rot.y) * invertY * forwardVelocity;
+
+        dir.x -= Maths::Sin(rot.x) * verticalVelocity * Maths::Sin(rot.y);
+        dir.y += Maths::Cos(rot.x) * verticalVelocity;
+        dir.z += Maths::Sin(rot.x) * verticalVelocity * Maths::Cos(rot.y);
+
+        dir = dir.Normalize();
+        if (dir.Length() > 0.f)
+            hold += Game::Time::GetRawDeltaTime();
+        else
+            hold = 0.5f;
 
         rot.y += Game::Inputs::GetMouseDelta().x * 0.005f;
         rot.x -= Game::Inputs::GetMouseDelta().y * 0.005f;
 
+        rot.x = Maths::Abs(rot.x) > Maths::Constants::pi + Maths::Constants::weakEpsilon ? -rot.x : rot.x;
         rot.y = Maths::Modulo(rot.y, Maths::Constants::doublePi);
-        rot.x = Maths::Clamp(rot.x, -Maths::Constants::halfPi, Maths::Constants::halfPi);
 
-        pos.y += frameSpeed * Game::Inputs::GetAxis("vertical");
-
-        camTrs.position = pos;
+        camTrs.position = camTrs.position.get() + dir * frameSpeed * hold * hold;
         camTrs.rotation = rot;
     };
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
-
 
     io_engine.editorInputsEvent = std::bind(&ImGui_ImplSDL2_ProcessEvent, std::placeholders::_1);
 }

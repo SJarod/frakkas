@@ -1,7 +1,9 @@
 #include "renderer/screen.hpp"
 
-Renderer::ScreenQuad::ScreenQuad()
-	: RenderObject("screenShader", "engine/shaders/screen")
+Renderer::ScreenQuad::ScreenQuad(const bool i_postprocess)
+	: RenderObject(i_postprocess ?
+		RenderObject{ "postprocessShader", "engine/shaders/postprocess" } :
+		RenderObject{ "screenShader", "engine/shaders/screen" })
 {
 	float vertices[] = {
 		-1.f, -1.f,

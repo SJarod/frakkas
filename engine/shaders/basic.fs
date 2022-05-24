@@ -58,8 +58,6 @@ layout(std140, binding = 1) uniform uRendering
     vec3 cameraPos;         //16                //112
 };
 
-uniform bool uOutline = false;
-
 layout(binding = 0) uniform sampler2D uTexture;
 layout(binding = 1) uniform sampler2D uShadowMap;
 
@@ -206,12 +204,6 @@ LightShadeResult GetLightsShading(bool toon)
 
 void main()
 {
-    if (uOutline)
-    {
-        oColor = vec4(0.0, 0.0, 0.0, 1.0);
-        return;
-    }
-
     // Compute light (phong or toon) shading
     LightShadeResult lightResult = GetLightsShading(toonShading);
 

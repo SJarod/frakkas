@@ -40,6 +40,8 @@ void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* 
 
     GameField(io_engine, o_loadScene);
 
+    RenderingField(io_engine);
+
     LightingField(io_engine);
 
     ImGui::EndMainMenuBar();
@@ -373,16 +375,26 @@ void MenuBar::CreateComponentPopup()
     }
 }
 
+void Editor::MenuBar::RenderingField(Engine& io_engine)
+{
+    if (ImGui::BeginMenu("Rendering"))
+    {
+        ImGui::Checkbox("Outline", &io_engine.renderer->outline);
+        if (io_engine.renderer->outline)
+            ImGui::Checkbox("Post-process", &io_engine.renderer->postProcessOutline);
+
+        ImGui::DragFloat("Shadow rendering distance (depending on view frustum)", &io_engine.renderer->shadowDistance);
+
+        ImGui::EndMenu();
+    }
+}
+
 void Editor::MenuBar::LightingField(Engine& io_engine)
 {
     static bool show = false;
 
     if (ImGui::BeginMenu("Lighting"))
     {
-        ImGui::Checkbox("Outline", &io_engine.renderer->outline);
-
-        ImGui::Separator();
-
         ImGui::Checkbox("Activate", &io_engine.graph->lightEnabled);
 
         ImGui::Separator();

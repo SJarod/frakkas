@@ -66,11 +66,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
             texToBeBinded);
 
 		if (i_renderer.outline)
-		{
-			skmodel.SetUniform("uOutline", true);
 			i_renderer.RenderMeshOnceOutline(smesh->gpu.VAO, smesh->vertices.size());
-			skmodel.SetUniform("uOutline", false);
-		}
     }
 
     Resources::Shader::Unuse();

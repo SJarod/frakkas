@@ -258,6 +258,7 @@ void Helpers::Edit(Engine& io_engine, bool& o_showMap)
 
     ImGui::Checkbox("Cast shadows", &light.shadow);
     ImGui::DragInt("Shadow PCF", &light.shadowPCF, 1.f, 0.f, 100.f);
+    ImGui::Checkbox("Show light's depth map", &o_showMap);
 
     ImGui::Separator();
 
@@ -278,12 +279,6 @@ void Helpers::Edit(Engine& io_engine, bool& o_showMap)
         light.shadow = true;
         light.shadowPCF = 0;
     }
-
-    ImGui::Separator();
-
-    ImGui::DragFloat("Shadow rendering distance (depending on view frustum)", &io_engine.renderer->shadowDistance);
-
-    ImGui::Checkbox("Show light's depth map", &o_showMap);
 }
 
 bool Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled)
