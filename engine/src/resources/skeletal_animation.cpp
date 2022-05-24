@@ -257,62 +257,47 @@ SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name, const st
 	name = i_name;
 }
 
-void SkeletalAnimationPack::LoadFromInfo()
+bool SkeletalAnimationPack::DependenciesReady()
+{
+	return mappedSkmesh.submeshes.size() != 0;
+}
+
+bool SkeletalAnimationPack::CPULoad()
 {
 	resourceType = EResourceType::ANIMPACK;
 
-	ResourcesManager::AddCPULoadingTask([this]() {
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
-		const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
-		if (!scene || !scene->mRootNode)
-		{
-			Log::Info(animationFilename, " is not an animation file");
-			return;
-		}
+	Assimp::Importer importer;
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	const aiScene* scene = importer.ReadFile(animationFilename, aiProcess_Triangulate);
+	if (!scene || !scene->mRootNode)
+	{
+		Log::Info(animationFilename, " is not an animation file");
+		return false;
+	}
 
-		while (mappedSkmesh.submeshes.size() == 0)
-		{
-			if (!mappedSkmesh.meshSuccess)
-			{
-				Log::Info("Skeletal mesh was not ready for animations from : " + animationFilename);
-				return;
-			}
-			else
-			{
-				std::this_thread::yield();
-			}
-		}
+	if (!scene->HasAnimations())
+	{
+		Log::Info(animationFilename + " has no animations");
+		return false;
+	}
 
-		if (!scene->HasAnimations())
-		{
-			Log::Info(animationFilename + " has no animations");
-			return;
-		}
-
-		std::vector<SkeletalAnimation> buffer;
-		for (int i = 0; i < scene->mNumAnimations; ++i)
-		{
-			const std::string animationName = std::string(scene->mAnimations[i]->mName.data);
-			SkeletalAnimation skanim = SkeletalAnimation(animationName, scene, mappedSkmesh, i);
+	std::vector<SkeletalAnimation> buffer;
+	for (int i = 0; i < scene->mNumAnimations; ++i)
+	{
+		const std::string animationName = std::string(scene->mAnimations[i]->mName.data);
+		SkeletalAnimation skanim = SkeletalAnimation(animationName, scene, mappedSkmesh, i);
 
 #ifdef ANIMATION_MAP
-			animations.insert({ animationName, skanim });
+		animations.insert({ animationName, skanim });
 #else
-			buffer.emplace_back(skanim);
+		buffer.emplace_back(skanim);
 #endif
-		}
+	}
 
-		animations = std::move(buffer);
+	animations = std::move(buffer);
 
-		Log::Info("Successfully loaded animation pack in file : " + animationFilename);
+	Log::Info("Successfully loaded animation pack in file : " + animationFilename);
 
-		ComputeMemorySize();
-		});
-}
-
-void Resources::SkeletalAnimationPack::ComputeMemorySize()
-{
 	ram = 0;
 	vram = 0;
 
@@ -320,6 +305,8 @@ void Resources::SkeletalAnimationPack::ComputeMemorySize()
 	{
 		ram += anim.GetMemorySize();
 	}
+
+	return true;
 }
 
 #ifdef ANIMATION_MAP

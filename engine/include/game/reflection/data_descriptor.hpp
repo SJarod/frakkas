@@ -13,6 +13,7 @@ enum class EDataType
 	FLOAT,
 	BOOL,
 	STRING,
+	NONE_TYPE,
     BUTTON,
     ANIMATION
 };

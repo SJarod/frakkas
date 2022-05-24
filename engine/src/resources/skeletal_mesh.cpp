@@ -10,50 +10,41 @@ SkeletalMesh::SkeletalMesh(const std::string& i_name)
 {
 }
 
-void SkeletalMesh::LoadFromInfo()
+bool SkeletalMesh::CPULoad()
 {
 	resourceType = EResourceType::SKELETALMESH;
 
-	ResourcesManager::AddCPULoadingTask([this](/*void* userData*/) {
-		//ResourceSubmeshTaskData* data = static_cast<ResourceSubmeshTaskData*>(userData);
-		// ... data.meshes.emplace_back(); ...
+	Assimp::Importer importer;
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+	const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
 
-		Assimp::Importer importer;
-		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
-		const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
-
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			Log::Warning("ASSIMP: ", static_cast<std::string>(importer.GetErrorString()));
-			meshSuccess = false;
-			return;
-		}
-		else
-		{
-			std::list<std::shared_ptr<Submesh>> buffer;
-
-			const aiScene* scene = importer.GetScene();
-			ProcessAiNode(buffer, importer, scene->mRootNode);
-
-			submeshes = buffer;
-
-			Log::Info("Successfully loaded model file : " + name);
-
-			ComputeMemorySize();
-		}
-		});
-}
-
-void SkeletalMesh::ComputeMemorySize()
-{
-	ram = 0;
-	vram = 0;
-
-	Mesh::ComputeMemorySize();
-
-	for (const auto& info : boneInfoMap)
+	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		ram += sizeof(info);
+		Log::Warning("ASSIMP: ", static_cast<std::string>(importer.GetErrorString()));
+		return false;
+	}
+	else
+	{
+		std::list<std::shared_ptr<Submesh>> buffer;
+
+		const aiScene* scene = importer.GetScene();
+		ProcessAiNode(buffer, importer, scene->mRootNode);
+
+		submeshes = buffer;
+
+		Log::Info("Successfully loaded model file : " + name);
+
+		ram = 0;
+		vram = 0;
+
+		Mesh::ComputeMemorySize();
+
+		for (const auto& info : boneInfoMap)
+		{
+			ram += sizeof(info);
+		}
+
+		return true;
 	}
 }
 

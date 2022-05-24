@@ -180,9 +180,11 @@ namespace Resources
 
         SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& i_skmesh);
 
-        void LoadFromInfo() override;
-
-        void ComputeMemorySize() override;
+        bool DependenciesReady() override;
+        bool CPULoad() override;
+        bool GPULoad() override { return true; }
+        bool CPUUnload() override { return true; }
+        bool GPUUnload() override { return true; }
 
 #ifdef ANIMATION_MAP
         /**

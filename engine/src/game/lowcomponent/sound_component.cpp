@@ -35,23 +35,21 @@ void SoundComponent::SetSoundPath(const std::filesystem::path& i_path)
 
 void SoundComponent::Play()
 {
-    if (!sound) return;
-
+    if (!sound->loaded.test()) return;
     ma_sound_set_looping(&sound->soundObject, loop);
-
     ma_sound_start(&sound->soundObject);
 }
 
 void SoundComponent::Stop()
 {
-    if (!sound) return;
+    if (!sound->loaded.test()) return;
     ma_sound_stop(&sound->soundObject);
     ma_sound_seek_to_pcm_frame(&sound->soundObject, 0);
 }
 
 void SoundComponent::Pause()
 {
-    if (!sound) return;
+    if (!sound->loaded.test()) return;
     ma_sound_stop(&sound->soundObject);
 }
 

@@ -24,7 +24,7 @@ KK_COMPONENT_IMPL_BEGIN(AnimatedDraw)
 
     KK_FIELD_PUSH(AnimatedDraw, animationPath, EDataType::STRING)
     KK_FIELD_CHANGECALLBACK(OnAnimationPathUpdate)
-    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnAnimatedDrawComponent)
+    KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, AnimationDropOnAnimatedDrawComponent)
 
     KK_FIELD_PUSH(AnimatedDraw, skmodel, EDataType::ANIMATION)
 
@@ -37,7 +37,7 @@ void AnimatedDraw::OnUpdate()
 
 void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
-    if (!skmodel.skmesh)
+    if (!skmodel.skmesh.lock())
         return;
 
     skmodel.UseShader();
@@ -45,12 +45,12 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 
 	GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
 
-	Resources::Texture* diffuseTex = skmodel.diffuseTex.get();
+	Resources::Texture* diffuseTex = skmodel.diffuseTex.lock().get();
 	if (diffuseTex != nullptr)
 		if (diffuseTex->gpu.get())
 			texToBeBinded = diffuseTex->gpu->data;
 
-    for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh->submeshes)
+    for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh.lock()->submeshes)
     {
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
@@ -74,7 +74,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 
 void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
 {
-	if (!skmodel.skmesh)
+	if (!skmodel.skmesh.lock())
 		return;
 
 	skmodel.lightDepthShader->Use();
@@ -82,7 +82,7 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 		MAX_BONES,
 		skmodel.player.GetBoneMatrices().data()->element);
 
-	for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh->submeshes)
+	for (std::shared_ptr<Submesh>& smesh : skmodel.skmesh.lock()->submeshes)
 	{
 		if (smesh == nullptr || smesh->gpu.VAO == 0)
 			continue;
@@ -129,7 +129,13 @@ void DropOnAnimatedDrawComponent(unsigned char* io_component, void* io_dropData)
         sd.texturePath = path.string();
         sd.skmodel.SetTexture(sd.texturePath, false);
     }
+}
 
+void AnimationDropOnAnimatedDrawComponent(unsigned char* io_component, void* io_dropData)
+{
+    auto& sd = *reinterpret_cast<AnimatedDraw*>(io_component);
+    auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
+    std::string extension = path.extension().string();
     if (Utils::FindExtension(extension, Utils::AnimationExtensions))
     {
         sd.animationPath = path.string();

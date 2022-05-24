@@ -19,46 +19,106 @@ Resources::Mesh::Mesh(const std::string& i_name)
 	name = i_name;
 }
 
-void Resources::Mesh::LoadFromInfo()
+bool Resources::Mesh::CPULoad()
 {
 	resourceType = EResourceType::MESH;
 
 	if (name == cubeMesh)
+	{
 		LoadCube();
+		return true;
+	}
 	else if (name == cubeColliderMesh)
+	{
 		LoadLineCube();
+		return true;
+	}
 	else if (name == sphereMesh)
+	{
 		LoadSphere();
+		return true;
+	}
+	else if (name == icoSphereMesh)
+	{
+		LoadIcoSphere();
+		return true;
+	}
 	else if (name == sphereColliderMesh)
+	{
 		LoadLineSphere();
+		return true;
+	}
 	else
-		ResourcesManager::AddCPULoadingTask([this](/*void* userData*/) {
-			//ResourceSubmeshTaskData* data = static_cast<ResourceSubmeshTaskData*>(userData);
-			// ... data.meshes.emplace_back(); ...
+	{
+		Assimp::Importer importer;
+		importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+		const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
 
-			Assimp::Importer importer;
-			importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
-			const aiScene* scene = importer.ReadFile(name, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
+		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+		{
+			Log::Warning("ASSIMP: ", static_cast<std::string>(importer.GetErrorString()));
 
-			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-			{
-				Log::Warning("ASSIMP: ", static_cast<std::string>(importer.GetErrorString()));
-				return;
-			}
-			else
-			{
-				std::list<std::shared_ptr<Submesh>> buffer;
+			return false;
+		}
+		else
+		{
+			std::list<std::shared_ptr<Submesh>> buffer;
 
-				const aiScene* scene = importer.GetScene();
-				ProcessAiNode(buffer, importer, scene->mRootNode);
+			const aiScene* scene = importer.GetScene();
+			ProcessAiNode(buffer, importer, scene->mRootNode);
 
-				submeshes = buffer;
+			submeshes = buffer;
 
-				Log::Info("Successfully loaded model file : " + name);
+			Log::Info("Successfully loaded model file : " + name);
 
-				ComputeMemorySize();
-			}
-			});
+			ComputeMemorySize();
+
+			return true;
+		}
+	}
+}
+
+bool Resources::Mesh::GPULoad()
+{
+	for (std::shared_ptr<Submesh>& smesh : submeshes)
+	{
+		glGenBuffers(1, &smesh->gpu.VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, smesh->gpu.VBO);
+		glBufferData(GL_ARRAY_BUFFER, smesh->vertices.size() * sizeof(Vertex), smesh->vertices.data(), GL_STATIC_DRAW);
+
+		glGenVertexArrays(1, &smesh->gpu.VAO);
+		glBindVertexArray(smesh->gpu.VAO);
+
+#if 1
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+		glEnableVertexAttribArray(3);
+		glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, boneIndices));
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, boneWeights));
+#else
+		glVertexAttrib3f(0, 0.f, 0.f, 0.f);
+		glVertexAttrib3f(1, 0.f, 0.f, 0.f);
+		glVertexAttrib2f(2, 0.f, 0.f);
+#endif
+
+		glBindVertexArray(0);
+	}
+
+	return true;
+}
+
+bool Resources::Mesh::GPUUnload()
+{
+	for (auto& smesh : submeshes)
+	{
+		smesh->gpu.Unload();
+	}
+	return true;
 }
 
 void Resources::Mesh::ComputeMemorySize()
@@ -129,8 +189,6 @@ void Resources::Mesh::ProcessAiNode(std::list<std::shared_ptr<Submesh>>& o_meshe
 
 		ParseSubmesh(*meshPtr);
 		o_meshes.emplace_back(meshPtr);
-
-		ResourcesManager::CreateGPUSubmesh(*o_meshes.back());
 	}
 
 	// then do the same for each of its children
@@ -198,53 +256,53 @@ void Resources::Mesh::LoadCube()
 
 	ParseSubmesh(mesh);
 
-	mesh.vertices[0].uv  = {  0.5f, 0.33f };
-	mesh.vertices[1].uv  = {  0.5f,   0.f };
-	mesh.vertices[2].uv  = { 0.25f,   0.f };
-	mesh.vertices[3].uv  = { 0.25f,   0.f };
-	mesh.vertices[4].uv  = { 0.25f, 0.33f };
-	mesh.vertices[5].uv  = {  0.5f, 0.33f };
-	mesh.vertices[6].uv  = { 0.25f,   1.f };
-	mesh.vertices[7].uv  = {  0.5f,   1.f };
-	mesh.vertices[8].uv  = {  0.5f, 0.66f };
-	mesh.vertices[9].uv  = {  0.5f, 0.66f };
+	mesh.vertices[0].uv = { 0.5f, 0.33f };
+	mesh.vertices[1].uv = { 0.5f,   0.f };
+	mesh.vertices[2].uv = { 0.25f,   0.f };
+	mesh.vertices[3].uv = { 0.25f,   0.f };
+	mesh.vertices[4].uv = { 0.25f, 0.33f };
+	mesh.vertices[5].uv = { 0.5f, 0.33f };
+	mesh.vertices[6].uv = { 0.25f,   1.f };
+	mesh.vertices[7].uv = { 0.5f,   1.f };
+	mesh.vertices[8].uv = { 0.5f, 0.66f };
+	mesh.vertices[9].uv = { 0.5f, 0.66f };
 	mesh.vertices[10].uv = { 0.25f, 0.66f };
 	mesh.vertices[11].uv = { 0.25f,   1.f };
 	mesh.vertices[12].uv = { 0.25f, 0.33f };
 	mesh.vertices[13].uv = { 0.25f, 0.66f };
-	mesh.vertices[14].uv = {  0.5f, 0.66f };
-	mesh.vertices[15].uv = {  0.5f, 0.66f };
-	mesh.vertices[16].uv = {  0.5f, 0.33f };
+	mesh.vertices[14].uv = { 0.5f, 0.66f };
+	mesh.vertices[15].uv = { 0.5f, 0.66f };
+	mesh.vertices[16].uv = { 0.5f, 0.33f };
 	mesh.vertices[17].uv = { 0.25f, 0.33f };
 	mesh.vertices[18].uv = { 0.75f, 0.66f };
-	mesh.vertices[19].uv = {   1.f, 0.66f };
-	mesh.vertices[20].uv = {   1.f, 0.33f };
-	mesh.vertices[21].uv = {   1.f, 0.33f };
+	mesh.vertices[19].uv = { 1.f, 0.66f };
+	mesh.vertices[20].uv = { 1.f, 0.33f };
+	mesh.vertices[21].uv = { 1.f, 0.33f };
 	mesh.vertices[22].uv = { 0.75f, 0.33f };
 	mesh.vertices[23].uv = { 0.75f, 0.66f };
 	mesh.vertices[24].uv = { 0.75f, 0.33f };
-	mesh.vertices[25].uv = {  0.5f, 0.33f };
-	mesh.vertices[26].uv = {  0.5f, 0.66f };
-	mesh.vertices[27].uv = {  0.5f, 0.66f };
+	mesh.vertices[25].uv = { 0.5f, 0.33f };
+	mesh.vertices[26].uv = { 0.5f, 0.66f };
+	mesh.vertices[27].uv = { 0.5f, 0.66f };
 	mesh.vertices[28].uv = { 0.75f, 0.66f };
 	mesh.vertices[29].uv = { 0.75f, 0.33f };
-	mesh.vertices[30].uv = {   0.f, 0.33f };
-	mesh.vertices[31].uv = {   0.f, 0.66f };
+	mesh.vertices[30].uv = { 0.f, 0.33f };
+	mesh.vertices[31].uv = { 0.f, 0.66f };
 	mesh.vertices[32].uv = { 0.25f, 0.66f };
 	mesh.vertices[33].uv = { 0.25f, 0.66f };
 	mesh.vertices[34].uv = { 0.25f, 0.33f };
-	mesh.vertices[35].uv = {   0.f, 0.33f };
+	mesh.vertices[35].uv = { 0.f, 0.33f };
 
-	mesh.vertices[0].normal  = Vector3::forward;
-	mesh.vertices[1].normal  = Vector3::forward;
-	mesh.vertices[2].normal  = Vector3::forward;
-	mesh.vertices[3].normal  = Vector3::forward;
-	mesh.vertices[4].normal  = Vector3::forward;
-	mesh.vertices[5].normal  = Vector3::forward;
-	mesh.vertices[6].normal  = Vector3::backward;
-	mesh.vertices[7].normal  = Vector3::backward;
-	mesh.vertices[8].normal  = Vector3::backward;
-	mesh.vertices[9].normal  = Vector3::backward;
+	mesh.vertices[0].normal = Vector3::forward;
+	mesh.vertices[1].normal = Vector3::forward;
+	mesh.vertices[2].normal = Vector3::forward;
+	mesh.vertices[3].normal = Vector3::forward;
+	mesh.vertices[4].normal = Vector3::forward;
+	mesh.vertices[5].normal = Vector3::forward;
+	mesh.vertices[6].normal = Vector3::backward;
+	mesh.vertices[7].normal = Vector3::backward;
+	mesh.vertices[8].normal = Vector3::backward;
+	mesh.vertices[9].normal = Vector3::backward;
 	mesh.vertices[10].normal = Vector3::backward;
 	mesh.vertices[11].normal = Vector3::backward;
 	mesh.vertices[12].normal = Vector3::down;
@@ -273,7 +331,6 @@ void Resources::Mesh::LoadCube()
 	mesh.vertices[35].normal = Vector3::left;
 
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
 	ComputeMemorySize();
 }
 
@@ -318,7 +375,6 @@ void Mesh::LoadLineCube()
 
 	ParseSubmesh(mesh);
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
 	ComputeMemorySize();
 }
 
@@ -368,7 +424,134 @@ void Resources::Mesh::LoadSphere(const float i_radius,
 
 	ParseSubmesh(mesh);
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
+	ComputeMemorySize();
+}
+
+void Mesh::LoadIcoSphere(const int i_res)
+{
+	Submesh mesh;
+
+	int icosahedron = 5;
+	float midRadius = 2.f / Maths::Sqrt(5.f);
+	float angle = Maths::Constants::doublePi / 5.f;
+
+	{
+		Vertex v;
+		v.position = { 0.f, 1.f, 0.f };
+		v.normal = v.position.Normalize();
+		v.uv = { 0.f, 0.f };
+		mesh.vertices.emplace_back(v);
+	}
+
+	float height = (0.5f + Maths::Sqrt(5.f) / 10.f) / 2.f;
+	for (int i = 0; i < icosahedron; ++i)
+	{
+		Vertex v;
+		v.position = { midRadius * Maths::Sin(i * angle),
+			height,
+			midRadius * Maths::Cos(i * angle) };
+		v.normal = v.position.Normalize();
+		v.uv = { i / (float)icosahedron, height };
+		mesh.vertices.emplace_back(v);
+	}
+
+	for (int i = 0; i < icosahedron; ++i)
+	{
+		Vertex v;
+		v.position = { midRadius * Maths::Sin(i * angle + Maths::ToRadians(36.f)),
+			-height,
+			midRadius * Maths::Cos(i * angle + Maths::ToRadians(36.f)) };
+		v.normal = v.position.Normalize();
+		v.uv = { i / (float)icosahedron, -height };
+		mesh.vertices.emplace_back(v);
+	}
+
+	{
+		Vertex v;
+		v.position = { 0.f, -1.f, 0.f };
+		v.normal = v.position.Normalize();
+		v.uv = { 1.f, 1.f };
+		mesh.vertices.emplace_back(v);
+	}
+
+	struct Triangle
+	{
+		int corner[3] = { 0, 0, 0 };
+	};
+
+	std::vector<Triangle> triangles;
+	triangles.emplace_back(Triangle{ 0, 1, 2 });
+	triangles.emplace_back(Triangle{ 0, 2, 3 });
+	triangles.emplace_back(Triangle{ 0, 3, 4 });
+	triangles.emplace_back(Triangle{ 0, 4, 5 });
+	triangles.emplace_back(Triangle{ 0, 5, 1 });
+
+	triangles.emplace_back(Triangle{ 2, 1, 6 });
+	triangles.emplace_back(Triangle{ 3, 2, 7 });
+	triangles.emplace_back(Triangle{ 4, 3, 8 });
+	triangles.emplace_back(Triangle{ 5, 4, 9 });
+	triangles.emplace_back(Triangle{ 1, 5, 10 });
+
+	triangles.emplace_back(Triangle{ 2, 6, 7 });
+	triangles.emplace_back(Triangle{ 3, 7, 8 });
+	triangles.emplace_back(Triangle{ 4, 8, 9 });
+	triangles.emplace_back(Triangle{ 5, 9, 10 });
+	triangles.emplace_back(Triangle{ 1, 10, 6 });
+
+	triangles.emplace_back(Triangle{ 6, 11, 7 });
+	triangles.emplace_back(Triangle{ 7, 11, 8 });
+	triangles.emplace_back(Triangle{ 8, 11, 9 });
+	triangles.emplace_back(Triangle{ 9, 11, 10 });
+	triangles.emplace_back(Triangle{ 10, 11, 6 });
+
+	for (int i = 0; i < i_res - 1; ++i)
+	{
+		std::vector<Triangle> oldTriangles = triangles;
+		triangles.clear();
+		for (int j = 0; j < oldTriangles.size(); ++j)
+		{
+			int a, b, c, d, e, f;
+			a = oldTriangles[j].corner[0];
+			b = oldTriangles[j].corner[1];
+			c = oldTriangles[j].corner[2];
+
+			Vertex A = mesh.vertices[a];
+			Vertex B = mesh.vertices[b];
+			Vertex C = mesh.vertices[c];
+
+			Vertex D, E, F;
+			D.position = ((A.position + B.position) / 2.f).Normalize();
+			D.normal = D.position.Normalize();
+			D.uv = (A.uv + B.uv) / 2.f;
+			E.position = ((B.position + C.position) / 2.f).Normalize();
+			E.normal = E.position.Normalize();
+			E.uv = (B.uv + C.uv) / 2.f;
+			F.position = ((C.position + A.position) / 2.f).Normalize();
+			F.normal = F.position.Normalize();
+			F.uv = (C.uv + A.uv) / 2.f;
+
+			d = mesh.vertices.size();
+			mesh.vertices.emplace_back(D);
+			e = mesh.vertices.size();
+			mesh.vertices.emplace_back(E);
+			f = mesh.vertices.size();
+			mesh.vertices.emplace_back(F);
+			triangles.emplace_back(Triangle{ a, d, f });
+			triangles.emplace_back(Triangle{ f, e, c });
+			triangles.emplace_back(Triangle{ d, b, e });
+			triangles.emplace_back(Triangle{ f, d, e });
+		}
+	}
+
+	for (int i = 0; i < triangles.size(); ++i)
+	{
+		mesh.indices.emplace_back(triangles[i].corner[0]);
+		mesh.indices.emplace_back(triangles[i].corner[1]);
+		mesh.indices.emplace_back(triangles[i].corner[2]);
+	}
+
+	ParseSubmesh(mesh);
+	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
 	ComputeMemorySize();
 }
 
@@ -435,6 +618,5 @@ void Mesh::LoadLineSphere(float i_radius)
 
 	ParseSubmesh(mesh);
 	submeshes.emplace_back(std::make_shared<Submesh>(mesh));
-	ResourcesManager::CreateGPUSubmesh(*submeshes.back());
 	ComputeMemorySize();
 }

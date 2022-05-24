@@ -24,15 +24,15 @@ namespace Renderer
 	public:
 		std::shared_ptr<Resources::Shader> lightDepthShader;
 
-		std::shared_ptr<Resources::SkeletalMesh>	skmesh;
+		std::weak_ptr<Resources::SkeletalMesh>	skmesh;
 		Animation::Animator							player;
-		std::shared_ptr<SkeletalAnimationPack>		skpack;
+		std::weak_ptr<SkeletalAnimationPack>		skpack;
 
 		std::string textureName = "";
 		bool		flipTexture = false;
 
 		// TODO : vector of Texture
-		std::shared_ptr<Resources::Texture> diffuseTex;
+		std::weak_ptr<Resources::Texture> diffuseTex;
 
 		SkeletalModel();
 

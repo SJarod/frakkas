@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <memory>
 
+#include "debug/log.hpp"
+
 #include "utils/singleton.hpp"
 #include "multithread/threadpool.hpp"
 
@@ -28,38 +30,16 @@ namespace Resources
 		/**
 		* Add a resource to the resources map and return it.
 		* Return an already existing resource if any.
-		* 
+		*
 		* @param i_name : the resource name or the resource path
 		*/
 		template<class TResource, typename... TExtraParams> requires std::constructible_from<TResource, const std::string, TExtraParams...>
 		static std::shared_ptr<TResource> LoadResource(const std::string& i_name, const TExtraParams&... i_params) noexcept;
 
 		/**
-		* Add a task to the resources manager's thread pool.
-		*
-		*/
-		static void AddCPULoadingTask(const Task& io_task);
-
-		/**
 		* Load GPU data if they are added to the GPU load queue.
 		*/
 		static void PollGPULoad();
-
-		/**
-		 * Add a task to the GPU load queue to create a GPU mesh with OpenGL
-		 * in the PollGPULoad() function.
-		 *
-		 * @param io_submesh
-		 */
-		static void CreateGPUSubmesh(Submesh& io_submesh);
-
-		/**
-		 * Add a task to the GPU load queue to create a GPU texture with
-		 * OpenGL in the PollGPULoad() function.
-		 *
-		 * @param io_texture
-		 */
-		static void CreateGPUTexture(Texture& io_texture);
 
 		/**
 		* Get the default texture.
@@ -71,11 +51,28 @@ namespace Resources
 		 */
 		static const std::unordered_map<std::string, std::shared_ptr<Resource>>& ViewAllResources();
 
-	private:
-		ThreadPool tp;
+		/**
+		 * Refresh all resources by reloading them.
+		 */
+		static void Refresh();
 
+		/**
+		 * Destroy a specific resource given its name.
+		 */
+		static void DestroyThisResource(const std::string& i_name);
+
+		/**
+		 * Empty the resources manager.
+		 */
+		static void DestroyResources();
+
+	private:
+		ThreadPool threadpool;
+
+		// mutex for the resources map
 		std::mutex resourceMX;
-		std::mutex loadMX;
+		// mutex for the GPU load queue
+		std::mutex gpuLoadMX;
 
 		// Array of every loaded resource.
 		std::unordered_map<std::string, std::shared_ptr<Resource>> resources;
@@ -83,21 +80,73 @@ namespace Resources
 		std::deque<Task> gpuLoadQueue;
 
 		ResourcesManager() = default;
+
+		/**
+		 * Try to load the given resource, postpone the load if failed.
+		 */
+		inline void TryLoad(std::shared_ptr<Resource> i_newResource, const std::string& i_name);
 	};
 }
 
 template<class TResource, typename... TExtraParams> requires std::constructible_from<TResource, const std::string, TExtraParams...>
 std::shared_ptr<TResource> ResourcesManager::LoadResource(const std::string& i_name, const TExtraParams&... i_params) noexcept
 {
-	ResourcesManager& rm = ResourcesManager::Instance();
+	if (i_name == "")
+	{
+		Log::Warning("Cannot create unnamed resource");
+		return nullptr;
+	}
 
-	std::lock_guard<std::mutex> guard(rm.resourceMX);
+	std::shared_ptr<TResource> newResource;
 
-	if (rm.resources.find(i_name.c_str()) != rm.resources.end())
-		return std::dynamic_pointer_cast<TResource>(rm.resources[i_name.c_str()]);
+	ResourcesManager& rm = Instance();
 
-	rm.resources[i_name.c_str()] = std::make_shared<TResource>(i_name, i_params...);
-	rm.resources[i_name.c_str()]->LoadFromInfo();
+	{
+		std::lock_guard<std::mutex> guard(rm.resourceMX);
 
-	return std::dynamic_pointer_cast<TResource>(rm.resources[i_name.c_str()]);
+		if (rm.resources.find(i_name.c_str()) != rm.resources.end())
+			return std::dynamic_pointer_cast<TResource>(rm.resources[i_name.c_str()]);
+
+		newResource = std::make_shared<TResource>(i_name, i_params...);
+		rm.resources[i_name.c_str()] = newResource;
+	}
+
+	rm.threadpool.AddTask([newResource, i_name]() {
+		ResourcesManager& rm = Instance();
+		rm.TryLoad(newResource, i_name);
+		});
+
+	return std::dynamic_pointer_cast<TResource>(newResource);
+}
+
+inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, const std::string& i_name)
+{
+	auto Load = [this, i_newResource, i_name]() {
+		if (!i_newResource->CPULoad())
+		{
+			Log::Warning(i_name, " is an invalid resource or an incorrectly loaded resource, it will be erased from the resources manager.");
+			i_newResource->CPUUnload();
+			DestroyThisResource(i_name);
+		}
+		else
+		{
+			std::lock_guard<std::mutex> guard(gpuLoadMX);
+
+			gpuLoadQueue.emplace_back([i_newResource]() {
+				i_newResource->GPULoad();
+				i_newResource->loaded.test_and_set(std::memory_order_release);
+				});
+		}
+	};
+
+	if (!i_newResource->DependenciesReady())
+	{
+		threadpool.AddTask([this, i_newResource, i_name]() {
+			TryLoad(i_newResource, i_name);
+			});
+	}
+	else
+	{
+		Load();
+	}
 }

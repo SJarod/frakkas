@@ -226,11 +226,10 @@ void LowRenderer::BeginFrame(const DepthFramebuffer& i_fbo, const float i_bias) 
 	i_fbo.Bind();
 	glViewport(0, 0, i_fbo.GetWidth(), i_fbo.GetHeight());
 
-	glClearColor(0.4f, 0.4f, 0.4f, 1.f);
+	glClearColor(0.f, 0.f, 0.f, 1.f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
 
 	glEnable(GL_POLYGON_OFFSET_FILL);
 	glPolygonOffset(i_bias, i_bias);

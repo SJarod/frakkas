@@ -120,30 +120,32 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
 
         unsigned char* componentData = o_component + desc.offset;
 
-        GetAttribute(i_file);
-        if (attribute == desc.name)
+        if (static_cast<int>(desc.dataType) > static_cast<int>(EDataType::NONE_TYPE))
+            continue;
+        
+        if (GetAttribute(i_file) == desc.name)
         {
             switch (desc.dataType)
             {
                 case EDataType::BOOL:
-                    Read(i_file, *reinterpret_cast<bool*>(componentData));
+                        Read(i_file, *reinterpret_cast<bool*>(componentData));
                     break;
                 case EDataType::INT:
-                    Read(i_file, reinterpret_cast<int*>(componentData), desc.count);
+                        Read(i_file, reinterpret_cast<int*>(componentData), desc.count);
                     break;
                 case EDataType::FLOAT:
-                    Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
+                        Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
                     break;
                 case EDataType::STRING:
-                    Read(i_file, *reinterpret_cast<std::string*>(componentData));
+                        Read(i_file, *reinterpret_cast<std::string*>(componentData));
                     break;
                 default:
                     break;
             }
-
             if (desc.onChanged)
                 desc.onChanged(o_component);
         }
+
     }
 
 }

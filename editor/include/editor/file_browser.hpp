@@ -11,7 +11,7 @@ namespace Editor
     {
     public:
         FileBrowser();
-        ~FileBrowser() = default;
+        ~FileBrowser();
 
         /**
         * @summary Display the ImGui panel

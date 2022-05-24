@@ -5,6 +5,7 @@
 #include "game/entity.hpp"
 
 #include "resources/serializer.hpp"
+#include "resources/resources_manager.hpp"
 
 #include "renderer/graph.hpp"
 
@@ -35,6 +36,9 @@ void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* 
         else
             io_engine.SetRunMode(Utils::UpdateFlag_Editing | Utils::UpdateFlag_Gaming);
     }
+
+    if (!(updateFlag & Utils::UpdateFlag_Gaming))
+        ResourcesField();
 
     OptionsField();
 
@@ -412,5 +416,16 @@ void Editor::MenuBar::LightingField(Engine& io_engine)
             ImVec2(0, 1),
             ImVec2(1, 0));
         ImGui::End();
+    }
+}
+
+void Editor::MenuBar::ResourcesField()
+{
+    if (ImGui::BeginMenu("Resources"))
+    {
+        if (ImGui::MenuItem("Refresh"))
+            ResourcesManager::Refresh();
+
+        ImGui::EndMenu();
     }
 }

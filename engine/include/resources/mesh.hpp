@@ -21,7 +21,7 @@ namespace Resources
 		GLuint VBO = 0;
 		GLuint VAO = 0;
 
-		~GPUMesh()
+		void Unload()
 		{
 			glDeleteBuffers(1, &VBO);
 			glDeleteVertexArrays(1, &VAO);
@@ -50,6 +50,7 @@ namespace Resources
 		// Those string are code name to load in-engine shape when call LoadFromInfo()
 		static constexpr char cubeMesh[] = "ProceduralCube";
 		static constexpr char sphereMesh[] = "ProceduralSphere";
+		static constexpr char icoSphereMesh[] = "ProceduralIcoSphere";
 		static constexpr char cubeColliderMesh[] = "ProceduralCubeLines";
 		static constexpr char sphereColliderMesh[] = "ProceduralSphereLines";
 
@@ -115,6 +116,16 @@ namespace Resources
 			const int i_longitude = 50,
 			const int i_latitude = 25);
 
+		/**
+		 * Procedurally load an icosphere.
+		 *
+		 * @param i_res the sphere resolution
+		 */
+		void LoadIcoSphere(const int i_res = 4);
+
+		/**
+		 * Load procedurally a sphere for line rendering
+		 */
         void LoadLineSphere(float i_radius = 1.f);
 
 	public:
@@ -123,8 +134,12 @@ namespace Resources
 
 		Mesh(const std::string& i_name);
 
-		void LoadFromInfo() override;
+		bool DependenciesReady() override { return true; }
+		bool CPULoad() override;
+		bool GPULoad() override;
+		bool CPUUnload() override { return true; }
+		bool GPUUnload() override;
 
-		void ComputeMemorySize() override;
+		void ComputeMemorySize();
 	};
 }

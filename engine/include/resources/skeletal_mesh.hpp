@@ -38,16 +38,15 @@ namespace Resources
 			const aiScene& i_scene);
 
 	public:
-		// Can the mesh be loaded?
-		bool meshSuccess = true;
-
 		std::unordered_map<std::string, Bone> boneInfoMap;
 		int boneCounter = 0;
 
 		SkeletalMesh(const std::string& i_name);
 
-		void LoadFromInfo() override;
-
-		void ComputeMemorySize() override;
+		bool DependenciesReady() override { return true; }
+		bool CPULoad() override;
+		bool GPULoad() override { return Mesh::GPULoad(); }
+		bool CPUUnload() override { return true; }
+		bool GPUUnload() override { return Mesh::GPUUnload(); }
 	};
 }

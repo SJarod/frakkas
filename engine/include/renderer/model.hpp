@@ -20,13 +20,13 @@ namespace Renderer
 	public:
 		std::shared_ptr<Resources::Shader> lightDepthShader;
 
-		std::shared_ptr<Resources::Mesh> mesh;
+		std::weak_ptr<Resources::Mesh> mesh;
 
 		std::string textureName = "";
 		bool		flipTexture = false;
 
 		// TODO : vector of Texture
-		std::shared_ptr<Resources::Texture> diffuseTex;
+		std::weak_ptr<Resources::Texture> diffuseTex;
 
 		Model();
 

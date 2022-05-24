@@ -40,7 +40,7 @@ void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename, const s
 
 void Renderer::Model::SetTexture(const std::string& i_textureFilename, const bool i_flipTexture)
 {
-    if (!mesh)
+    if (!mesh.lock())
         return;
 
     flipTexture = i_flipTexture;
