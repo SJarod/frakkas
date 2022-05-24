@@ -45,7 +45,7 @@ void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmes
 
 void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, const bool i_flipTexture)
 {
-    if (!skmesh)
+    if (!skmesh.lock())
         return;
 
 	flipTexture = i_flipTexture;
@@ -56,11 +56,11 @@ void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, c
 
 void Renderer::SkeletalModel::LoadAnimationsForThis(const std::string& i_animationFilename)
 {
-	if (!skmesh)
+	if (!skmesh.lock())
 	{
 		Log::Info("No skeletal mesh to attach animation to");
 		return;
 	}
 
-	skpack = ResourcesManager::LoadResource<SkeletalAnimationPack>(i_animationFilename + "|" + skmesh->name, i_animationFilename, std::ref(*skmesh));
+	skpack = ResourcesManager::LoadResource<SkeletalAnimationPack>(i_animationFilename + "|" + skmesh.lock()->name, i_animationFilename, std::ref(*skmesh.lock()));
 }

@@ -292,13 +292,16 @@ bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
     return true;
 }
 
-void Graph::ReloadScene()
+void Graph::ReloadScene(const bool i_cleaning)
 {
-    LoadScene(currentScenePath);
+    LoadScene(currentScenePath, i_cleaning);
 }
 
-void Graph::LoadScene(const std::filesystem::path& i_scenePath)
+void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning)
 {
+    if (i_cleaning)
+        ResourcesManager::DestroyResources();
+
     std::filesystem::path lastScene = currentScenePath;
     currentScenePath = i_scenePath;
 

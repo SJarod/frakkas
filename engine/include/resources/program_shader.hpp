@@ -30,11 +30,11 @@ namespace Resources
 			const std::string& i_fragmentShaderFilePath,
 			const std::initializer_list<const std::string>& i_defines = {});
 
-		~Shader() override;
-
-		void LoadFromInfo() override;
-
-		void ComputeMemorySize() override;
+		bool DependenciesReady() override { return true; }
+		bool CPULoad() override { return true; }
+		bool GPULoad() override;
+		bool CPUUnload() override { return true; }
+		bool GPUUnload() override;
 
 		/**
 		 * @Summary Use shader program.

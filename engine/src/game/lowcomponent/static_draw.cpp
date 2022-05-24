@@ -25,19 +25,19 @@ KK_COMPONENT_IMPL_END
 
 void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
-    if (!model.mesh)
+    if (!model.mesh.lock())
         return;
 
     model.UseShader();
 
     GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
 
-    Resources::Texture* diffuseTex = model.diffuseTex.get();
+    Resources::Texture* diffuseTex = model.diffuseTex.lock().get();
     if (diffuseTex != nullptr)
         if (diffuseTex->gpu.get())
             texToBeBinded = diffuseTex->gpu->data;
 
-    for (std::shared_ptr<Submesh>& smesh : model.mesh->submeshes)
+    for (std::shared_ptr<Submesh>& smesh : model.mesh.lock()->submeshes)
     {
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
@@ -60,12 +60,12 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
 
 void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
 {
-	if (!model.mesh)
+	if (!model.mesh.lock())
 		return;
 
 	model.lightDepthShader->Use();
 
-	for (std::shared_ptr<Submesh>& smesh : model.mesh->submeshes)
+	for (std::shared_ptr<Submesh>& smesh : model.mesh.lock()->submeshes)
 	{
 		if (smesh == nullptr || smesh->gpu.VAO == 0)
 			continue;

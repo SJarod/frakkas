@@ -5,35 +5,59 @@
 
 #include "resources/texture.hpp"
 
-void Resources::Texture::LoadFromInfo()
+bool Resources::Texture::CPULoad()
 {
 	resourceType = EResourceType::TEXTURE;
 
-	ResourcesManager::AddCPULoadingTask([this]() {
-		stbi_set_flip_vertically_on_load_thread(flip);
-		data = stbi_load(name.c_str(), &width, &height, &channels, 0);
+	stbi_set_flip_vertically_on_load_thread(flip);
+	data = stbi_load(name.c_str(), &width, &height, &channels, 0);
 
-		if (data)
-		{
-			ResourcesManager::CreateGPUTexture(*this);
+	if (data)
+	{
+		Log::Info("Successfully loaded texture file : " + name);
 
-			Log::Info("Successfully loaded texture file : " + name);
+		ram = 0;
+		vram = 0;
 
-			ComputeMemorySize();
-		}
-		else
-		{
-			Log::Warning("Could not load texture file : " + name);
-		}
-		});
+		vram += width * height * channels * sizeof(unsigned char);
+
+		return true;
+	}
+	else
+	{
+		Log::Warning("Could not load texture file : " + name);
+		return false;
+	}
 }
 
-void Resources::Texture::ComputeMemorySize()
+bool Resources::Texture::GPULoad()
 {
-	ram = 0;
-	vram = 0;
+	gpu = std::make_unique<GPUTexture>();
+	glGenTextures(1, &gpu->data);
 
-	vram += width * height * channels * sizeof(unsigned char);
+	glBindTexture(GL_TEXTURE_2D, gpu->data);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	if (data)
+	{
+		GLint format = channels == 1 ? GL_RED : channels == 2 ? GL_RG : channels == 3 ? GL_RGB : GL_RGBA;
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		return true;
+	}
+	return false;
+}
+
+bool Resources::Texture::CPUUnload()
+{
+	if (data)
+	{
+		stbi_image_free(data);
+		return true;
+	}
+	return false;
 }
 
 Resources::DefaultTexture::DefaultTexture()

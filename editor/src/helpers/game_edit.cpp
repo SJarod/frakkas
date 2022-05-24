@@ -135,13 +135,13 @@ void Helpers::Edit(Game::Transform& io_transform)
 
 void Helpers::Edit(Renderer::SkeletalModel& io_skmodel)
 {
-    if (io_skmodel.skpack)
+    if (io_skmodel.skpack.lock())
     {
         std::vector<const char*> animationNames = {"none" };
         static const char* currentAnim = animationNames[0];
-        int packSize = io_skmodel.skpack->GetPackSize();
+        int packSize = io_skmodel.skpack.lock()->GetPackSize();
         for (int i = 0; i < packSize; ++i)
-            animationNames.emplace_back(io_skmodel.skpack->GetAnimation(i)->animationName.c_str());
+            animationNames.emplace_back(io_skmodel.skpack.lock()->GetAnimation(i)->animationName.c_str());
 
         if (ImGui::BeginCombo("Animation", currentAnim))
         {
@@ -153,7 +153,7 @@ void Helpers::Edit(Renderer::SkeletalModel& io_skmodel)
                 if (ImGui::Selectable(animationNames[comboIndex], selected))
                 {
                     currentAnim = animationNames[comboIndex];
-                    io_skmodel.player.UploadAnimation(comboIndex == 0 ? nullptr : io_skmodel.skpack->GetAnimation(comboIndex - 1));
+                    io_skmodel.player.UploadAnimation(comboIndex == 0 ? nullptr : io_skmodel.skpack.lock()->GetAnimation(comboIndex - 1));
                 }
 
                 if (selected)

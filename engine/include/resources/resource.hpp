@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <atomic>
 
 namespace Resources
 {
@@ -30,16 +31,45 @@ namespace Resources
 		// The resource's VRAM size
 		size_t vram = 0;
 
-		/**
-		 * Load the resource from each resource specific info (name, ...).
-		 * Override this function in the child class.
-		 */
-		virtual void LoadFromInfo() = 0;
+		std::atomic_flag loaded = ATOMIC_FLAG_INIT;
 
 		/**
-		 * Calculate the size of this resource.
-		 * Only calculate the raw resource's size (real resource data)
+		 * Some resource needs to be loaded depending on some parameters.
+		 * 
+		 * @return true if this resource's dependencies are available.
 		 */
-		virtual void ComputeMemorySize() = 0;
+		virtual bool DependenciesReady() = 0;
+
+		/**
+		 * Load the resource from each resource specific info (name, ...).
+		 * CPU side load.
+		 * 
+		 * @return success
+		 */
+		virtual bool CPULoad() = 0;
+
+		/**
+		 * Load the resource for the graphics API.
+		 * GPU side load.
+		 * 
+		 * @return success
+		 */
+		virtual bool GPULoad() = 0;
+
+		/**
+		 * Unload the resource, free memory allocations.
+		 * CPU side unload.
+		 * 
+		 * @return success
+		 */
+		virtual bool CPUUnload() = 0;
+
+		/**
+		 * Unload the resource, free memory allocations.
+		 * GPU side unload.
+		 *
+		 * @return success
+		 */
+		virtual bool GPUUnload() = 0;
 	};
 }

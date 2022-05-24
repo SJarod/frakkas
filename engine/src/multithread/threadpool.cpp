@@ -15,7 +15,10 @@ ThreadPool::ThreadPool(const unsigned int i_nThread)
 	multithread = i_nThread > 0;
 
 	for (unsigned int i = 0; i < i_nThread; ++i)
-		threads.emplace_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this)));
+	{
+		threads.emplace_back(std::jthread(std::bind(&ThreadPool::PoolRoutine, this, i)));
+		workers.emplace_back(false);
+	}
 }
 
 ThreadPool::~ThreadPool()
@@ -42,6 +45,24 @@ unsigned int ThreadPool::GetThreadsNumber() const
 	return nThread;
 }
 
+bool ThreadPool::Clear() const
+{
+	if (!tasks.empty())
+	{
+		return false;
+	}
+	else
+	{
+		for (const bool w : workers)
+		{
+			if (w)
+				return false;
+		}
+	}
+
+	return true;
+}
+
 void ThreadPool::AddTask(const Task& i_fct)
 {
 	{
@@ -62,7 +83,7 @@ void ThreadPool::RemoveFirstTask()
 	tasks.pop_front();
 }
 
-void ThreadPool::Work()
+void ThreadPool::Work(const int i_id)
 {
 	Task t;
 
@@ -85,6 +106,7 @@ void ThreadPool::Work()
 				return;
 
 			t = tasks.front();
+			workers[i_id] = true;
 			RemoveFirstTask();
 		}
 	}
@@ -95,20 +117,22 @@ void ThreadPool::Work()
 	}
 
 	t(/*userData*/);
+	if (multithread)
+		workers[i_id] = false;
 
 	auto now = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>
 		(std::chrono::steady_clock::now().time_since_epoch()).count());
 	lastTaskTime.store(now);
 }
 
-void ThreadPool::PoolRoutine()
+void ThreadPool::PoolRoutine(const int i_id)
 {
 	while (running.test())
 	{
 		if (!multithread)
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-		Work();
+		Work(i_id);
 	}
 }
 

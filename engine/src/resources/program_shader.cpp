@@ -34,12 +34,7 @@ Resources::Shader::Shader(const std::string& i_name,
 	}
 }
 
-Resources::Shader::~Shader()
-{
-	glDeleteShader(program);
-}
-
-void Resources::Shader::LoadFromInfo()
+bool Resources::Shader::GPULoad()
 {
 	resourceType = EResourceType::SHADER;
 
@@ -50,7 +45,7 @@ void Resources::Shader::LoadFromInfo()
 	if (!vsStream.is_open() || !fsStream.is_open())
 	{
 		Log::Error("Could not open shader files : " + name);
-		return;
+		return false;
 	}
 
 	std::string vs((std::istreambuf_iterator<char>(vsStream)), std::istreambuf_iterator<char>());
@@ -118,17 +113,20 @@ void Resources::Shader::LoadFromInfo()
 	vsStream.close();
 	fsStream.close();
 
-	ComputeMemorySize();
-}
-
-void Resources::Shader::ComputeMemorySize()
-{
 	ram = 0;
 	vram = 0;
 
 	int size;
 	glGetProgramiv(program, GL_PROGRAM_BINARY_LENGTH, &size);
 	vram = size;
+
+	return true;
+}
+
+bool Resources::Shader::GPUUnload()
+{
+	glDeleteShader(program);
+	return true;
 }
 
 void Resources::Shader::Use() const

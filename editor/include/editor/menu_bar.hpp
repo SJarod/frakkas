@@ -60,5 +60,7 @@ namespace Editor
          * @param io_engine The class that posseses the graph, the light, and the depth map.
          */
         static void LightingField(Engine& io_engine);
+
+        static void ResourcesField();
     };
 }

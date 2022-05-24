@@ -40,9 +40,11 @@ namespace Resources
 			flip = i_flip;
 		}
 
-		void LoadFromInfo() override;
-
-		void ComputeMemorySize() override;
+		bool DependenciesReady() override { return true; }
+		bool CPULoad() override;
+		bool GPULoad() override;
+		bool CPUUnload() override;
+		bool GPUUnload() override { return true; }
 	};
 
 	class DefaultTexture

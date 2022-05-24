@@ -11,7 +11,10 @@
 class ThreadPool
 {
 private:
-	std::vector<std::jthread> threads;
+	std::vector<std::jthread>	threads;
+	//which thread is working?
+	std::vector<bool>			workers;
+
 	//number of threads
 	unsigned int		nThread = 0;
 	bool				multithread = false;
@@ -68,6 +71,11 @@ public:
 	unsigned int GetThreadsNumber() const;
 
 	/**
+	 * Is the thread pool working?
+	 */
+	bool Clear() const;
+
+	/**
 	 * Add a task to the task queue.
 	 *
 	 * @param fct
@@ -84,14 +92,14 @@ public:
 	 * Choose a task then do it.
 	 *
 	 */
-	void Work();
+	void Work(const int i_id = -1);
 
 	/**
 	 * Thread routine.
 	 * Main loop function
 	 *
 	 */
-	void PoolRoutine();
+	void PoolRoutine(const int i_id);
 
 	/**
 	 * Print the thread id.

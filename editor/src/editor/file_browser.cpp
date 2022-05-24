@@ -26,18 +26,60 @@ FileBrowser::FileBrowser() : m_currentDirectory(g_assetPath),
     m_cppIcon("editor/assets/CPPicon.png", true),
     m_hppIcon("editor/assets/HPPicon.png", true)
 {
-    m_directoryIcon.LoadFromInfo();
-    m_fileIcon.LoadFromInfo();
-    m_wavIcon.LoadFromInfo();
-    m_mp3Icon.LoadFromInfo();
-    m_objIcon.LoadFromInfo();
-    m_fbxIcon.LoadFromInfo();
-    m_gltfIcon.LoadFromInfo();
-    m_pngIcon.LoadFromInfo();
-    m_jpgIcon.LoadFromInfo();
-    m_kkIcon.LoadFromInfo();
-    m_cppIcon.LoadFromInfo();
-    m_hppIcon.LoadFromInfo();
+    m_directoryIcon.CPULoad();
+    m_fileIcon.CPULoad();
+    m_wavIcon.CPULoad();
+    m_mp3Icon.CPULoad();
+    m_objIcon.CPULoad();
+    m_fbxIcon.CPULoad();
+    m_gltfIcon.CPULoad();
+    m_pngIcon.CPULoad();
+    m_jpgIcon.CPULoad();
+    m_kkIcon.CPULoad();
+    m_cppIcon.CPULoad();
+    m_hppIcon.CPULoad();
+
+    m_directoryIcon.GPULoad();
+    m_fileIcon.GPULoad();
+    m_wavIcon.GPULoad();
+    m_mp3Icon.GPULoad();
+    m_objIcon.GPULoad();
+    m_fbxIcon.GPULoad();
+    m_gltfIcon.GPULoad();
+    m_pngIcon.GPULoad();
+    m_jpgIcon.GPULoad();
+    m_kkIcon.GPULoad();
+    m_cppIcon.GPULoad();
+    m_hppIcon.GPULoad();
+
+    m_directoryIcon.CPUUnload();
+    m_fileIcon.CPUUnload();
+    m_wavIcon.CPUUnload();
+    m_mp3Icon.CPUUnload();
+    m_objIcon.CPUUnload();
+    m_fbxIcon.CPUUnload();
+    m_gltfIcon.CPUUnload();
+    m_pngIcon.CPUUnload();
+    m_jpgIcon.CPUUnload();
+    m_kkIcon.CPUUnload();
+    m_cppIcon.CPUUnload();
+    m_hppIcon.CPUUnload();
+}
+
+FileBrowser::~FileBrowser()
+{
+    m_directoryIcon.GPUUnload();
+    m_fileIcon.GPUUnload();
+    m_wavIcon.GPUUnload();
+    m_mp3Icon.GPUUnload();
+    m_objIcon.GPUUnload();
+    m_fbxIcon.GPUUnload();
+    m_gltfIcon.GPUUnload();
+    m_pngIcon.GPUUnload();
+    m_jpgIcon.GPUUnload();
+    m_kkIcon.GPUUnload();
+    m_cppIcon.GPUUnload();
+    m_hppIcon.GPUUnload();
 }
 
 void FileBrowser::OnImGuiRender()

@@ -5,97 +5,88 @@
 #include "debug/log.hpp"
 #include "maths.hpp"
 
+#include "resources/sound.hpp"
+
 #include "resources/resources_manager.hpp"
 
 Resources::ResourcesManager::~ResourcesManager()
 {
-	for (auto& resource : resources)
-	{
-		if (std::shared_ptr<Texture> texture = std::dynamic_pointer_cast<Texture>(resource.second))
-			if (texture->data)
-				stbi_image_free(texture->data);
-	}
-}
-
-void Resources::ResourcesManager::CreateGPUSubmesh(Submesh& io_mesh)
-{
-	ResourcesManager& rm = ResourcesManager::Instance();
-
-	std::lock_guard<std::mutex> guard(rm.loadMX);
-	rm.gpuLoadQueue.emplace_back([&]() {
-		//io_mesh.GPULoad();
-		glGenBuffers(1, &io_mesh.gpu.VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, io_mesh.gpu.VBO);
-		glBufferData(GL_ARRAY_BUFFER, io_mesh.vertices.size() * sizeof(Vertex), io_mesh.vertices.data(), GL_STATIC_DRAW);
-
-		glGenVertexArrays(1, &io_mesh.gpu.VAO);
-		glBindVertexArray(io_mesh.gpu.VAO);
-
-#if 1
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
-		glEnableVertexAttribArray(3);
-		glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, boneIndices));
-		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, boneWeights));
-#else
-		glVertexAttrib3f(0, 0.f, 0.f, 0.f);
-		glVertexAttrib3f(1, 0.f, 0.f, 0.f);
-		glVertexAttrib2f(2, 0.f, 0.f);
-#endif
-
-		glBindVertexArray(0);
-		});
-}
-
-void Resources::ResourcesManager::CreateGPUTexture(Texture& io_texture)
-{
-	ResourcesManager& rm = ResourcesManager::Instance();
-
-	std::lock_guard<std::mutex> guard(rm.loadMX);
-	rm.gpuLoadQueue.emplace_back([&]() {
-		//io_texture.GPULoad();
-		io_texture.gpu = std::make_unique<GPUTexture>();
-		glGenTextures(1, &io_texture.gpu->data);
-
-		glBindTexture(GL_TEXTURE_2D, io_texture.gpu->data);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		if (io_texture.data)
-		{
-			GLint format = io_texture.channels == 1 ? GL_RED : io_texture.channels == 2 ? GL_RG : io_texture.channels == 3 ? GL_RGB : GL_RGBA;
-			glTexImage2D(GL_TEXTURE_2D, 0, format, io_texture.width, io_texture.height, 0, format, GL_UNSIGNED_BYTE, io_texture.data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		});
+	// Has DestroyResources() been called?
 }
 
 const DefaultTexture& Resources::ResourcesManager::GetDefaultTexture()
 {
-	return ResourcesManager::Instance().defaultTexture;
+	return Instance().defaultTexture;
 }
 
 const std::unordered_map<std::string, std::shared_ptr<Resource>>& Resources::ResourcesManager::ViewAllResources()
 {
-	return ResourcesManager::Instance().resources;
+	return Instance().resources;
 }
 
-void Resources::ResourcesManager::AddCPULoadingTask(const Task& io_task)
+void Resources::ResourcesManager::Refresh()
 {
-	ResourcesManager::Instance().tp.AddTask(io_task);
+	ResourcesManager& rm = Instance();
+
+	for (auto& resource : rm.resources)
+	{
+		std::shared_ptr<Resource> ptr = resource.second;
+		rm.threadpool.AddTask([&, ptr]() {
+			ptr->CPUUnload();
+			ptr->CPULoad();
+
+			{
+				std::lock_guard<std::mutex> guard(rm.gpuLoadMX);
+
+				rm.gpuLoadQueue.emplace_back([ptr]() {
+					ptr->GPUUnload();
+					ptr->GPULoad();
+					});
+			}
+			});
+	}
+}
+
+void Resources::ResourcesManager::DestroyThisResource(const std::string& i_name)
+{
+	ResourcesManager& rm = Instance();
+	std::lock_guard<std::mutex> guard(rm.resourceMX);
+
+	std::string name = i_name;
+	rm.resources.erase(name);
+
+	Log::Info(name, " was deleted");
+}
+
+void Resources::ResourcesManager::DestroyResources()
+{
+	ResourcesManager& rm = Instance();
+
+	while (!rm.threadpool.Clear())
+	{
+		// pausing main thread waiting for threads to finish CPU loading tasks
+		std::this_thread::yield();
+	}
+
+	// finish remaining GPU loading tasks
+	PollGPULoad();
+
+	std::lock_guard<std::mutex> guard(rm.resourceMX);
+
+	for (auto& resource : rm.resources)
+	{
+		resource.second->CPUUnload();
+		resource.second->GPUUnload();
+	}
+
+	rm.resources.clear();
 }
 
 void Resources::ResourcesManager::PollGPULoad()
 {
-	ResourcesManager& rm = ResourcesManager::Instance();
+	ResourcesManager& rm = Instance();
 
-	std::lock_guard<std::mutex> guard(rm.loadMX);
+	std::lock_guard<std::mutex> guard(rm.gpuLoadMX);
 
 	for (Task& task : rm.gpuLoadQueue)
 	{

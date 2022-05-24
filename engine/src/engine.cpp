@@ -159,7 +159,10 @@ bool Engine::EndFrame()
     SDL_GL_SwapWindow(window);
     FrameMark
 
-    return  !Game::Inputs::quit;
+    bool quit = Game::Inputs::quit;
+    if (quit)
+        ResourcesManager::DestroyResources();
+    return  !quit;
 }
 
 void Engine::RunEditor()

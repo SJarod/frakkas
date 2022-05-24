@@ -80,13 +80,15 @@ namespace Renderer
 
         /**
          * Reload the current scene.
+         * @param i_cleaning Should the resources be reloaded?
          */
-        void ReloadScene();
+        void ReloadScene(const bool i_cleaning = true);
         /**
          * Load a scene from a text file.
          * @param i_scenePath Path of the scene.
+         * @param i_cleaning Should the resources be reloaded?
          */
-        void LoadScene(const std::filesystem::path& i_scenePath);
+        void LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning = true);
         /**
          * Save a scene into a text file.
          * @param i_sceneName Name of scene, should exists as .kk file.

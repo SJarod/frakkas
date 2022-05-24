@@ -36,14 +36,15 @@ void SphereCollider::ApplyEntityUpdate()
 
 void SphereCollider::DebugDraw(LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const
 {
-    if (!debugModel.mesh)
+    if (!debugModel.mesh.lock())
         debugModel.SetMeshFromFile(Resources::Mesh::sphereColliderMesh);
 
-    Resources::Submesh* smesh = debugModel.mesh->submeshes.front().get();
+    for (auto& smesh : debugModel.mesh.lock()->submeshes)
+    {
+        Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
 
-    Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
-
-    i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 10, {0.5f, 1.f, 0.5f}, false);
+        i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 5, {0.5f, 1.f, 0.5f}, false);
+    }
 }
 
 void SphereCollider::OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider)

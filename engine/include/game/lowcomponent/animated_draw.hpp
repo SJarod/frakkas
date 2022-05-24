@@ -30,6 +30,7 @@ protected:
 }
 
 void DropOnAnimatedDrawComponent(unsigned char* io_component, void* io_dropData);
+void AnimationDropOnAnimatedDrawComponent(unsigned char* io_component, void* io_dropData);
 void OnAnimationMeshPathUpdate(unsigned char* io_component);
 void OnAnimationTexturePathUpdate(unsigned char* io_component);
 void OnAnimationPathUpdate(unsigned char* io_component);
