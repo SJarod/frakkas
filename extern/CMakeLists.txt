@@ -47,6 +47,13 @@ endif()
 set_target_properties(jolt PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_SOURCE_DIR}/extern/jolt")
 
 ########## TRACY
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/extern/tracy_executable)
+    file(ARCHIVE_EXTRACT INPUT ${CMAKE_SOURCE_DIR}/extern/tracy_executable.7z
+                         DESTINATION ${CMAKE_SOURCE_DIR}/extern
+)
+endif()
+
+set(TRACY_ENABLE ON CACHE BOOL "" FORCE)
 add_subdirectory(tracy)
 
 ########## STB
