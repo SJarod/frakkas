@@ -17,6 +17,7 @@ namespace Game
 {
     class Entity;
     class EntityContainer;
+    class Transform;
     class Collider;
     class Component
     {
@@ -78,55 +79,60 @@ namespace Game
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+        virtual void OnCollisionEnter(const Collider& i_ownerCollider, const Collider& i_otherCollider){};
 
         /**
          * @brief Called when two colliders are overlapping. You should have a non static collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnCollisionStay(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+        virtual void OnCollisionStay(const Collider& i_ownerCollider, const Collider& i_otherCollider){};
 
         /**
          * @brief Called when two colliders are no colliding anymore. You should have a non static collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnCollisionExit(const Collider* i_ownerCollider, const Collider* i_otherCollider){};
+        virtual void OnCollisionExit(const Collider& i_ownerCollider, const Collider& i_otherCollider){};
 
         /**
          * @brief Called when two colliders collide, and there is at least one trigger collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnTriggerEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
+        virtual void OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_otherCollider) {};
 
         /**
          * @brief Called when two colliders are overlapping, and there is at least one trigger collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnTriggerStay(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
+        virtual void OnTriggerStay(const Collider& i_ownerCollider, const Collider& i_otherCollider) {};
 
         /**
          * @brief Called when two colliders are no colliding anymore, and there is at least one trigger collider.
          * @param i_ownerCollider The collider of the entity which owns this component as well.
          * @param i_otherCollider The collider of the colliding entity.
          */
-        virtual void OnTriggerExit(const Collider* i_ownerCollider, const Collider* i_otherCollider) {};
+        virtual void OnTriggerExit(const Collider& i_ownerCollider, const Collider& i_otherCollider) {};
 
         /**
-         * @return A reference to owner's transform position
+         * @return A reference to owner's transform position.
          */
         Property<Vector3>& Position() const;
         /**
-         * @return A reference to owner's transform scale
+         * @return A reference to owner's transform scale.
          */
         Property<Vector3>& Scale() const;
         /**
-         * @return A reference to owner's transform rotation
+         * @return A reference to owner's transform rotation.
          */
         Property<Vector3>& Rotation() const;
+
+        /**
+         * @return A reference to owner's transform.
+         */
+        Transform& GetTransform() const;
 
         /**
          * @brief an abstract function, every inheretid components should define this function with KK_GENERATE_COMPONENT

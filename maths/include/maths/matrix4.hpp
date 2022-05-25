@@ -55,6 +55,24 @@ struct Matrix4
  */
     Matrix4 Inverse() const;
 
+    /**
+     * @summary Extract a position vector from the matrix.
+     * The matrix should be a World Matrix.
+     */
+    Vector3 DecomposePosition() const;
+
+    /**
+     * @brief Extract a radians-euler angles vector from the matrix.
+     * Use QuatfromMatrix instead to have Quaternion rotation.
+     */
+    Vector3 DecomposeRotation() const;
+
+    /**
+     * @breif Extract a scale vector from the matrix.
+     * The matrix should be a World matrix.
+     */
+    Vector3 DecomposeScale() const;
+
 /**
  * @summary Calculate 3D world space frustum matrix
  * @param i_left Frustum's left view plane

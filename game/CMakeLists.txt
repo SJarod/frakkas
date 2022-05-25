@@ -6,7 +6,8 @@ project(Game
 
 add_library(${PROJECT_NAME} STATIC
         	src/game/world.cpp
-			assets/scripts/rumble_trigger.cpp
+			assets/scripts/collider_creator.cpp
+		assets/scripts/rumble_trigger.cpp
 	src/game/component_register.cpp
 		    assets/scripts/fps_movement.cpp
 		    assets/scripts/player_movement.cpp

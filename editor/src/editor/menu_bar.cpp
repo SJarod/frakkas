@@ -212,7 +212,7 @@ void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_
         std::ifstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
 
         if (copyFile.is_open())
-            Resources::Serializer::CreateAndReadEntity(copyFile, io_entityManager);
+            Resources::Serializer::CreateAndReadEntity(copyFile, io_entityManager.entityStore);
     };
 
     if (ImGui::BeginMenu("Edit"))

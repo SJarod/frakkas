@@ -19,6 +19,7 @@
 
 #include "utils/dragdrop_constants.hpp"
 #include "utils/platform.hpp"
+#include "utils/string_format.hpp"
 
 #include "helpers/game_edit.hpp"
 
@@ -127,6 +128,10 @@ void Helpers::Edit(Game::Transform& io_transform)
     ImGui::SliderAngle("y", &rot.y);
     ImGui::SliderAngle("z", &rot.z);
 
+    ImGui::Checkbox("global", &trs.useGlobal);
+    //ImGui::Text("%s", StringFormat::GetFormat("Global position: ", trs.GetGlobalPosition()).c_str());
+    //ImGui::Text("%s", StringFormat::GetFormat("Global scale: ", trs.GetGlobalScale()).c_str());
+    //ImGui::Text("%s", StringFormat::GetFormat("Global rotation: ", Maths::ToDegrees(trs.GetGlobalRotation())).c_str());
 
     trs.position = pos;
     trs.rotation = rot;
@@ -331,6 +336,9 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
                 case EDataType::STRING:
                     ImGui::Text("%s", (*reinterpret_cast<std::string*>(componentData)).c_str());
                     break;
+                case EDataType::TEXT:
+                    ImGui::Text("%s", desc.name.c_str());
+                    break;
                 default:
                     break;
             }
@@ -375,5 +383,8 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
                 ImGui::EndDragDropTarget();
             }
         }
+
+        if (!desc.toolTip.empty() && ImGui::IsItemHovered())
+            ImGui::SetTooltip("%s", desc.toolTip.c_str());
     }
 }

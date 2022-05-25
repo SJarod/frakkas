@@ -60,7 +60,7 @@ void Scene::OnImGuiRender(Engine& io_engine, Game::Entity* i_selectedEntity, ImG
         Matrix4 cameraView = editorCamera.GetViewMatrix();
 
         Game::Transform& trs = i_selectedEntity->transform;
-        Matrix4 trsMatrix = i_selectedEntity->transform.GetModelMatrix();
+        Matrix4 trsMatrix = i_selectedEntity->transform.GetWorldMatrix();
 
         Matrix4 deltaMatrix = Matrix4::Identity();
 

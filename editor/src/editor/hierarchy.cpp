@@ -41,7 +41,7 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     if (selected && selected->unsettingParent)
     {
         selected->unsettingParent = false;
-        io_entityManager.UnsetEntityParent(*selected);
+        selected->parent = nullptr;
     }
 
     if (ImGui::BeginTable("Entities list", 2))
@@ -175,11 +175,11 @@ void Hierarchy::SetupEntityInteraction(Game::EntityManager& io_entityManager, Ga
                 // Set parent only if selected is not already a child
                 if (it == io_entity.childs.end())
                 {
-                    io_entityManager.UnsetEntityParent(*selected);
-                    io_entityManager.SetEntityParent(*selected, io_entity);
+                    selected->parent = nullptr;
+                    selected->parent = &io_entity;
                 }
                 else
-                    io_entityManager.UnsetEntityParent(*selected);
+                    selected->parent = nullptr;
             }
         }
         ImGui::EndDragDropTarget();
@@ -195,9 +195,7 @@ void Hierarchy::ParentUnsetDragDropTarget(Game::EntityManager& io_entityManager)
         {
             Game::Entity* child = static_cast<Game::Entity*>(payload->Data);
             if (child)
-            {
-                io_entityManager.UnsetEntityParent(*selected);
-            }
+                selected->parent = nullptr;
         }
         ImGui::EndDragDropTarget();
     }
@@ -222,16 +220,16 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
             entity = io_entityManager.CreateEntity();
             entity->name = "Cube_" + std::to_string(entity->GetID());
             auto drawable = entity->AddComponent<Game::StaticDraw>();
-            drawable->model.SetMeshFromFile(Resources::Mesh::cubeMesh);
-            drawable->model.SetTexture("game/assets/Textures/gold.jpg", true);
+            drawable->SetMesh(Resources::Mesh::cubeMesh);
+            drawable->SetTexture("game/assets/Textures/gold.jpg", true);
         }
         else if (ImGui::Selectable("Sphere mesh"))
         {
             entity = io_entityManager.CreateEntity();
             entity->name = "Sphere_" + std::to_string(entity->GetID());
             auto drawable = entity->AddComponent<Game::StaticDraw>();
-            drawable->model.SetMeshFromFile(Resources::Mesh::sphereMesh);
-            drawable->model.SetTexture("game/assets/Textures/gold.jpg", true);
+            drawable->SetMesh(Resources::Mesh::sphereMesh);
+            drawable->SetTexture("game/assets/Textures/gold.jpg", true);
         }
         else if (ImGui::Selectable("Box collider"))
         {
@@ -254,7 +252,7 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
 
         if (entity && selectedWhenAdd)
         {
-            io_entityManager.SetEntityParent(*entity, *selectedWhenAdd);
+            entity->parent = selectedWhenAdd;
             selectedWhenAdd = nullptr;
         }
 

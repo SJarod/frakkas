@@ -35,7 +35,7 @@ namespace Helpers
         else if (Utils::FindExtension(extension, Utils::MeshExtensions))
         {
             auto staticDraw = o_entity.AddComponent<Game::StaticDraw>();
-            staticDraw->model.SetMeshFromFile(i_path.string());
+            staticDraw->SetMesh(i_path.string());
             return true;
         }
         else if (Utils::FindExtension(extension, Utils::CodeExtensions))

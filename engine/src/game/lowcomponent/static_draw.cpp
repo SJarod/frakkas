@@ -42,7 +42,7 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
 
-        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
         model.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         model.SetUniform("uModelNormal", modelNormal);
@@ -70,7 +70,7 @@ void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const
 		if (smesh == nullptr || smesh->gpu.VAO == 0)
 			continue;
 
-		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
 		model.lightDepthShader->SetUniform("uModel", modelMat);
 		assert(smesh->gpu.VAO != 0);
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);

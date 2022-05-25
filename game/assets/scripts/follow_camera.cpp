@@ -15,7 +15,8 @@ KK_COMPONENT_IMPL_END
 void FollowCamera::OnEnable()
 {
     playerTransform = &GetEntityContainer().FindEntityWithComponent<PlayerMovement>()->transform;
-    Position() =playerTransform->position.get() + offset;
+    if (playerTransform)
+        Position() = playerTransform->position.get() + offset;
 }
 
 void FollowCamera::OnUpdate()

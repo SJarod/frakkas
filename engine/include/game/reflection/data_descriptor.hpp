@@ -13,9 +13,10 @@ enum class EDataType
 	FLOAT,
 	BOOL,
 	STRING,
-	NONE_TYPE,
-    BUTTON,
-    ANIMATION
+    NONE_DATA, // A limit between serialized data and editor tools
+    TEXT, // A simple text for inspector
+    BUTTON, // A button for inspector
+    ANIMATION // A combo for animation selection
 };
 
 using KKEditorAction = std::function<void(unsigned char*)>;
@@ -40,6 +41,7 @@ struct DataDescriptor
     Vector2 range;
 
     bool sameLine = false;
+    std::string toolTip;
 
     std::string dropID;
     KKEditorDropAction onDrop;

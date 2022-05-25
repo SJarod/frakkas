@@ -62,10 +62,10 @@ namespace Resources
         /**
          * @brief Read all the information about an Entity and create it into entity manager.
          * @param i_file The opened input file
-         * @param io_entityManager The entity manager to create entity
+         * @param io_entityContainer The entity container to create and link entity
          * @param i_parent A parent entity to set to the created entity. Can be nullptr.
          */
-        static void CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager& io_entityManager, Game::Entity* i_parent = nullptr);
+        static void CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent = nullptr);
 
         /**
          * @brief read a component and store data in an unsigned char pointer.

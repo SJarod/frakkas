@@ -116,7 +116,7 @@ inline Quaternion Quaternion::Normalize() const
 {
     float length = this->Length();
 
-    if (length == 0.0f)
+    if (length < Maths::Constants::weakEpsilon)
         length = 1.0f;
 
     float ilength = 1.0f / length;
@@ -155,7 +155,7 @@ inline Quaternion Quaternion::Invert() const
 
 inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 {
-#if true
+#if 0 // GLM
     Matrix4 m = i_mat;
     float m00 = m.line[0].element[0];
     float m11 = m.line[1].element[1];
@@ -177,12 +177,15 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     q.z = (m10 - m01) / (4.f * q.w);
 
     return q;
-#else
+#elif 0 // RAYMATH
     Quaternion result;
 
     if ((i_mat.element[0] > i_mat.element[5]) && (i_mat.element[0] > i_mat.element[10]))
     {
         float s = sqrtf(1.0f + i_mat.element[0] - i_mat.element[5] - i_mat.element[10])*2.f;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
 
         result.x = 0.25f*s;
         result.y = (i_mat.element[4] + i_mat.element[1]) / s;
@@ -192,6 +195,10 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     else if (i_mat.element[5] > i_mat.element[10])
     {
         float s = sqrtf(1.0f + i_mat.element[5] - i_mat.element[0] - i_mat.element[10])*2;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
+
         result.x = (i_mat.element[4] + i_mat.element[1]) / s;
         result.y = 0.25f*s;
         result.z = (i_mat.element[9] + i_mat.element[6]) / s;
@@ -200,6 +207,10 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     else
     {
         float s = sqrtf(1.0f + i_mat.element[10] - i_mat.element[0] - i_mat.element[5])*2;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
+
         result.x = (i_mat.element[2] + i_mat.element[8]) / s;
         result.y = (i_mat.element[9] + i_mat.element[6]) / s;
         result.z = 0.25f*s;
@@ -207,6 +218,64 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     }
 
     return result;
+#elif 1 // JOLT
+
+    float diagonal = i_mat.element[0] + i_mat.element[5] + i_mat.element[10];
+
+    if (diagonal >= 0.0f)
+    {
+        float s = Maths::Sqrt(diagonal + 1.0f);
+        float sInverse = 0.5f / s;
+        return {
+                (i_mat.line[2].element[1] - i_mat.line[1].element[2]) * sInverse,
+                (i_mat.line[0].element[2] - i_mat.line[2].element[0]) * sInverse,
+                (i_mat.line[1].element[0] - i_mat.line[0].element[1]) * sInverse,
+                0.5f * s
+        };
+    }
+    else
+    {
+        int situationIndex = 0;
+
+        if (i_mat.line[1].element[1] > i_mat.line[0].element[0])
+            situationIndex = 1;
+        if (i_mat.line[2].element[2] > i_mat.line[situationIndex].element[situationIndex])
+            situationIndex = 2;
+
+        if (situationIndex == 0)
+        {
+            float s = Maths::Sqrt(i_mat.line[0].element[0] - (i_mat.line[1].element[1] + i_mat.line[2].element[2]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    0.5f * s,
+                    (i_mat.line[0].element[1] + i_mat.line[1].element[0]) * sInverse,
+                    (i_mat.line[2].element[0] + i_mat.line[0].element[2]) * sInverse,
+                    (i_mat.line[2].element[1] - i_mat.line[1].element[2]) * sInverse
+            };
+        }
+        else if (situationIndex == 1)
+        {
+            float s = Maths::Sqrt(i_mat.line[1].element[1] - (i_mat.line[2].element[2] + i_mat.line[0].element[0]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    (i_mat.line[0].element[1] + i_mat.line[1].element[0]) * sInverse,
+                    0.5f * s,
+                    (i_mat.line[1].element[2] + i_mat.line[2].element[1]) * sInverse,
+                    (i_mat.line[0].element[2] - i_mat.line[2].element[0]) * sInverse
+            };
+        }
+        else
+        {
+            float s = Maths::Sqrt(i_mat.line[2].element[2] - (i_mat.line[0].element[0] + i_mat.line[1].element[1]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    (i_mat.line[0].element[2] + i_mat.line[2].element[0]) * sInverse,
+                    (i_mat.line[2].element[1] + i_mat.line[1].element[2]) * sInverse,
+                    0.5f * s,
+                    (i_mat.line[0].element[1] - i_mat.line[1].element[0]) * sInverse
+            };
+        }
+    }
 #endif
 }
 

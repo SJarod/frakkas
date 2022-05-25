@@ -15,10 +15,9 @@ KK_COMPONENT_IMPL_END
 
 void SphereCollider::UpdateSphereShape()
 {
-    const Vector3& scale = owner.get()->transform.scale;
-
+    const Vector3& scale = Scale();
     float radius = Maths::Max(scale.x, scale.y, scale.z);
-    if (radius == prevRadius)
+    if (radius == 0.f || radius == prevRadius)
         return;
 
     auto* sphere = new JPH::SphereShape(radius);
@@ -41,23 +40,8 @@ void SphereCollider::DebugDraw(LowRenderer& i_renderer, const Game::Transform& i
 
     for (auto& smesh : debugModel.mesh.lock()->submeshes)
     {
-        Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetWorldMatrix();
 
         i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 5, {0.5f, 1.f, 0.5f}, false);
     }
-}
-
-void SphereCollider::OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider)
-{
-    //Log::Info("Enter Collision !");
-}
-
-void SphereCollider::OnCollisionExit(const Collider* i_ownerCollider, const Collider* i_otherCollider)
-{
-    //Log::Info("Exit collision !");
-}
-
-void SphereCollider::OnTriggerEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider)
-{
-    //Log::Info("Enter Trigger !");
 }

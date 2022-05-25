@@ -14,8 +14,9 @@ KK_COMPONENT_IMPL_END
 
 void BoxCollider::UpdateBoxScale()
 {
-    Vector3 extension = owner.get()->transform.scale;
-    if (extension == prevExtension)
+    Vector3 extension = Scale();
+
+    if (extension.x < 0.05f || extension.y < 0.05f || extension.z < 0.05f || extension == prevExtension)
         return;
 
     auto* newBox = new JPH::BoxShape(JPH::Vec3(extension.x, extension.y, extension.z));
@@ -38,7 +39,7 @@ void BoxCollider::DebugDraw(LowRenderer& i_renderer, const Game::Transform& i_en
 
     for (auto& smesh : debugModel.mesh.lock()->submeshes)
     {
-        Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform *  i_entityTransform.GetWorldMatrix();
 
         i_renderer.RenderLines(smesh->gpu.VAO, smesh->vertices.size(), modelMat, 5, {0.5f, 1.f, 0.5f}, true);
     }

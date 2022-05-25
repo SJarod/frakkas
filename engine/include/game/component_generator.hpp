@@ -190,6 +190,24 @@ public:                                               \
 #define KK_FIELD_SAMELINE descriptors.back().sameLine = true;
 
 /**
+ * @brief Push a new text-field to display simple text in editor, like title or section separator.
+ */
+#define KK_FIELD_PUSH_TEXT(text) \
+    desc = DataDescriptor(text, EDataType::TEXT, 1, 0); \
+    desc.viewOnly = true;\
+    descriptors.emplace_back(desc);
+
+/**
+ * @brief Add a tooltip to the last pushed field. Appears when you put the mouse cursor on the field.
+ */
+#define KK_FIELD_TOOLTIP(text) descriptors.back().toolTip = text;
+
+/**
+ * @brief Replace the field name by a different name.
+ */
+#define KK_FIELD_RENAME(newName) descriptors.back().name = newName;
+
+/**
  * @brief Create new .cpp/.hpp component file if does not already exist.
  * @param i_compName name of the component class.
  * @return true if the component is added, false if not.
