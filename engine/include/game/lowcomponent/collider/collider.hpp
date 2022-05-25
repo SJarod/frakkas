@@ -33,6 +33,14 @@ namespace Game
         bool trigger = false;
         bool isStatic = true;
 
+        bool constraintPositionX = false;
+        bool constraintPositionY = false;
+        bool constraintPositionZ = false;
+
+        bool constraintRotationX = false;
+        bool constraintRotationY = false;
+        bool constraintRotationZ = false;
+
         void OnEnable() override;
         void OnDisable() override;
 

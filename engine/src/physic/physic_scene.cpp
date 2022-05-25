@@ -73,16 +73,23 @@ JPH::Body* PhysicScene::CreateBody(float i_radius)
     return CreateBody(new JPH::SphereShape(i_radius));
 }
 
-JPH::Body* PhysicScene::CreateBody(JPH::Shape* io_shape)
+JPH::Body* PhysicScene::CreateBody(JPH::Shape* io_shape, JPH::uint8 i_layer)
 {
+    JPH::EMotionType motionType = JPH::EMotionType::Static;
+    if (i_layer == JPH::Layers::MOVING)
+        motionType = JPH::EMotionType::Dynamic;
+
     // Body settings
     JPH::BodyCreationSettings bodySettings(
         io_shape,
         JPH::Vec3(),
         JPH::Quat::sIdentity(),
-        JPH::EMotionType::Dynamic,
-        JPH::Layers::MOVING
+        motionType,
+        i_layer
     );
+
+    if (i_layer == JPH::Layers::SENSOR)
+        bodySettings.mIsSensor = true;
 
     bodySettings.mGravityFactor = gravityFactor;
 
@@ -116,8 +123,11 @@ void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_
     auto findPredicate2 = [&i_body2](const Game::Collider* collider) { return i_body2 == collider->GetPhysicBodyID(); };
     Game::Collider* collider2 = *std::find_if(colliders.begin(), colliders.end(), findPredicate2);
 
-    collider1->owner.get()->NotifyCollision(i_event, collider1, collider2);
-    collider2->owner.get()->NotifyCollision(i_event, collider2, collider1);
+    if (!collider1 || !collider2)
+        return;
+
+    collider1->owner.get()->NotifyCollision(i_event, *collider1, *collider2);
+    collider2->owner.get()->NotifyCollision(i_event, *collider2, *collider1);
 }
 
 void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::BodyID& i_body2)
@@ -131,6 +141,6 @@ void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::Bod
 
     // Check if collider is trigger or not
     ECollisionEvent event = collider1->trigger || collider2->trigger ? ECollisionEvent::TRIGGER_EXIT : ECollisionEvent::COLLISION_EXIT;
-    collider1->owner.get()->NotifyCollision(event, collider1, collider2);
-    collider2->owner.get()->NotifyCollision(event, collider2, collider1);
+    collider1->owner.get()->NotifyCollision(event, *collider1, *collider2);
+    collider2->owner.get()->NotifyCollision(event, *collider2, *collider1);
 }

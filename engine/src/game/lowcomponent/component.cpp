@@ -1,5 +1,6 @@
 #include "game/entity.hpp"
 #include "game/entity_manager.hpp"
+#include "game/transform.hpp"
 #include "game/lowcomponent/component.hpp"
 
 #include "debug/log.hpp"
@@ -62,6 +63,11 @@ Property<Vector3>& Component::Rotation() const
 EntityContainer& Component::GetEntityContainer() const
 {
     return *owner.get()->entityStore;
+}
+
+Transform& Component::GetTransform() const
+{
+    return owner.get()->transform;
 }
 
 

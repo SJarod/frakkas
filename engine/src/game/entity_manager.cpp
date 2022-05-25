@@ -4,9 +4,12 @@
 
 #include "debug/log.hpp"
 
+#include "resources/serializer.hpp"
+
 #include "game/transform.hpp"
 #include "game/entity_manager.hpp"
 #include "game/entity.hpp"
+#include "game/entity_container.hpp"
 
 
 using namespace Game;
@@ -20,7 +23,57 @@ Entity* EntityContainer::CreateEntity(const std::string_view& i_name)
     Entity* entity = entities.back().get();
     Log::Info("Create new entity : '", entity->name, "'");
     entity->entityStore = this;
+
+    // Set entity as root by default
+    rootEntities[entity->GetID()] = entity;
+
     return entity;
+}
+
+Entity* EntityContainer::CloneEntity(const Entity& i_entity)
+{
+    std::ofstream outFile(CloneSerializationFile);
+    Resources::Serializer::Write(outFile, i_entity);
+    outFile.close();
+
+    std::ifstream inFile(CloneSerializationFile);
+    Resources::Serializer::CreateAndReadEntity(inFile, *this);
+    inFile.close();
+
+    return entities.back().get();
+}
+
+void Game::EntityContainer::SetEntityParent(Entity& io_child, Entity& io_parent)
+{
+    io_child.transform.parent = &io_parent.transform;
+
+    // Check if parent is accepted
+    if (io_child.transform.parent == &io_parent.transform)
+    {
+        io_child.parent.set(&io_parent);
+        io_parent.childs.emplace_back(&io_child);
+        rootEntities.erase(io_child.GetID()); // Remove child from root if needed
+    }
+}
+
+void Game::EntityContainer::UnsetEntityParent(Entity& io_child)
+{
+    // Check that parent exists
+    if (!io_child.parent)
+        return;
+
+    Entity& parent = *io_child.parent;
+    // Check that parent is indeed a parent
+    if (io_child.transform.parent == &parent.transform)
+    {
+        io_child.transform.parent.get()->RemoveChild(&io_child.transform);
+        io_child.transform.parent = nullptr;
+        io_child.parent.set(nullptr);
+        rootEntities[io_child.GetID()] = &io_child;
+
+        parent.childs.remove_if([&io_child](Entity* parent) { return io_child.GetID() == parent->GetID(); }); // remove if ID is the same
+    }
+
 }
 
 Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
@@ -39,10 +92,12 @@ Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
 
 void EntityManager::Start()
 {
-    for (const auto& entity : entityStore.entities)
+    for (int i = entityStore.entities.size()-1; i >= 0; i--)
     {
-        for (const std::unique_ptr<Component>& comp: entity->components)
+        Entity* entity = entityStore.entities[i].get();
+        for (int j = entity->components.size()-1; j >= 0; j--)
         {
+            Component* comp = entity->components[j].get();
             comp->OnStart();
 
             if (comp->enabled)
@@ -53,11 +108,13 @@ void EntityManager::Start()
 
 void EntityManager::Update()
 {
+    //entity->components.insert(entity->components.end(), entity->addedComponents.begin(), entity->addedComponents.end());
     for (int i = entityStore.entities.size()-1; i >= 0; i--)
     {
         Entity* entity = entityStore.entities[i].get();
-        for (const std::unique_ptr<Component>& comp: entity->components)
+        for (int j = entity->components.size()-1; j >= 0.f; j--)
         {
+            Component* comp = entity->components[j].get();
             if (comp->enabled)
                 comp->OnUpdate();
         }
@@ -94,7 +151,7 @@ void Game::EntityManager::ForgetEntity(Entity& io_entity)
     }
 
     // If entity has parent, remove child into the parent list
-    UnsetEntityParent(io_entity);
+    entityStore.UnsetEntityParent(io_entity);
 
     // Clear transform childs
     io_entity.transform.ClearChilds();
@@ -106,8 +163,8 @@ void Game::EntityManager::ForgetEntity(Entity& io_entity)
         io_entity.RemoveComponentAt(i);
 
     // Remove entity from root map
-    if (rootEntities.find(io_entity.GetID()) != rootEntities.end())
-        rootEntities.erase(io_entity.GetID());
+    if (entityStore.rootEntities.find(io_entity.GetID()) != entityStore.rootEntities.end())
+        entityStore.rootEntities.erase(io_entity.GetID());
 
     entityStore.entities.erase(entityStore.entities.begin() + FindEntityIndex(io_entity.GetID()));
 }
@@ -115,8 +172,6 @@ void Game::EntityManager::ForgetEntity(Entity& io_entity)
 Entity* EntityManager::CreateEntity(const std::string_view& i_name)
 {
     Entity* entity = entityStore.CreateEntity(i_name);
-    // Set entity as root by default
-    rootEntities[entity->GetID()] = entity;
     return entity;
 }
 
@@ -131,46 +186,13 @@ void EntityManager::LoadEntities(std::ifstream& i_file)
     ClearEntities();
     // Load
     while (!i_file.eof())
-        Resources::Serializer::CreateAndReadEntity(i_file, *this, nullptr);
+        Resources::Serializer::CreateAndReadEntity(i_file, entityStore, nullptr);
 }
 
 void Game::EntityManager::ClearEntities()
 {
     entityStore.entities.clear();
-    rootEntities.clear();
-}
-
-void Game::EntityManager::SetEntityParent(Entity& io_child, Entity& io_parent)
-{
-    io_child.transform.parent = &io_parent.transform;
-
-    // Check if parent is accepted
-    if (io_child.transform.parent == &io_parent.transform)
-    {
-        io_child.parent = &io_parent;
-        io_parent.childs.emplace_back(&io_child);
-        rootEntities.erase(io_child.GetID()); // Remove child from root if needed
-    }
-}
-
-void Game::EntityManager::UnsetEntityParent(Entity& io_child)
-{
-    // Check that parent exists
-    if (!io_child.parent)
-        return;
-
-    Entity& parent = *io_child.parent;
-    // Check that parent is indeed a parent
-    if (io_child.transform.parent == &parent.transform)
-    {
-        io_child.transform.parent.get()->RemoveChild(&io_child.transform);
-        io_child.transform.parent = nullptr;
-        io_child.parent = nullptr;
-        rootEntities[io_child.GetID()] = &io_child;
-
-        parent.childs.remove_if([&io_child](Entity* parent) { return io_child.GetID() == parent->GetID(); }); // remove if ID is the same
-    }
-
+    entityStore.rootEntities.clear();
 }
 
 const std::vector<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
@@ -180,7 +202,7 @@ const std::vector<std::unique_ptr<Entity>> & EntityManager::GetEntities() const
 
 const std::unordered_map<EntityIdentifier, Entity*>& Game::EntityManager::GetRootEntities() const
 {
-    return rootEntities;
+    return entityStore.rootEntities;
 }
 
 int Game::EntityManager::FindEntityIndex(const EntityIdentifier& i_id)

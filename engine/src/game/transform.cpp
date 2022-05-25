@@ -33,11 +33,11 @@ Transform::Transform()
         if (value)
         {
             bool isParent = false;
-            Transform* parent = value->parent;
-            while (parent)
+            Transform* p = value->parent;
+            while (p)
             {
-                if (this == parent) isParent = true;
-                parent = parent->parent;
+                if (this == p) isParent = true;
+                p = p->parent;
             }
             if (isParent) return;
         }
@@ -50,24 +50,14 @@ Transform::Transform()
     parent = nullptr;
 }
 
-Matrix4 Transform::GetModelMatrix() const
+Matrix4 Transform::GetWorldMatrix() const
 {
     bool parentUpdate = (parent.get() && parent.get()->needUpdate);
 
     if (needUpdate || parentUpdate)
-        UpdateModelMatrix();
+        UpdateWorldMatrix();
 
-    return modelMatrix;
-}
-
-Matrix4 Transform::GetModelMatrixUniformScale() const
-{
-    bool parentUpdate = (parent.get() && parent.get()->needUniformUpdate);
-
-    if (needUniformUpdate || parentUpdate)
-        UpdateModelMatrixUniformScale();
-
-    return modelMatrix;
+    return worldMatrix;
 }
 
 void Transform::RemoveChild(Transform* childToRemove)
@@ -79,29 +69,18 @@ void Transform::RemoveChild(Transform* childToRemove)
         childs.erase(it);
 }
 
-void Transform::UpdateModelMatrix() const
+void Transform::UpdateWorldMatrix() const
 {
-    modelMatrix =  Matrix4::Scale(scale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
+    Matrix4 localMatrix = Matrix4::Scale(scale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
+
     if (parent)
-        modelMatrix = modelMatrix * parent.get()->GetModelMatrix();
+        worldMatrix = localMatrix * parent.get()->GetWorldMatrix();
+    else
+        worldMatrix = localMatrix;
 
     needUpdate = false;
     for (Transform* child: childs)
         child->needUpdate = true;
-}
-
-void Transform::UpdateModelMatrixUniformScale() const
-{
-    float maxValue = Maths::Max(scale.get().x, scale.get().y, scale.get().z);
-    Vector3 uniformScale{ maxValue,maxValue ,maxValue };
-
-    modelMatrix = Matrix4::Scale(uniformScale) * Matrix4::RotateXYZ(rotation) * Matrix4::Translate(position);
-    if (parent)
-        modelMatrix = modelMatrix * parent.get()->GetModelMatrixUniformScale();
-
-    needUniformUpdate = false;
-    for (Transform* child : childs)
-        child->needUniformUpdate = true;
 }
 
 void Transform::ClearChilds()

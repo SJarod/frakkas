@@ -25,10 +25,11 @@ namespace Game
 {
     class EntityManager
     {
-
     public:
         EntityManager() = default;
         ~EntityManager() = default;
+
+        EntityContainer entityStore;
 
         /**
          * Call OnStart() function in all entities' components.
@@ -68,26 +69,10 @@ namespace Game
          */
         void ClearEntities();
 
-        /**
-         * @brief Add a parent ot an entity, and update root entities map.
-         * @param io_child The child to set the parent
-         * @param io_parent The parent, will be informed about its new child
-         */
-        void SetEntityParent(Entity& io_child, Entity& io_parent);
-        /**
-         * @brief Set the parent to nullptr for io_child.
-         * If parent is not nullptr, we remove io_child from its children.
-         * @param io_child The entity to remove parent.
-         */
-        void UnsetEntityParent(Entity& io_child);
-
         const std::vector<std::unique_ptr<Entity>>& GetEntities() const;
         const std::unordered_map<EntityIdentifier, Entity*>& GetRootEntities() const;
 
     private:
-        EntityContainer entityStore;
-        std::unordered_map<EntityIdentifier, Entity*> rootEntities;
-
         /**
          * @brief Remove entity from all arrays, and forget about its existence.
          * @param io_entity The entity to forget.

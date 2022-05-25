@@ -55,7 +55,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         if (smesh == nullptr || smesh->gpu.VAO == 0)
             continue;
 
-        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+        Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
         skmodel.SetUniform("uModel", modelMat);
         Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
         skmodel.SetUniform("uModelNormal", modelNormal);
@@ -87,7 +87,7 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 		if (smesh == nullptr || smesh->gpu.VAO == 0)
 			continue;
 
-		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetModelMatrix();
+		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
 		skmodel.lightDepthShader->SetUniform("uModel", modelMat);
 		assert(smesh->gpu.VAO != 0);
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);

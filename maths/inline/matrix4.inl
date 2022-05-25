@@ -1,6 +1,8 @@
 #include "maths/vector3.hpp"
 #include "maths/vector4.hpp"
 #include "maths/utils.hpp"
+#include "maths/matrix4.hpp"
+
 
 ////////////////////////////// CONSTRUCTORS
 
@@ -322,4 +324,24 @@ inline Vector3 Matrix4::Scale() const
     float sy = Vector3{ element[4], element[5], element[6] }.Length();
     float sz = Vector3{ element[8], element[9], element[10] }.Length();
     return { sx, sy, sz };
+}
+
+inline Vector3 Matrix4::DecomposePosition() const
+{
+    return line[3];
+}
+
+inline Vector3 Matrix4::DecomposeRotation() const
+{
+    Matrix4 rotMatrix = Matrix4::Identity();
+    rotMatrix.line[0] = line[0].Normalize();
+    rotMatrix.line[1] = line[1].Normalize();
+    rotMatrix.line[2] = line[2].Normalize();
+
+    return Quaternion::QuatFromMatrix(rotMatrix).QuatToEuler();
+}
+
+inline Vector3 Matrix4::DecomposeScale() const
+{
+    return { line[0].Length(), line[1].Length(), line[2].Length() };
 }

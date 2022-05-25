@@ -96,7 +96,7 @@ namespace Physic
         * @param i_shape The generated input shape.
         * @return The generated body.
         */
-        JPH::Body* CreateBody(JPH::Shape* i_shape);
+        JPH::Body* CreateBody(JPH::Shape* i_shape, JPH::uint8 i_layer = JPH::Layers::MOVING);
 
         /**
          * @brief Remove a physic body from physic scene and jolt body interface.

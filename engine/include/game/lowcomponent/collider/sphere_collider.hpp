@@ -12,12 +12,6 @@ namespace Game
 
         void DebugDraw(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) const override;
 
-        void OnCollisionEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
-
-        void OnCollisionExit(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
-
-        void OnTriggerEnter(const Collider* i_ownerCollider, const Collider* i_otherCollider) override;
-
     private:
         float prevRadius = 1.f;
         /**

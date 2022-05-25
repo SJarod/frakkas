@@ -8,7 +8,6 @@
 #include "maths/vector3.hpp"
 #include "maths/vector4.hpp"
 #include "maths/matrix4.hpp"
-#include "maths/referential.hpp"
 #include "maths/quaternion.hpp"
 
 #include "maths/utils.hpp"

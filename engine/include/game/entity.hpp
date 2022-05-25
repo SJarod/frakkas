@@ -6,6 +6,9 @@
 #include <string_view>
 
 #include "transform.hpp"
+
+#include "utils/properties.hpp"
+
 #include "game/lowcomponent/component.hpp"
 
 namespace Resources
@@ -37,7 +40,7 @@ namespace Game
         Transform transform;
 
         std::list<Entity*> childs;
-        Entity* parent = nullptr;
+        Property<Entity*> parent;
 
         EntityContainer* entityStore = nullptr;
         std::vector<std::unique_ptr<Component>> components;
@@ -63,7 +66,7 @@ namespace Game
          * @brief Call the specific collision function in each entity's components.
          * @param i_collisionType The type of collision to call the good function.
          */
-        void NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* i_ownerCollider, Collider* i_otherCollider);
+        void NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider& i_ownerCollider, Collider& i_otherCollider);
 
         /**
          * @brief Find a component by its id

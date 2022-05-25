@@ -34,14 +34,16 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream& i_file)
     std::getline(i_file, attribute);
 
     if (attribute.empty() || attribute[0] != '>')
+    {
+        Log::Warning("Scene loader can't find an Attribute, process once again. Current value is : '", attribute, "'");
         return GetAttribute(i_file); // Call Get attribute until we find an attribute.
-
+    }
 
     attribute = attribute.substr(1);
     return attribute;
 }
 
-void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager& io_entityManager, Game::Entity* i_parent)
+void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent)
 {
     int childCount = 0;
     GetAttribute(i_file); // '>entity'
@@ -60,10 +62,10 @@ void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager&
         return;
     Read(i_file, entityName);
 
-    Game::Entity* entity = io_entityManager.CreateEntity(entityName);
+    Game::Entity* entity = io_entityContainer.CreateEntity(entityName);
 
     if (i_parent)
-        io_entityManager.SetEntityParent(*entity, *i_parent);
+        io_entityContainer.SetEntityParent(*entity, *i_parent);
 
     Read(i_file, *entity); // Read components
 
@@ -71,7 +73,7 @@ void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityManager&
 
     // Load child which are the next written entities, and set this entity as parent.
     for (int i = 0; i < childCount; i++)
-        CreateAndReadEntity(i_file, io_entityManager, entity);
+        CreateAndReadEntity(i_file, io_entityContainer, entity);
 }
 
 void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
@@ -91,7 +93,7 @@ void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
         auto it = std::find_if(registry.begin(), registry.end(), [](ClassMetaData* md){return attribute == md->className;});
         if (it == registry.end())
         {
-            Log::Error("Can't read " + attribute + " component's data.");
+            Log::Error("Can't read '" + attribute + "' component's data.");
             break;
         }
 
@@ -116,13 +118,12 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
 
     for (const DataDescriptor& desc : i_metaData.descriptors)
     {
-        if (desc.viewOnly) continue;
+        bool isSerialized = static_cast<int>(desc.dataType) < static_cast<int>(EDataType::NONE_DATA);
+
+        if (desc.viewOnly || !isSerialized)
+            continue;
 
         unsigned char* componentData = o_component + desc.offset;
-
-        if (static_cast<int>(desc.dataType) > static_cast<int>(EDataType::NONE_TYPE))
-            continue;
-        
         if (GetAttribute(i_file) == desc.name)
         {
             switch (desc.dataType)

@@ -13,6 +13,18 @@ using namespace Game;
 Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
     :id(i_id)
 {
+    parent.set(nullptr);
+
+    parent.setter = [&](Entity* io_value)
+    {
+        if (io_value == nullptr)
+            entityStore->UnsetEntityParent(*this);
+        else
+            entityStore->SetEntityParent(*this, *io_value);
+
+        parent.set(io_value);
+    };
+
     if (i_name.empty())
         name = "NewEntity_" + std::to_string(id);
     else
@@ -27,10 +39,15 @@ Entity::~Entity()
 
 Component* Entity::AddComponent(std::unique_ptr<Component> comp)
 {
-    comp->owner = this;
-    components.emplace_back(std::move(comp));
-    RegisterIntoGraph(components.back().get());
-    return components.back().get();
+    if (!destroy)
+    {
+        comp->owner = this;
+        components.emplace_back(std::move(comp));
+        RegisterIntoGraph(components.back().get());
+        return components.back().get();
+    }
+    else
+        return nullptr;
 }
 
 void Entity::RemoveComponentAt(int index)
@@ -42,37 +59,46 @@ void Entity::RemoveComponentAt(int index)
     components.erase(components.begin() + index);
 }
 
-void Entity::NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider* i_ownerCollider, Collider* i_otherCollider)
+void Entity::NotifyCollision(Physic::ECollisionEvent i_collisionType, Collider& i_ownerCollider, Collider& i_otherCollider)
 {
     switch (i_collisionType)
     {
     case Physic::ECollisionEvent::COLLISION_ENTER:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnCollisionEnter(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnCollisionEnter(i_ownerCollider, i_otherCollider);
         break;
     case Physic::ECollisionEvent::COLLISION_STAY:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnCollisionStay(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnCollisionStay(i_ownerCollider, i_otherCollider);
         break;
     case Physic::ECollisionEvent::COLLISION_EXIT:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnCollisionExit(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnCollisionExit(i_ownerCollider, i_otherCollider);
         break;
     case Physic::ECollisionEvent::TRIGGER_ENTER:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnTriggerEnter(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnTriggerEnter(i_ownerCollider, i_otherCollider);
         break;
     case Physic::ECollisionEvent::TRIGGER_STAY:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnTriggerStay(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnTriggerStay(i_ownerCollider, i_otherCollider);
         break;
     case Physic::ECollisionEvent::TRIGGER_EXIT:
-        for (const std::unique_ptr<Component>& comp : components)
-            comp->OnTriggerExit(i_ownerCollider, i_otherCollider);
+        for (int i = components.size()-1; i >= 0; i--)
+            if (components[i]->enabled)
+                components[i]->OnTriggerExit(i_ownerCollider, i_otherCollider);
         break;
     default:
         break;
     }
+
+    for (Entity* child : childs)
+        child->NotifyCollision(i_collisionType, i_ownerCollider, i_otherCollider);
 }
 
 void Entity::RegisterIntoGraph(Component* i_newComponent) const

@@ -33,7 +33,6 @@ namespace Game
 	public:
         Transform();
 
-
         Property<Vector3> position;
         // Rotation angles in radians. x : yaw, y : pitch, z : roll
         Property<Vector3> rotation;
@@ -41,23 +40,22 @@ namespace Game
 
         Property<Transform*> parent;
 
+        bool useGlobal = true;
+
         /**
          * @return A rotation quaternion from transform's vector3 rotation.
          */
         Quaternion GetQuaternionRotation() const;
 
+        //Vector3 GetGlobalPosition() const;
+        //Vector3 GetGlobalRotation() const;
+        //Vector3 GetGlobalScale() const;
+
 		/**
 		 * @brief Get a model matrix from a transform. If model matrix not update, compute the matrix.
 		 * @return Matrix4 model
 		 */
-		Matrix4 GetModelMatrix() const;
-
-        /**
-         * @brief Get a model matrix with uniform scale from a transform. If model matrix not update, compute the matrix.
-         * If the transform's scale is not uniform, we will scale uniformly according to greatest scale.
-         * @return Matrix4 model
-         */
-        Matrix4 GetModelMatrixUniformScale() const;
+		Matrix4 GetWorldMatrix() const;
 
         void RemoveChild(Transform* childToRemove);
         /**
@@ -76,19 +74,20 @@ namespace Game
 
         ScaleLockParams scaleLockParams;
 
-        mutable Matrix4 modelMatrix = Matrix4::Identity();
+        //mutable Vector3 globalPosition;
+        //mutable Vector3 globalRotation;
+        //mutable Vector3 globalScale;
+
+        mutable Matrix4 worldMatrix = Matrix4::Identity();
+        //mutable Matrix4 localModelMatrix = Matrix4::Identity();
 
         std::list<Transform*> childs;
 
         /**
          * Compute the model matrix using position, rotation and scale
          */
-        void UpdateModelMatrix() const;
+        void UpdateWorldMatrix() const;
 
-        /**
-         * Compute the model matrix using position, rotation and uniform scale.
-         * If the transform's scale is not uniform, we will scale uniformly according to greatest scale.
-         */
-        void UpdateModelMatrixUniformScale() const;
+        void DecomposeModelMatrix() const;
 	};
 }

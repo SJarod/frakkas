@@ -11,14 +11,25 @@ namespace Game
      */
     class EntityContainer
     {
+        static constexpr char CloneSerializationFile[] = "engine/clone.kk";
+
     public:
         std::vector<std::unique_ptr<Entity>> entities;
+        std::unordered_map<EntityIdentifier, Entity*> rootEntities;
 
         /**
-         * @summary Creates an unique-pointer-empty-entity and emplace it in entities array
+         * @brief Creates an unique-pointer-empty-entity and emplace it in entities array
          * @return the created entity, you can add component to it.
          */
         Entity* CreateEntity(const std::string_view& i_name = "");
+
+        /**
+         * @brief Create a copy of an existing entity.
+         * The function Serialize the input entity, and read its data to create the copy.
+         * @param i_entity The entity to copy. All will be identical except its ID.
+         * @return A pointer to the clone.
+         */
+        Entity* CloneEntity(const Entity& i_entity);
 
         /**
          * @return The entity with the input ID, thinks about checking if return value is not nullptr.
@@ -31,6 +42,19 @@ namespace Game
          */
         template<typename TComponent>
         Entity* FindEntityWithComponent();
+
+        /**
+         * @brief Add a parent ot an entity, and update root entities map.
+         * @param io_child The child to set the parent
+         * @param io_parent The parent, will be informed about its new child
+         */
+        void SetEntityParent(Entity& io_child, Entity& io_parent);
+        /**
+         * @brief Set the parent to nullptr for io_child.
+         * If parent is not nullptr, we remove io_child from its children.
+         * @param io_child The entity to remove parent.
+         */
+        void UnsetEntityParent(Entity& io_child);
 
     private:
         static EntityIdentifier maxID;

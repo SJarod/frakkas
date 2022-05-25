@@ -369,51 +369,20 @@ void TestMatrix4()
 #endif
 }
 
-void TestReferential()
-{
-    std::cout << "\n////////////////////////////// REFERENTIAL" << "\n\n";
-
-    Referential test_constructor1;
-    Referential test_constructor2(Vector3(1.f, 2.f, 3.f), Quaternion::Identity());
-    Referential test_constructor3(Vector3(1.f, 2.f, 3.f), Vector3(4.f, 5.f, 6.f));
-    Referential test_constructor4(Vector3(1.f, 2.f, 3.f), Vector3(8.f, 3.f, 0.f), Vector3(0.f, 7.f, 5.f), Vector3(5.f, 2.f, 7.f));
-
-    Referential test_ref(Vector3(1.f, 2.f, 3.f), Vector3(4.f, 5.f, 6.f));
-    Vector3 local(5.f, 7.f, 1.f);
-    Vector3 global(0.f, 2.f, 4.f);
-
-#ifdef LOG_TEST
-    std::cout << "test_constructor1 : " << test_constructor1 << '\n';
-    std::cout << "\ntest_constructor2 : " << test_constructor2 << '\n';
-    std::cout << "\ntest_constructor3 : " << test_constructor3 << '\n';
-    std::cout << "\ntest_constructor4 : " << test_constructor4 << '\n';
-
-    std::cout << "\ntest_ref : " << test_ref << '\n';
-
-
-    std::cout << "\ntest_posLocToGlob : " << test_ref.PosLocalToGlobal(local) << '\n';
-    std::cout << "test_posGlobToLoc : " << test_ref.PosGlobalToLocal(global) << '\n';
-    std::cout << "test_vecLocToGlob : " << test_ref.VectLocalToGlobal(local) << '\n';
-    std::cout << "test_vecGlobToLoc : " << test_ref.VectGlobalToLocal(global) << '\n';
-#endif
-}
-
 int main()
 {
-    auto testCode = 0b000010;
+    auto testCode = 0b00001;
 
-    if (testCode & 0b100000)
+    if (testCode & 0b10000)
         TestVector2();
-    if (testCode & 0b010000)
+    if (testCode & 0b01000)
         TestVector3();
-    if (testCode & 0b001000)
+    if (testCode & 0b00100)
         TestVector4();
-    if (testCode & 0b000100)
+    if (testCode & 0b00010)
         TestQuaternion();
-    if (testCode & 0b000010)
+    if (testCode & 0b00001)
         TestMatrix4();
-    if (testCode & 0b000001)
-        TestReferential();
 
     getchar();
 
