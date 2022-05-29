@@ -1,5 +1,4 @@
-#include "collider_creator.hpp"
-#include "rumble_trigger.hpp"
+#include "player_mesh_rotation.hpp"
 #include "fps_movement.hpp"
 #include "player_movement.hpp"
 #include "follow_camera.hpp"
@@ -17,8 +16,7 @@ ComponentRegister::ComponentRegister()
     : greedEntity(0, "greed")
 {
     // TODO:Add new component $
-	greedEntity.AddComponent<ColliderCreator>();
-	greedEntity.AddComponent<RumbleTrigger>();
+	greedEntity.AddComponent<PlayerMeshRotation>();
     greedEntity.AddComponent<StaticDraw>();
     greedEntity.AddComponent<AnimatedDraw>();
     greedEntity.AddComponent<Camera>();

@@ -39,71 +39,34 @@ KK_COMPONENT_IMPL_END
 
 void Collider::OnEnable()
 {
-    bodyInterface->ActivateBody(GetPhysicBodyID());
+    // Not working
+    //bodyInterface->ActivateBody(GetPhysicBodyID());
 }
 
 void Collider::OnDisable()
 {
-    bodyInterface->DeactivateBody(GetPhysicBodyID());
+    // Not working
+    //bodyInterface->DeactivateBody(GetPhysicBodyID());
+
+    bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::DISABLE);
 }
 
-void Collider::ApplyPhysicPosition() const
+void Collider::ApplyPhysicTransform() const
 {
-    if (GetTransform().parent.get()) // if parent, compute local matrix with lChild = wChild * inv(wParent)
-    {
-        JPH::Mat44 w = bodyInterface->GetWorldTransform(GetPhysicBodyID());
-        Matrix4 world = Matrix4(
-                w.GetColumn4(0).GetX(), w.GetColumn4(1).GetX(), w.GetColumn4(2).GetX(), w.GetColumn4(3).GetX(),
-                w.GetColumn4(0).GetY(), w.GetColumn4(1).GetY(), w.GetColumn4(2).GetY(), w.GetColumn4(3).GetY(),
-                w.GetColumn4(0).GetZ(), w.GetColumn4(1).GetZ(), w.GetColumn4(2).GetZ(), w.GetColumn4(3).GetZ(),
-                w.GetColumn4(0).GetW(), w.GetColumn4(1).GetW(), w.GetColumn4(2).GetW(), w.GetColumn4(3).GetW()
-        ).Transpose();
+    JPH::Vec3 pos = bodyInterface->GetPosition(GetPhysicBodyID());
+    Position() = {
+            constraintPositionX ? Position().get().x : pos.GetX(),
+            constraintPositionY ? Position().get().y : pos.GetY(),
+            constraintPositionZ ? Position().get().z : pos.GetZ()
+    };
 
-        Matrix4 local = world * GetTransform().parent.get()->GetWorldMatrix().Inverse();
-
-        Position() = local.DecomposePosition();
-    }
-    else
-    {
-        JPH::Vec3 pos = bodyInterface->GetPosition(GetPhysicBodyID());
-        Position() = {
-                constraintPositionX ? Position().get().x : pos.GetX(),
-                constraintPositionY ? Position().get().y : pos.GetY(),
-                constraintPositionZ ? Position().get().z : pos.GetZ()
-        };
-    }
-
-}
-
-void Collider::ApplyPhysicRotation() const
-{
-    if (GetTransform().parent.get()) // if parent, compute local matrix with lChild = wChild * inv(wParent)
-    {
-        JPH::Mat44 w = bodyInterface->GetWorldTransform(GetPhysicBodyID());
-        //w.sRotation()
-        Matrix4 world = Matrix4(
-                w.GetColumn4(0).GetX(), w.GetColumn4(1).GetX(), w.GetColumn4(2).GetX(), w.GetColumn4(3).GetX(),
-                w.GetColumn4(0).GetY(), w.GetColumn4(1).GetY(), w.GetColumn4(2).GetY(), w.GetColumn4(3).GetY(),
-                w.GetColumn4(0).GetZ(), w.GetColumn4(1).GetZ(), w.GetColumn4(2).GetZ(), w.GetColumn4(3).GetZ(),
-                w.GetColumn4(0).GetW(), w.GetColumn4(1).GetW(), w.GetColumn4(2).GetW(), w.GetColumn4(3).GetW()
-        ).Transpose();
-
-        w.Transposed().StoreFloat4x4((JPH::Float4*)world.element);
-        Matrix4 local = world * GetTransform().parent.get()->GetWorldMatrix().Inverse();
-
-        Rotation() = local.DecomposeRotation();
-    }
-    else
-    {
-        JPH::Quat rot = bodyInterface->GetRotation(GetPhysicBodyID());
-        Vector3 eulerRotation = -Quaternion(rot.GetX(), rot.GetY(), rot.GetZ(), rot.GetW()).QuatToEuler();
-        Rotation() = {
-                constraintRotationX ? Rotation().get().x : eulerRotation.x,
-                constraintRotationY ? Rotation().get().y : eulerRotation.y,
-                constraintRotationZ ? Rotation().get().z : eulerRotation.z
-        };
-    }
-
+    JPH::Quat rot = bodyInterface->GetRotation(GetPhysicBodyID());
+    Vector3 eulerRotation = Quaternion(-rot.GetX(), -rot.GetY(), -rot.GetZ(), rot.GetW()).QuatToEuler();
+    Rotation() = {
+            constraintRotationX ? Rotation().get().x : eulerRotation.x,
+            constraintRotationY ? Rotation().get().y : eulerRotation.y,
+            constraintRotationZ ? Rotation().get().z : eulerRotation.z
+    };
 }
 
 void Collider::ApplyPhysicVelocity()
@@ -118,19 +81,18 @@ void Collider::ApplyPhysicAngularVelocity()
     angularVelocity = {vel.GetX(), vel.GetY(), vel.GetZ()};
 }
 
-void Collider::ApplyEntityPosition()
-{
-    Vector3 p = owner.get()->transform.GetWorldMatrix().DecomposePosition();
-    bodyInterface->SetPosition(GetPhysicBodyID(), { p.x, p.y, p.z}, JPH::EActivation::Activate);
-}
-
-void Collider::ApplyEntityRotation()
+void Collider::ApplyEntityTransform()
 {
     Matrix4 world = GetTransform().GetWorldMatrix();
-    Quaternion quatWorld = Quaternion::QuatFromMatrix(world);
-    Quaternion r = quatWorld.Normalize();
+    world = world.OrthoNormalize();
 
-    bodyInterface->SetRotation(GetPhysicBodyID(), {r.x, r.y ,r.z, r.w}, JPH::EActivation::Activate);
+    /// Global Position
+    Vector3 p = world.DecomposeTranslation();
+    bodyInterface->SetPosition(GetPhysicBodyID(), { p.x, p.y, p.z}, JPH::EActivation::Activate);
+
+    /// Rotation
+    Quaternion q = Quaternion::QuatFromMatrix(world).Normalize();
+    bodyInterface->SetRotation(GetPhysicBodyID(), {-q.x, -q.y , -q.z, q.w}, JPH::EActivation::Activate);
 }
 
 void Collider::SetPhysicParameters(JPH::Body* i_body, JPH::BodyInterface* i_bodyInterface)
@@ -170,27 +132,29 @@ void Collider::ApplyTriggerState()
     if (trigger)
         bodyInterface->SetObjectLayer(GetPhysicBodyID(), JPH::Layers::SENSOR);
 
+
     body->SetIsSensor(trigger);
 }
 
 void Collider::ApplyEntityUpdate()
 {
-    ApplyEntityPosition();
-    ApplyEntityRotation();
+    ApplyEntityTransform();
     ApplyEntityVelocity();
     ApplyEntityAngularVelocity();
 
     if (trigger)
         isStatic = true;
 
-    ApplyStaticState();
-    ApplyTriggerState();
+    if (enabled)
+    {
+        ApplyStaticState();
+        ApplyTriggerState();
+    }
 }
 
 void Collider::ApplyPhysicUpdate()
 {
-    ApplyPhysicPosition();
-    ApplyPhysicRotation();
+    ApplyPhysicTransform();
     ApplyPhysicVelocity();
     ApplyPhysicAngularVelocity();
 }

@@ -6,9 +6,11 @@ bool JPH::MyObjectCanCollide(ObjectLayer i_object1, ObjectLayer i_object2)
     {
         case Layers::NON_MOVING: // Collide only with moving
             return i_object2 == Layers::MOVING;
-        case Layers::MOVING:  // Collider with everything
+        case Layers::MOVING:  // Collide with everything
         case Layers::SENSOR:
             return true;
+        case Layers::DISABLE: // Collide with nothing
+            return false;
         default:
             JPH_ASSERT(false);
             return false;
@@ -24,6 +26,8 @@ bool JPH::MyBroadPhaseCanCollide(ObjectLayer i_layer1, BroadPhaseLayer i_layer2)
         case Layers::MOVING:
         case Layers::SENSOR:
             return true;
+        case Layers::DISABLE:
+            return false;
         default:
             JPH_ASSERT(false);
             return false;
@@ -35,6 +39,7 @@ JPH::MyBroadPhaseLayerInterface::MyBroadPhaseLayerInterface()
     objectToBroadPhase[Layers::NON_MOVING] = BroadPhaseLayers::NON_MOVING;
     objectToBroadPhase[Layers::MOVING] = BroadPhaseLayers::MOVING;
     objectToBroadPhase[Layers::SENSOR] = BroadPhaseLayers::SENSOR;
+    objectToBroadPhase[Layers::DISABLE] = BroadPhaseLayers::DISABLE;
 }
 
 JPH::uint JPH::MyBroadPhaseLayerInterface::GetNumBroadPhaseLayers() const
@@ -51,12 +56,13 @@ JPH::BroadPhaseLayer JPH::MyBroadPhaseLayerInterface::GetBroadPhaseLayer(ObjectL
 #ifdef JPH_PROFILE_ENABLED
 const char *			JPH::MyBroadPhaseLayerInterface::GetBroadPhaseLayerName(BroadPhaseLayer inLayer) const
 {
-switch ((BroadPhaseLayer::Type)inLayer)
-{
-case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
-case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
-case (BroadPhaseLayer::Type)BroadPhaseLayers::SENSOR:		return "SENSOR";
-default:													JPH_ASSERT(false); return "INVALID";
-}
+    switch ((BroadPhaseLayer::Type)inLayer)
+    {
+    case (BroadPhaseLayer::Type)BroadPhaseLayers::NON_MOVING:	return "NON_MOVING";
+    case (BroadPhaseLayer::Type)BroadPhaseLayers::MOVING:		return "MOVING";
+    case (BroadPhaseLayer::Type)BroadPhaseLayers::SENSOR:		return "SENSOR";
+    case (BroadPhaseLayer::Type)BroadPhaseLayers::DISABLE:		return "DISABLE";
+    default:													JPH_ASSERT(false); return "INVALID";
+    }
 }
 #endif

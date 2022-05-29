@@ -50,12 +50,12 @@ namespace Game
         const JPH::BodyID& GetPhysicBodyID() const;
 
         /**
-         * @brief Apply changes done in the editor update (translation, change motion...)
-         * @param i_bodyInterface The jolt body interface to change collider layer.
+         * @brief Apply changes done in the editor update.
          */
         virtual void ApplyEntityUpdate();
         /**
-        * @brief Apply changes done in the physic update.
+        * @brief Apply changes done in the physic system update.
+         * Called only if collider does not have parent and if it s dynamic.
         */
         virtual void ApplyPhysicUpdate();
 
@@ -79,51 +79,38 @@ namespace Game
         mutable Renderer::Model debugModel;
 
         /**
-         * @return The position of the collider
+         * Apply physic system transform update to entity's transform (translation and scale)
          */
-        void ApplyPhysicPosition() const;
+        void ApplyPhysicTransform() const;
         /**
-         * @return The rotation of the collider
-         */
-        void ApplyPhysicRotation() const;
-        /**
-        * @return The linear velocity of the collider.
+        * Set component's velocity with physic updated velocity.
         */
         void ApplyPhysicVelocity();
         /**
-        * @return The angular velocity of the collider.
+        * Set component's angular velocity with physic updated angular velocity.
         */
         void ApplyPhysicAngularVelocity();
 
         /**
-         * @param i_position Apply a position to the collider.
-         * In fact, we force the jolt body to be to the input position, and keep the same rotation.
+         * Apply editor and game transform update to physic body's transform (translation and scale)
          */
-        void ApplyEntityPosition();
-        /**
-         * @param i_rot Apply a rotation to the collider.
-         * In fact, we force the jolt body to be to the input rotation, and keep the same position.
-         */
-        void ApplyEntityRotation();
+        void ApplyEntityTransform();
 
         /**
-        * @param i_velocity Apply this new input velocity to the collider.
+        * Set physic body's velocity with this component velocity, maybe updated during game update.
         */
         void ApplyEntityVelocity();
         /**
-        * @param i_angVelocity Apply this new input velocity to the collider.
+        * Set physic body's angular velocity with this component angular velocity, maybe updated during game update.
         */
         void ApplyEntityAngularVelocity();
         /**
-        * @brief Update the motion type and the layer if static bool is changed.
-        * @param i_isStatic The static state of the body.
-        * @param i_bodyInterface The Jolt body interface to change body object layer.
+        * Apply the 'isStatic' boolean to set the physic body as static or not.
         */
         void ApplyStaticState();
 
         /**
-        * @brief Update the collision type and the layer if static bool is changed.
-        * @param i_isSensor The sensor state of the body.
+        * Apply the 'trigger' boolean to set the physic body as sensor or not.
         */
         void ApplyTriggerState();
 

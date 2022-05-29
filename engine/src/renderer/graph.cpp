@@ -45,8 +45,9 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
         gameCameras.emplace_back(reinterpret_cast<Game::Camera*>(i_newComponent));
     else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
     {
-        auto box = reinterpret_cast<Collider*>(i_newComponent);
-        physicScene->AddCollider(box, Vector3(1.f, 1.f, 1.f));
+        auto collider = reinterpret_cast<Collider*>(i_newComponent);
+        collider->GetTransform().colliderComponentCount++;
+        physicScene->AddCollider(collider, Vector3(1.f, 1.f, 1.f));
     }
 
     if (playing)
@@ -72,6 +73,7 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
     else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
     {
         auto collider = reinterpret_cast<Collider*>(i_oldComponent);
+        collider->GetTransform().colliderComponentCount--;
         physicScene->RemoveBody(collider->GetPhysicBodyID());
     }
 }

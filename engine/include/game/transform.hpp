@@ -40,8 +40,9 @@ namespace Game
 
         Property<Transform*> parent;
 
-        bool useGlobal = true;
-
+        // Store the number of collider attached to this transform, so that rotation can't be updated due to Physics issues.
+        int colliderComponentCount = 0;
+        
         /**
          * @return A rotation quaternion from transform's vector3 rotation.
          */

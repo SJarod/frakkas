@@ -101,7 +101,7 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
     std::string label = BuildEntityLabel(io_entity.name, io_entity.GetID()); // '###' avoid entity with the same name to be multi-selected
 
     bool isSelectedEntity = label == selectedLabel;
-    if (editSelectedName && isSelectedEntity)
+    if (selected && editSelectedName && isSelectedEntity)
     {
         bool pressEnter = Helpers::Edit(selected->name, "Rename"); // Rename
 
