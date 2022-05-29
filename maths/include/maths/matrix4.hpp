@@ -9,7 +9,7 @@ struct Matrix4
     {
         float element[16] = {0.f};
 
-        Vector4 line[4];
+        Vector4 col[4];
     };
 
 ////////////////////////////// CONSTRUCTORS
@@ -19,6 +19,7 @@ struct Matrix4
         const float& i_f4, const float& i_f5, const float& i_f6, const float& i_f7,
         const float& i_f8, const float& i_f9, const float& i_f10, const float& i_f11,
         const float& i_f12, const float& i_f13, const float& i_f14, const float& i_f15);
+    Matrix4(const Vector4& i_v0,const Vector4& i_v1,const Vector4& i_v2,const Vector4& i_v3);
 
 ////////////////////////////// OPERATORS
 
@@ -48,6 +49,12 @@ struct Matrix4
  */
     Matrix4 Transpose() const;
 
+    /**
+     * @summary Normalize the 3 first column of the Matrix
+     * @return The normalized matrix.
+     */
+    Matrix4 OrthoNormalize() const;
+
 /**
  * @summary Compute the inverse matrix.
  * Inverted matrix is such that if multiplied by the original would result in identity matrix
@@ -59,10 +66,10 @@ struct Matrix4
      * @summary Extract a position vector from the matrix.
      * The matrix should be a World Matrix.
      */
-    Vector3 DecomposePosition() const;
+    Vector3 DecomposeTranslation() const;
 
     /**
-     * @brief Extract a radians-euler angles vector from the matrix.
+     * @brief Extract a radians-euler angles vector from the matrix. Matrix should be ortho-normalized.
      * Use QuatfromMatrix instead to have Quaternion rotation.
      */
     Vector3 DecomposeRotation() const;
@@ -160,16 +167,6 @@ struct Matrix4
  * @summary Create a look at matrix.
  */
     static Matrix4 LookAt(const Vector3& i_eye, const Vector3& i_center, const Vector3& i_up);
-
-/**
- * @summary Get the translation component of the matrix
- */
-    Vector3 Translation() const;
-
-/**
- * @summary Get the scale component of the matrix
- */
-    Vector3 Scale() const;
 };
 
 std::ostream& operator<<(std::ostream& o_o, const Matrix4& i_mat);

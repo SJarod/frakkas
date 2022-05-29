@@ -84,13 +84,20 @@ void Helpers::Edit(Game::Transform& io_transform)
     ImGui::Spacing();
 
     Vector3 pos = trs.position;
-    Vector3 rot = trs.rotation;
+    Vector3 rot = Maths::ToDegrees(trs.rotation);
     Vector3 sc = trs.scale;
 
 
     // Position edit
     ImGui::Text("Position");
     DragScalar("XYZ###P", pos.element, 3);
+
+    ImGui::Text("Rotation");
+    DragScalar("XYZ###R", rot.element, 3);
+
+    rot = Maths::Modulo(rot, 360.f);
+    if (trs.colliderComponentCount > 0) // COLLIDERS ARE BROKEN WHEN ABS(Y) >= 90°
+        rot.y = Maths::Modulo(rot.y, 90.f);
 
 #pragma region Scale edit
     ImGui::Text("Scale");
@@ -122,19 +129,8 @@ void Helpers::Edit(Game::Transform& io_transform)
     ImGui::Checkbox("Lock scale", &scParams.isLock);
 #pragma endregion
 
-    // Rotation edit
-    ImGui::Text("Rotation");
-    ImGui::SliderAngle("x", &rot.x);
-    ImGui::SliderAngle("y", &rot.y);
-    ImGui::SliderAngle("z", &rot.z);
-
-    ImGui::Checkbox("global", &trs.useGlobal);
-    //ImGui::Text("%s", StringFormat::GetFormat("Global position: ", trs.GetGlobalPosition()).c_str());
-    //ImGui::Text("%s", StringFormat::GetFormat("Global scale: ", trs.GetGlobalScale()).c_str());
-    //ImGui::Text("%s", StringFormat::GetFormat("Global rotation: ", Maths::ToDegrees(trs.GetGlobalRotation())).c_str());
-
     trs.position = pos;
-    trs.rotation = rot;
+    trs.rotation = Maths::ToRadians(rot);
     trs.scale = sc;
 }
 

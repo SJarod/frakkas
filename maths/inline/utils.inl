@@ -80,6 +80,15 @@ namespace Maths {
         return fmod(i_val, i_base);
     }
 
+    inline Vector3 Modulo(const Vector3& i_val, float i_base)
+    {
+        return {
+                Modulo(i_val.x, i_base),
+                Modulo(i_val.y, i_base),
+                Modulo(i_val.z, i_base)
+        };
+    }
+
     inline float Abs(float i_f)
     {
         return fabs(i_f);

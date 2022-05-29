@@ -227,9 +227,9 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
         float s = Maths::Sqrt(diagonal + 1.0f);
         float sInverse = 0.5f / s;
         return {
-                (i_mat.line[2].element[1] - i_mat.line[1].element[2]) * sInverse,
-                (i_mat.line[0].element[2] - i_mat.line[2].element[0]) * sInverse,
-                (i_mat.line[1].element[0] - i_mat.line[0].element[1]) * sInverse,
+                (i_mat.col[2].element[1] - i_mat.col[1].element[2]) * sInverse,
+                (i_mat.col[0].element[2] - i_mat.col[2].element[0]) * sInverse,
+                (i_mat.col[1].element[0] - i_mat.col[0].element[1]) * sInverse,
                 0.5f * s
         };
     }
@@ -237,42 +237,42 @@ inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
     {
         int situationIndex = 0;
 
-        if (i_mat.line[1].element[1] > i_mat.line[0].element[0])
+        if (i_mat.col[1].element[1] > i_mat.col[0].element[0])
             situationIndex = 1;
-        if (i_mat.line[2].element[2] > i_mat.line[situationIndex].element[situationIndex])
+        if (i_mat.col[2].element[2] > i_mat.col[situationIndex].element[situationIndex])
             situationIndex = 2;
 
         if (situationIndex == 0)
         {
-            float s = Maths::Sqrt(i_mat.line[0].element[0] - (i_mat.line[1].element[1] + i_mat.line[2].element[2]) + 1);
+            float s = Maths::Sqrt(i_mat.col[0].element[0] - (i_mat.col[1].element[1] + i_mat.col[2].element[2]) + 1);
             float sInverse = 0.5f / s;
             return {
                     0.5f * s,
-                    (i_mat.line[0].element[1] + i_mat.line[1].element[0]) * sInverse,
-                    (i_mat.line[2].element[0] + i_mat.line[0].element[2]) * sInverse,
-                    (i_mat.line[2].element[1] - i_mat.line[1].element[2]) * sInverse
+                    (i_mat.col[0].element[1] + i_mat.col[1].element[0]) * sInverse,
+                    (i_mat.col[2].element[0] + i_mat.col[0].element[2]) * sInverse,
+                    (i_mat.col[2].element[1] - i_mat.col[1].element[2]) * sInverse
             };
         }
         else if (situationIndex == 1)
         {
-            float s = Maths::Sqrt(i_mat.line[1].element[1] - (i_mat.line[2].element[2] + i_mat.line[0].element[0]) + 1);
+            float s = Maths::Sqrt(i_mat.col[1].element[1] - (i_mat.col[2].element[2] + i_mat.col[0].element[0]) + 1);
             float sInverse = 0.5f / s;
             return {
-                    (i_mat.line[0].element[1] + i_mat.line[1].element[0]) * sInverse,
+                    (i_mat.col[0].element[1] + i_mat.col[1].element[0]) * sInverse,
                     0.5f * s,
-                    (i_mat.line[1].element[2] + i_mat.line[2].element[1]) * sInverse,
-                    (i_mat.line[0].element[2] - i_mat.line[2].element[0]) * sInverse
+                    (i_mat.col[1].element[2] + i_mat.col[2].element[1]) * sInverse,
+                    (i_mat.col[0].element[2] - i_mat.col[2].element[0]) * sInverse
             };
         }
         else
         {
-            float s = Maths::Sqrt(i_mat.line[2].element[2] - (i_mat.line[0].element[0] + i_mat.line[1].element[1]) + 1);
+            float s = Maths::Sqrt(i_mat.col[2].element[2] - (i_mat.col[0].element[0] + i_mat.col[1].element[1]) + 1);
             float sInverse = 0.5f / s;
             return {
-                    (i_mat.line[0].element[2] + i_mat.line[2].element[0]) * sInverse,
-                    (i_mat.line[2].element[1] + i_mat.line[1].element[2]) * sInverse,
+                    (i_mat.col[0].element[2] + i_mat.col[2].element[0]) * sInverse,
+                    (i_mat.col[2].element[1] + i_mat.col[1].element[2]) * sInverse,
                     0.5f * s,
-                    (i_mat.line[0].element[1] - i_mat.line[1].element[0]) * sInverse
+                    (i_mat.col[0].element[1] - i_mat.col[1].element[0]) * sInverse
             };
         }
     }

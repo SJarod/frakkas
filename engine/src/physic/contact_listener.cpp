@@ -7,10 +7,10 @@
 
 JPH::ValidateResult	JPH::MyContactListener::OnContactValidate(const Body& i_body1, const Body& i_body2, const CollideShapeResult& i_collisionResult)
 {
-
-
-
-	return ValidateResult::AcceptAllContactsForThisBodyPair;
+    if (i_body1.GetObjectLayer() == JPH::Layers::DISABLE || i_body2.GetObjectLayer() == JPH::Layers::DISABLE)
+        return ValidateResult::RejectContact;
+    else
+	    return ValidateResult::AcceptContact;
 }
 
 // OnCollisionEnter

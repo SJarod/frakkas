@@ -58,7 +58,8 @@ void PhysicScene::Update(Utils::UpdateFlag i_updateMode) const
         physicsSystem->Update(Game::Time::GetDeltaTime(), 1, 1, tempAllocator.get(), jobSystem.get());
 
         for (Game::Collider* collider : colliders)
-            collider->ApplyPhysicUpdate();
+            if (!collider->GetTransform().parent || !collider->isStatic) // Collider should not have parent transform, and static doesn't need update
+                collider->ApplyPhysicUpdate();
     }
 }
 

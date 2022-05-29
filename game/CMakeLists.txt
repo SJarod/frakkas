@@ -6,17 +6,16 @@ project(Game
 
 add_library(${PROJECT_NAME} STATIC
         	src/game/world.cpp
-			assets/scripts/collider_creator.cpp
-		assets/scripts/rumble_trigger.cpp
-	src/game/component_register.cpp
-		    assets/scripts/fps_movement.cpp
-		    assets/scripts/player_movement.cpp
-		    assets/scripts/follow_camera.cpp
+		assets/Scripts/player_mesh_rotation.cpp
+		src/game/component_register.cpp
+		assets/Scripts/fps_movement.cpp
+		assets/Scripts/player_movement.cpp
+		assets/Scripts/follow_camera.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
 		                   PUBLIC include
-		                   PUBLIC assets/scripts
+		                   PUBLIC assets/Scripts
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Engine)

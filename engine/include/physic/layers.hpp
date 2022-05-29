@@ -15,7 +15,8 @@ JPH_NAMESPACE_BEGIN
         static constexpr uint8 NON_MOVING = 0;
         static constexpr uint8 MOVING = 1;
         static constexpr uint8 SENSOR = 2;
-        static constexpr uint8 NUM_LAYERS = 3;
+        static constexpr uint8 DISABLE = 3;
+        static constexpr uint8 NUM_LAYERS = 4;
     }
 
     // Check the layer of two objects to tell jolt physics if objects can collide
@@ -26,7 +27,8 @@ JPH_NAMESPACE_BEGIN
         static constexpr BroadPhaseLayer NON_MOVING(0);
         static constexpr BroadPhaseLayer MOVING(1);
         static constexpr BroadPhaseLayer SENSOR(2);
-        static constexpr uint NUM_LAYERS(3);
+        static constexpr BroadPhaseLayer DISABLE(3);
+        static constexpr uint NUM_LAYERS(4);
     }
 
 

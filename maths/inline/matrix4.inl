@@ -19,6 +19,10 @@ inline Matrix4::Matrix4(const float& i_f0, const float& i_f1, const float& i_f2,
         i_f12, i_f13, i_f14, i_f15 }
 {}
 
+inline Matrix4::Matrix4(const Vector4& i_v0, const Vector4& i_v1, const Vector4& i_v2, const Vector4& i_v3)
+    : col{i_v0, i_v1, i_v2, i_v3}
+{}
+
 ////////////////////////////// OPERATORS
 
 inline Vector3 Matrix4::operator*(const Vector3& vec) const
@@ -40,7 +44,7 @@ inline Vector4 Matrix4::operator*(const Vector4& vec) const
     {
         for (int line = 0; line < 4; line++)
         {
-            result.element[column] += *(&this->line[line].x + column) * vec.element[line];
+            result.element[column] += *(&this->col[line].x + column) * vec.element[line];
         }
     }
 
@@ -51,13 +55,13 @@ inline Matrix4 Matrix4::operator*(const Matrix4& mat) const
 {
     Matrix4 result = {};
 
-    for(int i=0;i<4;i++)
+    for(int c=0; c < 4; c++)
     {
-        for(int j=0;j<4;j++)
+        for(int r=0; r < 4; r++)
         {
             for(int k=0;k<4;k++)
             {
-                result.line[i].element[j]+= line[i].element[k] * mat.line[k].element[j];
+                result.col[c].element[r]+= col[c].element[k] * mat.col[k].element[r];
             }
         }
     }
@@ -113,6 +117,16 @@ inline Matrix4 Matrix4::Transpose() const
             element[2], element[6], element[10], element[14],
             element[3], element[7], element[11], element[15]
     };
+}
+
+inline Matrix4 Matrix4::OrthoNormalize() const
+{
+    return Matrix4(
+        col[0].Normalize(),
+        col[1].Normalize(),
+        col[2].Normalize(),
+        col[3]
+    );
 }
 
 inline Matrix4 Matrix4::Inverse() const
@@ -241,22 +255,45 @@ inline Matrix4 Matrix4::RotateZ(const float& i_angleRadians)
 
 inline Matrix4 Matrix4::RotateXYZ(float i_xRadAngle, float i_yRadAngle, float i_zRadAngle)
 {
-    return  RotateY(i_yRadAngle) * RotateX(i_xRadAngle) * RotateZ(i_zRadAngle);
+    return  RotateZ(i_zRadAngle) * RotateY(i_yRadAngle) * RotateX(i_xRadAngle);
 }
 
 inline Matrix4 Matrix4::RotateXYZ(const Vector3& i_anglesRadians)
 {
-    return  RotateY(i_anglesRadians.y) * RotateX(i_anglesRadians.x) * RotateZ(i_anglesRadians.z);
+    return  RotateXYZ(i_anglesRadians.x,i_anglesRadians.y,i_anglesRadians.z);
 }
 
 inline Matrix4 Matrix4::MatrixFromQuat(const Quaternion& i_q)
 {
+#if 0
     float q0 = i_q.w, q1 = i_q.x, q2 = i_q.y, q3 = i_q.z;
     return Matrix4{
         2.f * (q0 * q0 + q1 * q1) - 1.f, 2.f * (q1 * q2 - q0 * q3), 2.f * (q1 * q3 + q0 * q2), 0.f,
         2.f * (q1 * q2 + q0 * q3), 2.f * (q0 * q0 + q2 * q2) - 1.f, 2.f * (q2 * q3 - q0 * q1), 0.f,
         2.f * (q1 * q3 - q0 * q2), 2.f * (q2 * q3 + q0 * q1), 2.f * (q0 * q0 + q3 * q3) - 1.f, 0.f,
         0.f, 0.f, 0.f, 1.f }.Transpose();
+#else
+    float dX = 2.f * i_q.x;
+    float dY = 2.f * i_q.y;
+    float dZ = 2.f * i_q.z;
+    float sqX = dX * i_q.x;
+    float sqY = dY * i_q.y;
+    float sqZ = dZ * i_q.z;
+
+    float qXY = dX * i_q.y;
+    float qXZ = dX * i_q.z;
+    float qYZ = dY * i_q.z;
+    float qXW = dX * i_q.w;
+    float qYW = dY * i_q.w;
+    float qZW = dZ * i_q.w;
+
+    return {
+        1.f - sqY - sqZ,    qXY + qZW,          qXZ - qYW,          0.f,
+        qXY - qZW,          1.f - sqX - sqZ,    qYZ + qXW,          0.f,
+        qXZ + qYW,          qYZ - qXW,          1.f - sqX - sqY,    0.f,
+        0.f,                0.f,                0.f,                1.f
+    };
+#endif
 }
 
 inline Matrix4 Matrix4::Translate(float i_x, float i_y, float i_z)
@@ -271,12 +308,7 @@ inline Matrix4 Matrix4::Translate(float i_x, float i_y, float i_z)
 
 inline Matrix4 Matrix4::Translate(const Vector3& i_vec)
 {
-    return {
-            1.f,     0.f,     0.f,     0.f,
-            0.f,     1.f,     0.f,     0.f,
-            0.f,     0.f,     1.f,     0.f,
-            i_vec.x, i_vec.y, i_vec.z, 1.f
-    };
+    return Translate(i_vec.x,i_vec.y,i_vec.z);
 }
 
 inline Matrix4 Matrix4::Scale(const float& i_sc)
@@ -313,35 +345,17 @@ inline Matrix4 Matrix4::LookAt(const Vector3& i_eye, const Vector3& i_center, co
     };
 }
 
-inline Vector3 Matrix4::Translation() const
+inline Vector3 Matrix4::DecomposeTranslation() const
 {
-    return { element[12], element[13], element[14] };
-}
-
-inline Vector3 Matrix4::Scale() const
-{
-    float sx = Vector3{ element[0], element[1], element[2] }.Length();
-    float sy = Vector3{ element[4], element[5], element[6] }.Length();
-    float sz = Vector3{ element[8], element[9], element[10] }.Length();
-    return { sx, sy, sz };
-}
-
-inline Vector3 Matrix4::DecomposePosition() const
-{
-    return line[3];
+    return col[3];
 }
 
 inline Vector3 Matrix4::DecomposeRotation() const
 {
-    Matrix4 rotMatrix = Matrix4::Identity();
-    rotMatrix.line[0] = line[0].Normalize();
-    rotMatrix.line[1] = line[1].Normalize();
-    rotMatrix.line[2] = line[2].Normalize();
-
-    return Quaternion::QuatFromMatrix(rotMatrix).QuatToEuler();
+    return Quaternion::QuatFromMatrix(*this).QuatToEuler();
 }
 
 inline Vector3 Matrix4::DecomposeScale() const
 {
-    return { line[0].Length(), line[1].Length(), line[2].Length() };
+    return {col[0].Length(), col[1].Length(), col[2].Length()};
 }

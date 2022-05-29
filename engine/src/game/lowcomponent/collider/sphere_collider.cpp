@@ -15,7 +15,8 @@ KK_COMPONENT_IMPL_END
 
 void SphereCollider::UpdateSphereShape()
 {
-    const Vector3& scale = Scale();
+    const Vector3& scale = GetTransform().GetWorldMatrix().DecomposeScale(); // WORLD SCALE
+
     float radius = Maths::Max(scale.x, scale.y, scale.z);
     if (radius == 0.f || radius == prevRadius)
         return;

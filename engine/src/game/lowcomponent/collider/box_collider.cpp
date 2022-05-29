@@ -14,7 +14,7 @@ KK_COMPONENT_IMPL_END
 
 void BoxCollider::UpdateBoxScale()
 {
-    Vector3 extension = Scale();
+    Vector3 extension = GetTransform().GetWorldMatrix().DecomposeScale(); // World scale
 
     if (extension.x < 0.05f || extension.y < 0.05f || extension.z < 0.05f || extension == prevExtension)
         return;

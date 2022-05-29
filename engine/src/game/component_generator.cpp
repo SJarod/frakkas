@@ -12,12 +12,12 @@ static constexpr char templateFileName[] = "$file";
 
 inline std::string GetComponentSourceFullPath(const std::string& name)
 {
-    return Helpers::gameDirectoryPath + std::string("assets/scripts/") + name + ".cpp";
+    return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".cpp";
 }
 
 inline std::string GetComponentIncludeFullPath(const std::string& name)
 {
-	return Helpers::gameDirectoryPath + std::string("assets/scripts/") + name + ".hpp";
+	return Helpers::gameDirectoryPath + std::string("assets/Scripts/") + name + ".hpp";
 }
 
 inline std::string GetCMakeFullPath()
