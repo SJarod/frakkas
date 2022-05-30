@@ -15,13 +15,14 @@ KK_COMPONENT_IMPL_END
 void FollowCamera::OnEnable()
 {
     playerTransform = &GetEntityContainer().FindEntityWithComponent<PlayerMovement>()->transform;
-    if (playerTransform)
+
+    if(playerTransform)
         Position() = playerTransform->position.get() + offset;
 }
 
 void FollowCamera::OnUpdate()
 {
-    if (playerTransform)
+    if(playerTransform)
     {
         Vector3 targetPosition = offset + playerTransform->position.get();
         Position() = Maths::Lerp(Position().get(), targetPosition, lerpFactor);

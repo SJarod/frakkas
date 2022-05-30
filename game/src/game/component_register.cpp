@@ -1,3 +1,7 @@
+#include "player.hpp"
+#include "spawner.hpp"
+#include "skeleton.hpp"
+#include "golem.hpp"
 #include "player_mesh_rotation.hpp"
 #include "fps_movement.hpp"
 #include "player_movement.hpp"
@@ -16,6 +20,10 @@ ComponentRegister::ComponentRegister()
     : greedEntity(0, "greed")
 {
     // TODO:Add new component $
+	greedEntity.AddComponent<Player>();
+	greedEntity.AddComponent<Spawner>();
+	greedEntity.AddComponent<Skeleton>();
+	greedEntity.AddComponent<Golem>();
 	greedEntity.AddComponent<PlayerMeshRotation>();
     greedEntity.AddComponent<StaticDraw>();
     greedEntity.AddComponent<AnimatedDraw>();

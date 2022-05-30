@@ -1,15 +1,12 @@
-
 #include "engine.hpp"
 #include "game/entity.hpp"
 #include "game/time_manager.hpp"
+
 #include "player_movement.hpp"
 
 using namespace Game;
 
 KK_COMPONENT_IMPL_BEGIN(PlayerMovement)
-
-    KK_FIELD_PUSH(PlayerMovement, startPosition, EDataType::FLOAT)
-    KK_FIELD_COUNT(3)
 
     KK_FIELD_PUSH(PlayerMovement, speed, EDataType::FLOAT)
 

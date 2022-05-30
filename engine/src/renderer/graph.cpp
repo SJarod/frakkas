@@ -353,5 +353,5 @@ void Graph::SaveScene() const
 
 std::filesystem::path Graph::GetSceneFullPath(const std::string& i_sceneName)
 {
-    return Helpers::gameDirectoryPath + std::string("assets/") + i_sceneName + ".kk";
+    return Helpers::gameDirectoryPath + std::string("assets/Scenes/") + i_sceneName + ".kk";
 }
