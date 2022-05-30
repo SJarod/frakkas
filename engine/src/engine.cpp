@@ -238,6 +238,7 @@ void Engine::RunGame()
 void Engine::SetRunMode(unsigned int i_flag)
 {
     updateMode = i_flag;
+    graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 
     if (updateMode & Utils::UpdateFlag_Gaming)
         Engine::SetCursorGameMode(true);
@@ -251,7 +252,6 @@ void Engine::SetRunMode(unsigned int i_flag)
         entityManager.Start();
     }
 
-    graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 }
 
 Utils::UpdateFlag Engine::GetRunMode() const

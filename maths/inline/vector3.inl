@@ -198,6 +198,11 @@ inline float Vector3::Length() const
     return Maths::Sqrt(x * x + y * y + z * z);
 }
 
+inline float Vector3::Distance(const Vector3 &i_vecA, const Vector3 &i_vecB)
+{
+    return Vector3::VecFromPt(i_vecA, i_vecB).Length();
+}
+
 inline float Vector3::DotProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
     return i_vecA.x * i_vecB.x + i_vecA.y * i_vecB.y + i_vecA.z * i_vecB.z;

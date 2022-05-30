@@ -80,6 +80,11 @@ struct Vector3
     float Length() const;
 
 /**
+ * @return the distance between two vectors
+ */
+    static float Distance(const Vector3 &i_vecA, const Vector3 &i_vecB);
+
+/**
  * @returns dot product of two vectors.
  * If the vectors have the same direction the dot product return 1
  * If the vectors are orthogonal the dot product return 0
