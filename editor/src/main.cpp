@@ -1,5 +1,6 @@
 #include "editor/editor_render.hpp"
 
+#include "game/register_components.hpp"
 #include "game/world.hpp"
 
 #include "engine.hpp"
@@ -8,16 +9,14 @@
 int main()
 {
     Engine engine;
-    Game::World world(engine);
 
-	Editor::EditorRender editorRender{};
-    editorRender.InitImGui(engine);
+    Game::RegisterComponents(engine.entityManager);
+
+	Editor::EditorRender editorRender(engine);
 
 	ImGuiIO io = ImGui::GetIO();
 
     engine.RunEditor();
-
-	editorRender.QuitImGui();
 
 	return 0;
 }

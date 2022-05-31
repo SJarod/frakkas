@@ -3,9 +3,12 @@
 
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
-#include "game/lowcomponent/collider/box_collider.hpp"
-#include "game/lowcomponent/collider/sphere_collider.hpp"
+#include "game/collider/box_collider.hpp"
+#include "game/collider/sphere_collider.hpp"
+#include "game/ui/text.hpp"
+#include "game/ui/button.hpp"
 #include "game/entity_manager.hpp"
+
 
 #include "resources/mesh.hpp"
 
@@ -218,7 +221,7 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
         else if (ImGui::Selectable("Cube mesh"))
         {
             entity = io_entityManager.CreateEntity();
-            entity->name = "Cube_" + std::to_string(entity->GetID());
+            entity->name = "Cube_" + entity->GetStringID();
             auto drawable = entity->AddComponent<Game::StaticDraw>();
             drawable->SetMesh(Resources::Mesh::cubeMesh);
             drawable->SetTexture("game/assets/Textures/gold.jpg", true);
@@ -226,7 +229,7 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
         else if (ImGui::Selectable("Sphere mesh"))
         {
             entity = io_entityManager.CreateEntity();
-            entity->name = "Sphere_" + std::to_string(entity->GetID());
+            entity->name = "Sphere_" + entity->GetStringID();
             auto drawable = entity->AddComponent<Game::StaticDraw>();
             drawable->SetMesh(Resources::Mesh::sphereMesh);
             drawable->SetTexture("game/assets/Textures/gold.jpg", true);
@@ -234,20 +237,35 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
         else if (ImGui::Selectable("Box collider"))
         {
             entity = io_entityManager.CreateEntity();
-            entity->name = "BoxCollider_" + std::to_string(entity->GetID());
+            entity->name = "BoxCollider_" + entity->GetStringID();
             entity->AddComponent<Game::BoxCollider>();
         }
         else if (ImGui::Selectable("Sphere collider"))
         {
             entity = io_entityManager.CreateEntity();
-            entity->name = "SphereCollider_" + std::to_string(entity->GetID());
+            entity->name = "SphereCollider_" + entity->GetStringID();
             entity->AddComponent<Game::SphereCollider>();
         }
         else if (ImGui::Selectable("Camera"))
         {
             entity = io_entityManager.CreateEntity();
-            entity->name = "Camera_" + std::to_string(entity->GetID());
+            entity->name = "Camera_" + entity->GetStringID();
             entity->AddComponent<Game::Camera>();
+        }
+        else if (ImGui::Selectable("UI Text"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "Text_" + entity->GetStringID();
+            auto text = entity->AddComponent<Game::Text>();
+            text->position = {50.f, 50.f};
+        }
+        else if (ImGui::Selectable("UI Button"))
+        {
+            entity = io_entityManager.CreateEntity();
+            entity->name = "Button_" + entity->GetStringID();
+            auto button = entity->AddComponent<Game::Button>();
+            button->scale = {100.f, 30.f};
+            button->position = {50.f, 50.f};
         }
 
         if (entity && selectedWhenAdd)

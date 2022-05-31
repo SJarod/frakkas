@@ -49,20 +49,9 @@ inline void CheckEngineQuitEvent()
     }
 }
 
-void EditorRender::InitImGui(Engine& io_engine)
+EditorRender::EditorRender(Engine& io_engine)
 {
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-
-    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-    io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
+    ImGuiIO& io = ImGui::GetIO();
 
     io.Fonts->AddFontFromFileTTF("editor/assets/Louis_George_Cafe_Bold.ttf", 15.f);
 
@@ -77,9 +66,6 @@ void EditorRender::InitImGui(Engine& io_engine)
         style.GrabRounding = 12.0f;
         style.TabRounding = 6.0f;
     }
-
-    ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
-    ImGui_ImplOpenGL3_Init("#version 450");
 
     // BIND FUNCTION TO ENGINE
     UpdateEvent editorUpdateEvent = [&](){ UpdateAndRender(io_engine);};
@@ -126,24 +112,13 @@ void EditorRender::InitImGui(Engine& io_engine)
         camTrs.rotation = rot;
     };
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
-
-    io_engine.editorInputsEvent = std::bind(&ImGui_ImplSDL2_ProcessEvent, std::placeholders::_1);
-}
-
-void EditorRender::QuitImGui()
-{
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
 }
 
 void EditorRender::UpdateAndRender(Engine& io_engine)
 {
     //Renderer::LowLevel::Framebuffer& io_fbo = *pio_fbo;
     //Game::EntityManager& i_entityManager = *pi_entityManager;
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
+
     ImGuizmo::BeginFrame();
 
     bool stylePushed = false;
@@ -185,7 +160,6 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     if (reloadScene)
     {
         m_hierarchy.selected = nullptr;
-        io_engine.gameRestart = true;
         io_engine.SetRunMode(Utils::UpdateFlag_Editing);
     }
 
@@ -216,24 +190,5 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
 void EditorRender::UpdateImGui()
 {
-    ImVec4 clearColor = ImVec4(0.4f, 0.5f, 0.6f, 1.f);
 
-    ImGuiIO& io = ImGui::GetIO();
-
-    ImGui::Render();
-
-    glViewport(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-    glClearColor(clearColor.x * clearColor.w, clearColor.y * clearColor.w, clearColor.z * clearColor.w, clearColor.w);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-    }
 }

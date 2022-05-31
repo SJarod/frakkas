@@ -7,15 +7,16 @@ project(Engine
 add_library(${PROJECT_NAME} STATIC
 			src/game/entity_manager.cpp
         	src/game/transform.cpp
+			src/game/world.cpp
             src/game/lowcomponent/static_draw.cpp
 			src/game/lowcomponent/animated_draw.cpp
 			src/game/lowcomponent/camera.cpp
             src/game/lowcomponent/component.cpp
             src/game/lowcomponent/sound_component.cpp
 			src/game/lowcomponent/drawable.cpp
-		    src/game/lowcomponent/collider/box_collider.cpp 
-		    src/game/lowcomponent/collider/collider.cpp 
-		    src/game/lowcomponent/collider/sphere_collider.cpp
+		    src/game/collider/box_collider.cpp
+		    src/game/collider/collider.cpp
+		    src/game/collider/sphere_collider.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
@@ -36,12 +37,19 @@ add_library(${PROJECT_NAME} STATIC
 			src/resources/texture.cpp
 			src/resources/sound.cpp
 			src/animation/animator.cpp
+			src/ui/canvas.cpp
         	src/debug/log.cpp
             src/engine.cpp
         	src/multithread/threadpool.cpp
 		    src/physic/physic_scene.cpp
 			src/physic/contact_listener.cpp
 			src/physic/layers.cpp
+ 			src/game/ui/ui_object.cpp
+		    src/game/ui/text.cpp
+            src/game/ui/button.cpp
+			src/game/ui/panel.cpp
+            src/game/ui/image_panel.cpp
+            src/game/ui/image_button.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)

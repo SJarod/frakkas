@@ -90,22 +90,6 @@ Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
     return nullptr;
 }
 
-void EntityManager::Start()
-{
-    for (int i = entityStore.entities.size()-1; i >= 0; i--)
-    {
-        Entity* entity = entityStore.entities[i].get();
-        for (int j = entity->components.size()-1; j >= 0; j--)
-        {
-            Component* comp = entity->components[j].get();
-            comp->OnStart();
-
-            if (comp->enabled)
-                comp->OnEnable();
-        }
-    }
-}
-
 void EntityManager::Update()
 {
     //entity->components.insert(entity->components.end(), entity->addedComponents.begin(), entity->addedComponents.end());
@@ -116,7 +100,10 @@ void EntityManager::Update()
         {
             Component* comp = entity->components[j].get();
             if (comp->enabled)
+            {
+                comp->Start(); // Call OnStart only if needed;
                 comp->OnUpdate();
+            }
         }
         if (entity->destroy)
             RemoveEntityAt(entity->GetID());

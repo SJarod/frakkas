@@ -5,7 +5,6 @@ project(Game
 )
 
 add_library(${PROJECT_NAME} STATIC
-        	src/game/world.cpp
 			assets/Scripts/player.cpp
 			assets/Scripts/spawner.cpp
 			assets/Scripts/skeleton.cpp
@@ -14,7 +13,7 @@ add_library(${PROJECT_NAME} STATIC
 		    assets/Scripts/player_movement.cpp
 		    assets/Scripts/follow_camera.cpp
 			assets/Scripts/player_mesh_rotation.cpp
-			src/game/component_register.cpp
+ 		    assets/scripts/menu_script.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -32,11 +32,6 @@ namespace Game
         EntityContainer entityStore;
 
         /**
-         * Call OnStart() function in all entities' components.
-         */
-        void Start();
-
-        /**
          * OnUpdate every entities
          */
         void Update();

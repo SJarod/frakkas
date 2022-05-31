@@ -106,12 +106,12 @@ bool CreateNewComponentScript(const std::string& compName)
 	outCMake.close();
 
     /// UPDATE COMPONENT REGISTER
-    std::string registerPath = Helpers::gameDirectoryPath + std::string("src/") + Helpers::gameDirectoryPath + std::string("component_register.cpp");
+    std::string registerPath = Helpers::gameDirectoryPath + std::string("include/") + Helpers::gameDirectoryPath + std::string("register_components.hpp");
     std::ifstream inRegisterSource(registerPath);
 
     if (!inRegisterSource.is_open())
     {
-        Log::Warning("Could not open component register file \"game/src/game/component_register.cpp\"");
+        Log::Warning("Could not open component register file \"game/include/game/register_components.hpp\"");
         return false;
     }
 
@@ -120,8 +120,8 @@ bool CreateNewComponentScript(const std::string& compName)
     registerStream << inRegisterSource.rdbuf();
     std::string registerString(registerStream.str());
 
-    registerString.insert(0, "#include \"" + fileName + ".hpp\"\n");
-    registerString.insert(registerString.find('$')+2, "\tgreedEntity.AddComponent<" + compName + ">();\n");
+    registerString.insert(registerString.find("$i")+3, "#include \"" + fileName + ".hpp\"\n");
+    registerString.insert(registerString.find("$c")+3, "\t\tgreedEntity.AddComponent<" + compName + ">();\n");
 
     inRegisterSource.close();
 

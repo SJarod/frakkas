@@ -4,6 +4,7 @@
 #include <filesystem>
 
 #include "game/entity.hpp"
+#include "ui/canvas.hpp"
 
 #include "renderer/light.hpp"
 
@@ -43,6 +44,8 @@ namespace Renderer
         Game::Entity editorCameraman;
         Game::Camera* editorCamera = nullptr;
         Game::Camera* gameCamera = nullptr;
+
+        static UI::Canvas canvas;
 
         /**
          * @brief Inform the graph that a new component had been added.
@@ -89,6 +92,20 @@ namespace Renderer
          * @param i_cleaning Should the resources be reloaded?
          */
         void LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning = true);
+
+        /**
+         * @brief Save loading data to load scene at end frame.
+         * @param i_cleaning Restore all the resources or not.
+         * @param i_loadScenePath The scene to load.
+         */
+        void SetLoadingParameters(bool i_cleaning = true, const std::filesystem::path& i_loadScenePath = "");
+
+        /**
+         * @brief Load scene from 'loadScenePath' and 'cleaning' internal value.
+         * This function is used to avoid reloading scene during game loop.
+         */
+        void ProcessLoading();
+
         /**
          * Save a scene into a text file.
          * @param i_sceneName Name of scene, should exists as .kk file.
@@ -105,8 +122,11 @@ namespace Renderer
         static bool updateCamera;
         static std::vector<Game::Camera*> gameCameras;
         static std::vector<Game::Drawable*> renderEntities;
+        static std::vector<Game::Component*> componentsToStart;
 
-        std::filesystem::path currentScenePath = "game/assets/Scenes/exemple_scene.kk";
+        std::filesystem::path currentScenePath;
+        std::filesystem::path loadScenePath;
+        bool cleaning = true;
 
         /**
          * Searches for the first Camera enabled. Set game camera to nullptr if not found.

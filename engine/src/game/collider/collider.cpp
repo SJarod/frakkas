@@ -5,7 +5,7 @@
 #include "game/transform.hpp"
 #include "game/entity.hpp"
 
-#include "game/lowcomponent/collider/collider.hpp"
+#include "game/collider/collider.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(Collider)
 

@@ -29,13 +29,14 @@ namespace Editor
     class EditorRender
     {
     public:
+        EditorRender(Engine& io_engine);
+
         static bool editingDrag;
         static bool editingText;
         static Vector2 mouseLockPosition;
         static Vector2 gameWindowSize;
 
-        void InitImGui(Engine& io_engine);
-        void QuitImGui();
+        void Init(Engine& io_engine);
         /**
          * @brief Create all the editor interface and allow user to edit its game.
          * @param io_engine The engine to edit.

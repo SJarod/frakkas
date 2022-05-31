@@ -40,6 +40,15 @@ Component::Component()
     enabled = true;
 }
 
+void Component::Start()
+{
+    if (!isStarted)
+    {
+        isStarted = true;
+        OnStart();
+    }
+}
+
 void Component::SetOwner(Entity* entity) 
 {
     owner.set(entity);

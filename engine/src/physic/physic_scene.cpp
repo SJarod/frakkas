@@ -45,7 +45,6 @@ PhysicScene::PhysicScene()
     bodyInterface = &physicsSystem->GetBodyInterfaceNoLock();
 }
 
-
 void PhysicScene::Update(Utils::UpdateFlag i_updateMode) const
 {
     ZoneScoped

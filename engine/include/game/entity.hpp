@@ -85,6 +85,7 @@ namespace Game
         std::vector<T*> GetComponents();
 
         const EntityIdentifier& GetID() const { return id; }
+        std::string GetStringID() const { return std::to_string(id); }
 
     private:
 
@@ -132,7 +133,7 @@ T* Game::Entity::GetComponent()
 template<typename T>
 std::vector<T*> Game::Entity::GetComponents()
 {
-    std::vector<std::unique_ptr<T>> comps;
+    std::vector<T*> comps;
     for(std::vector<std::unique_ptr<Component>>::iterator it = components.begin(); it != components.end(); it++)
     {
         if (it->get()->GetID() == T::MetaData().className)

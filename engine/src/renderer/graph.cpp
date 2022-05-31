@@ -2,8 +2,9 @@
 #include "game/lowcomponent/drawable.hpp"
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
-#include "game/lowcomponent/collider/box_collider.hpp"
-#include "game/lowcomponent/collider/sphere_collider.hpp"
+#include "game/collider/box_collider.hpp"
+#include "game/collider/sphere_collider.hpp"
+#include "game/ui/text.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -23,9 +24,11 @@ using namespace Renderer;
 Physic::PhysicScene* Graph::physicScene = nullptr;
 bool Graph::playing = false;
 
+UI::Canvas Graph::canvas;
 
 std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
+std::vector<Game::Component*> Graph::componentsToStart;
 bool Graph::updateCamera = true;
 
 Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer)
@@ -39,24 +42,29 @@ Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physi
 void Graph::RegisterComponent(Game::Component* i_newComponent)
 {
     std::string ID = i_newComponent->GetID();
+    std::string parentID = i_newComponent->GetMetaData().parentClassName;
     if (ID == "StaticDraw" || ID == "AnimatedDraw")
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
     else if (ID == Game::Camera::MetaData().className)
         gameCameras.emplace_back(reinterpret_cast<Game::Camera*>(i_newComponent));
-    else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
+    else if (parentID == BoxCollider::MetaData().parentClassName)
     {
         auto collider = reinterpret_cast<Collider*>(i_newComponent);
         collider->GetTransform().colliderComponentCount++;
         physicScene->AddCollider(collider, Vector3(1.f, 1.f, 1.f));
     }
-
-    if (playing)
-        i_newComponent->OnStart();
+    else if (parentID == Text::MetaData().parentClassName)
+    {
+        auto ui = reinterpret_cast<UIObject*>(i_newComponent);
+        canvas.AddUIObject(ui);
+    }
 }
 
 void Graph::UnregisterComponent(Game::Component* i_oldComponent)
 {
     std::string ID = i_oldComponent->GetID();
+    std::string parentID = i_oldComponent->GetMetaData().parentClassName;
+
     if (ID == "StaticDraw" || ID == "AnimatedDraw")
     {
         auto it = std::find(renderEntities.begin(), renderEntities.end(), reinterpret_cast<Drawable*>(i_oldComponent));
@@ -70,11 +78,16 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
             gameCameras.erase(it);
         updateCamera = true;
     }
-    else if (ID == BoxCollider::MetaData().className || ID == SphereCollider::MetaData().className)
+    else if (parentID == BoxCollider::MetaData().parentClassName)
     {
         auto collider = reinterpret_cast<Collider*>(i_oldComponent);
         collider->GetTransform().colliderComponentCount--;
         physicScene->RemoveBody(collider->GetPhysicBodyID());
+    }
+    else if (parentID == Text::MetaData().parentClassName)
+    {
+        auto ui = reinterpret_cast<UIObject*>(i_oldComponent);
+        canvas.RemoveUIObject(ui);
     }
 }
 
@@ -115,6 +128,7 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
         i_aspectRatio,
         *gameCamera,
         gameCamera->owner.get()->transform.position);
+
     Render(i_renderer);
 }
 
@@ -315,6 +329,7 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
         gameCameras.clear();
         renderEntities.clear();
         physicScene->Clear();
+        canvas.Clear();
 
         // Read light information
         if (Serializer::GetAttribute(file) == "light")
@@ -334,6 +349,25 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
     {
         Log::Warning("Try to load scene from file '", currentScenePath, "' that does not exist.");
         currentScenePath = lastScene;
+    }
+}
+
+void Graph::SetLoadingParameters(bool i_cleaning, const std::filesystem::path& i_loadScenePath)
+{
+    if (loadScenePath.empty())
+    {
+        loadScenePath = i_loadScenePath.empty() ? currentScenePath : i_loadScenePath;
+        cleaning = i_cleaning;
+    }
+}
+
+void Graph::ProcessLoading()
+{
+    if (!loadScenePath.empty())
+    {
+        LoadScene(loadScenePath, cleaning);
+        loadScenePath.clear();
+        cleaning = true;
     }
 }
 

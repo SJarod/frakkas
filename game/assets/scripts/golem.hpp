@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game/transform.hpp"
-#include "game/lowcomponent/collider/sphere_collider.hpp"
+#include "game/collider/sphere_collider.hpp"
 #include "game/lowcomponent/animated_draw.hpp"
 
 #include "game/component_generator.hpp"

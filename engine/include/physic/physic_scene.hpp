@@ -10,9 +10,9 @@
 #include <Jolt/Physics/Body/BodyManager.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 
-#include "game/lowcomponent/collider/collider.hpp"
+#include "game/collider/collider.hpp"
 
-#include "game/lowcomponent/collider/collider.hpp"
+#include "game/collider/collider.hpp"
 
 #include "utils/update_flags.hpp"
 

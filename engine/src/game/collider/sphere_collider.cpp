@@ -8,7 +8,7 @@
 #include "renderer/lowlevel/lowrenderer.hpp"
 #include "renderer/model.hpp"
 
-#include "game/lowcomponent/collider/sphere_collider.hpp"
+#include "game/collider/sphere_collider.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(SphereCollider)
 KK_COMPONENT_IMPL_END

@@ -31,7 +31,7 @@
 	2
 >transform
 >position
-	0, 0, 0
+	0, 7, 8
 >rotation
 	-0.820305, 0, 0
 >scale
@@ -49,7 +49,7 @@
 >enabled
 	1
 >offset
-	0, 8, 8
+	0, 15, 10
 >lerpFactor
 	0.08
 
@@ -89,8 +89,6 @@
 >PlayerMovement
 >enabled
 	1
->startPosition
-	0, 0, 0
 >speed
 	1000
 >leftPower
@@ -109,14 +107,14 @@
 >position
 	0, -0.9, 0
 >rotation
-	0, 0, 0
+	0, -0, 0
 >scale
 	0.04, 0.04, 0.04
 >StaticDraw
 >enabled
 	1
 >meshPath
-	game/assets\Models\Hero+Skel\Hero\Hero.fbx
+	game/assets\Models\Hero\Hero.fbx
 >texturePath
 	game/assets\Textures\Dungeons_Texture_03.png
 >PlayerMeshRotation
@@ -163,3 +161,29 @@
 	ProceduralCube
 >texturePath
 	game/assets\Textures\red.png
+
+>entity
+>childs
+	0
+>name
+	Text
+>component_count
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Text
+>enabled
+	1
+>position
+	34.9, 78.6
+>scale
+	3.3, 1
+>text
+	hello world!
+>color
+	0, 0, 0, 1

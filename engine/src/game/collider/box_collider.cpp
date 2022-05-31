@@ -7,7 +7,7 @@
 #include "resources/mesh.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 
-#include "game/lowcomponent/collider/box_collider.hpp"
+#include "game/collider/box_collider.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(BoxCollider)
 KK_COMPONENT_IMPL_END
