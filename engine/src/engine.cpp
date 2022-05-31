@@ -1,5 +1,9 @@
 #include <iostream>
 
+#include <imgui.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_sdl.h>
+
 #include <glad/glad.h>
 #include <SDL.h>
 #include <Tracy.hpp>
@@ -8,6 +12,9 @@
 #include "debug/log.hpp"
 #include "game/entity.hpp"
 #include "game/lowcomponent/camera.hpp"
+#include "game/world.hpp"
+
+#include "ui/canvas.hpp"
 
 #include "resources/resources_manager.hpp"
 
@@ -48,6 +55,7 @@ Engine::Engine()
     Log::Init();
 
     InitSDL();
+    InitImGui();
     InitMiniaudio();
 
     renderer = std::make_unique<Renderer::LowLevel::LowRenderer>();
@@ -55,10 +63,18 @@ Engine::Engine()
     gameFBO = std::make_unique<Renderer::LowLevel::Framebuffer>(1920, 1080, Renderer::LowLevel::Framebuffer::ERenderMode::LOCK_ASPECT);
 
     graph = std::make_unique<Renderer::Graph>(&entityManager, &physicScene, renderer.get());
+
+    gameWorld = std::make_unique<Game::World>(*this);
+
+    SetUINavigation(true);
 }
 
 Engine::~Engine()
 {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
     SDL_GL_DeleteContext(glContext);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -134,6 +150,29 @@ void Engine::InitSDL()
     }
 }
 
+void Engine::InitImGui()
+{
+// Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
+    io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+    io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport;
+
+    ImGui_ImplSDL2_InitForOpenGL(SDL_GL_GetCurrentWindow(), SDL_GL_GetCurrentContext());
+    ImGui_ImplOpenGL3_Init("#version 450");
+
+    // BIND FUNCTION TO ENGINE
+
+    editorInputsEvent = [](const SDL_Event* event) { return ImGui_ImplSDL2_ProcessEvent(event); };
+}
+
 void Engine::InitMiniaudio()
 {
     if (ma_engine_init(nullptr, &soundEngine) != MA_SUCCESS)
@@ -151,7 +190,11 @@ void Engine::BeginFrame()
     ResourcesManager::PollGPULoad();
 
     inputsManager.PollEvent(editorInputsEvent);
-    timeManager.NewFrame();
+    Game::Time::NewFrame();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
 }
 
 bool Engine::EndFrame()
@@ -159,10 +202,32 @@ bool Engine::EndFrame()
     SDL_GL_SwapWindow(window);
     FrameMark
 
+    graph->ProcessLoading();
+
     bool quit = Game::Inputs::quit;
     if (quit)
         ResourcesManager::DestroyResources();
     return  !quit;
+}
+
+void Engine::RenderImGui() const
+{
+    ImVec4 clearColor = ImVec4(0.4f, 0.5f, 0.6f, 1.f);
+
+    ImGuiIO& io = ImGui::GetIO();
+
+    ImGui::Render();
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+    }
 }
 
 void Engine::RunEditor()
@@ -195,6 +260,12 @@ void Engine::RunEditor()
         graph->RenderGame(*renderer, gameFBO->AspectRatio());
         renderer->RenderFinalScreen(*gameFBO);
 
+        glViewport(0, 0, ImGui::GetWindowSize().x, ImGui::GetWindowSize().y);
+        glClearColor(0.f, 0.f, 0.f, 1.f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        RenderImGui();
+
 		running = EndFrame();
     }
 }
@@ -214,6 +285,9 @@ void Engine::RunGame()
     {
         BeginFrame();
 
+        SDL_GetWindowSize(window, &width, &height);
+        windowSize = {static_cast<float>(width), static_cast<float>(height)};
+
 		entityManager.Update();
 
         for (const UpdateEvent& updateEvent : updateEventsHandler)
@@ -221,15 +295,16 @@ void Engine::RunGame()
 
         physicScene.Update();
 
-        SDL_GetWindowSize(window, &width, &height);
-        windowSize = {static_cast<float>(width), static_cast<float>(height)};
-
         renderer->SetWindowSize(windowSize);
 
         graph->RenderGame(*renderer, renderer->firstPassFBO->AspectRatio());
         glViewport(renderer->firstPassFBO->offset.x, renderer->firstPassFBO->offset.y, windowSize.x, windowSize.y);
         renderer->RenderFinalScreen();
-        
+
+        graph->canvas.BeginAndRender();
+
+        RenderImGui();
+
         /// ENDFRAME
         running = EndFrame();
     }
@@ -246,12 +321,7 @@ void Engine::SetRunMode(unsigned int i_flag)
     if (updateMode & Utils::UpdateFlag_Editing)
         Engine::SetCursorGameMode(false);
 
-    if (updateMode & Utils::UpdateFlag_Gaming && gameRestart)
-    {
-        gameRestart = false;
-        entityManager.Start();
-    }
-
+    graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 }
 
 Utils::UpdateFlag Engine::GetRunMode() const
@@ -284,6 +354,22 @@ void Engine::DisableInputs()
     inputsManager.SetInputsListening(false);
 }
 
+void Engine::SetUINavigation(bool i_activate) const
+{
+    ImGuiIO& io = ImGui::GetIO();
+    if (i_activate)
+    {
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        if (updateMode & Utils::UpdateFlag_Gaming)
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+    }
+    else
+    {
+        io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+    }
+}
+
 Game::Camera* Engine::GetEditorGamera() const
 {
     return graph->editorCamera;
@@ -299,5 +385,9 @@ Game::Transform& Engine::GetEditorCameraTransform() const
     return graph->editorCameraman.transform;
 }
 
+const UI::Canvas& Engine::GetUICanvas() const
+{
+    return graph->canvas;
+}
 
 

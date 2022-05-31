@@ -1,5 +1,7 @@
+
 #include "game/entity.hpp"
 
+#include "game/ui/button.hpp"
 #include "player_movement.hpp"
 #include "follow_camera.hpp"
 
@@ -12,12 +14,17 @@ KK_COMPONENT_IMPL_BEGIN(FollowCamera)
     KK_FIELD_RANGE(0.01f, 1.f)
 KK_COMPONENT_IMPL_END
 
-void FollowCamera::OnEnable()
+void FollowCamera::OnStart()
 {
-    playerTransform = &GetEntityContainer().FindEntityWithComponent<PlayerMovement>()->transform;
-
-    if(playerTransform)
+    Entity* en = GetEntityContainer().FindEntityWithComponent<PlayerMovement>();
+    if (en)
+        playerTransform = &en->transform;
+    if (playerTransform)
         Position() = playerTransform->position.get() + offset;
+
+    Button* button = owner.get()->GetComponent<Button>();
+    if (button)
+        button->AddClickEvent([&](){offset.z += 0.5f;});
 }
 
 void FollowCamera::OnUpdate()

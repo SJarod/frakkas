@@ -351,7 +351,10 @@ void Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
                     desc.changed = DragScalar(desc.name, reinterpret_cast<int*>(componentData), desc.count, desc.range);
                     break;
                 case EDataType::FLOAT:
-                    desc.changed = DragScalar(desc.name, reinterpret_cast<float*>(componentData), desc.count, desc.range);
+                    if (desc.count == 4 && desc.range.y == 1) // A little trick to guess color variable
+                        desc.changed = ImGui::ColorEdit4(desc.name.c_str(), reinterpret_cast<float*>(componentData), ImGuiColorEditFlags_Float);
+                    else
+                        desc.changed = DragScalar(desc.name, reinterpret_cast<float*>(componentData), desc.count, desc.range);
                     break;
                 case EDataType::STRING:
                     desc.changed = Edit(*reinterpret_cast<std::string*>(componentData), desc.name.c_str());

@@ -26,6 +26,15 @@ namespace Renderer
         class Framebuffer;
     }
 }
+namespace Game
+{
+    class World;
+}
+
+namespace UI
+{
+    class Canvas;
+}
 
 using UpdateEvent = std::function<void()>;
 
@@ -38,11 +47,10 @@ public:
     Game::EntityManager entityManager;
     Physic::PhysicScene physicScene;
 
-    bool gameRestart = true;
-
     std::unique_ptr<Renderer::LowLevel::LowRenderer> renderer;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> editorFBO;
     std::unique_ptr<Renderer::LowLevel::Framebuffer> gameFBO;
+    std::unique_ptr<Game::World> gameWorld;
 
     std::unique_ptr<Renderer::Graph> graph;
     
@@ -62,7 +70,6 @@ public:
      */
     void RunGame();
 
-
     /**
      * @brief Change engine run mode, and change settings if needed.
      * @param i_flag The new mode to set.
@@ -72,6 +79,8 @@ public:
      * @return Current run mode.
      */
     Utils::UpdateFlag GetRunMode() const;
+
+    void SetUINavigation(bool i_activate) const;
 
     /**
      * Change mouse cursor visibility
@@ -111,6 +120,11 @@ public:
      */
     Game::Transform& GetEditorCameraTransform() const;
 
+    /**
+     * @return The ui canvas to render ui object on game screen.
+     */
+    const UI::Canvas& GetUICanvas() const;
+
 private:
     Utils::UpdateFlag updateMode = Utils::UpdateFlag_Editing;
 
@@ -125,6 +139,16 @@ private:
      */
     void InitSDL();
 
+    /**
+     * Create ImGui context and setup engine specific parameters
+     */
+    void InitImGui();
+
+    /**
+    * Init SDL audio parameters.
+    */
+    void InitMiniaudio();
+
 	/**
 	* Begin a new frame in engine main loop. Inform other libraries and setup engine parameters.
 	*/
@@ -135,7 +159,13 @@ private:
     bool EndFrame();
 
     /**
-    * Init SDL audio parameters. 
-    */
-    void InitMiniaudio();
+     * @brief Render and Update the imgui context
+     */
+    void RenderImGui() const;
+
+
+    /**
+     * Create entities in hard-code to test our project
+     */
+    void CreateTestEntities();
 };

@@ -52,6 +52,11 @@ namespace Game
         virtual void OnStart() {};
 
         /**
+         * @brief Check if component is started, if not make it started !
+         */
+        void Start();
+
+        /**
          * @Summary Called every frame in the game loop if component enabled.
          * The common function to write game script.
          */
@@ -152,5 +157,8 @@ namespace Game
          * @return The owner's entity container that gives access to all entities and useful find function.
          */
         EntityContainer& GetEntityContainer() const;
+
+    private:
+        bool isStarted = false;
     };
 }

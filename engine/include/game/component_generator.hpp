@@ -5,6 +5,7 @@
 #include "debug/log.hpp"
 #include "game/inputs_manager.hpp"
 #include "game/time_manager.hpp"
+#include "game/world.hpp"
 
 #include "game/entity_container.hpp"
 #include "game/lowcomponent/component.hpp"

@@ -3,6 +3,7 @@
 #include "game/time_manager.hpp"
 
 #include "player_movement.hpp"
+#include "game/ui/button.hpp"
 
 using namespace Game;
 
@@ -21,6 +22,30 @@ KK_COMPONENT_IMPL_END
 void PlayerMovement::OnStart()
 {
     rb = owner.get()->GetComponent<SphereCollider>();
+
+    buttonGame = owner.get()->AddComponent<Button>();
+    buttonGame->text = "game";
+    buttonGame->position = {10.f, 5.f};
+    buttonGame->scale = {100.f, 20.f};
+    buttonGame->AddClickEvent([&]()
+    {
+        if (World::GetInputsMode() & World::InputsMode_Game)
+            World::SetInputsMode(World::InputsMode_Game);
+        else
+            World::SetInputsMode(World::InputsMode_Game | World::InputsMode_UI);
+    });
+    buttonGame->enabled = false;
+
+    buttonUI = owner.get()->AddComponent<Button>();
+    buttonUI->text = "ui";
+    buttonUI->scale = {100.f, 20.f};
+    buttonUI->position = {10.f, 15.f};
+    buttonUI->AddClickEvent([&]()
+    {
+        World::SetInputsMode(World::InputsMode_UI);
+    });
+    buttonUI->enabled = false;
+
 }
 
 void PlayerMovement::OnUpdate()
@@ -42,4 +67,12 @@ void PlayerMovement::OnUpdate()
 
     Vector3 translation = Vector3(xTranslation, rb->velocity.y, -zTranslation);
     rb->velocity = translation;
+
+    if (Inputs::IsPressed(EButton::P))
+    {
+        World::SetInputsMode(World::InputsMode_Game | World::InputsMode_UI);
+        buttonGame->enabled = true;
+        buttonUI->enabled = true;
+    }
+
 }

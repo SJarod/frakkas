@@ -1,6 +1,6 @@
 #include "debug/log.hpp"
 
-#include "game/lowcomponent/collider/collider.hpp"
+#include "game/collider/collider.hpp"
 
 #include "physic/physic_scene.hpp"
 #include "physic/contact_listener.hpp"

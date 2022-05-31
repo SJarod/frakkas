@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game/lowcomponent/collider/sphere_collider.hpp"
+#include "game/collider/sphere_collider.hpp"
 
 #include "game/component_generator.hpp"
 

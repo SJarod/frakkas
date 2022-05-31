@@ -1,5 +1,5 @@
-#include "game/world.hpp"
 
+#include "game/register_components.hpp"
 #include "engine.hpp"
 
 #undef main
@@ -7,7 +7,7 @@ int main()
 {
     Engine engine;
 
-    Game::World world(engine);
+    Game::RegisterComponents(engine.entityManager);
 
     engine.RunGame();
 

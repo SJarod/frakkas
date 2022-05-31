@@ -13,7 +13,7 @@ namespace Game
         Vector3 offset = Vector3::zero;
         float lerpFactor = 0.08f;
 
-        void OnEnable() override;
+        void OnStart() override;
 
         void OnUpdate() override;
     KK_COMPONENT_END
