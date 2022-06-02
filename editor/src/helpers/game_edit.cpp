@@ -196,6 +196,10 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
     ImGui::Text("ID : %lu", io_entity.GetID());
 #endif
 
+    ImGui::SameLine();
+    ImGui::Checkbox("Serialize", &io_entity.serialize);
+
+
     if (io_entity.parent && ImGui::Button("Unset parent"))
         io_entity.unsettingParent = true;
 

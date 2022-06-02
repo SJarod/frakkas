@@ -10,6 +10,7 @@
 using namespace Game;
 
 InputsMode World::inputsMode;
+std::unique_ptr<WorldData> World::worldData = nullptr;
 Engine* World::engine;
 
 World::World(Engine& i_engine)
@@ -32,6 +33,16 @@ World::World(Engine& i_engine)
                           { EButton::ARROW_DOWN, EButton::S, EButton::GAMEPAD_DPAD_DOWN });
 
     LoadScene(defaultScenePath);
+
+    worldData = std::make_unique<WorldData>();
+}
+
+void World::SetWorldData(std::unique_ptr<WorldData> i_worldData)
+{
+    if (worldData)
+        worldData.reset();
+
+    worldData = std::move(i_worldData);
 }
 
 void World::SetInputsMode(InputsMode i_flag)
