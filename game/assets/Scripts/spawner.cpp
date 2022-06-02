@@ -17,12 +17,6 @@ void Spawner::OnStart()
 
     rb = owner.get()->AddComponent<SphereCollider>();
     rb->trigger = true;
-    rb->constraintPositionX = true;
-    rb->constraintPositionY = true;
-    rb->constraintPositionZ = true;
-    rb->constraintRotationX = true;
-    rb->constraintRotationY = true;
-    rb->constraintRotationZ = true;
 }
 
 void Spawner::OnUpdate()

@@ -225,25 +225,30 @@ void Serializer::WriteAttribute(std::ofstream &io_file, const std::string &i_att
 
 void Serializer::Write(std::ofstream& io_file, const Game::Entity& i_entity)
 {
-    io_file << '\n';
+    if (i_entity.serialize)
+    {
+        io_file << '\n';
 
-    WriteAttribute(io_file, "entity");
+        WriteAttribute(io_file, "entity");
 
-    int childCount = i_entity.childs.size();
-    Write(io_file, "childs", &childCount, 1);
+        int childCount = 0;
+        for (Game::Entity* child : i_entity.childs)
+            childCount += child->serialize ? 1 : 0;
+        Write(io_file, "childs", &childCount, 1);
 
-    Write(io_file, "name", i_entity.name);
+        Write(io_file, "name", i_entity.name);
 
-    int compCount = static_cast<int>(i_entity.components.size());
-    Write(io_file, "component_count", &compCount, 1);
+        int compCount = static_cast<int>(i_entity.components.size());
+        Write(io_file, "component_count", &compCount, 1);
 
-    Write(io_file, "transform", i_entity.transform);
+        Write(io_file, "transform", i_entity.transform);
 
-    for(const std::unique_ptr<Game::Component>& comp : i_entity.components)
-        Write(io_file, reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), comp->enabled.get());
+        for(const std::unique_ptr<Game::Component>& comp : i_entity.components)
+            Write(io_file, reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), comp->enabled.get());
 
-    for (const Game::Entity* child : i_entity.childs)
-        Write(io_file, *child);
+        for (const Game::Entity* child : i_entity.childs)
+            Write(io_file, *child);
+    }
 }
 
 void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const ClassMetaData& i_metaData, bool i_enabled)

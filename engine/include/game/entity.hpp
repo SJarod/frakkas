@@ -35,6 +35,7 @@ namespace Game
         ~Entity();
 
         std::string name;
+        bool serialize = true; // If false, the entity will not be saved when save the scene.
 
         bool unsettingParent = false;
         Transform transform;

@@ -6,6 +6,12 @@ namespace Game
 {
     using InputsMode = unsigned int;
 
+    // Inherits this structure to have your own world data
+    struct WorldData
+    {
+        virtual ~WorldData() = default;
+    };
+
     /**
      * @Summary World class is a kind of gate for entities to access Engine features as inputs listening or scene management.
      * It also has some default values as default scene.
@@ -19,7 +25,21 @@ namespace Game
         explicit World(Engine& i_engine);
         ~World() = default;
 
+
         std::string defaultScenePath = "game/assets/Scenes/menu.kk";
+
+        /**
+         * @brief Set or Replace the current world data structure.
+         * @param i_worldData The world unique  pointer data that components will access.
+         */
+        static void SetWorldData(std::unique_ptr<WorldData> i_worldData);
+
+        /**
+         * @tparam TDataType The type of your own WorldData structure.
+         * @return A pointer to world data. If no world data is set or if TDataType is wrong, return nullptr.
+         */
+         template<typename TDataType>
+        static TDataType* GetWorldData();
 
         /**
          * @brief Setup the inputs mode to enable UI or Game
@@ -38,7 +58,18 @@ namespace Game
         static void ReloadScene();
 
     private:
+        static std::unique_ptr<WorldData> worldData;
+
         static InputsMode inputsMode;
         static Engine* engine;
     };
+}
+
+template<typename TDataType>
+TDataType* Game::World::GetWorldData()
+{
+    if (TDataType* data = dynamic_cast<TDataType*>(worldData.get()))
+        return data;
+    else
+        return nullptr;
 }

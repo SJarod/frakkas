@@ -31,6 +31,10 @@ namespace Game
         Entity greedEntity(0, "greed");
 
         // TODO:Add new component $c
+        greedEntity.AddComponent<Player>();
+        greedEntity.AddComponent<Spawner>();
+        greedEntity.AddComponent<Golem>();
+        greedEntity.AddComponent<Skeleton>();
         greedEntity.AddComponent<Panel>();
         greedEntity.AddComponent<Button>();
         greedEntity.AddComponent<ImageButton>();
@@ -41,10 +45,6 @@ namespace Game
         greedEntity.AddComponent<StaticDraw>();
         greedEntity.AddComponent<AnimatedDraw>();
         greedEntity.AddComponent<Camera>();
-        greedEntity.AddComponent<Player>();
-        greedEntity.AddComponent<Golem>();
-        greedEntity.AddComponent<Skeleton>();
-        greedEntity.AddComponent<Spawner>();
         greedEntity.AddComponent<Sound>();
         greedEntity.AddComponent<FPSMovement>();
         greedEntity.AddComponent<PlayerMovement>();
