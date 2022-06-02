@@ -18,7 +18,7 @@
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/animated_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
-#include "game/lowcomponent/sound_component.hpp"
+#include "game/lowcomponent/sound.hpp"
 #include "game/lowcomponent/drawable.hpp"
 
 #include "game/entity.hpp"
@@ -45,7 +45,7 @@ namespace Game
         greedEntity.AddComponent<Golem>();
         greedEntity.AddComponent<Skeleton>();
         greedEntity.AddComponent<Spawner>();
-        greedEntity.AddComponent<SoundComponent>();
+        greedEntity.AddComponent<Sound>();
         greedEntity.AddComponent<FPSMovement>();
         greedEntity.AddComponent<PlayerMovement>();
         greedEntity.AddComponent<FollowCamera>();

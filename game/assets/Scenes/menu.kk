@@ -151,7 +151,7 @@
 >imageFlip
 	0
 >Texture
-	game/assets\Textures\play_menu_button.jpg
+	game/assets/Textures/play_menu_button.jpg
 >idle
 	0.8, 0.8, 0.8, 1
 >hovered

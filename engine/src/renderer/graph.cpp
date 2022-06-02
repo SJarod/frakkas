@@ -1,5 +1,6 @@
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
+#include "game/lowcomponent/sound.hpp"
 #include "game/lowcomponent/static_draw.hpp"
 #include "game/lowcomponent/camera.hpp"
 #include "game/collider/box_collider.hpp"
@@ -29,6 +30,7 @@ UI::Canvas Graph::canvas;
 std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
 std::vector<Game::Component*> Graph::componentsToStart;
+std::vector<Game::Sound*> Graph::sounds;
 bool Graph::updateCamera = true;
 
 Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer)
@@ -47,6 +49,8 @@ void Graph::RegisterComponent(Game::Component* i_newComponent)
         renderEntities.emplace_back(reinterpret_cast<Drawable*>(i_newComponent));
     else if (ID == Game::Camera::MetaData().className)
         gameCameras.emplace_back(reinterpret_cast<Game::Camera*>(i_newComponent));
+    else if (ID == Game::Sound::MetaData().className)
+        sounds.emplace_back(reinterpret_cast<Game::Sound*>(i_newComponent));
     else if (parentID == BoxCollider::MetaData().parentClassName)
     {
         auto collider = reinterpret_cast<Collider*>(i_newComponent);
@@ -78,6 +82,15 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
             gameCameras.erase(it);
         updateCamera = true;
     }
+    else if (ID == Game::Sound::MetaData().className)
+    {
+        auto it = std::find(sounds.begin(), sounds.end(), reinterpret_cast<Game::Sound*>(i_oldComponent));
+        if (it != sounds.end())
+        {
+            (*it)->UnloadSound();
+            sounds.erase(it);
+        }
+    }
     else if (parentID == BoxCollider::MetaData().parentClassName)
     {
         auto collider = reinterpret_cast<Collider*>(i_oldComponent);
@@ -89,6 +102,18 @@ void Graph::UnregisterComponent(Game::Component* i_oldComponent)
         auto ui = reinterpret_cast<UIObject*>(i_oldComponent);
         canvas.RemoveUIObject(ui);
     }
+}
+
+void Graph::Clear()
+{
+    // Reset all lists
+    gameCameras.clear();
+    renderEntities.clear();
+    physicScene->Clear();
+    for (Sound* sound : sounds)
+        sound->UnloadSound();
+    sounds.clear();
+    canvas.Clear();
 }
 
 void Graph::SetGameCameraAuto() noexcept
@@ -265,8 +290,10 @@ void Graph::UpdateGlobalUniform(const Renderer::LowLevel::LowRenderer& i_rendere
     i_renderer.SetUniformToNamedBlock("uRendering", 100, light.shadowPCF);
 }
 
-bool Graph::CreateScene(const std::filesystem::path& i_scenePath)
+bool Graph::CreateScene(std::filesystem::path i_scenePath)
 {
+    i_scenePath.make_preferred();
+
     std::ofstream emptyFile(i_scenePath); // CREATE BUTTON
     if (!emptyFile.is_open())
     {
@@ -320,16 +347,13 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
 
     std::filesystem::path lastScene = currentScenePath;
     currentScenePath = i_scenePath;
+    currentScenePath.make_preferred();
 
     std::ifstream file(currentScenePath);
 
     if (file.is_open())
     {
-        // Reset all lists
-        gameCameras.clear();
-        renderEntities.clear();
-        physicScene->Clear();
-        canvas.Clear();
+        Clear();
 
         // Read light information
         if (Serializer::GetAttribute(file) == "light")
