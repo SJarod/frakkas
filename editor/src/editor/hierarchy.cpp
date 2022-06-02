@@ -47,24 +47,12 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
         selected->parent = nullptr;
     }
 
-    if (ImGui::BeginTable("Entities list", 2))
-    {
-        ImGui::TableSetupColumn("one", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("two", ImGuiTableColumnFlags_WidthFixed, 20.0f);
-
-        RenderEntitiesHierarchy(io_entityManager, io_entityManager.GetRootEntities());
-
-        ImGui::EndTable();
-    }
+    RenderEntitiesHierarchy(io_entityManager, io_entityManager.GetRootEntities());
 
     // Create a dummy item to enable dragDropTarget
     ImGui::InvisibleButton("InvisibleDropTarget", ImVec2(500, 500));
     ParentUnsetDragDropTarget(io_entityManager);
     OpenPopupAndUnselect(ImGui::IsItemHovered());
-
-    // Remove an entity if remove ID had been modify
-    if (removeID != -1)
-        io_entityManager.RemoveEntityAt(removeID);
 
     ImGui::End();
 
@@ -74,6 +62,10 @@ void Hierarchy::OnImGuiRender(Game::EntityManager& io_entityManager)
     }
 
     AddEntityPopup(io_entityManager);
+
+    // Remove an entity if remove ID had been modify
+    if (removeID != -1)
+        io_entityManager.RemoveEntityAt(removeID);
 }
 
 void Hierarchy::RenderEntitiesHierarchy(Game::EntityManager& io_entityManager, const std::unordered_map<Game::EntityIdentifier, Game::Entity*>& io_entities)
@@ -94,8 +86,6 @@ void Editor::Hierarchy::RenderEntitiesHierarchy(Game::EntityManager& io_entityMa
 
 void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity& io_entity)
 {
-    ImGui::TableNextRow();
-    ImGui::TableSetColumnIndex(0);
     ImGui::PushID(io_entity.GetID());
 
     bool treeOpen = false;
@@ -115,27 +105,18 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
     }
     else
     {
-        ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow;
+        ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
         if (isSelectedEntity) nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
         treeOpen = ImGui::TreeNodeEx(label.c_str(), nodeFlags);
 
         SetupEntityInteraction(io_entityManager, io_entity, label);
-
-        ImGui::TableSetColumnIndex(1);
-
-        if (ImGui::Button("X"))
-        {
-            selected = nullptr;
-            removeID = io_entity.GetID();
-        }
     }
 
     ImGui::PopID();
 
     if (!io_entity.childs.empty())
     {
-        ImGui::TableSetColumnIndex(0);
         if (treeOpen)
             RenderEntitiesHierarchy(io_entityManager, io_entity.childs);
     }
@@ -210,7 +191,12 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
     {
         openAddEntityPopup = false;
 
-        ImGui::Text("Add entity");
+        if (selectedWhenAdd && ImGui::Selectable("Delete"))
+        {
+            removeID = selectedWhenAdd->GetID();
+            selected = selectedWhenAdd = nullptr;
+        }
+
         ImGui::Separator();
 
         Game::Entity* entity = nullptr;

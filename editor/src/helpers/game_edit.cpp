@@ -2,7 +2,6 @@
 #include <ImGuizmo.h>
 #include <string>
 #include <functional>
-#include <initializer_list>
 
 #include "game/transform.hpp"
 
@@ -19,7 +18,6 @@
 
 #include "utils/dragdrop_constants.hpp"
 #include "utils/platform.hpp"
-#include "utils/string_format.hpp"
 
 #include "helpers/game_edit.hpp"
 
@@ -285,8 +283,12 @@ void Helpers::Edit(Engine& io_engine, bool& o_showMap)
 bool Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData, bool& io_enabled)
 {
     bool keepOnEntity = true;
-    if (ImGui::TreeNodeEx(io_metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+    bool openDeletePopup = false;
+    if (ImGui::TreeNodeEx(io_metaData.className.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
     {
+        if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+            openDeletePopup = true;
+
         ImGui::Checkbox("Activate", &io_enabled);
 
         Edit(io_component, io_metaData);
@@ -302,6 +304,21 @@ bool Helpers::Edit(unsigned char* io_component, const ClassMetaData& io_metaData
 
         ImGui::TreePop();
     }
+    else
+        if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+            openDeletePopup = true;
+
+    if (openDeletePopup)
+        ImGui::OpenPopup("COMPONENT");
+
+    if (ImGui::BeginPopup("COMPONENT"))
+    {
+        if (ImGui::Selectable("Remove"))
+            keepOnEntity = false;
+
+        ImGui::EndPopup();
+    }
+
     return keepOnEntity;
 }
 
