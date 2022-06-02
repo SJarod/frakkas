@@ -2,16 +2,16 @@
 
 #include <memory>
 #include <filesystem>
+#include <miniaudio.h>
 
 #include "game/component_generator.hpp"
-#include "resources/sound.hpp"
 
 
 namespace Game
 {
-    KK_COMPONENT(SoundComponent)
+    KK_COMPONENT(Sound)
 
-    void SetSoundPath(const std::filesystem::path& i_path);
+    void SetSoundPath(std::filesystem::path i_path);
     std::string soundPath = "none";
 
     float volume = 1.f;
@@ -37,8 +37,19 @@ namespace Game
      */
     void SetVolume();
 
+    /**
+     * @brief Unload miniaudio sound resource if 'loaded' is true
+     */
+    void UnloadSound();
+
 private:
-    std::shared_ptr<Resources::Sound> sound;
+    ma_sound sound;
+    bool loaded = false;
+
+    /**
+     * @brief Load miniaudio sound resource with current 'soundPath' value.
+     */
+    void LoadSound();
 
     KK_COMPONENT_END
 }

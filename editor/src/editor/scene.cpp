@@ -2,7 +2,7 @@
 
 #include "game/inputs_manager.hpp"
 #include "game/entity.hpp"
-#include "game/lowcomponent/sound_component.hpp"
+#include "game/lowcomponent/sound.hpp"
 #include "game/lowcomponent/static_draw.hpp"
 
 #include "renderer/graph.hpp"

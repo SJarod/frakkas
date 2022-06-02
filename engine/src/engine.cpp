@@ -79,6 +79,8 @@ Engine::~Engine()
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    graph->Clear();
+
     ma_engine_uninit(&soundEngine);
 }
 

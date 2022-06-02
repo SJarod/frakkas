@@ -4,7 +4,7 @@
 
 #include "game/entity.hpp"
 #include "game/entity_manager.hpp"
-#include "game/lowcomponent/sound_component.hpp"
+#include "game/lowcomponent/sound.hpp"
 #include "game/lowcomponent/static_draw.hpp"
 
 #include "renderer/graph.hpp"
@@ -28,7 +28,7 @@ namespace Helpers
         std::string extension = i_path.extension().string();
         if (Utils::FindExtension(extension, Utils::SoundExtensions))
         {
-            auto soundComp = o_entity.AddComponent<Game::SoundComponent>();
+            auto soundComp = o_entity.AddComponent<Game::Sound>();
             soundComp->SetSoundPath(i_path);
             return true;;
         }

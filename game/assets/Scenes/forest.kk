@@ -105,9 +105,9 @@
 >enabled
 	1
 >meshPath
-	game/assets\Maps\Forest_map.fbx
+	game/assets/Maps/Forest_map.fbx
 >texturePath
-	game/assets\Textures\Forest_Texture.png
+	game/assets/Textures/Forest_Texture.png
 
 >entity
 >childs

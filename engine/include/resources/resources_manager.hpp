@@ -1,11 +1,13 @@
 #pragma once
 
+#include <filesystem>
 #include <unordered_map>
 #include <memory>
 
 #include "debug/log.hpp"
 
 #include "utils/singleton.hpp"
+#include "utils/normalize_filepath.hpp"
 #include "multithread/threadpool.hpp"
 
 #include "resources/mesh.hpp"
@@ -97,6 +99,10 @@ std::shared_ptr<TResource> ResourcesManager::LoadResource(const std::string& i_n
 		return nullptr;
 	}
 
+    // Normalize name slash if it is a filepath
+    std::string name = i_name;
+    Utils::NormalizeFilepath(name);
+
 	std::shared_ptr<TResource> newResource;
 
 	ResourcesManager& rm = Instance();
@@ -104,16 +110,16 @@ std::shared_ptr<TResource> ResourcesManager::LoadResource(const std::string& i_n
 	{
 		std::lock_guard<std::mutex> guard(rm.resourceMX);
 
-		if (rm.resources.find(i_name.c_str()) != rm.resources.end())
-			return std::dynamic_pointer_cast<TResource>(rm.resources[i_name.c_str()]);
+		if (rm.resources.find(name.c_str()) != rm.resources.end())
+			return std::dynamic_pointer_cast<TResource>(rm.resources[name.c_str()]);
 
-		newResource = std::make_shared<TResource>(i_name, i_params...);
-		rm.resources[i_name.c_str()] = newResource;
+		newResource = std::make_shared<TResource>(name, i_params...);
+		rm.resources[name.c_str()] = newResource;
 	}
 
-	rm.threadpool.AddTask([newResource, i_name]() {
+	rm.threadpool.AddTask([newResource, name]() {
 		ResourcesManager& rm = Instance();
-		rm.TryLoad(newResource, i_name);
+		rm.TryLoad(newResource, name);
 		});
 
 	return std::dynamic_pointer_cast<TResource>(newResource);

@@ -105,9 +105,9 @@
 >enabled
 	1
 >meshPath
-	game/assets\Maps\Winter_map.fbx
+	game/assets/Maps/Winter_map.fbx
 >texturePath
-	game/assets\Textures\Winter_Texture.png
+	game/assets/Textures/Winter_Texture.png
 
 >entity
 >childs
@@ -988,8 +988,8 @@
 >enabled
 	1
 >meshPath
-	game/assets\Models\Hero\Hero.fbx
+	game/assets/Models/Hero/Hero.fbx
 >texturePath
-	game/assets\Textures\Dungeons_Texture_01.png
+	game/assets/Textures/Dungeons_Texture_01.png
 >animationPath
-	game/assets\Models\Hero\Hero_Idle_1.fbx
+	game/assets/Models/Hero/Hero_Idle_1.fbx

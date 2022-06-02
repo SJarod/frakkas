@@ -14,6 +14,7 @@ namespace Game
     class Camera;
     class Drawable;
     class Collider;
+    class Sound;
 
     class EntityManager;
 }
@@ -34,7 +35,7 @@ namespace Renderer
     {
     public:
         Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physicScene, Renderer::LowLevel::LowRenderer* i_renderer);
-        ~Graph() = default;
+        ~Graph() { Clear(); };
 
         static bool playing;
 
@@ -61,6 +62,11 @@ namespace Renderer
         static void UnregisterComponent(Game::Component* i_oldComponent);
 
         /**
+         * @brief Clear all data loaded by current scene.
+         */
+        void Clear();
+
+        /**
          * @brief Renders each entity, using editor camera
          * @param i_renderer the renderer that will draw the entities
          * @param i_aspectRatio the render's aspect ratio
@@ -79,7 +85,7 @@ namespace Renderer
          * @param io_entityManager The entity manager to create entities.
          * @return true if scene created, false if an error occurred.
          */
-        bool CreateScene(const std::filesystem::path& i_scenePath);
+        bool CreateScene(std::filesystem::path i_scenePath);
 
         /**
          * Reload the current scene.
@@ -123,6 +129,7 @@ namespace Renderer
         static std::vector<Game::Camera*> gameCameras;
         static std::vector<Game::Drawable*> renderEntities;
         static std::vector<Game::Component*> componentsToStart;
+        static std::vector<Game::Sound*> sounds;
 
         std::filesystem::path currentScenePath;
         std::filesystem::path loadScenePath;

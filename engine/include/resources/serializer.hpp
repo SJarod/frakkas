@@ -33,7 +33,6 @@ namespace Renderer
 
 namespace Resources
 {
-    class Sound;
     class Serializer
     {
     public:

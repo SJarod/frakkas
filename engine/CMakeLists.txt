@@ -12,7 +12,7 @@ add_library(${PROJECT_NAME} STATIC
 			src/game/lowcomponent/animated_draw.cpp
 			src/game/lowcomponent/camera.cpp
             src/game/lowcomponent/component.cpp
-            src/game/lowcomponent/sound_component.cpp
+            src/game/lowcomponent/sound.cpp
 			src/game/lowcomponent/drawable.cpp
 		    src/game/collider/box_collider.cpp
 		    src/game/collider/collider.cpp
@@ -35,7 +35,6 @@ add_library(${PROJECT_NAME} STATIC
 			src/resources/skeletal_mesh.cpp
 			src/resources/skeletal_animation.cpp
 			src/resources/texture.cpp
-			src/resources/sound.cpp
 			src/animation/animator.cpp
 			src/ui/canvas.cpp
         	src/debug/log.cpp

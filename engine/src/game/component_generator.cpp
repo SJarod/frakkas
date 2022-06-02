@@ -98,7 +98,7 @@ bool CreateNewComponentScript(const std::string& compName)
 
     // Set after the first .cpp file
 	int addLibraryLine = strCmake.find(".cpp") + (sizeof(".cpp") / sizeof(char));
-	strCmake.insert(addLibraryLine + 1, "\t\tassets/scripts/" + fileName + ".cpp\n");
+	strCmake.insert(addLibraryLine + 1, "\t\tassets/Scripts/" + fileName + ".cpp\n");
 
 	std::ofstream outCMake(GetCMakeFullPath());
 

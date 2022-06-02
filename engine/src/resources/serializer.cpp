@@ -6,8 +6,6 @@
 #include "game/lowcomponent/component.hpp"
 #include "game/entity_manager.hpp"
 
-#include "resources/sound.hpp"
-
 #include "renderer/light.hpp"
 #include "renderer/model.hpp"
 #include "renderer/skeletal_model.hpp"

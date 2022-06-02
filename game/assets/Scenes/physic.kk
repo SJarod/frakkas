@@ -576,7 +576,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\red.png
+	game/assets/red.png
 
 >entity
 >childs
@@ -614,7 +614,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\red.png
+	game/assets/red.png
 >BoxCollider
 >enabled
 	1
@@ -644,7 +644,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\red.png
+	game/assets/red.png
 >BoxCollider
 >enabled
 	1
@@ -674,7 +674,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\red.png
+	game/assets/red.png
 >BoxCollider
 >enabled
 	1
@@ -704,7 +704,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\red.png
+	game/assets/red.png
 >BoxCollider
 >enabled
 	1
@@ -749,7 +749,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\blue.png
+	game/assets/blue.png
 >BoxCollider
 >enabled
 	1
@@ -779,7 +779,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\blue.png
+	game/assets/blue.png
 >BoxCollider
 >enabled
 	1
@@ -809,7 +809,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\blue.png
+	game/assets/blue.png
 >BoxCollider
 >enabled
 	1
@@ -839,7 +839,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\blue.png
+	game/assets/blue.png
 >BoxCollider
 >enabled
 	1
@@ -884,7 +884,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\yellow.png
+	game/assets/yellow.png
 >BoxCollider
 >enabled
 	1
@@ -914,7 +914,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\yellow.png
+	game/assets/yellow.png
 >BoxCollider
 >enabled
 	1
@@ -944,7 +944,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\yellow.png
+	game/assets/yellow.png
 >BoxCollider
 >enabled
 	1
@@ -989,7 +989,7 @@
 >name
 	ProceduralCube
 >textureName
-	game/assets\PolygonNature_01.png
+	game/assets/PolygonNature_01.png
 >BoxCollider
 >enabled
 	1

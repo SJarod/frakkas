@@ -9,7 +9,6 @@
 #include "renderer/skeletal_model.hpp"
 #include "renderer/graph.hpp"
 
-#include "resources/sound.hpp"
 #include "resources/mesh.hpp"
 #include "resources/skeletal_mesh.hpp"
 #include "resources/skeletal_animation.hpp"

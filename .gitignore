@@ -146,3 +146,4 @@ EditorFrakkas.pdb
 **/.vs
 *.json
 default.profraw
+sh.exe.stackdump
