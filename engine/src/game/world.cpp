@@ -36,17 +36,24 @@ World::World(Engine& i_engine)
 
 void World::SetInputsMode(InputsMode i_flag)
 {
-    engine->SetUINavigation(false);
+    if (engine->GetRunMode() & Utils::UpdateFlag_Editing)
+        return;
 
+    // Reset everything
+    engine->SetUINavigation(false);
+    Engine::SetCursorGameMode(true);
+    engine->DisableInputs();
+
+    // Set according to flag
     if (i_flag & InputsMode_UI)
     {
         engine->SetUINavigation(true);
-        engine->SetRunMode(Utils::UpdateFlag_Editing);
+        Engine::SetCursorGameMode(false);
     }
 
     if (i_flag & InputsMode_Game)
     {
-        engine->SetRunMode(Utils::UpdateFlag_Gaming);
+        engine->EnableInputs();
     }
 
     inputsMode = i_flag;

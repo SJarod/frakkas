@@ -124,7 +124,8 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     bool stylePushed = false;
     if (io_engine.GetRunMode() & Utils::UpdateFlag_Gaming)
     {
-        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.75f);
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, io_engine.GetRunMode() & Utils::UpdateFlag_Editing ? 0.75f : 0.4f);
+
         stylePushed = true;
     }
 

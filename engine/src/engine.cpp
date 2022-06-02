@@ -317,11 +317,15 @@ void Engine::SetRunMode(unsigned int i_flag)
     updateMode = i_flag;
     graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 
-    if (updateMode & Utils::UpdateFlag_Gaming)
-        Engine::SetCursorGameMode(true);
+    if (updateMode & Utils::UpdateFlag_Gaming
+    && !(Game::World::GetInputsMode() & Game::World::InputsMode_UI))
+        SetCursorGameMode(true);
 
     if (updateMode & Utils::UpdateFlag_Editing)
-        Engine::SetCursorGameMode(false);
+    {
+        SetUINavigation(true);
+        SetCursorGameMode(false);
+    }
 
     graph->playing = updateMode & Utils::UpdateFlag_Gaming;
 }
@@ -346,6 +350,18 @@ void Engine::SetCursorPosition(const Vector2& i_position)
     SDL_WarpMouseInWindow(window, i_position.x, i_position.y);
 }
 
+void Engine::ClampCursorPosition(const Vector2& i_min, const Vector2& i_max)
+{
+    Vector2 pos = Game::Inputs::GetMousePosition();
+    Vector2 newPos = pos;
+
+    newPos.x = Maths::Clamp(newPos.x, i_min.x, i_max.x);
+    newPos.y = Maths::Clamp(newPos.y, i_min.y, i_max.y);
+
+    if (newPos != pos)
+        SetCursorPosition(newPos);
+}
+
 void Engine::EnableInputs()
 {
     inputsManager.SetInputsListening(true);
@@ -362,6 +378,7 @@ void Engine::SetUINavigation(bool i_activate) const
     if (i_activate)
     {
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
         if (updateMode & Utils::UpdateFlag_Gaming)
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     }
@@ -369,6 +386,7 @@ void Engine::SetUINavigation(bool i_activate) const
     {
         io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+        io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
     }
 }
 
