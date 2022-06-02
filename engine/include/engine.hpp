@@ -99,6 +99,13 @@ public:
     static void SetCursorPosition(const Vector2& i_position);
 
     /**
+     * @brief Clamp the mouse cursor position into a rectangle.
+     * @param i_min The minimum coordinates to clamp at.
+     * @param i_max The maximum coordinates to clamp at.
+     */
+    static void ClampCursorPosition(const Vector2& i_min, const Vector2& i_max);
+
+    /**
      * @brief Activate keyboard/mouse inputs listening with Inputs class
      */
     void EnableInputs();

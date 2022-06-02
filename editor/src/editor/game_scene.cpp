@@ -19,6 +19,7 @@ void FxTestBed();
 void GameScene::OnImGuiRender(Engine& io_engine)
 {
     bool focusOnGaming = !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing);
+
     if (focusOnGaming)
         ImGui::SetNextWindowFocus();
 
