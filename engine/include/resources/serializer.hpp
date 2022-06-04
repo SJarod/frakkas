@@ -31,6 +31,11 @@ namespace Renderer
     }
 }
 
+namespace Animation
+{
+    class AnimationGraph;
+}
+
 namespace Resources
 {
     class Serializer
@@ -124,6 +129,20 @@ namespace Resources
          */
         static void Read(std::ifstream& i_file, Renderer::Light& o_light);
 
+        /**
+         * @brief read an animation graph in the next line of i_file
+         * @param i_file the opened input file
+         * @param o_animGraph the graph to build
+         */
+        static void Read(std::ifstream& i_file, Animation::AnimationGraph& o_animGraph);
+
+        /**
+         * @brief read a skeletal model's sockets.
+         * @param i_file the opened input file
+         * @param o_skmodel the skeletal model
+         */
+        static void Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel);
+
     public: /// WRITE FUNCTIONS
 
         /**
@@ -189,6 +208,18 @@ namespace Resources
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Light& i_light);
+        /**
+         * @brief SaveScene an animation graph in frakkas text format
+         * @param io_file the opened output file to write in
+         */
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Animation::AnimationGraph& i_animGraph);
+
+        /**
+         * @brief SaveScene a skeletal model's sockets in frakkas text format.
+         * @param io_file the opened output file to write in
+         */
+        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel);
+
     private:
         /**
          * @return '\t', so a tabulation in character format. Useful to write tabulation with std::cout

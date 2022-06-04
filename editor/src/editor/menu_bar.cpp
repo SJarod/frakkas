@@ -58,6 +58,7 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
     auto SetNewSceneAction = [&fileAction]() { fileAction = "New scene"; };
     auto SetOpenSceneAction = [&fileAction]() { fileAction = "Open scene"; };
     auto SaveScene = [&io_graph]() { io_graph.SaveScene(); };
+    auto ReloadScene = [&o_loadScene, &io_graph]() { o_loadScene = true; io_graph.ReloadScene(); };
 
 #pragma region Menu item
     if (ImGui::BeginMenu("File"))
@@ -73,11 +74,8 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
         if (ImGui::MenuItem("Save", "CTRL+S"))
             SaveScene();
 
-        if (ImGui::MenuItem("Reload Scene"))
-        {
-            o_loadScene = true;
-            io_graph.ReloadScene();
-        }
+        if (ImGui::MenuItem("Reload Scene", "CTRL+R"))
+            ReloadScene();
 
         ImGui::Separator();
 
@@ -95,6 +93,9 @@ void MenuBar::FileField(Renderer::Graph& io_graph, bool& o_loadScene)
         SetOpenSceneAction();
     if (Inputs::IsControlCommandPressed(EButton::S))
         SaveScene();
+    if (Inputs::IsControlCommandPressed(EButton::R))
+        ReloadScene();
+
 #pragma endregion
 
 #pragma region Popup
@@ -306,7 +307,7 @@ void Editor::MenuBar::GameField(Engine& io_engine, bool& o_loadScene)
     auto reloadSceneFunc = [&]()
             {
                 io_engine.SetRunMode(Utils::UpdateFlag_Editing);
-                io_engine.graph->ReloadScene();
+                io_engine.graph->ReloadScene(false);
                 o_loadScene = true;
             };
 

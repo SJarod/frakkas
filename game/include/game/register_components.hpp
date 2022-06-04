@@ -1,6 +1,7 @@
 #pragma once
 
 //TODO: Add include $i
+#include "player_animation.hpp"
 #include "menu_script.hpp"
 #include "player_mesh_rotation.hpp"
 #include "fps_movement.hpp"
@@ -44,6 +45,7 @@ namespace Game
         greedEntity.AddComponent<PlayerMeshRotation>();
         greedEntity.AddComponent<StaticDraw>();
         greedEntity.AddComponent<AnimatedDraw>();
+        greedEntity.AddComponent<PlayerAnimation>();
         greedEntity.AddComponent<Camera>();
         greedEntity.AddComponent<Sound>();
         greedEntity.AddComponent<FPSMovement>();

@@ -10,6 +10,7 @@ add_library(${PROJECT_NAME} STATIC
 			src/game/world.cpp
             src/game/lowcomponent/static_draw.cpp
 			src/game/lowcomponent/animated_draw.cpp
+			
 			src/game/lowcomponent/camera.cpp
             src/game/lowcomponent/component.cpp
             src/game/lowcomponent/sound.cpp
@@ -36,6 +37,7 @@ add_library(${PROJECT_NAME} STATIC
 			src/resources/skeletal_animation.cpp
 			src/resources/texture.cpp
 			src/animation/animator.cpp
+			src/animation/animation_graph.cpp
 			src/ui/canvas.cpp
         	src/debug/log.cpp
             src/engine.cpp

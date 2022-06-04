@@ -24,14 +24,14 @@ ThreadPool::ThreadPool(const unsigned int i_nThread)
 ThreadPool::~ThreadPool()
 {
 	running.clear();
-	queueCV.notify_all();
+	parallelQueueCV.notify_all();
 	for (auto& thread : threads)
 		thread.join();
 }
 
 void ThreadPool::SetMultithread(const bool i_param)
 {
-	if (tasks.empty())
+	if (parallelTasks.empty())
 		multithread = i_param;
 }
 
@@ -45,15 +45,17 @@ unsigned int ThreadPool::GetThreadsNumber() const
 	return nThread;
 }
 
-bool ThreadPool::Clear() const
+bool ThreadPool::Clear()
 {
-	if (!tasks.empty())
+	ThreadPool& tp = Instance();
+
+	if (!tp.parallelTasks.empty())
 	{
 		return false;
 	}
 	else
 	{
-		for (const bool w : workers)
+		for (const bool w : tp.workers)
 		{
 			if (w)
 				return false;
@@ -63,24 +65,33 @@ bool ThreadPool::Clear() const
 	return true;
 }
 
-void ThreadPool::AddTask(const Task& i_fct)
+void ThreadPool::AddTask(const Task& i_fct, const bool i_parallel)
 {
+	ThreadPool& tp = Instance();
+
+	if (i_parallel)
 	{
-		std::lock_guard<std::mutex> guard(queueMX);
+		std::lock_guard<std::mutex> guard(tp.parallelQueueMX);
 
-		if (tasks.empty())
-			queueCV.notify_one();
+		if (tp.parallelTasks.empty())
+			tp.parallelQueueCV.notify_one();
 
-		tasks.emplace_back(Task(i_fct));
+		tp.parallelTasks.emplace_back(Task(i_fct));
+	}
+	else
+	{
+		std::lock_guard<std::mutex> guard(tp.mainThreadQueueMX);
+		tp.mainThreadTasks.emplace_back(Task(i_fct));
+		return;
 	}
 
-	if (!multithread)
-		Work();
+	if (!tp.multithread)
+		tp.Work();
 }
 
 void ThreadPool::RemoveFirstTask()
 {
-	tasks.pop_front();
+	parallelTasks.pop_front();
 }
 
 void ThreadPool::Work(const int i_id)
@@ -89,30 +100,30 @@ void ThreadPool::Work(const int i_id)
 
 	if (multithread)
 	{
-		if (tasks.empty())
+		if (parallelTasks.empty())
 		{
-			std::unique_lock<std::mutex> lock(queueMX);
-			queueCV.wait(lock, [&]() {
-				return running.test() ? !tasks.empty() : true;
+			std::unique_lock<std::mutex> lock(parallelQueueMX);
+			parallelQueueCV.wait(lock, [&]() {
+				return running.test() ? !parallelTasks.empty() : true;
 				});
 
 			return;
 		}
 		else
 		{
-			std::lock_guard<std::mutex> guard(queueMX);
+			std::lock_guard<std::mutex> guard(parallelQueueMX);
 
-			if (tasks.empty())
+			if (parallelTasks.empty())
 				return;
 
-			t = tasks.front();
+			t = parallelTasks.front();
 			workers[i_id] = true;
 			RemoveFirstTask();
 		}
 	}
 	else
 	{
-		t = tasks.front();
+		t = parallelTasks.front();
 		RemoveFirstTask();
 	}
 
@@ -134,6 +145,32 @@ void ThreadPool::PoolRoutine(const int i_id)
 
 		Work(i_id);
 	}
+}
+
+void ThreadPool::PollMainThreadTasks()
+{
+	ThreadPool& tp = Instance();
+
+	std::lock_guard<std::mutex> guard(tp.mainThreadQueueMX);
+
+	for (Task& task : tp.mainThreadTasks)
+	{
+		task();
+	}
+
+	tp.mainThreadTasks.clear();
+}
+
+void ThreadPool::FinishTasks()
+{
+	while (!Clear())
+	{
+		// do all main thread tasks while other threads are working
+		PollMainThreadTasks();
+	}
+
+	// finish remaining main thread tasks
+	PollMainThreadTasks();
 }
 
 void ThreadPool::PrintThreadId(const int i_id)

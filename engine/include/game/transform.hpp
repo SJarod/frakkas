@@ -32,6 +32,7 @@ namespace Game
 	{
 	public:
         Transform();
+        Transform(const Transform& i_copy);
 
         Property<Vector3> position;
         // Rotation angles in radians. x : yaw, y : pitch, z : roll

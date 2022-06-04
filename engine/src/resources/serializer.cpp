@@ -6,6 +6,8 @@
 #include "game/lowcomponent/component.hpp"
 #include "game/entity_manager.hpp"
 
+#include "animation/animation_graph.hpp"
+
 #include "renderer/light.hpp"
 #include "renderer/model.hpp"
 #include "renderer/skeletal_model.hpp"
@@ -136,7 +138,13 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
                         Read(i_file, reinterpret_cast<float*>(componentData), desc.count);
                     break;
                 case EDataType::STRING:
-                        Read(i_file, *reinterpret_cast<std::string*>(componentData));
+                    Read(i_file, *reinterpret_cast<std::string*>(componentData));
+                    break;
+                case EDataType::ANIMATION:
+                    Read(i_file, *reinterpret_cast<Animation::AnimationGraph*>(componentData));
+                    break;
+                case EDataType::SKELETON:
+                    Read(i_file, *reinterpret_cast<Renderer::SkeletalModel*>(componentData));
                     break;
                 default:
                     break;
@@ -216,6 +224,55 @@ void Serializer::Read(std::ifstream& i_file, Renderer::Light& o_light)
     }
 }
 
+void Serializer::Read(std::ifstream& i_file, Animation::AnimationGraph& o_animGraph)
+{
+    GetAttribute(i_file);
+    int count;
+    Read(i_file, &count);
+
+    for (int i = 0; i < count; ++i)
+    {
+        GetAttribute(i_file);
+        std::string animFile;
+        Read(i_file, &animFile);
+
+        o_animGraph.AddAnimationPack(animFile);
+    }
+}
+
+void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
+{
+    GetAttribute(i_file);
+    int count;
+    Read(i_file, &count);
+
+    for (int i = 0; i < count; ++i)
+    {
+        Game::Transform transform;
+        GetAttribute(i_file);
+        Read(i_file, transform);
+
+        int id;
+        GetAttribute(i_file);
+        Read(i_file, &id);
+
+        std::string meshName, textureName;
+        GetAttribute(i_file);
+        Read(i_file, meshName);
+        GetAttribute(i_file);
+        Read(i_file, textureName);
+
+        o_skmodel.AddSocket(meshName, textureName, false, id);
+        if (!o_skmodel.sockets.empty())
+        {
+            Renderer::Socket& socket = o_skmodel.sockets.back();
+            socket.transform.position = transform.position.get();
+            socket.transform.rotation = transform.rotation.get();
+            socket.transform.scale = transform.scale.get();
+        }
+    }
+}
+
 ///////////////////////// WRITE FUNCTIONS
 
 void Serializer::WriteAttribute(std::ofstream &io_file, const std::string &i_attribute)
@@ -283,6 +340,12 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
             case EDataType::STRING:
                 Write(io_file, desc.name, *reinterpret_cast<std::string*>(componentData));
                 break;
+            case EDataType::ANIMATION:
+                Write(io_file, desc.name, *reinterpret_cast<Animation::AnimationGraph*>(componentData));
+                break;
+            case EDataType::SKELETON:
+                Write(io_file, desc.name, *reinterpret_cast<Renderer::SkeletalModel*>(componentData));
+                break;
             default:
                 break;
         }
@@ -327,6 +390,39 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "shadow", &i_light.shadow);
     Write(io_file, "shadowPCF", &i_light.shadowPCF);
     // 10 parameters serialized
+}
+
+void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Animation::AnimationGraph& i_animGraph)
+{
+    WriteAttribute(io_file, i_attributeName);
+
+    std::vector<std::string_view> files;
+    i_animGraph.GetFilesName(files);
+
+    int count = static_cast<int>(files.size());
+    Write(io_file, "count", &count, 1);
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+        Write(io_file, "file", &files[i]);
+    }
+}
+
+void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)
+{
+    WriteAttribute(io_file, i_attributeName);
+
+    int count = static_cast<int>(i_skmodel.sockets.size());
+    Write(io_file, "count", &count, 1);
+
+    std::list<Renderer::Socket> sockets = i_skmodel.sockets;
+    for (std::list<Renderer::Socket>::iterator it = sockets.begin(); it != sockets.end(); ++it)
+    {
+        Write(io_file, "transform", it->transform);
+        Write(io_file, "boneID", &it->boneID, 1);
+        Write(io_file, "socketMesh", it->model.mesh.lock()->name);
+        Write(io_file, "socketTexture", it->model.textureName);
+    }
 }
 
 char Serializer::Tab()

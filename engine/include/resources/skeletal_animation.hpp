@@ -7,6 +7,8 @@
 #include "resources/skeletal_mesh.hpp"
 #include "maths.hpp"
 
+#define ANIMATION_MAP
+
 namespace Resources
 {
     struct KeyFramePos
@@ -91,43 +93,20 @@ namespace Resources
     };
 
     /**
-     * Structure used to store the skeleton's hierarchy.
-     */
-    struct SkeletonNodeData
-    {
-        Matrix4 transform;
-        std::string name;
-
-        int childrenCount;
-        std::vector<SkeletonNodeData> children;
-
-        /**
-         * Get the size of this submesh.
-         */
-        size_t GetMemorySize() const;
-    };
-
-    /**
      * One animation found in the animation file.
      */
     class SkeletalAnimation
     {
     private:
         std::vector<KeyFrameBone> kfBones;
-        SkeletonNodeData rootNode;
-        std::unordered_map<std::string, Bone> boneInfoMap;
 
         const int animationIndex = 0;
 
         /**
-         * Load the skeleton node data with Assimp's data.
-         */
-        void ReadHierarchyData(SkeletonNodeData& o_dest, const aiNode* i_src);
-
-        /**
+         * Load the keyframe bones.
          * Repair the skeletal mesh bone info if bones are missing.
          */
-        void ReadMissingBones(const aiAnimation* i_animation, SkeletalMesh& io_skmesh);
+        void LoadKeyFrameBones(const aiAnimation* i_animation, SkeletalMesh& io_skmesh);
 
     public:
         const std::string animationName;
@@ -136,22 +115,15 @@ namespace Resources
         //framerate
         float tick = 0.f;
 
-        SkeletalAnimation(const std::string& i_name, const aiScene* i_scene, SkeletalMesh& i_skmesh, const int i_animationIndex);
+        SkeletalAnimation(const std::string& i_name,
+            const aiScene* i_scene,
+            SkeletalMesh& i_skmesh,
+            const int i_animationIndex);
 
         /**
          * Look for a bone in the bone map with its name.
          */
         const KeyFrameBone* FindBone(const std::string_view& i_name) const;
-
-        /**
-         * Get a reference to the entire bone map.
-         */
-        const std::unordered_map<std::string, Bone>& GetBoneMap() const;
-
-        /**
-         * Get the root node of the skeleton's data.
-         */
-        const SkeletonNodeData* GetRootNode() const;
 
         /**
          * Get the size of this submesh.
@@ -173,12 +145,14 @@ namespace Resources
         std::vector<SkeletalAnimation> animations;
 #endif
 
-        SkeletalMesh& mappedSkmesh;
+        std::weak_ptr<SkeletalMesh> owningSkmesh;
 
     public:
         const std::string animationFilename;
 
-        SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& i_skmesh);
+        SkeletalAnimationPack(const std::string& i_name,
+            const std::string& i_animationFilename,
+            std::shared_ptr<SkeletalMesh> i_skmesh);
 
         bool DependenciesReady() override;
         bool CPULoad() override;
@@ -191,6 +165,11 @@ namespace Resources
          * Get an animation specifying its name.
          */
         const SkeletalAnimation* GetAnimation(const std::string_view& i_animationName) const;
+
+        /**
+         * Get the animations map.
+         */
+        const std::unordered_map<std::string, SkeletalAnimation>& GetAnimationsMap() const;
 #else
         /**
          * Get an animation specifying its index.
@@ -198,6 +177,9 @@ namespace Resources
         const SkeletalAnimation* GetAnimation(const unsigned int i_index) const;
 #endif
 
+        /**
+         * Get the number of animations.
+         */
         const int GetPackSize() const;
     };
 }

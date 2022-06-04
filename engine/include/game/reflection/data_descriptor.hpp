@@ -13,10 +13,11 @@ enum class EDataType
 	FLOAT,
 	BOOL,
 	STRING,
+    ANIMATION, // A table for the animation graph
+    SKELETON,
     NONE_DATA, // A limit between serialized data and editor tools
     TEXT, // A simple text for inspector
-    BUTTON, // A button for inspector
-    ANIMATION // A combo for animation selection
+    BUTTON // A button for inspector
 };
 
 using KKEditorAction = std::function<void(unsigned char*)>;

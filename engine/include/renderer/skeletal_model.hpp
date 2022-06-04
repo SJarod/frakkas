@@ -3,8 +3,7 @@
 #include <memory>
 
 #include "renderer/render_object.hpp"
-#include "animation/animator.hpp"
-
+#include "renderer/model.hpp"
 #include "game/transform.hpp"
 
 namespace Resources
@@ -19,14 +18,23 @@ namespace Resources
 
 namespace Renderer
 {
+	class Socket
+	{
+	public:
+		Game::Transform transform;
+		Renderer::Model model;
+		int boneID;
+	};
+
 	class SkeletalModel : public Renderer::RenderObject
 	{
 	public:
+		bool showSkeleton = false;
+
 		std::shared_ptr<Resources::Shader> lightDepthShader;
 
-		std::weak_ptr<Resources::SkeletalMesh>	skmesh;
-		Animation::Animator							player;
-		std::weak_ptr<SkeletalAnimationPack>		skpack;
+		std::weak_ptr<Resources::SkeletalMesh> skmesh;
+		std::list<Socket> sockets;
 
 		std::string textureName = "";
 		bool		flipTexture = false;
@@ -35,21 +43,6 @@ namespace Renderer
 		std::weak_ptr<Resources::Texture> diffuseTex;
 
 		SkeletalModel();
-
-		/**
-		 * @Summary Create a model that contains submeshes with embedded textures using Assimp.
-		 * @param i_meshFilename
-		 */
-		SkeletalModel(const std::string& i_meshFilename);
-
-		/**
-		 * @Summary Create a model manually specifying mesh and texture.
-		 *
-		 * @param i_meshFilename
-		 * @param i_textureFilename
-		 * @param i_flipTexture
-		 */
-		SkeletalModel(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
 		* @Summary Set a mesh coming from a 3D model file after the creation of this model object.
@@ -73,12 +66,14 @@ namespace Renderer
 		void SetTexture(const std::string& i_textureFilename, const bool i_flipTexture);
 
 		/**
-		 * @Summary Load every animations from a file into the SkeletalAnimationPack.
-		 * The animations are loaded based on the specific SkeletalMesh of this SkeletalModel.
-		 * 
-		 * @param i_animationFilename
+		 * @brief Add a socket to the socket list.
 		 */
-		void LoadAnimationsForThis(const std::string& i_animationFilename);
+		void AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID);
+
+		/**
+		 * @brief Remove a socket from the socket list.
+		 */
+		void RemoveSocket(int i_boneID);
 
 		/**
 		 * @Summary Setup entity components from input file.

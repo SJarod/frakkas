@@ -11,21 +11,6 @@ Renderer::Model::Model()
 	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader", "engine/shaders/light_depth");
 }
 
-Renderer::Model::Model(const std::string& i_meshFilename)
-	: RenderObject("basicShader", "engine/shaders/basic")
-{
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader", "engine/shaders/light_depth");
-	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename);
-}
-
-Renderer::Model::Model(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
-	: RenderObject("basicShader", "engine/shaders/basic")
-{
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader", "engine/shaders/light_depth");
-	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename);
-	SetTexture(i_textureFilename, i_flipTexture);
-}
-
 void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename)
 {
 	mesh = ResourcesManager::LoadResource<Mesh>(i_meshFilename);

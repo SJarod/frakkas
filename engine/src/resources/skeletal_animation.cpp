@@ -1,4 +1,5 @@
 #include <cassert>
+#include <filesystem>
 
 #include "debug/log.hpp"
 #include "resources/resources_manager.hpp"
@@ -110,7 +111,7 @@ int KeyFrameBone::GetPositionKeyFrame(const float animationTime) const
 		if (animationTime < positions[index + 1].timeStamp)
 			return index;
 	}
-    return size - 1;
+	return size - 1;
 }
 
 int KeyFrameBone::GetRotationKeyFrame(const float animationTime) const
@@ -121,7 +122,7 @@ int KeyFrameBone::GetRotationKeyFrame(const float animationTime) const
 		if (animationTime < rotations[index + 1].timeStamp)
 			return index;
 	}
-    return size - 1;
+	return size - 1;
 }
 
 int KeyFrameBone::GetScaleKeyFrame(const float animationTime) const
@@ -132,7 +133,7 @@ int KeyFrameBone::GetScaleKeyFrame(const float animationTime) const
 		if (animationTime < scales[index + 1].timeStamp)
 			return index;
 	}
-    return size - 1;
+	return size - 1;
 }
 
 const std::string& KeyFrameBone::GetName() const
@@ -157,29 +158,12 @@ size_t SkeletonNodeData::GetMemorySize() const
 	return size;
 }
 
-void SkeletalAnimation::ReadHierarchyData(SkeletonNodeData& dest, const aiNode* src)
-{
-	assert(src);
-
-	dest.name = src->mName.data;
-	for (int i = 0; i < 16; ++i)
-		dest.transform.element[i] = *(&src->mTransformation.a1 + i);
-	dest.childrenCount = src->mNumChildren;
-
-	for (int i = 0; i < src->mNumChildren; ++i)
-	{
-		SkeletonNodeData newData;
-		ReadHierarchyData(newData, src->mChildren[i]);
-		dest.children.emplace_back(newData);
-	}
-}
-
-void SkeletalAnimation::ReadMissingBones(const aiAnimation* animation, SkeletalMesh& skmesh)
+void SkeletalAnimation::LoadKeyFrameBones(const aiAnimation* animation, SkeletalMesh& skmesh)
 {
 	int size = animation->mNumChannels;
 
 	std::unordered_map<std::string, Resources::Bone>& bim = skmesh.boneInfoMap;
-	int& boneCount = skmesh.boneCounter;
+	int& boneCount = skmesh.boneCount;
 
 	for (int i = 0; i < size; ++i)
 	{
@@ -191,10 +175,8 @@ void SkeletalAnimation::ReadMissingBones(const aiAnimation* animation, SkeletalM
 			bim[boneName].id = boneCount;
 			++boneCount;
 		}
-		kfBones.emplace_back(KeyFrameBone(channel->mNodeName.data, bim[channel->mNodeName.data].id, channel));
+		kfBones.emplace_back(KeyFrameBone(boneName, bim[boneName].id, channel));
 	}
-
-	boneInfoMap = bim;
 }
 
 SkeletalAnimation::SkeletalAnimation(const std::string& i_name, const aiScene* scene, SkeletalMesh& skmesh, const int animationIndex)
@@ -205,8 +187,7 @@ SkeletalAnimation::SkeletalAnimation(const std::string& i_name, const aiScene* s
 	duration = animation->mDuration;
 	tick = animation->mTicksPerSecond;
 
-	ReadHierarchyData(rootNode, scene->mRootNode);
-	ReadMissingBones(animation, skmesh);
+	LoadKeyFrameBones(animation, skmesh);
 
 	Log::Info("Successfully loaded animation in file : " + i_name);
 }
@@ -226,45 +207,39 @@ const KeyFrameBone* SkeletalAnimation::FindBone(const std::string_view& name) co
 		return &(*iter);
 }
 
-const std::unordered_map<std::string, Bone>& SkeletalAnimation::GetBoneMap() const
-{
-	return boneInfoMap;
-}
-
-const SkeletonNodeData* SkeletalAnimation::GetRootNode() const
-{
-	return &rootNode;
-}
-
 size_t SkeletalAnimation::GetMemorySize() const
 {
 	int size = 0;
 
 	size += kfBones.size() * sizeof(KeyFrameBone);
-	size += rootNode.GetMemorySize();
-
-	for (const auto& info : boneInfoMap)
-	{
-		size += sizeof(info);
-	}
 
 	return size;
 }
 
-SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name, const std::string& i_animationFilename, SkeletalMesh& skmesh)
-	: animationFilename(i_animationFilename), mappedSkmesh(skmesh)
+SkeletalAnimationPack::SkeletalAnimationPack(const std::string& i_name,
+	const std::string& i_animationFilename,
+	std::shared_ptr<SkeletalMesh> i_skmesh)
+	: animationFilename(i_animationFilename), owningSkmesh(i_skmesh)
 {
 	name = i_name;
 }
 
 bool SkeletalAnimationPack::DependenciesReady()
 {
-	return mappedSkmesh.submeshes.size() != 0;
+	if (owningSkmesh.expired())
+		return true;
+	return owningSkmesh.lock()->submeshes.size() != 0;
 }
 
 bool SkeletalAnimationPack::CPULoad()
 {
 	resourceType = EResourceType::ANIMPACK;
+
+	if (owningSkmesh.expired())
+	{
+		Log::Info(animationFilename, "'s owning skeletal mesh was not correctly loaded");
+		return false;
+	}
 
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
@@ -281,20 +256,18 @@ bool SkeletalAnimationPack::CPULoad()
 		return false;
 	}
 
-	std::vector<SkeletalAnimation> buffer;
 	for (int i = 0; i < scene->mNumAnimations; ++i)
 	{
-		const std::string animationName = std::string(scene->mAnimations[i]->mName.data);
-		SkeletalAnimation skanim = SkeletalAnimation(animationName, scene, mappedSkmesh, i);
+		std::filesystem::path path = animationFilename;
+		const std::string animationName = path.filename().string() + "_" + std::string(scene->mAnimations[i]->mName.data);
+		SkeletalAnimation skanim = SkeletalAnimation(animationName, scene, *owningSkmesh.lock(), i);
 
 #ifdef ANIMATION_MAP
 		animations.insert({ animationName, skanim });
 #else
-		buffer.emplace_back(skanim);
+		animations.emplace_back(skanim);
 #endif
 	}
-
-	animations = std::move(buffer);
 
 	Log::Info("Successfully loaded animation pack in file : " + animationFilename);
 
@@ -303,23 +276,32 @@ bool SkeletalAnimationPack::CPULoad()
 
 	for (const auto& anim : animations)
 	{
+#ifdef ANIMATION_MAP
+		ram += anim.second.GetMemorySize();
+#else
 		ram += anim.GetMemorySize();
+#endif
 	}
 
 	return true;
 }
 
 #ifdef ANIMATION_MAP
-const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const std::string_view& animationName) const
+const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const std::string_view& i_animationName) const
 {
-	if (animations.find(animationName) == animations.end())
+	if (animations.find(std::string(i_animationName)) == animations.end())
 	{
-		Log::Info("No animation named " + std::string(animationName));
+		//Log::Info("No animation named " + std::string(i_animationName));
 		return nullptr;
 	}
 
-	return &animations.find(animationName)->second;
-		}
+	return &animations.find(std::string(i_animationName))->second;
+}
+
+const std::unordered_map<std::string, SkeletalAnimation>& SkeletalAnimationPack::GetAnimationsMap() const
+{
+	return animations;
+}
 #else
 const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const unsigned int i) const
 {

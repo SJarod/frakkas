@@ -325,7 +325,7 @@ bool Graph::CreateScene(std::filesystem::path i_scenePath)
     auto collider = en->AddComponent<Game::SphereCollider>();
 
     drawable = en->AddComponent<Game::StaticDraw>();
-    drawable->SetMesh(Resources::Mesh::sphereMesh);
+    drawable->SetMesh(Resources::Mesh::icoSphereMesh);
     drawable->SetTexture("game/assets/Textures/gold.jpg", true);
 
     collider->isStatic = false;
@@ -342,6 +342,8 @@ void Graph::ReloadScene(const bool i_cleaning)
 
 void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning)
 {
+    ThreadPool::FinishTasks();
+
     if (i_cleaning)
         ResourcesManager::DestroyResources();
 

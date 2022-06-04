@@ -7,18 +7,31 @@
 
 Animation::Animator::Animator()
 {
-	boneMatrices.reserve(MAX_BONES);
 	for (unsigned int i = 0; i < MAX_BONES; ++i)
 	{
-		boneMatrices.emplace_back(Matrix4::Identity());
+		globalBoneMatrices.emplace_back(Matrix4::Identity());
+		rawBoneMatrices.emplace_back(Matrix4::Identity());
 	}
 }
 
-void Animation::Animator::UploadAnimation(const SkeletalAnimation* anim)
+void Animation::Animator::UploadAnimation(const SkeletalAnimation* anim, const bool i_loop)
 {
 	playTime = 0.f;
+	loop = i_loop;
 	this->anim = anim;
-	animBoneInfo = &anim->GetBoneMap();
+	animBoneInfo = &owningSkmesh.lock()->boneInfoMap;
+}
+
+void Animation::Animator::SetSkeletalMesh(const std::shared_ptr<Resources::SkeletalMesh> i_owningSkmesh)
+{
+	owningSkmesh = i_owningSkmesh;
+}
+
+void Animation::Animator::UnloadAnimation()
+{
+	playTime = 0.f;
+	loop = false;
+	this->anim = nullptr;
 }
 
 void Animation::Animator::UpdatePlayer(const float& deltaTime)
@@ -30,14 +43,34 @@ void Animation::Animator::UpdatePlayer(const float& deltaTime)
 	float rewindOffset = rewind * anim->duration;
 
 	playTime += deltaTime * anim->tick * playSpeed + rewindOffset;
-	playTime = fmodf(playTime, anim->duration);
 
-	UpdateBoneMatrices(anim->GetRootNode());
+	if (loop)
+	{
+		playTime = fmodf(playTime, anim->duration);
+	}
+	else if (playTime >= anim->duration)
+	{
+		UnloadAnimation();
+		return;
+	}
+
+	UpdateBoneMatrices(owningSkmesh.lock()->GetRootNode());
+	CancelExtraTS(true, false, true, true);
 }
 
-const std::vector<Matrix4>& Animation::Animator::GetBoneMatrices() const
+bool Animation::Animator::IsWaiting() const
 {
-	return boneMatrices;
+	return !anim;
+}
+
+const std::vector<Matrix4>& Animation::Animator::GetGlobalBoneMatrices() const
+{
+	return globalBoneMatrices;
+}
+
+const std::vector<Matrix4>& Animation::Animator::GetRawBoneMatrices() const
+{
+	return rawBoneMatrices;
 }
 
 void Animation::Animator::UpdateBoneMatrices(const SkeletonNodeData* node, const Matrix4& parentTransform)
@@ -60,9 +93,46 @@ void Animation::Animator::UpdateBoneMatrices(const SkeletonNodeData* node, const
 	{
 		int index = animBoneInfo->find(nodeName)->second.id;
 		Matrix4 offset = animBoneInfo->find(nodeName)->second.offset.Transpose();
-		boneMatrices[index] = offset * globalTransformation;
+
+		globalBoneMatrices[index] = offset * globalTransformation;
+		rawBoneMatrices[index] = globalTransformation;
 	}
 
 	for (unsigned int i = 0; i < node->childrenCount; ++i)
 		UpdateBoneMatrices(&node->children[i], globalTransformation);
+}
+
+void Animation::Animator::CancelExtraTS(const bool i_x, const bool i_y, const bool i_z, const bool i_scale)
+{
+	float x = static_cast<float>(i_x);
+	float y = static_cast<float>(i_y);
+	float z = static_cast<float>(i_z);
+	Vector3 extra = { x, y, z };
+
+	Matrix4 invGlobalExtra;
+	{
+		Vector3 t = globalBoneMatrices[0].DecomposeTranslation() * extra;
+
+		if (i_scale)
+		{
+			Vector3 s = globalBoneMatrices[0].DecomposeScale();
+			invGlobalExtra = (Matrix4::Scale(s) * Matrix4::Translate(t)).Inverse();
+		}
+		else
+		{
+			invGlobalExtra = Matrix4::Translate(t).Inverse();
+		}
+	}
+
+	Matrix4 invRawExtra;
+	{
+		Vector3 t = rawBoneMatrices[0].DecomposeTranslation() * extra;
+		invRawExtra = Matrix4::Translate(t).Inverse();
+	}
+
+	for (int i = 0; i < MAX_BONES; ++i)
+	{
+		globalBoneMatrices[i] = globalBoneMatrices[i] * invGlobalExtra;
+		rawBoneMatrices[i] = rawBoneMatrices[i] * invRawExtra;
+	}
 }

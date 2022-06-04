@@ -9,7 +9,7 @@ namespace Game
     KK_COMPONENT(Camera)
 
 		float near = 1.f;
-		float far = 300.f;
+		float far = 1000.f;
 
 		//vertical field of view in degrees, you should convert in radians for calcul
 		float fovY = 90.f;

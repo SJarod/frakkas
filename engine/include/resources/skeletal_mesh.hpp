@@ -18,9 +18,29 @@ namespace Resources
 		Matrix4 offset;
 	};
 
+	/**
+	 * Structure used to store the skeleton's hierarchy.
+	 */
+	struct SkeletonNodeData
+	{
+		Matrix4 transform;
+		std::string name;
+
+		int childrenCount;
+		std::vector<SkeletonNodeData> children;
+
+		/**
+		 * Get the size of this submesh.
+		 */
+		size_t GetMemorySize() const;
+	};
+
 	class SkeletalMesh : public Resources::Mesh
 	{
 	private:
+		/**
+		 * Extract bone info while loading the submesh.
+		 */
 		void ProcessAiMesh(std::shared_ptr<Submesh>& o_submesh,
 			const aiMesh& i_aim,
 			const aiScene& i_scene) override;
@@ -37,9 +57,15 @@ namespace Resources
 			const aiMesh& i_aim,
 			const aiScene& i_scene);
 
+		/**
+		 * Load the skeleton node data with Assimp's data.
+		 */
+		void LoadSkeleton(SkeletonNodeData& dest, const aiNode* src);
+
 	public:
 		std::unordered_map<std::string, Bone> boneInfoMap;
-		int boneCounter = 0;
+		SkeletonNodeData rootNode;
+		int boneCount = 0;
 
 		SkeletalMesh(const std::string& i_name);
 
@@ -48,5 +74,10 @@ namespace Resources
 		bool GPULoad() override { return Mesh::GPULoad(); }
 		bool CPUUnload() override { return true; }
 		bool GPUUnload() override { return Mesh::GPUUnload(); }
+
+		/**
+		 * Get the root node of the skeleton's data.
+		 */
+		const SkeletonNodeData* GetRootNode() const;
 	};
 }

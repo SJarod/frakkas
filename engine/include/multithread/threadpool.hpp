@@ -6,10 +6,13 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "utils/singleton.hpp"
 #include "multithread/task.hpp"
 
-class ThreadPool
+class ThreadPool : public Singleton<ThreadPool>
 {
+	friend class Singleton<ThreadPool>;
+
 private:
 	std::vector<std::jthread>	threads;
 	//which thread is working?
@@ -24,15 +27,16 @@ private:
 	std::atomic<float>	lastTaskTime;
 
 	// shared data
-	std::deque<Task>	tasks;
+	std::deque<Task>	parallelTasks;
+	std::deque<Task>	mainThreadTasks;
 
-	std::mutex				queueMX;
-	std::condition_variable queueCV;
+	std::mutex				parallelQueueMX;
+	std::condition_variable parallelQueueCV;
+	std::mutex				mainThreadQueueMX;
 
 	//is the routine running?
 	std::atomic_flag running = ATOMIC_FLAG_INIT;
 
-public:
 	/**
 	 * Create the thread pool.
 	 * Specify the number of threads, the number of threads is by default the maximum that the machine can get.
@@ -41,6 +45,7 @@ public:
 	 */
 	ThreadPool(const unsigned int i_nThread = std::thread::hardware_concurrency());
 
+public:
 	/**
 	 * End the thread pool.
 	 *
@@ -73,14 +78,15 @@ public:
 	/**
 	 * Is the thread pool working?
 	 */
-	bool Clear() const;
+	static bool Clear();
 
 	/**
 	 * Add a task to the task queue.
 	 *
-	 * @param fct
+	 * @param i_fct : the task
+	 * @param i_parallel : should the task be done in a parallel thread?
 	 */
-	void AddTask(const Task& i_fct);
+	static void AddTask(const Task& i_fct, const bool i_parallel = true);
 
 	/**
 	 * Remove the first task from the task queue.
@@ -100,6 +106,16 @@ public:
 	 *
 	 */
 	void PoolRoutine(const int i_id);
+
+	/**
+	 * Do the tasks contained in the main thread queue.
+	 */
+	static void PollMainThreadTasks();
+
+	/**
+	 * Call this function in the main thread to pause it and finish every remaining tasks.
+	 */
+	static void FinishTasks();
 
 	/**
 	 * Print the thread id.

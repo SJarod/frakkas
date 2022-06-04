@@ -29,17 +29,15 @@ void Resources::ResourcesManager::Refresh()
 	for (auto& resource : rm.resources)
 	{
 		std::shared_ptr<Resource> ptr = resource.second;
-		rm.threadpool.AddTask([&, ptr]() {
+		ThreadPool::AddTask([&, ptr]() {
 			ptr->CPUUnload();
 			ptr->CPULoad();
 
 			{
-				std::lock_guard<std::mutex> guard(rm.gpuLoadMX);
-
-				rm.gpuLoadQueue.emplace_back([ptr]() {
+				ThreadPool::AddTask([ptr]() {
 					ptr->GPUUnload();
 					ptr->GPULoad();
-					});
+					}, false);
 			}
 			});
 	}
@@ -60,14 +58,7 @@ void Resources::ResourcesManager::DestroyResources()
 {
 	ResourcesManager& rm = Instance();
 
-	while (!rm.threadpool.Clear())
-	{
-		// pausing main thread waiting for threads to finish CPU loading tasks
-		std::this_thread::yield();
-	}
-
-	// finish remaining GPU loading tasks
-	PollGPULoad();
+	ThreadPool::FinishTasks();
 
 	std::lock_guard<std::mutex> guard(rm.resourceMX);
 
@@ -78,18 +69,4 @@ void Resources::ResourcesManager::DestroyResources()
 	}
 
 	rm.resources.clear();
-}
-
-void Resources::ResourcesManager::PollGPULoad()
-{
-	ResourcesManager& rm = Instance();
-
-	std::lock_guard<std::mutex> guard(rm.gpuLoadMX);
-
-	for (Task& task : rm.gpuLoadQueue)
-	{
-		task();
-	}
-
-	rm.gpuLoadQueue.clear();
 }

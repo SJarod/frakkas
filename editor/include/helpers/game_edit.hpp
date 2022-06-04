@@ -30,6 +30,12 @@ namespace Renderer
 namespace Resources
 {
     class Sound;
+    class SkeletonNodeData;
+}
+
+namespace Animation
+{
+    class AnimationGraph;
 }
 
 struct ClassMetaData;
@@ -111,8 +117,19 @@ namespace Helpers
     void Edit(Game::Transform& io_transform);
 
     /**
-     * @brief ImGui editing function. Create a combo for animation selection.
-     * @param io_skmodel The skeletal model with animations.
+     * @brief ImGui editing function. Show available animations in the graph
+     * @param io_animGraph the animation graph
+     */
+    void Edit(Animation::AnimationGraph& io_animGraph);
+
+    /**
+     * @brief Display the entire skeleton with ImGui.
+     */
+    void DisplaySkeleton(Renderer::SkeletalModel& io_skmodel);
+
+    /**
+     * @brief ImGui editing function. Show skeleton bone hierarchy.
+     * @param io_skmodel the skeletal model
      */
     void Edit(Renderer::SkeletalModel& io_skmodel);
 

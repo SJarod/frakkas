@@ -352,7 +352,7 @@ inline Vector3 Matrix4::DecomposeTranslation() const
 
 inline Vector3 Matrix4::DecomposeRotation() const
 {
-    return Quaternion::QuatFromMatrix(*this).QuatToEuler();
+    return Quaternion::QuatFromMatrix(*this).Normalize().QuatToEuler();
 }
 
 inline Vector3 Matrix4::DecomposeScale() const

@@ -25,7 +25,7 @@ KK_COMPONENT_IMPL_END
 
 void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::Light& i_light, const Game::Transform& i_entityTransform)
 {
-    if (!model.mesh.lock())
+    if (model.mesh.expired() || !model.mesh.lock())
         return;
 
     model.UseShader();
@@ -60,7 +60,7 @@ void StaticDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rendere
 
 void StaticDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform)
 {
-	if (!model.mesh.lock())
+	if (model.mesh.expired() || !model.mesh.lock())
 		return;
 
 	model.lightDepthShader->Use();
@@ -97,14 +97,12 @@ void DropOnStaticDrawComponent(unsigned char* io_component, void* io_dropData)
     std::string extension = path.extension().string();
     if (Utils::FindExtension(extension, Utils::MeshExtensions))
     {
-        sd.meshPath = path.string();
-        sd.model.SetMeshFromFile(path.string());
+        sd.SetMesh(path.string());
     }
 
     if (Utils::FindExtension(extension, Utils::TextureExtensions))
     {
-        sd.texturePath = path.string();
-        sd.model.SetTexture(path.string(), false);
+        sd.SetTexture(path.string(), false);
     }
 }
 

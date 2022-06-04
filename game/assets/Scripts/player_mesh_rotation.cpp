@@ -14,6 +14,10 @@ void PlayerMeshRotation::OnUpdate()
     else if (curDir != Vector2())
         direction = curDir;
 
-    Rotation() = {0.f, Maths::Atan2(direction.x, direction.y), 0.f};
+    Quaternion thisQ = Quaternion::QuatFromEuler(Rotation().get());
+    Quaternion targetQ = Quaternion::QuatFromAxisAngle({ 0.f, 1.f, 0.f }, Maths::Atan2(direction.x, direction.y));
+    Vector3 rot = Quaternion::Slerp(thisQ, targetQ, Time::GetDeltaTime() * 10.f).QuatToEuler();
+
+    Rotation() = rot;
 }
 
