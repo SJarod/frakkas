@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME} STATIC
 		    assets/Scripts/follow_camera.cpp
 			assets/Scripts/player_mesh_rotation.cpp
  		    assets/Scripts/menu_script.cpp
+			assets/Scripts/player_animation.cpp
 )
 
 target_include_directories(${PROJECT_NAME}

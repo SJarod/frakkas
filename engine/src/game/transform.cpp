@@ -50,6 +50,61 @@ Transform::Transform()
     parent = nullptr;
 }
 
+Transform::Transform(const Transform& i_copy)
+{
+    position = i_copy.position;
+    rotation = i_copy.rotation;
+    scale = i_copy.scale;
+    parent = i_copy.parent;
+    colliderComponentCount = i_copy.colliderComponentCount;
+    needUpdate = i_copy.needUpdate;
+    needUniformUpdate = i_copy.needUniformUpdate;
+    scaleLockParams = i_copy.scaleLockParams;
+    worldMatrix = i_copy.worldMatrix;
+    childs = i_copy.childs;
+
+    position.setter = [&](const Vector3& value)
+    {
+        if (position != value)
+            needUpdate = needUniformUpdate = true;
+        position.set(value);
+    };
+    rotation.setter = [&](const Vector3& value)
+    {
+        if (rotation != value)
+            needUpdate = needUniformUpdate = true;
+        rotation.set(value);
+    };
+    scale.setter = [&](const Vector3& value)
+    {
+        if (scale != value)
+            needUpdate = needUniformUpdate = true;
+        scale.set(value);
+        scaleLockParams.origScale = scale.get();
+        scaleLockParams.ratio = 1.f;
+    };
+    parent.setter = [&](Transform* value)
+    {
+        // Check if this transform, is not a parent of the input transform 'value'
+        if (value)
+        {
+            bool isParent = false;
+            Transform* p = value->parent;
+            while (p)
+            {
+                if (this == p) isParent = true;
+                p = p->parent;
+            }
+            if (isParent) return;
+        }
+
+        parent.set(value);
+        needUpdate = needUniformUpdate = true;
+        if (value)
+            value->childs.emplace_back(this);
+    };
+}
+
 Matrix4 Transform::GetWorldMatrix() const
 {
     bool parentUpdate = (parent.get() && parent.get()->needUpdate);

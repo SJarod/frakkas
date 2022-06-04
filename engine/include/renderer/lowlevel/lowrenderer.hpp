@@ -162,11 +162,20 @@ namespace Renderer
              */
             void SetWindowSize(const Vector2& i_size) const;
 
+			/**
+			 * @brief Set a value of the specified uniform block.
+			 */
 			template<typename TUniformType>
 			void SetUniformToNamedBlock(const std::string_view& i_blockName, const int i_offset, const TUniformType& i_value) const;
 
+			/**
+			 * @Summary Draw a point.
+			 */
 			void RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size) const;
 
+			/**
+			 * @Summary Draw a mesh as lines.
+			 */
 			void RenderLines(const unsigned int i_VAO, const unsigned int i_count, const Matrix4& i_model,
                              const float i_size, const Vector3& i_color, bool i_useLineStrip);
 
@@ -180,12 +189,27 @@ namespace Renderer
 			 */
 			void RenderMeshOnce(const unsigned int i_VAO, const unsigned int i_count, const unsigned int i_texture) const;
 
+			/**
+			 * @Summary Render a mesh once as wireframe.
+			 * 
+			 * @param i_VAO the opengl vertex array object
+			 * @param i_count the number of triangles to draw
+			 */
 			void RenderMeshOnceOutline(const unsigned int i_VAO, const unsigned int i_count) const;
 
+			/**
+			 * @Summary Render a post-processed frame into the second pass fbo using the first pass fbo.
+			 */
 			void RenderPostProcess() const;
 
+			/**
+			 * @Summary Render the final screen into a framebuffer (using both the first and second pass fbo).
+			 */
 			void RenderFinalScreen(const LowLevel::Framebuffer& i_fbo) const;
 
+			/**
+			 * @Summary Render the final screen into the main framebuffer (using both the first and second pass fbo).
+			 */
 			void RenderFinalScreen() const;
 		};
 	}

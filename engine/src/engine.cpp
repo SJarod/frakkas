@@ -16,6 +16,8 @@
 
 #include "ui/canvas.hpp"
 
+#include "multithread/threadpool.hpp"
+
 #include "resources/resources_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -189,7 +191,7 @@ void Engine::InitMiniaudio()
 
 void Engine::BeginFrame()
 {
-    ResourcesManager::PollGPULoad();
+    ThreadPool::PollMainThreadTasks();
 
     inputsManager.PollEvent(editorInputsEvent);
     Game::Time::NewFrame();

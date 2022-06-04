@@ -39,11 +39,6 @@ namespace Resources
 		static std::shared_ptr<TResource> LoadResource(const std::string& i_name, const TExtraParams&... i_params) noexcept;
 
 		/**
-		* Load GPU data if they are added to the GPU load queue.
-		*/
-		static void PollGPULoad();
-
-		/**
 		* Get the default texture.
 		*/
 		static const DefaultTexture& GetDefaultTexture();
@@ -69,17 +64,11 @@ namespace Resources
 		static void DestroyResources();
 
 	private:
-		ThreadPool threadpool;
-
 		// mutex for the resources map
 		std::mutex resourceMX;
-		// mutex for the GPU load queue
-		std::mutex gpuLoadMX;
 
 		// Array of every loaded resource.
 		std::unordered_map<std::string, std::shared_ptr<Resource>> resources;
-
-		std::deque<Task> gpuLoadQueue;
 
 		ResourcesManager() = default;
 
@@ -117,7 +106,7 @@ std::shared_ptr<TResource> ResourcesManager::LoadResource(const std::string& i_n
 		rm.resources[name.c_str()] = newResource;
 	}
 
-	rm.threadpool.AddTask([newResource, name]() {
+	ThreadPool::AddTask([newResource, name]() {
 		ResourcesManager& rm = Instance();
 		rm.TryLoad(newResource, name);
 		});
@@ -136,18 +125,16 @@ inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, c
 		}
 		else
 		{
-			std::lock_guard<std::mutex> guard(gpuLoadMX);
-
-			gpuLoadQueue.emplace_back([i_newResource]() {
+			ThreadPool::AddTask([i_newResource]() {
 				i_newResource->GPULoad();
 				i_newResource->loaded.test_and_set(std::memory_order_release);
-				});
+				}, false);
 		}
 	};
 
 	if (!i_newResource->DependenciesReady())
 	{
-		threadpool.AddTask([this, i_newResource, i_name]() {
+		ThreadPool::AddTask([this, i_newResource, i_name]() {
 			TryLoad(i_newResource, i_name);
 			});
 	}

@@ -21,11 +21,11 @@ namespace Game
 		virtual void DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) {}
 
         /**
-         * @brief Set a new path to mesh resource.
+         * @brief Set a new mesh resource to this drawable object.
          */
         virtual void SetMesh(const std::string& i_path) {};
         /**
-         *@brief Set a new path to texture resource.
+         * @brief Set a new texture resource to this drawable object.
          */
         virtual void SetTexture(const std::string& i_path, bool i_flip) {};
 

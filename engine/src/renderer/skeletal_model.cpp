@@ -6,30 +6,11 @@
 #include "renderer/skeletal_model.hpp"
 
 Renderer::SkeletalModel::SkeletalModel()
-	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
+	: RenderObject("basicShader_skinning", "engine/shaders/basic", { "#define SKINNING\n" })
 {
 	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
+	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader_skinning",
 		"engine/shaders/light_depth", defines);
-}
-
-Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename)
-	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
-{
-	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
-		"engine/shaders/light_depth", defines);
-	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename);
-}
-
-Renderer::SkeletalModel::SkeletalModel(const std::string& i_skmeshFilename, const std::string& i_textureFilename, const bool i_flipTexture)
-	: RenderObject("basicShader + defineSKINNING", "engine/shaders/basic", { "#define SKINNING\n" })
-{
-	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShaderAnim",
-		"engine/shaders/light_depth", defines);
-	skmesh = ResourcesManager::LoadResource<Resources::SkeletalMesh>(i_skmeshFilename);
-	SetTexture(i_textureFilename, i_flipTexture);
 }
 
 void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmeshFilename)
@@ -45,8 +26,8 @@ void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmes
 
 void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, const bool i_flipTexture)
 {
-    if (!skmesh.lock())
-        return;
+	if (!skmesh.lock())
+		return;
 
 	flipTexture = i_flipTexture;
 	textureName = i_textureFilename;
@@ -54,13 +35,26 @@ void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, c
 	diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
 }
 
-void Renderer::SkeletalModel::LoadAnimationsForThis(const std::string& i_animationFilename)
+void Renderer::SkeletalModel::AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID)
 {
-	if (!skmesh.lock())
-	{
-		Log::Info("No skeletal mesh to attach animation to");
+	Socket s;
+	s.boneID = i_boneID;
+	s.model.SetMeshFromFile(i_meshFilename);
+	s.model.SetTexture(i_textureFilename, i_flipTexture);
+	ThreadPool::FinishTasks();
+	if (s.model.mesh.expired())
 		return;
-	}
+	sockets.push_back(s);
+}
 
-	skpack = ResourcesManager::LoadResource<SkeletalAnimationPack>(i_animationFilename + "|" + skmesh.lock()->name, i_animationFilename, std::ref(*skmesh.lock()));
+void Renderer::SkeletalModel::RemoveSocket(int i_boneID)
+{
+	for (std::list<Socket>::iterator it = sockets.begin(); it != sockets.end(); ++it)
+	{
+		if (it->boneID == i_boneID)
+		{
+			sockets.erase(it);
+			break;
+		}
+	}
 }

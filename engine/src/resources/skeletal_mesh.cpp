@@ -29,6 +29,7 @@ bool SkeletalMesh::CPULoad()
 
 		const aiScene* scene = importer.GetScene();
 		ProcessAiNode(buffer, importer, scene->mRootNode);
+		LoadSkeleton(rootNode, scene->mRootNode);
 
 		submeshes = buffer;
 
@@ -107,12 +108,12 @@ void SkeletalMesh::ExtractBoneWeightForVertices(std::shared_ptr<Submesh>& o_subm
 		if (boneInfoMap.find(boneName) == boneInfoMap.end())
 		{
 			Bone newBoneInfo;
-			newBoneInfo.id = boneCounter;
+			newBoneInfo.id = boneCount;
 			for (int i = 0; i < 16; ++i)
 				newBoneInfo.offset.element[i] = *(&i_aim.mBones[boneIndex]->mOffsetMatrix.a1 + i);
 			boneInfoMap[boneName] = newBoneInfo;
-			boneID = boneCounter;
-			++boneCounter;
+			boneID = boneCount;
+			++boneCount;
 		}
 		else
 		{
@@ -130,4 +131,26 @@ void SkeletalMesh::ExtractBoneWeightForVertices(std::shared_ptr<Submesh>& o_subm
 			SetVertexBoneData(o_submesh->vertices[vertexId], boneID, weight);
 		}
 	}
+}
+
+void SkeletalMesh::LoadSkeleton(SkeletonNodeData& dest, const aiNode* src)
+{
+	assert(src);
+
+	dest.name = src->mName.data;
+	for (int i = 0; i < 16; ++i)
+		dest.transform.element[i] = *(&src->mTransformation.a1 + i);
+	dest.childrenCount = src->mNumChildren;
+
+	for (int i = 0; i < src->mNumChildren; ++i)
+	{
+		SkeletonNodeData newData;
+		LoadSkeleton(newData, src->mChildren[i]);
+		dest.children.emplace_back(newData);
+	}
+}
+
+const SkeletonNodeData* SkeletalMesh::GetRootNode() const
+{
+	return &rootNode;
 }
