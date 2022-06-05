@@ -1,3 +1,5 @@
+#include <map>
+
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
 #include "game/lowcomponent/sound.hpp"
@@ -137,7 +139,7 @@ void Graph::RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_as
         i_aspectRatio,
         *editorCamera,
         editorCameraman.transform.position);
-    Render(i_renderer);
+    Render(i_renderer, *editorCamera);
     RenderColliders(i_renderer);
 }
 
@@ -154,30 +156,55 @@ void Graph::RenderGame(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspe
         *gameCamera,
         gameCamera->owner.get()->transform.position);
 
-    Render(i_renderer);
+    Render(i_renderer, *gameCamera);
 }
 
-void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer)
+void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Camera& i_camera)
 {
     // light depth map
-    float bias = static_cast<float>(light.shadowPCF) + 1.f;
-    i_renderer.BeginFrame(*i_renderer.depthMapFBO, bias);
-
-    for (Drawable* drawable : renderEntities)
+    if (light.shadow)
     {
-        if (drawable && drawable->enabled)
-            drawable->DrawDepthMap(i_renderer, drawable->owner.get()->transform);
-    }
+        float bias = static_cast<float>(light.shadowPCF) + 1.f;
+        i_renderer.BeginFrame(*i_renderer.depthMapFBO, bias);
 
-    i_renderer.EndFrame();
+        for (Drawable* drawable : renderEntities)
+        {
+            if (drawable && drawable->enabled)
+                drawable->DrawDepthMap(i_renderer, drawable->owner.get()->transform);
+        }
+
+        i_renderer.EndFrame();
+    }
 
     // normal rendering
     i_renderer.BeginFrame(*i_renderer.firstPassFBO);
 
+    std::multimap<float, Drawable*> sortedDrawable;
+
+    // draw opaque objects
     for (Drawable* drawable : renderEntities)
     {
         if (drawable && drawable->enabled)
-            drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
+        {
+            if (drawable->IsOpaque())
+            {
+                drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
+                continue;
+            }
+
+            Vector3 entityPos = drawable->owner.get()->transform.GetWorldMatrix().DecomposeTranslation();
+            Vector3 cameraPos = i_camera.Position();
+            float distance = Maths::Abs(Vector3(entityPos - cameraPos).SqrLength());
+
+            sortedDrawable.insert({ distance, drawable });
+        }
+    }
+
+    // draw transparent objects
+    for (std::multimap<float, Drawable*>::reverse_iterator it = sortedDrawable.rbegin(); it != sortedDrawable.rend(); ++it)
+    {
+        Drawable* drawable = it->second;
+        drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
     }
 
     i_renderer.EndFrame();

@@ -26,12 +26,10 @@ namespace Renderer
 		int boneID;
 	};
 
-	class SkeletalModel : public Renderer::RenderObject
+	class SkeletalModel : public Renderer::RenderObject, public Renderer::SceneObject
 	{
 	public:
 		bool showSkeleton = false;
-
-		std::shared_ptr<Resources::Shader> lightDepthShader;
 
 		std::weak_ptr<Resources::SkeletalMesh> skmesh;
 		std::list<Socket> sockets;

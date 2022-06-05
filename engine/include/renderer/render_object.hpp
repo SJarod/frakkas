@@ -6,12 +6,24 @@
 
 namespace Renderer
 {
+	class Material
+	{
+	public:
+		Vector3 ambient = { 0.8f, 0.8f, 0.8f };
+		Vector3 diffuse = { 1.f, 1.f, 1.f };
+		Vector3 specular = { 1.f, 1.f, 1.f };
+		Vector3 emissive = { 0.f, 0.f, 0.f };
+		float shininess = 32.f;
+	};
+
 	/**
 	 * RenderObjects are renderable.
 	 */
 	class RenderObject
 	{
 	public:
+		std::shared_ptr<Resources::Shader> shader;
+
 		/**
 		 * Create a RenderObject using a set of shaders.
 		 */
@@ -26,27 +38,15 @@ namespace Renderer
 			const std::string& i_vertexShaderFilePath,
 			const std::string& i_fragmentShaderFilePath,
 			const std::initializer_list<const std::string>& i_defines = {});
-
-		/**
-		 * @Summary send value to the shader program
-		 * @param i_uniformName name of the uniform, must exist in shader
-		 * @param i_value templated value
-		 */
-		template <typename... TUniform>
-		void SetUniform(const std::string_view& i_uniformName, const TUniform&... i_params) const;
-
-		/**
-		 * Use this RenderObject's shader.
-		 */
-		void UseShader() const;
-
-	private:
-		std::shared_ptr<Resources::Shader> shader;
 	};
-}
 
-template <typename... TUniform>
-void Renderer::RenderObject::SetUniform(const std::string_view& i_uniformName, const TUniform&... i_params) const
-{
-	shader->SetUniform(i_uniformName, i_params...);
+	class SceneObject
+	{
+	public:
+		std::shared_ptr<Resources::Shader> lightDepthShader;
+
+		Material material;
+
+		SceneObject(const std::string& i_name, const std::initializer_list<const std::string>& i_defines = {});
+	};
 }

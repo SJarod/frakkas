@@ -22,6 +22,17 @@ KK_FIELD_PUSH(AnimatedDraw, texturePath, EDataType::STRING)
 KK_FIELD_CHANGECALLBACK(OnAnimationTexturePathUpdate)
 KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, DropOnAnimatedDrawComponentTexture)
 
+KK_FIELD_PUSH(AnimatedDraw, skmodel.material.ambient, EDataType::FLOAT)
+KK_FIELD_COUNT(3)
+KK_FIELD_RANGE(0.f, 1.f)
+KK_FIELD_PUSH(AnimatedDraw, skmodel.material.diffuse, EDataType::FLOAT)
+KK_FIELD_COUNT(3)
+KK_FIELD_RANGE(0.f, 1.f)
+KK_FIELD_PUSH(AnimatedDraw, skmodel.material.specular, EDataType::FLOAT)
+KK_FIELD_COUNT(3)
+KK_FIELD_RANGE(0.f, 1.f)
+KK_FIELD_PUSH(AnimatedDraw, skmodel.material.shininess, EDataType::FLOAT)
+
 KK_FIELD_PUSH(AnimatedDraw, skmodel, EDataType::SKELETON)
 KK_FIELD_PUSH(AnimatedDraw, animGraph, EDataType::ANIMATION)
 KK_COMPONENT_IMPL_END
@@ -36,11 +47,17 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 	if (skmodel.skmesh.expired() || !skmodel.skmesh.lock())
 		return;
 
-	skmodel.UseShader();
-	skmodel.SetUniform("uBoneTransforms", MAX_BONES, animGraph.player.GetGlobalBoneMatrices().data()->element);
+	Shader& shader = *skmodel.shader;
+	shader.Use();
+	shader.SetUniform("uMaterial.ambient", skmodel.material.ambient);
+	shader.SetUniform("uMaterial.diffuse", skmodel.material.diffuse);
+	shader.SetUniform("uMaterial.specular", skmodel.material.specular);
+	shader.SetUniform("uMaterial.emissive", skmodel.material.emissive);
+	shader.SetUniform("uMaterial.shininess", skmodel.material.shininess);
+	shader.SetUniform("uBoneTransforms", MAX_BONES, animGraph.player.GetGlobalBoneMatrices().data()->element);
 
 	{
-		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().ChooseColor("transparent");
 
 		Resources::Texture* diffuseTex = skmodel.diffuseTex.lock().get();
 		if (diffuseTex != nullptr)
@@ -53,9 +70,9 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 				continue;
 
 			Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
-			skmodel.SetUniform("uModel", modelMat);
+			shader.SetUniform("uModel", modelMat);
 			Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
-			skmodel.SetUniform("uModelNormal", modelNormal);
+			shader.SetUniform("uModelNormal", modelNormal);
 
 			assert(smesh->gpu.VAO != 0);
 			i_renderer.RenderMeshOnce(smesh->gpu.VAO,
@@ -69,14 +86,20 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 
 	for (Renderer::Socket& socket : skmodel.sockets)
 	{
-		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().data;
+		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().ChooseColor("transparent");
 
 		Resources::Texture* diffuseTex = socket.model.diffuseTex.lock().get();
 		if (diffuseTex != nullptr)
 			if (diffuseTex->gpu.get())
 				texToBeBinded = diffuseTex->gpu->data;
 
-		socket.model.UseShader();
+		Shader& socketShader = *socket.model.shader;
+		socketShader.Use();
+		socketShader.SetUniform("uMaterial.ambient", socket.model.material.ambient);
+		socketShader.SetUniform("uMaterial.diffuse", socket.model.material.diffuse);
+		socketShader.SetUniform("uMaterial.specular", socket.model.material.specular);
+		socketShader.SetUniform("uMaterial.emissive", socket.model.material.emissive);
+		socketShader.SetUniform("uMaterial.shininess", socket.model.material.shininess);
 
 		Matrix4 socketTRS = Matrix4::Scale(socket.transform.scale) *
 			Matrix4::RotateXYZ(socket.transform.rotation) *
@@ -89,9 +112,9 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
 				continue;
 
 			Matrix4 modelMat = socketTRS * boneTRS * smesh->localTransform * i_entityTransform.GetWorldMatrix();
-			socket.model.SetUniform("uModel", modelMat);
+			socketShader.SetUniform("uModel", modelMat);
 			Matrix4 modelNormal = (modelMat.Inverse()).Transpose();
-			socket.model.SetUniform("uModelNormal", modelNormal);
+			socketShader.SetUniform("uModelNormal", modelNormal);
 
 			assert(smesh->gpu.VAO != 0);
 			i_renderer.RenderMeshOnce(smesh->gpu.VAO,
@@ -111,8 +134,9 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 	if (skmodel.skmesh.expired() || !skmodel.skmesh.lock())
 		return;
 
-	skmodel.lightDepthShader->Use();
-	skmodel.lightDepthShader->SetUniform("uBoneTransforms",
+	Shader& shader = *skmodel.lightDepthShader;
+	shader.Use();
+	shader.SetUniform("uBoneTransforms",
 		MAX_BONES,
 		animGraph.player.GetGlobalBoneMatrices().data()->element);
 
@@ -122,14 +146,15 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 			continue;
 
 		Matrix4 modelMat = smesh->localTransform * i_entityTransform.GetWorldMatrix();
-		skmodel.lightDepthShader->SetUniform("uModel", modelMat);
+		shader.SetUniform("uModel", modelMat);
 		assert(smesh->gpu.VAO != 0);
 		i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 	}
 
 	for (Renderer::Socket& socket : skmodel.sockets)
 	{
-		socket.model.lightDepthShader->Use();
+		Shader& socketShader = *socket.model.lightDepthShader;
+		socketShader.Use();
 
 		Matrix4 socketTRS = Matrix4::Scale(socket.transform.scale) *
 			Matrix4::RotateXYZ(socket.transform.rotation) *
@@ -142,13 +167,21 @@ void AnimatedDraw::DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, con
 				continue;
 
 			Matrix4 modelMat = socketTRS * boneTRS * smesh->localTransform * i_entityTransform.GetWorldMatrix();
-			socket.model.lightDepthShader->SetUniform("uModel", modelMat);
+			socketShader.SetUniform("uModel", modelMat);
 			assert(smesh->gpu.VAO != 0);
 			i_renderer.RenderMeshOnce(smesh->gpu.VAO, smesh->vertices.size(), 0);
 		}
 	}
 
 	Shader::Unuse();
+}
+
+bool AnimatedDraw::IsOpaque() const
+{
+	if (skmodel.diffuseTex.expired())
+		return false; // default textures may be transparent
+
+	return skmodel.diffuseTex.lock()->channels != 4;
 }
 
 void AnimatedDraw::SetMesh(const std::string& i_path)
