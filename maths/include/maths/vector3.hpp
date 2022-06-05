@@ -80,6 +80,11 @@ struct Vector3
     float Length() const;
 
 /**
+ * @return vector's square length/magnitude
+ */
+    float SqrLength() const;
+
+/**
  * @return the distance between two vectors
  */
     static float Distance(const Vector3 &i_vecA, const Vector3 &i_vecB);

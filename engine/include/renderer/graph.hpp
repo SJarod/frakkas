@@ -157,7 +157,7 @@ namespace Renderer
          * In fact, RenderGame and RenderEditor call this function to process the same way.
          * @param i_renderer the renderer that will draw the entities
          */
-        void Render(Renderer::LowLevel::LowRenderer& i_renderer);
+        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Camera& i_camera);
 
         /**
          * @brief Render all enabled collider.

@@ -6,9 +6,8 @@
 #include "renderer/model.hpp"
 
 Renderer::Model::Model()
-	: RenderObject("basicShader", "engine/shaders/basic")
+	: RenderObject("basicShader", "engine/shaders/basic"), SceneObject("depthmapShader")
 {
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader", "engine/shaders/light_depth");
 }
 
 void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename)
@@ -22,14 +21,13 @@ void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename, const s
 	SetTexture(i_textureFilename, i_flipTexture);
 }
 
-
 void Renderer::Model::SetTexture(const std::string& i_textureFilename, const bool i_flipTexture)
 {
-    if (!mesh.lock())
-        return;
+	if (!mesh.lock())
+		return;
 
-    flipTexture = i_flipTexture;
-    textureName = i_textureFilename;
+	flipTexture = i_flipTexture;
+	textureName = i_textureFilename;
 
 	diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
 }

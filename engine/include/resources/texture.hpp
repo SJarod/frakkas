@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <memory>
+#include <unordered_map>
 
 #include "maths.hpp"
 
@@ -49,10 +50,12 @@ namespace Resources
 
 	class DefaultTexture
 	{
-	public:
-		Vector3 rgb = { 1.f, 0.f, 1.f };
-		GLuint data;
+	private:
+		std::unordered_map<std::string, GLuint> textures;
 
+	public:
 		DefaultTexture();
+
+		GLuint ChooseColor(const std::string_view& i_color) const;
 	};
 }

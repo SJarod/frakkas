@@ -15,11 +15,9 @@ namespace Resources
 
 namespace Renderer
 {
-	class Model : public Renderer::RenderObject
+	class Model : public Renderer::RenderObject, public Renderer::SceneObject
 	{
 	public:
-		std::shared_ptr<Resources::Shader> lightDepthShader;
-
 		std::weak_ptr<Resources::Mesh> mesh;
 
 		std::string textureName = "";

@@ -62,16 +62,63 @@ bool Resources::Texture::CPUUnload()
 
 Resources::DefaultTexture::DefaultTexture()
 {
-	glGenTextures(1, &data);
+	std::vector<std::string> colorNames;
+	colorNames.emplace_back("red");
+	colorNames.emplace_back("green");
+	colorNames.emplace_back("blue");
+	colorNames.emplace_back("transparent");
 
-	glBindTexture(GL_TEXTURE_2D, data);
+	std::vector<Vector4> colors;
+	colors.emplace_back(Vector4{ 1.f, 0.f, 0.f, 1.f });
+	colors.emplace_back(Vector4{ 0.f, 1.f, 0.f, 1.f });
+	colors.emplace_back(Vector4{ 0.f, 0.f, 1.f, 1.f });
+	colors.emplace_back(Vector4{ 1.f, 1.f, 1.f, 0.5f });
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	{
+		GLuint tex;
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, rgb.element);
+		glGenTextures(1, &tex);
 
-	glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(GL_TEXTURE_2D, tex);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		Vector4 pink = { 1.f, 0.f, 1.f, 1.f };
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, pink.element);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		textures["error"] = tex;
+	}
+
+	for (int i = 0; i < colors.size(); ++i)
+	{
+		GLuint tex;
+
+		glGenTextures(1, &tex);
+
+		glBindTexture(GL_TEXTURE_2D, tex);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, colors[i].element);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		textures[colorNames[i]] = tex;
+	}
+}
+
+GLuint DefaultTexture::ChooseColor(const std::string_view& i_color) const
+{
+	if (textures.find(std::string(i_color)) != textures.end())
+		return textures.find(std::string(i_color))->second;
+	else
+		return textures.find("error")->second;
 }

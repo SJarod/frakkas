@@ -198,6 +198,11 @@ inline float Vector3::Length() const
     return Maths::Sqrt(x * x + y * y + z * z);
 }
 
+inline float Vector3::SqrLength() const
+{
+    return x * x + y * y + z * z;
+}
+
 inline float Vector3::Distance(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
     return Vector3::VecFromPt(i_vecA, i_vecB).Length();

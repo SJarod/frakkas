@@ -219,6 +219,8 @@ void LowRenderer::BeginFrame(const Framebuffer& i_fbo) const
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void LowRenderer::BeginFrame(const DepthFramebuffer& i_fbo, const float i_bias) const
@@ -247,6 +249,7 @@ void LowRenderer::EndFrame() const
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisable(GL_BLEND);
 
 	Framebuffer::Unbind();
 }
@@ -260,10 +263,10 @@ void LowRenderer::SetWindowSize(const Vector2& i_size) const
 void LowRenderer::RenderPoint(const Vector3& i_pos, const Vector3& i_color, const float i_size) const
 {
 	static Point point;
-	point.UseShader();
-	point.SetUniform("uModel", Matrix4::Translate(i_pos));
-	point.SetUniform("uSize", i_size);
-	point.SetUniform("uColor", i_color);
+	point.shader->Use();
+	point.shader->SetUniform("uModel", Matrix4::Translate(i_pos));
+	point.shader->SetUniform("uSize", i_size);
+	point.shader->SetUniform("uColor", i_color);
 	glEnable(GL_PROGRAM_POINT_SIZE);
 	glBindVertexArray(point.VAO);
 	glDrawArrays(GL_POINTS, 0, 1);
@@ -314,10 +317,10 @@ void LowRenderer::RenderLines(const unsigned int i_VAO, const unsigned int i_cou
                               const float i_size, const Vector3& i_color, bool i_useLineStrip)
 {
     static Point line;
-    line.UseShader();
-    line.SetUniform("uModel", i_model);
-    line.SetUniform("uSize", i_size);
-    line.SetUniform("uColor", i_color);
+    line.shader->Use();
+    line.shader->SetUniform("uModel", i_model);
+    line.shader->SetUniform("uSize", i_size);
+    line.shader->SetUniform("uColor", i_color);
 
     glBindVertexArray(i_VAO);
 	glLineWidth(i_size);
@@ -334,7 +337,7 @@ void LowRenderer::RenderPostProcess() const
 		return;
 
 	static ScreenQuad postprocessQuad(true);
-	postprocessQuad.UseShader();
+	postprocessQuad.shader->Use();
 	glBindTextureUnit(0, firstPassFBO->GetColor0());
 	glBindTextureUnit(1, firstPassFBO->GetDepthStencilMap());
 	glBindVertexArray(postprocessQuad.VAO);
@@ -355,16 +358,16 @@ void LowRenderer::RenderFinalScreen(const LowLevel::Framebuffer& i_fbo) const
 void LowRenderer::RenderFinalScreen() const
 {
 	static ScreenQuad finalQuad;
-	finalQuad.UseShader();
+	finalQuad.shader->Use();
 	glBindTextureUnit(0, firstPassFBO->GetColor0());
 	if (outline && postProcessOutline)
 	{
-		finalQuad.SetUniform("postprocess", true);
+		finalQuad.shader->SetUniform("postprocess", true);
 		glBindTextureUnit(1, secondPassFBO->GetColor0());
 	}
 	else
 	{
-		finalQuad.SetUniform("postprocess", false);
+		finalQuad.shader->SetUniform("postprocess", false);
 	}
 	glBindVertexArray(finalQuad.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);

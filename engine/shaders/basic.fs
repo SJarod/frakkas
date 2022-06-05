@@ -23,12 +23,7 @@ struct Material
 	float shininess;
 };
 
-uniform Material gDefaultMaterial = Material(
-    vec3(0.8, 0.8, 0.8),
-    vec3(1.0, 1.0, 1.0),
-    vec3(1.0, 1.0, 1.0),
-    vec3(0.0, 0.0, 0.0),
-    32.0);
+uniform Material uMaterial;
 
 in vec3 vPos;
 in vec3 vNormal;
@@ -189,7 +184,7 @@ LightShadeResult GetLightsShading(bool toon)
     LightShadeResult lightResult = LightShadeResult(vec3(0.0), vec3(0.0), vec3(0.0));
 
     LightShadeResult l = LightShade(light,
-                                    gDefaultMaterial.shininess,
+                                    uMaterial.shininess,
                                     cameraPos,
                                     vPos,
                                     normalize(vNormal),
@@ -209,11 +204,11 @@ void main()
 
     vec4 texColor = texture(uTexture, vUV);
 
-    vec3 ambientColor  = gDefaultMaterial.ambient * lightResult.ambient * texColor.rgb;
-    vec3 diffuseColor  = gDefaultMaterial.diffuse * lightResult.diffuse * texColor.rgb;
-    vec3 specularColor = gDefaultMaterial.specular * lightResult.specular;
-    vec3 emissiveColor = gDefaultMaterial.emission * texColor.rgb;
+    vec3 ambientColor  = uMaterial.ambient * lightResult.ambient * texColor.rgb;
+    vec3 diffuseColor  = uMaterial.diffuse * lightResult.diffuse * texColor.rgb;
+    vec3 specularColor = uMaterial.specular * lightResult.specular;
+    vec3 emissiveColor = uMaterial.emission * texColor.rgb;
 
     // Apply light color
-    oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), 1.0);
+    oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), texColor.a);
 }

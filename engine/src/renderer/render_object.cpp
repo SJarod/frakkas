@@ -20,7 +20,8 @@ Renderer::RenderObject::RenderObject(const std::string& i_name,
 		i_defines);
 }
 
-void Renderer::RenderObject::UseShader() const
+Renderer::SceneObject::SceneObject(const std::string& i_name, const std::initializer_list<const std::string>& i_defines)
 {
-	shader->Use();
+	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>(i_name,
+		"engine/shaders/light_depth", i_defines);
 }

@@ -6,11 +6,9 @@
 #include "renderer/skeletal_model.hpp"
 
 Renderer::SkeletalModel::SkeletalModel()
-	: RenderObject("basicShader_skinning", "engine/shaders/basic", { "#define SKINNING\n" })
+	: RenderObject("basicShader_skinning", "engine/shaders/basic", { "#define SKINNING\n" }),
+	SceneObject("depthmapShader_skinning", { "#define SKINNING\n" })
 {
-	const std::initializer_list<const std::string> defines = { "#define SKINNING\n" };
-	lightDepthShader = ResourcesManager::LoadResource<Resources::Shader>("depthmapShader_skinning",
-		"engine/shaders/light_depth", defines);
 }
 
 void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmeshFilename)

@@ -22,6 +22,8 @@ namespace Game
 
         void DrawDepthMap(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Transform& i_entityTransform) override;
 
+        bool IsOpaque() const override;
+
     KK_COMPONENT_END
 }
 

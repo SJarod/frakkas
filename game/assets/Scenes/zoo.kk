@@ -43,6 +43,14 @@
 	ProceduralIcoSphere
 >texturePath
 	game/assets\Textures\red.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -99,6 +107,14 @@
 	ProceduralCube
 >texturePath
 	game/assets\Textures\gold.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	0, 0, 0
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -155,6 +171,14 @@
 	ProceduralIcoSphere
 >texturePath
 	game/assets\Textures\yellow.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.shininess
+	32
 >SphereCollider
 >enabled
 	1
@@ -196,6 +220,14 @@
 	ProceduralCube
 >texturePath
 	game/assets\Textures\blue.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -334,9 +366,43 @@
 	game/assets\Models\Hero\Hero.fbx
 >texturePath
 	game/assets\Textures\Dungeons_Texture_03.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.shininess
+	32
 >skmodel
 >count
-	0
+	2
+>transform
+>position
+	0, 0, 0
+>rotation
+	1.93729, 0, 0
+>scale
+	222, 222, 222
+>boneID
+	35
+>socketMesh
+	game/assets/Models/Hero/HeroSword.fbx
+>socketTexture
+	game/assets\Textures\Dungeons_Texture_03.png
+>transform
+>position
+	0, 0, 0
+>rotation
+	-1.53589, -2.93214, 0
+>scale
+	100, 100, 100
+>boneID
+	12
+>socketMesh
+	game/assets/Models/Hero/HeroShield.fbx
+>socketTexture
+	game/assets\Textures\Dungeons_Texture_03.png
 >animGraph
 >count
 	8
