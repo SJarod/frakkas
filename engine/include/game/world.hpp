@@ -52,8 +52,14 @@ namespace Game
         /**
          * @brief Load a new scene.
          * @param i_scenePath The path to the scene asset.
+         * @param i_loadingScreenPath The path to the loading screen to display.
+         * @param i_tips The tips to display on the loading screen.
+         * @param i_minimumLoadTime Delay the loading time to match the specified time.
          */
-        static void LoadScene(const std::string& i_scenePath);
+        static void LoadScene(const std::string& i_scenePath,
+            const std::string& i_loadingScreenPath,
+            const std::string& i_tips = "",
+            float i_minimumLoadTime = 0.f);
 
         static void ReloadScene();
 

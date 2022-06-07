@@ -1,3 +1,7 @@
+#include <filesystem>
+
+#include "multithread/threadpool.hpp"
+
 #include "ui/canvas.hpp"
 
 using namespace UI;
@@ -47,7 +51,9 @@ void Canvas::Render(const Vector2& i_offset) const
     Vector2 size(ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
     size = size - i_offset * 2.f;
 
-    for(Game::UIObject* uiObject : objects)
+    loadingScreen.UpdateAndRender(drawList, origin, size);
+
+    for (Game::UIObject* uiObject : objects)
         if (uiObject->enabled)
             uiObject->UpdateAndRender(drawList, origin, size);
 
@@ -67,4 +73,30 @@ void Canvas::BeginAndRender() const
     Render();
 
     ImGui::End();
+}
+
+void Canvas::StartLoadingScreen(const std::filesystem::path& i_loadingScreenPath)
+{
+    if (i_loadingScreenPath.empty())
+        loadingScreen.SetTexture(defaultLoadingScreen);
+    else
+        loadingScreen.SetTexture(i_loadingScreenPath.string());
+
+    loadingScreen.scale = { 767.f, 444.f };
+    loadingScreen.tint = { 1.f, 1.f, 1.f, 1.f };
+}
+
+bool Canvas::FadeAway()
+{
+    if (loadingScreen.tint.w <= 0.f)
+        return true;
+
+    float fdt = Game::Time::GetFixedDeltaTime();
+    loadingScreen.tint.w -= fdt;
+    for (Game::UIObject* uiObject : objects)
+    {
+        uiObject->tint.w -= fdt;
+    }
+
+    return loadingScreen.tint.w <= 0.f;
 }

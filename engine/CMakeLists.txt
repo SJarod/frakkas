@@ -39,7 +39,7 @@ add_library(${PROJECT_NAME} STATIC
 			src/animation/animator.cpp
 			src/animation/animation_graph.cpp
 			src/ui/canvas.cpp
-        	src/debug/log.cpp
+			src/debug/log.cpp
             src/engine.cpp
         	src/multithread/threadpool.cpp
 		    src/physic/physic_scene.cpp

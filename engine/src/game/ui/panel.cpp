@@ -2,11 +2,6 @@
 #include "game/ui/panel.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(Panel)
-
-    KK_FIELD_PUSH(Panel, color, EDataType::FLOAT)
-    KK_FIELD_COUNT(4)
-    KK_FIELD_RANGE(0.f, 1.f)
-
 KK_COMPONENT_IMPL_END
 
 void Panel::Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector2& i_windowSize) const
@@ -16,6 +11,6 @@ void Panel::Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector2& i_
     ImVec2 p3 = {screenPosition.x, screenPosition.y + screenScale.y};
     ImVec2 p4 = {screenPosition.x + screenScale.x, screenPosition.y + screenScale.y};
 
-    ImU32 col = ImGui::ColorConvertFloat4ToU32(ImVec4(color.x, color.y, color.z, color.w));
+    ImU32 col = ImGui::ColorConvertFloat4ToU32(ImVec4(tint.x, tint.y, tint.z, tint.w));
     io_dl.AddQuadFilled(p1, p2, p4, p3, col);
 }

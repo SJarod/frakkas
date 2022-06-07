@@ -118,6 +118,13 @@ public:
 	static void FinishTasks();
 
 	/**
+	 * Pause this thread for a certain time.
+	 * 
+	 * @param i_time in seconds
+	 */
+	static void Delay(float i_time);
+
+	/**
 	 * Print the thread id.
 	 *
 	 */

@@ -65,10 +65,10 @@
 	34.9, 78.6
 >scale
 	3.3, 1
+>tint
+	0, 0, 0, 1
 >text
 	hello world!
->color
-	0, 0, 0, 1
 
 >entity
 >childs

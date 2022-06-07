@@ -16,6 +16,10 @@ KK_COMPONENT_IMPL_BEGIN(ImagePanel)
     KK_FIELD_CHANGECALLBACK(OnImagePanelTextureSet)
     KK_FIELD_DROPTARGET(Utils::ResourcePathDragDropID, OnImagePanelTextureDrop)
 
+    KK_FIELD_PUSH(ImagePanel, tint, EDataType::FLOAT)
+    KK_FIELD_COUNT(4)
+    KK_FIELD_RANGE(0.f, 1.f)
+
 KK_COMPONENT_IMPL_END
 
 void ImagePanel::Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector2& i_windowSize) const
@@ -27,7 +31,9 @@ void ImagePanel::Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector
         ImVec2 p3 = {screenPosition.x + screenScale.x, screenPosition.y + screenScale.y};
         ImVec2 p4 = {screenPosition.x, screenPosition.y + screenScale.y};
 
-        io_dl.AddImageQuad(reinterpret_cast<ImTextureID>(texture->gpu->data), p1, p2, p3, p4);
+        io_dl.AddImageQuad(reinterpret_cast<ImTextureID>(texture->gpu->data), p1, p2, p3, p4,
+                           ImVec2(0, 0),ImVec2(1, 0),ImVec2(1, 1),ImVec2(0, 1),
+                           ImGui::ColorConvertFloat4ToU32(ImVec4(tint.x, tint.y, tint.z, tint.w)));
     }
 }
 
@@ -35,6 +41,11 @@ void ImagePanel::SetTexture(const std::string& i_texturePath)
 {
     texturePath = i_texturePath;
     texture = Resources::ResourcesManager::LoadResource<Resources::Texture>(texturePath, imageFlip);
+}
+
+void ImagePanel::SetTexture(const std::shared_ptr<Resources::Texture>& i_texture)
+{
+    texture = i_texture;
 }
 
 void OnImagePanelTextureSet(unsigned char* io_component)

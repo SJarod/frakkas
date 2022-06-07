@@ -248,14 +248,16 @@ void Engine::RunEditor()
             if (updateMode & Utils::UpdateFlag_Editing)
                 DisableInputs();
 
-            entityManager.Update();
+            if (!graph->loading)
+                entityManager.Update();
         }
 
         EnableInputs();
         for (const UpdateEvent& updateEvent : updateEventsHandler)
             updateEvent();
 
-        physicScene.Update(updateMode);
+        if (!graph->loading)
+            physicScene.Update(updateMode);
 
         /// Draw
         graph->RenderEditor(*renderer, editorFBO->AspectRatio());
@@ -292,12 +294,15 @@ void Engine::RunGame()
         SDL_GetWindowSize(window, &width, &height);
         windowSize = {static_cast<float>(width), static_cast<float>(height)};
 
-		entityManager.Update();
+        if (!graph->loading)
+        {
+		    entityManager.Update();
 
-        for (const UpdateEvent& updateEvent : updateEventsHandler)
-            updateEvent();
+            for (const UpdateEvent& updateEvent : updateEventsHandler)
+                updateEvent();
 
-        physicScene.Update();
+            physicScene.Update();
+        }
 
         renderer->SetWindowSize(windowSize);
 
@@ -305,7 +310,10 @@ void Engine::RunGame()
         glViewport(renderer->firstPassFBO->offset.x, renderer->firstPassFBO->offset.y, windowSize.x, windowSize.y);
         renderer->RenderFinalScreen();
 
-        graph->canvas.BeginAndRender();
+        if (graph->loading || !graph->loadingCanvas.FadeAway())
+            graph->loadingCanvas.BeginAndRender();
+        else
+            graph->canvas.BeginAndRender();
 
         RenderImGui();
 
