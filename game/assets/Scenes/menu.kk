@@ -86,6 +86,14 @@
 	ProceduralCube
 >texturePath
 	game/assets/Textures/gold.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -108,6 +116,8 @@
 	30.9, 73
 >scale
 	300, 40
+>tint
+	1, 1, 1, 1
 >text
 	QUIT
 >textScale
@@ -128,7 +138,7 @@
 	31.7, 4.7
 >scale
 	275.4, 50
->color
+>tint
 	0, 0, 0, 0.563
 >Text
 >enabled
@@ -137,10 +147,10 @@
 	34.5, 6.1
 >scale
 	2.6, 1
+>tint
+	1, 1, 1, 1
 >text
 	FRAKKARENA
->color
-	1, 1, 1, 1
 >ImageButton
 >enabled
 	1
@@ -148,6 +158,8 @@
 	30, 25.6
 >scale
 	300, 150
+>tint
+	1, 1, 1, 1
 >imageFlip
 	0
 >Texture

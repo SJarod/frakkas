@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "debug/log.hpp"
+#include "game/time_manager.hpp"
 
 #include "multithread/threadpool.hpp"
 
@@ -55,9 +56,9 @@ bool ThreadPool::Clear()
 	}
 	else
 	{
-		for (const bool w : tp.workers)
+		for (bool worker : tp.workers)
 		{
-			if (w)
+			if (worker)
 				return false;
 		}
 	}
@@ -171,6 +172,14 @@ void ThreadPool::FinishTasks()
 
 	// finish remaining main thread tasks
 	PollMainThreadTasks();
+}
+
+void ThreadPool::Delay(float i_time)
+{
+	float start = Game::Time::GetTime();
+	while (Game::Time::GetTime() - start < i_time)
+	{
+	}
 }
 
 void ThreadPool::PrintThreadId(const int i_id)

@@ -18,6 +18,7 @@ namespace Game
         bool imageFlip = false;
 
         void SetTexture(const std::string& i_texturePath);
+        void SetTexture(const std::shared_ptr<Resources::Texture>& i_texture);
 
         void Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector2& i_windowSize) const override;
 

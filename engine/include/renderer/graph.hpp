@@ -5,6 +5,8 @@
 
 #include "game/entity.hpp"
 #include "ui/canvas.hpp"
+#include "game/ui/text.hpp"
+#include "game/ui/panel.hpp"
 
 #include "renderer/light.hpp"
 
@@ -39,6 +41,8 @@ namespace Renderer
 
         static bool playing;
 
+        bool loading = false; // is the graph loading a scene?
+
         bool lightEnabled = true;
         Renderer::Light light;
 
@@ -47,6 +51,7 @@ namespace Renderer
         Game::Camera* gameCamera = nullptr;
 
         static UI::Canvas canvas;
+        static UI::Canvas loadingCanvas;
 
         /**
          * @brief Inform the graph that a new component had been added.
@@ -100,11 +105,22 @@ namespace Renderer
         void LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning = true);
 
         /**
+         * Set the graph's loading bool to false when the loading is finished.
+         */
+        void SceneLoadFinished();
+
+        /**
          * @brief Save loading data to load scene at end frame.
          * @param i_cleaning Restore all the resources or not.
          * @param i_loadScenePath The scene to load.
+         * @param i_loadingScreenPath The loading screen to be displayed.
+         * @param i_minimumLoadTime Delay the loading time to match the specified time.
          */
-        void SetLoadingParameters(bool i_cleaning = true, const std::filesystem::path& i_loadScenePath = "");
+        void SetLoadingParameters(bool i_cleaning = true,
+            const std::filesystem::path& i_loadScenePath = "",
+            const std::filesystem::path& i_loadingScreenPath = "",
+            const std::string& i_tips = "",
+            float i_minimumLoadTime = 0.f);
 
         /**
          * @brief Load scene from 'loadScenePath' and 'cleaning' internal value.
@@ -133,6 +149,14 @@ namespace Renderer
 
         std::filesystem::path currentScenePath;
         std::filesystem::path loadScenePath;
+
+        // loading screen info
+        std::filesystem::path loadingScreenPath;
+        std::unique_ptr<Game::Panel> panel;
+        std::unique_ptr<Game::Text> text;
+        std::string tips = "";
+        float minimumLoadTime = 0.f;
+
         bool cleaning = true;
 
         /**

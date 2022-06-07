@@ -15,7 +15,9 @@ namespace Game
         UIObjectIdentifier id;
 
         Vector2 position;
-        Vector2 scale = {1.f, 1.f};
+        Vector2 scale = { 1.f, 1.f };
+
+        Vector4 tint = { 0.f, 0.f, 0.f, 1.f };
 
         /**
          * @brief Update screen position and scale, then Render UIObject.

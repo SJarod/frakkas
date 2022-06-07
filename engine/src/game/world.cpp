@@ -32,7 +32,7 @@ World::World(Engine& i_engine)
                           { EButton::ARROW_UP, EButton::W, EButton::GAMEPAD_DPAD_UP },
                           { EButton::ARROW_DOWN, EButton::S, EButton::GAMEPAD_DPAD_DOWN });
 
-    LoadScene(defaultScenePath);
+    LoadScene(defaultScenePath, "");
 
     worldData = std::make_unique<WorldData>();
 }
@@ -75,9 +75,12 @@ InputsMode World::GetInputsMode()
     return inputsMode;
 }
 
-void World::LoadScene(const std::string& i_scenePath)
+void World::LoadScene(const std::string& i_scenePath,
+    const std::string& i_loadingScreenPath,
+    const std::string& i_tips,
+    float i_minimumLoadTime)
 {
-    engine->graph->SetLoadingParameters(true, i_scenePath);
+    engine->graph->SetLoadingParameters(true, i_scenePath, i_loadingScreenPath, i_tips, i_minimumLoadTime);
 }
 
 void World::ReloadScene()

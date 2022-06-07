@@ -7,7 +7,6 @@
 #include "game/lowcomponent/camera.hpp"
 #include "game/collider/box_collider.hpp"
 #include "game/collider/sphere_collider.hpp"
-#include "game/ui/text.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -28,6 +27,7 @@ Physic::PhysicScene* Graph::physicScene = nullptr;
 bool Graph::playing = false;
 
 UI::Canvas Graph::canvas;
+UI::Canvas Graph::loadingCanvas;
 
 std::vector<Game::Camera*> Graph::gameCameras;
 std::vector<Game::Drawable*> Graph::renderEntities;
@@ -41,6 +41,9 @@ Graph::Graph(Game::EntityManager* io_entityManager, Physic::PhysicScene* i_physi
     physicScene = i_physicScene;
     editorCameraman.transform.position = Vector3::forward * 4.f;
     editorCamera = editorCameraman.AddComponent<Game::Camera>();
+
+    panel = std::make_unique<Panel>();
+    text = std::make_unique<Text>();
 }
 
 void Graph::RegisterComponent(Game::Component* i_newComponent)
@@ -116,6 +119,7 @@ void Graph::Clear()
         sound->UnloadSound();
     sounds.clear();
     canvas.Clear();
+    loadingCanvas.Clear();
 }
 
 void Graph::SetGameCameraAuto() noexcept
@@ -367,6 +371,23 @@ void Graph::ReloadScene(const bool i_cleaning)
     LoadScene(currentScenePath, i_cleaning);
 }
 
+void Graph::SceneLoadFinished()
+{
+    if (ThreadPool::Clear())
+    {
+        ThreadPool::AddTask([this]() {
+            if (minimumLoadTime > 0.f)
+                ThreadPool::Delay(minimumLoadTime);
+
+            loading = false;
+            });
+    }
+    else
+    {
+        ThreadPool::AddTask([this]() { SceneLoadFinished(); });
+    }
+};
+
 void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning)
 {
     ThreadPool::FinishTasks();
@@ -384,6 +405,21 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
     {
         Clear();
 
+        panel->position = { 8.f, 70.f };
+        panel->scale = { 640.f, 78.f };
+        panel->tint = { 0.f, 0.f, 0.f, 0.5f };
+        text->position = { 11.f, 75.f };
+        text->scale = { 1.f, 1.f };
+        text->tint = { 1.f, 1.f, 1.f, 1.f };
+        text->text = tips;
+        if (!tips.empty())
+        {
+            loadingCanvas.AddUIObject(panel.get());
+            loadingCanvas.AddUIObject(text.get());
+        }
+        loadingCanvas.StartLoadingScreen(loadingScreenPath);
+        ThreadPool::FinishTasks();
+
         // Read light information
         if (Serializer::GetAttribute(file) == "light")
             Serializer::Read(file, light);
@@ -397,6 +433,10 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
         SetGameCameraAuto();
 
         Log::Info("Load scene ", currentScenePath);
+
+        ThreadPool::AddTask([this]() {
+            SceneLoadFinished();
+            });
     }
     else
     {
@@ -405,11 +445,19 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
     }
 }
 
-void Graph::SetLoadingParameters(bool i_cleaning, const std::filesystem::path& i_loadScenePath)
+void Graph::SetLoadingParameters(bool i_cleaning,
+    const std::filesystem::path& i_loadScenePath,
+    const std::filesystem::path& i_loadingScreenPath,
+    const std::string& i_tips,
+    float i_minimumLoadTime)
 {
     if (loadScenePath.empty())
     {
         loadScenePath = i_loadScenePath.empty() ? currentScenePath : i_loadScenePath;
+        if (!i_loadingScreenPath.empty())
+            loadingScreenPath = i_loadingScreenPath;
+        tips = i_tips;
+        minimumLoadTime = i_minimumLoadTime;
         cleaning = i_cleaning;
     }
 }
@@ -418,6 +466,7 @@ void Graph::ProcessLoading()
 {
     if (!loadScenePath.empty())
     {
+        loading = true;
         LoadScene(loadScenePath, cleaning);
         loadScenePath.clear();
         cleaning = true;

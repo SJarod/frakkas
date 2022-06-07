@@ -16,7 +16,7 @@ void MenuScript::OnStart()
     playButton->AddClickEvent([&]()
     {
         World::SetInputsMode(World::InputsMode_Game);
-        World::LoadScene("game/assets/Scenes/exemple_scene.kk");
+        World::LoadScene("game/assets/Scenes/exemple_scene.kk", "game/assets/Textures/gold.jpg", "Tips : Hello world !", 10.f);
     });
     auto quitButton = owner.get()->GetComponent<Button>();
     quitButton->AddClickEvent([&]()
@@ -27,4 +27,3 @@ void MenuScript::OnStart()
 
 void MenuScript::OnUpdate()
 {}
-

@@ -4,8 +4,11 @@
 #include <memory>
 #include <vector>
 
+#include "resources/texture.hpp"
 #include "maths.hpp"
 #include "game/ui/ui_object.hpp"
+#include "game/ui/image_panel.hpp"
+
 
 namespace UI
 {
@@ -14,7 +17,6 @@ namespace UI
     public:
         Canvas();
         ~Canvas() = default;
-
 
         ImGuiWindowFlags windowSettings;
 
@@ -45,9 +47,24 @@ namespace UI
          */
         void Render(const Vector2& i_offset = Vector2()) const;
 
+        /**
+         * @brief Initialize the first loading screen
+         */
+        void StartLoadingScreen(const std::filesystem::path& i_loadingScreenPath);
+
+        /**
+         * @brief Apply a fade effect on the loading screen texture
+         * 
+         * @return fading finished
+         */
+        bool FadeAway();
+
     private:
         std::vector<Game::UIObject*> objects;
 
         Game::UIObjectIdentifier maxID = 1;
+
+        const std::string defaultLoadingScreen = "editor/assets/load_screen_1.png";
+        mutable Game::ImagePanel loadingScreen;
     };
 }
