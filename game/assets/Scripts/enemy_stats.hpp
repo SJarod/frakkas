@@ -43,6 +43,7 @@ namespace Game
 
     private:
         float increaseRatio = 0.5f;
+        float itemDropRate = 1.f / 4.f;
 
         int baseLife = 3;
         float baseSpeed = 900;
