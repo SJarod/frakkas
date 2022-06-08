@@ -1038,7 +1038,7 @@
 >name
 	GameOverCanvas
 >component_count
-	15
+	14
 >transform
 >position
 	0, 0, 0
@@ -1109,7 +1109,7 @@
 >tint
 	1, 1, 1, 1
 >text
-	combo bonus :
+	combo bonus : 
 >Text
 >enabled
 	0
@@ -1169,28 +1169,9 @@
 >enabled
 	0
 >position
-	19, 72
+	30, 70
 >scale
-	200, 30
->tint
-	0, 0, 0, 1
->text
-	Restart
->textScale
-	1.4
->idle
-	0.831858, 0, 0, 1
->hovered
-	0.8, 0.4, 0.4, 1
->activated
-	0.566372, 0, 0, 1
->Button
->enabled
-	0
->position
-	51.9, 72
->scale
-	200, 30
+	300, 40
 >tint
 	0, 0, 0, 1
 >text

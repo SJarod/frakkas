@@ -18,22 +18,14 @@ KK_COMPONENT_IMPL_END
 
 void GameOverTrigger::OnStart()
 {
-    const auto& buttons = owner.get()->GetComponents<Button>();
+    auto button = owner.get()->GetComponent<Button>();
 
-    // Restart
-    buttons[0]->AddClickEvent([&]()
-                              {
-                                  World::SetInputsMode(World::InputsMode_Game);
-                                  MenuScript::ResetWorldData(); // reset level, score and kills
-                                  Time::SetTimeScale(1.f);
-                                  World::ReloadScene();
-                              });
     // Menu
-    buttons[1]->AddClickEvent([&]()
-                              {
-                                  Time::SetTimeScale(1.f);
-                                  World::LoadScene("game/assets/Scenes/menu.kk");
-                              });
+    button->AddClickEvent([&]()
+    {
+        Time::SetTimeScale(1.f);
+        World::LoadScene("game/assets/Scenes/menu.kk");
+    });
 }
 
 void GameOverTrigger::OnEnable()

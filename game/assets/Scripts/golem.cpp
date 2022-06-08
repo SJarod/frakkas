@@ -148,6 +148,7 @@ void Golem::GoToSuffer()
     curHurtEffectTime = 0.f;
     animDraw->skmodel.material.tint = hurtEffectTint;
 
+    Inputs::RumbleGamepad(hurtEffectTime, 0.4f);
     animDraw->animGraph.player.playSpeed = 1.5f;
     animDraw->animGraph.PlayAnimation("Golem_Hit.fbx_mixamo.com");
 }
@@ -168,6 +169,7 @@ void Golem::GoToDeath()
     // Notify player score
     GetEntityContainer().FindEntityWithComponent<Player>()->GetComponent<Player>()->Scoring(owner.get()->name, stats->score);
 
+    Inputs::RumbleGamepad(hurtEffectTime, 0.6f);
     animDraw->animGraph.PlayAnimation("Golem_Death.fbx_mixamo.com");
 }
 
@@ -237,8 +239,8 @@ void Golem::Attack()
     {
         if (distFromPlayer < attackRange)
         {
-            player->damageSound->Play();
             player->life->Hurt(stats->damage);
+            player->GoToSuffer();
         }
 
         GoToThink();

@@ -142,6 +142,7 @@ void Skeleton::GoToSuffer()
     curHurtEffectTime = 0.f;
     animDraw->skmodel.material.tint = hurtEffectTint;
 
+    Inputs::RumbleGamepad(hurtEffectTime, 0.2f);
     animDraw->animGraph.PlayAnimation("Skeleton_Impact.fbx_mixamo.com");
 }
 void Skeleton::GoToDeath()
@@ -160,6 +161,7 @@ void Skeleton::GoToDeath()
     // Notify player score
     GetEntityContainer().FindEntityWithComponent<Player>()->GetComponent<Player>()->Scoring(owner.get()->name, stats->score);
 
+    Inputs::RumbleGamepad(hurtEffectTime, 0.4f);
     animDraw->animGraph.PlayAnimation("Skeleton_Death.fbx_mixamo.com");
 }
 

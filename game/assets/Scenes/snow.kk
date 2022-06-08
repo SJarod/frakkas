@@ -26,12 +26,64 @@
 >childs
 	0
 >name
+	Spawner_1
+>component_count
+	1
+>transform
+>position
+	141.756, -60, 27.2039
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	3
+>skeletonRatio
+	35
+>golemRatio
+	10
+>nothingRatio
+	55
+
+>entity
+>childs
+	0
+>name
 	Spawner_3
 >component_count
 	1
 >transform
 >position
 	124.246, -60, 132.852
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	3
+>skeletonRatio
+	35
+>golemRatio
+	10
+>nothingRatio
+	55
+
+>entity
+>childs
+	0
+>name
+	Spawner_2
+>component_count
+	1
+>transform
+>position
+	-72.8946, -60, 123.771
 >rotation
 	0, 0, 0
 >scale
@@ -955,7 +1007,7 @@
 >name
 	GameOverCanvas
 >component_count
-	15
+	14
 >transform
 >position
 	0, 0, 0
@@ -1026,7 +1078,7 @@
 >tint
 	1, 1, 1, 1
 >text
-	combo bonus :
+	combo bonus : 
 >Text
 >enabled
 	0
@@ -1086,28 +1138,9 @@
 >enabled
 	0
 >position
-	19, 72
+	30, 70
 >scale
-	200, 30
->tint
-	0, 0, 0, 1
->text
-	Restart
->textScale
-	1.4
->idle
-	0.831858, 0, 0, 1
->hovered
-	0.8, 0.4, 0.4, 1
->activated
-	0.566372, 0, 0, 1
->Button
->enabled
-	0
->position
-	51.9, 72
->scale
-	200, 30
+	300, 40
 >tint
 	0, 0, 0, 1
 >text
@@ -2874,58 +2907,6 @@
 >transform
 >position
 	48.079, -60, 62.599
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
-	3
->skeletonRatio
-	35
->golemRatio
-	10
->nothingRatio
-	55
-
->entity
->childs
-	0
->name
-	Spawner_1
->component_count
-	1
->transform
->position
-	141.756, -60, 27.2039
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
-	3
->skeletonRatio
-	35
->golemRatio
-	10
->nothingRatio
-	55
-
->entity
->childs
-	0
->name
-	Spawner_2
->component_count
-	1
->transform
->position
-	-72.8946, -60, 123.771
 >rotation
 	0, 0, 0
 >scale
