@@ -3,6 +3,7 @@
 #include <imgui.h>
 #include <memory>
 #include <vector>
+#include <filesystem>
 
 #include "resources/texture.hpp"
 #include "maths.hpp"
