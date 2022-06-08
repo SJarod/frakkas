@@ -48,7 +48,7 @@ void Player::OnStart()
     // INPUTS
     Inputs::SetButtonAction("attack", {EButton::SPACE, EButton::MOUSE_LEFT, EButton::GAMEPAD_A, EButton::GAMEPAD_X}, true);
     Inputs::SetButtonAction("pause", {EButton::ESCAPE, EButton::P, EButton::GAMEPAD_START});
-    Inputs::SetButtonAction("dash", {EButton::LEFT_SHIFT, EButton::E, EButton::MOUSE_RIGHT, EButton::GAMEPAD_B, EButton::GAMEPAD_Y, EButton::GAMEPAD_SHOULDER_RIGHT}, true);
+    Inputs::SetButtonAction("dash", {EButton::LEFT_SHIFT, EButton::RIGHT_SHIFT,EButton::E, EButton::MOUSE_RIGHT, EButton::GAMEPAD_B, EButton::GAMEPAD_Y, EButton::GAMEPAD_SHOULDER_RIGHT}, true);
 
     owner.get()->name = "Player";
 
@@ -397,7 +397,14 @@ void Player::Dash()
     Vector2 dashVelocity = XZVelocity * dashSpeed * Time::GetFixedDeltaTime();
     additionalTranslation = additionalTranslation + Vector3(dashVelocity.x, 0.f, -dashVelocity.y);
 
+    float prevLength = XZVelocity.Length();
+
     Move();
+
+    if (prevLength == 0.f && XZVelocity.Length() > 0.f)
+        animDraw->animGraph.PlayAnimation("Hero_Run.fbx_mixamo.com", true);
+    else if (prevLength > 0.f && XZVelocity.Length() == 0.f)
+        animDraw->animGraph.PlayAnimation("Hero_Idle_1.fbx_mixamo.com", true);
 
     if (curDashTime > dashTime || Inputs::IsReleased("dash"))
         GoToIdle();
