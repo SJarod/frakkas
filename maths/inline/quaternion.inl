@@ -1,6 +1,6 @@
-#include "vector3.hpp"
-#include "matrix4.hpp"
-#include "utils.hpp"
+#include "maths/vector3.hpp"
+#include "maths/matrix4.hpp"
+#include "maths/utils.hpp"
 
 ////////////////////////////// CONSTRUCTORS
 
@@ -87,7 +87,7 @@ inline Quaternion Quaternion::operator/(const Quaternion& q) const
 
 inline Quaternion Quaternion::operator*=(const Quaternion& q)
 {
-    return *this *= q;
+    return *this = *this * q;
 }
 
 inline bool Quaternion::operator==(const Quaternion& q) const
@@ -116,7 +116,7 @@ inline Quaternion Quaternion::Normalize() const
 {
     float length = this->Length();
 
-    if (length == 0.0f)
+    if (length < Maths::Constants::weakEpsilon)
         length = 1.0f;
 
     float ilength = 1.0f / length;
@@ -155,39 +155,173 @@ inline Quaternion Quaternion::Invert() const
 
 inline Quaternion Quaternion::QuatFromMatrix(const Matrix4& i_mat)
 {
-    Quaternion result = Identity();
+#if 0 // GLM
+    Matrix4 m = i_mat;
+    float m00 = m.line[0].element[0];
+    float m11 = m.line[1].element[1];
+    float m22 = m.line[2].element[2];
+    float m21 = m.line[2].element[1];
+    float m12 = m.line[1].element[2];
+    float m02 = m.line[0].element[2];
+    float m20 = m.line[2].element[0];
+    float m10 = m.line[1].element[0];
+    float m01 = m.line[0].element[1];
 
-    float trace = i_mat.element[0]
-                  + i_mat.element[5]
-                  + i_mat.element[10];
+    Quaternion q = {0.f, 0.f, 0.f, 0.f};
+    q.w = Maths::Sqrt(1.f + m00 + m11 + m22) * 0.5f;
+    if (q.w == 0.f)
+        return {0.f, 0.f, 0.f, 1.f};
 
-    if (trace < 0.f)
-        return Quaternion();
+    q.x = (m21 - m12) / (4.f * q.w);
+    q.y = (m20 - m02) / (4.f * q.w);
+    q.z = (m10 - m01) / (4.f * q.w);
 
-    result.w = Maths::Sqrt(1.f + trace) / 2.f;
-    float w4 = 4.f * result.w;
-    result.x = (i_mat.element[9] - i_mat.element[6]) / w4;
-    result.y = (i_mat.element[2] - i_mat.element[8]) / w4;
-    result.z = (i_mat.element[4] - i_mat.element[1]) / w4;
+    return q;
+#elif 0 // RAYMATH
+    Quaternion result;
+
+    if ((i_mat.element[0] > i_mat.element[5]) && (i_mat.element[0] > i_mat.element[10]))
+    {
+        float s = sqrtf(1.0f + i_mat.element[0] - i_mat.element[5] - i_mat.element[10])*2.f;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
+
+        result.x = 0.25f*s;
+        result.y = (i_mat.element[4] + i_mat.element[1]) / s;
+        result.z = (i_mat.element[2] + i_mat.element[8]) / s;
+        result.w = (i_mat.element[9] - i_mat.element[6]) / s;
+    }
+    else if (i_mat.element[5] > i_mat.element[10])
+    {
+        float s = sqrtf(1.0f + i_mat.element[5] - i_mat.element[0] - i_mat.element[10])*2;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
+
+        result.x = (i_mat.element[4] + i_mat.element[1]) / s;
+        result.y = 0.25f*s;
+        result.z = (i_mat.element[9] + i_mat.element[6]) / s;
+        result.w = (i_mat.element[2] - i_mat.element[8]) / s;
+    }
+    else
+    {
+        float s = sqrtf(1.0f + i_mat.element[10] - i_mat.element[0] - i_mat.element[5])*2;
+
+        if (s == 0.f)
+            return {0.f, 0.f, 0.f, 1.f};
+
+        result.x = (i_mat.element[2] + i_mat.element[8]) / s;
+        result.y = (i_mat.element[9] + i_mat.element[6]) / s;
+        result.z = 0.25f*s;
+        result.w = (i_mat.element[4] - i_mat.element[1]) / s;
+    }
 
     return result;
+#elif 1 // JOLT
+
+    float diagonal = i_mat.element[0] + i_mat.element[5] + i_mat.element[10];
+
+    if (diagonal >= 0.0f)
+    {
+        float s = Maths::Sqrt(diagonal + 1.0f);
+        float sInverse = 0.5f / s;
+        return {
+                (i_mat.col[2].element[1] - i_mat.col[1].element[2]) * sInverse,
+                (i_mat.col[0].element[2] - i_mat.col[2].element[0]) * sInverse,
+                (i_mat.col[1].element[0] - i_mat.col[0].element[1]) * sInverse,
+                0.5f * s
+        };
+    }
+    else
+    {
+        int situationIndex = 0;
+
+        if (i_mat.col[1].element[1] > i_mat.col[0].element[0])
+            situationIndex = 1;
+        if (i_mat.col[2].element[2] > i_mat.col[situationIndex].element[situationIndex])
+            situationIndex = 2;
+
+        if (situationIndex == 0)
+        {
+            float s = Maths::Sqrt(i_mat.col[0].element[0] - (i_mat.col[1].element[1] + i_mat.col[2].element[2]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    0.5f * s,
+                    (i_mat.col[0].element[1] + i_mat.col[1].element[0]) * sInverse,
+                    (i_mat.col[2].element[0] + i_mat.col[0].element[2]) * sInverse,
+                    (i_mat.col[2].element[1] - i_mat.col[1].element[2]) * sInverse
+            };
+        }
+        else if (situationIndex == 1)
+        {
+            float s = Maths::Sqrt(i_mat.col[1].element[1] - (i_mat.col[2].element[2] + i_mat.col[0].element[0]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    (i_mat.col[0].element[1] + i_mat.col[1].element[0]) * sInverse,
+                    0.5f * s,
+                    (i_mat.col[1].element[2] + i_mat.col[2].element[1]) * sInverse,
+                    (i_mat.col[0].element[2] - i_mat.col[2].element[0]) * sInverse
+            };
+        }
+        else
+        {
+            float s = Maths::Sqrt(i_mat.col[2].element[2] - (i_mat.col[0].element[0] + i_mat.col[1].element[1]) + 1);
+            float sInverse = 0.5f / s;
+            return {
+                    (i_mat.col[0].element[2] + i_mat.col[2].element[0]) * sInverse,
+                    (i_mat.col[2].element[1] + i_mat.col[1].element[2]) * sInverse,
+                    0.5f * s,
+                    (i_mat.col[0].element[1] - i_mat.col[1].element[0]) * sInverse
+            };
+        }
+    }
+#endif
 }
 
-inline Quaternion Quaternion::QuatFromEuler(const float& i_roll, const float& i_pitch, const float& i_yaw)
+inline Quaternion Quaternion::QuatFromEuler(const float& i_yaw, const float& i_pitch, const float& i_roll)
 {
-    float x0 = Maths::Cos(i_roll * 0.5f);
-    float x1 = Maths::Sin(i_roll * 0.5f);
-    float y0 = Maths::Cos(i_pitch * 0.5f);
-    float y1 = Maths::Sin(i_pitch * 0.5f);
-    float z0 = Maths::Cos(i_yaw * 0.5f);
-    float z1 = Maths::Sin(i_yaw * 0.5f);
+    float cosYaw = Maths::Cos(i_yaw * 0.5f);
+    float sinYaw = Maths::Sin(i_yaw * 0.5f);
+    float cosPitch = Maths::Cos(i_pitch * 0.5f);
+    float sinPitch = Maths::Sin(i_pitch * 0.5f);
+    float cosRoll = Maths::Cos(i_roll * 0.5f);
+    float sinRoll = Maths::Sin(i_roll * 0.5f);
 
     return {
-            x1 * y0 * z0 - x0 * y1 * z1,
-            x0 * y1 * z0 + x1 * y0 * z1,
-            x0 * y0 * z1 - x1 * y1 * z0,
-            x0 * y0 * z0 + x1 * y1 * z1
+            sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll,
+            sinYaw * cosPitch * sinRoll + cosYaw * sinPitch * cosRoll,
+            cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll,
+            cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll
     };
+}
+
+inline Quaternion Quaternion::QuatFromEuler(const Vector3& i_eulerRadAngles)
+{
+    return QuatFromEuler(i_eulerRadAngles.x, i_eulerRadAngles.y, i_eulerRadAngles.z);
+}
+
+inline Vector3 Quaternion::QuatToEuler() const
+{
+    Vector3 result = Vector3::zero;
+
+    // Yaw (x-axis rotation)
+    float x0 = 2.0f * (w * x + y * z);
+    float x1 = 1.0f - 2.0f * (x * x + y * y);
+    result.x = Maths::Atan2(x0, x1);
+
+    // Pitch (y-axis rotation)
+    float y0 = 2.0f * (w * y - z * x);
+    y0 = y0 > 1.0f ? 1.0f : y0;
+    y0 = y0 < -1.0f ? -1.0f : y0;
+    result.y = Maths::Asin(y0);
+
+    // Roll (z-axis rotation)
+    float z0 = 2.0f * (w * z + x * y);
+    float z1 = 1.0f - 2.0f * (y * y + z * z);
+    result.z = Maths::Atan2(z0, z1);
+
+    return result;
 }
 
 inline Quaternion Quaternion::QuatFromAxisAngle(const Vector3& i_axis, float i_radAngle)
@@ -210,7 +344,7 @@ inline Quaternion Quaternion::QuatFromAxisAngle(const Vector3& i_axis, float i_r
     return result.Normalize();
 }
 
-inline void Quaternion::QuatToAxisAngle(Vector3* o_outAxis, float* o_outAngle)
+inline void Quaternion::QuatToAxisAngle(Vector3& o_outAxis, float& o_outAngle)
 {
     if (Maths::Abs(w) > 1.0f)
         *this = this->Normalize();
@@ -226,10 +360,29 @@ inline void Quaternion::QuatToAxisAngle(Vector3* o_outAxis, float* o_outAngle)
         resAxis.z = z / den;
     }
     else
-        resAxis.x = 1.0f;
+    {
+        resAxis.x = x;
+        resAxis.y = y;
+        resAxis.z = z;
+    }
 
-    *o_outAxis = resAxis;
-    *o_outAngle = resAngle;
+    o_outAxis = resAxis;
+    o_outAngle = resAngle;
+}
+
+inline Quaternion Quaternion::VectorToVector(const Vector3& i_from, const Vector3& i_to)
+{
+    Quaternion result = { 0.f, 0.f, 0.f, 0.f};
+
+    float dot = Vector3::DotProduct(i_from, i_to);
+    Vector3 cross = Vector3::CrossProduct(i_from, i_to);
+
+    result.x = cross.x;
+    result.y = cross.y;
+    result.z = cross.z;
+    result.w = 1.0f + dot;
+
+    return result.Normalize();
 }
 
 inline Quaternion Quaternion::Lerp(const Quaternion& i_q1, const Quaternion& i_q2, float i_factor)
@@ -254,6 +407,7 @@ inline Quaternion Quaternion::Nlerp(const Quaternion& i_q1, const Quaternion& i_
 
 inline Quaternion Quaternion::Slerp(const Quaternion& i_q1, const Quaternion& i_q2, float i_factor)
 {
+#if false
     i_factor = Maths::Clamp(i_factor, 0.f, 1.f);
 
     Quaternion result = Identity();
@@ -289,4 +443,31 @@ inline Quaternion Quaternion::Slerp(const Quaternion& i_q1, const Quaternion& i_
     }
 
     return result;
+#else
+    float cosHalfOmega = i_q1.x * i_q2.x + i_q1.y * i_q2.y + i_q1.z * i_q2.z + i_q1.w * i_q2.w;
+
+    Quaternion tto = i_q2;
+    if (cosHalfOmega < 0.f)
+    {
+        tto = { -tto.x, -tto.y, -tto.z, -tto.w };
+        cosHalfOmega = -cosHalfOmega;
+    }
+
+    if (Maths::Abs(cosHalfOmega) >= 1.0f)
+    {
+        return i_q1;
+    }
+    else
+    {
+        float halfOmega = Maths::Acos(cosHalfOmega);
+        float sinHalfOmega = Maths::Sqrt(1.f - cosHalfOmega * cosHalfOmega);
+
+        float ratioA = (Maths::Sin((1.f - i_factor) * halfOmega) / sinHalfOmega);
+        float ratioB = (Maths::Sin(i_factor * halfOmega) / sinHalfOmega);
+        return { (i_q1.x * ratioA + tto.x * ratioB),
+            (i_q1.y * ratioA + tto.y * ratioB),
+            (i_q1.z * ratioA + tto.z * ratioB),
+            (i_q1.w * ratioA + tto.w * ratioB) };
+    }
+#endif
 }

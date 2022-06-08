@@ -1,19 +1,13 @@
-//
-// Created by f.marcellot on 11/03/2022.
-//
-
 #pragma once
 
 #include <iostream> // used for '<<' operator overload
 
-#include "constants.hpp"
+#include "maths/constants.hpp"
 
-#include "vector2.hpp"
-#include "vector3.hpp"
-#include "vector4.hpp"
-#include "matrix4.hpp"
-#include "referential.hpp"
-#include "quaternion.hpp"
+#include "maths/vector2.hpp"
+#include "maths/vector3.hpp"
+#include "maths/vector4.hpp"
+#include "maths/matrix4.hpp"
+#include "maths/quaternion.hpp"
 
-#include "utils.hpp"
-
+#include "maths/utils.hpp"

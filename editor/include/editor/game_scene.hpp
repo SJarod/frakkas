@@ -1,8 +1,6 @@
-//
-// Created by m.mehalin on 22/03/2022.
-//
-
 #pragma once
+
+#include "renderer/lowlevel/lowrenderer.hpp"
 
 namespace Editor
 {
@@ -11,10 +9,14 @@ namespace Editor
     public:
         GameScene() = default;
         ~GameScene() = default;
+        /**
+         * Position where the cursor is locked when user begin playing.
+         */
+        Vector2 mouseLockPosition;
 
         /**
-        * @summary Display the ImGui panel
+        * @brief Draw the game framebuffer texture, and allow interactions with this window.
         */
-        void OnImGuiRender();
+        void OnImGuiRender(Engine& io_engine);
     };
 }
