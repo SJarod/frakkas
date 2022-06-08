@@ -50,7 +50,7 @@ namespace Helpers
         }
         else if (Utils::FindExtension(extension, Utils::SceneExtensions)) // Handle .KK Loading if graph is send
         {
-            io_graph->LoadScene(i_path.string());
+            io_graph->SetLoadingParameters(true, i_path.string());
             return true;
         }
 
