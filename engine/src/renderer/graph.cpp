@@ -2,11 +2,11 @@
 
 #include "game/lowcomponent/component.hpp"
 #include "game/lowcomponent/drawable.hpp"
-#include "game/lowcomponent/sound.hpp"
-#include "game/lowcomponent/static_draw.hpp"
-#include "game/lowcomponent/camera.hpp"
-#include "game/collider/box_collider.hpp"
-#include "game/collider/sphere_collider.hpp"
+#include "sound.hpp"
+#include "drawable/static_draw.hpp"
+#include "camera.hpp"
+#include "collider/box_collider.hpp"
+#include "collider/sphere_collider.hpp"
 #include "game/entity_manager.hpp"
 
 #include "renderer/lowlevel/lowrenderer.hpp"
@@ -223,6 +223,9 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Came
 
 void Graph::RenderColliders(Renderer::LowLevel::LowRenderer& i_renderer)
 {
+    if (!i_renderer.renderCollider)
+        return;
+
     i_renderer.ContinueFrame(*i_renderer.firstPassFBO);
 
     for (Collider* collider : Physic::PhysicScene::colliders)
@@ -354,12 +357,11 @@ bool Graph::CreateScene(std::filesystem::path i_scenePath)
     /// PLAYER
     en = entityManager->CreateEntity("Player");
     auto collider = en->AddComponent<Game::SphereCollider>();
+    collider->SetDynamic();
 
     drawable = en->AddComponent<Game::StaticDraw>();
     drawable->SetMesh(Resources::Mesh::icoSphereMesh);
     drawable->SetTexture("game/assets/Textures/gold.jpg", true);
-
-    collider->isStatic = false;
 
     SaveScene();
 
@@ -454,8 +456,7 @@ void Graph::SetLoadingParameters(bool i_cleaning,
     if (loadScenePath.empty())
     {
         loadScenePath = i_loadScenePath.empty() ? currentScenePath : i_loadScenePath;
-        if (!i_loadingScreenPath.empty())
-            loadingScreenPath = i_loadingScreenPath;
+        loadingScreenPath = i_loadingScreenPath.empty() ? UI::Canvas::defaultLoadingScreen : i_loadingScreenPath;
         tips = i_tips;
         minimumLoadTime = i_minimumLoadTime;
         cleaning = i_cleaning;

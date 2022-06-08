@@ -15,7 +15,7 @@
 #include "game/entity_manager.hpp"
 #include "game/time_manager.hpp"
 #include "game/inputs_manager.hpp"
-#include "game/lowcomponent/camera.hpp"
+#include "camera.hpp"
 
 namespace Renderer
 {

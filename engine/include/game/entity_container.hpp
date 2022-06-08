@@ -44,6 +44,14 @@ namespace Game
         Entity* FindEntityWithComponent();
 
         /**
+         * @brief Find all the entities with the input component and store them in a vector.
+         * @tparam TComponent Class name of the component.
+         * @return A vector with pointers to all entities who own the component.
+         */
+        template<typename TComponent>
+        std::vector<Entity*> FindEntitiesWithComponent();
+
+        /**
          * @brief Add a parent ot an entity, and update root entities map.
          * @param io_child The child to set the parent
          * @param io_parent The parent, will be informed about its new child
@@ -71,6 +79,19 @@ Game::Entity* Game::EntityContainer::FindEntityWithComponent()
     }
 
     return nullptr;
+}
+
+template<typename TComponent>
+std::vector<Game::Entity*> Game::EntityContainer::FindEntitiesWithComponent()
+{
+    std::vector<Game::Entity*> foundEntities;
+    for (const std::unique_ptr<Entity>& entity : entities)
+    {
+        if (entity->GetComponent<TComponent>())
+            foundEntities.emplace_back(entity.get());
+    }
+
+    return foundEntities;
 }
 
 

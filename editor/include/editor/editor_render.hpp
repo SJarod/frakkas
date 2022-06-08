@@ -28,6 +28,7 @@ namespace Editor
 {
     class EditorRender
     {
+        static constexpr float ImGuiWindowPadding = 10.f;
     public:
         EditorRender(Engine& io_engine);
 
@@ -54,7 +55,5 @@ namespace Editor
         GameScene m_game;
         Debugger m_debugger;
         ResourcesViewer m_resources;
-
-        void UpdateImGui();
     };
 }

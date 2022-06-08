@@ -21,6 +21,7 @@ namespace Renderer
 	class Socket
 	{
 	public:
+        bool render = false;
 		Game::Transform transform;
 		Renderer::Model model;
 		int boneID;
@@ -37,7 +38,6 @@ namespace Renderer
 		std::string textureName = "";
 		bool		flipTexture = false;
 
-		// TODO : vector of Texture
 		std::weak_ptr<Resources::Texture> diffuseTex;
 
 		SkeletalModel();

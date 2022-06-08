@@ -36,6 +36,7 @@ namespace Game
 
         std::string name;
         bool serialize = true; // If false, the entity will not be saved when save the scene.
+        Property<bool> enabled;
 
         bool unsettingParent = false;
         Transform transform;
@@ -84,6 +85,12 @@ namespace Game
          */
         template<typename T>
         std::vector<T*> GetComponents();
+
+        /**
+         * @return A reference to the entity property who is a root entity.
+         * Return an empty property if this entity does not have parent.
+         */
+        Entity* GetRootEntity();
 
         const EntityIdentifier& GetID() const { return id; }
         std::string GetStringID() const { return std::to_string(id); }

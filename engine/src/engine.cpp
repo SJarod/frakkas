@@ -11,7 +11,7 @@
 #include "maths.hpp"
 #include "debug/log.hpp"
 #include "game/entity.hpp"
-#include "game/lowcomponent/camera.hpp"
+#include "camera.hpp"
 #include "game/world.hpp"
 
 #include "ui/canvas.hpp"
@@ -329,7 +329,10 @@ void Engine::SetRunMode(unsigned int i_flag)
 
     if (updateMode & Utils::UpdateFlag_Gaming
     && !(Game::World::GetInputsMode() & Game::World::InputsMode_UI))
+    {
+        SetUINavigation(false);
         SetCursorGameMode(true);
+    }
 
     if (updateMode & Utils::UpdateFlag_Editing)
     {

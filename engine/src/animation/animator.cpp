@@ -63,6 +63,11 @@ bool Animation::Animator::IsWaiting() const
 	return !anim;
 }
 
+bool Animation::Animator::IsLooping() const
+{
+    return loop;
+}
+
 const std::vector<Matrix4>& Animation::Animator::GetGlobalBoneMatrices() const
 {
 	return globalBoneMatrices;

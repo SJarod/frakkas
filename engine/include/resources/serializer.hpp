@@ -47,6 +47,9 @@ namespace Resources
         static constexpr int transformParameterCount = 3;
         static constexpr int lightParameterCount = 10;
 
+    private:
+        static bool skipAttribute;
+
     public: /// READ FUNCTIONS
         /**
          *
@@ -69,7 +72,7 @@ namespace Resources
          * @param io_entityContainer The entity container to create and link entity
          * @param i_parent A parent entity to set to the created entity. Can be nullptr.
          */
-        static void CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent = nullptr);
+        static Game::Entity* CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent = nullptr);
 
         /**
          * @brief read a component and store data in an unsigned char pointer.

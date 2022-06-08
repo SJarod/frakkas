@@ -140,6 +140,12 @@ namespace Game
         Transform& GetTransform() const;
 
         /**
+         * @return A reference to the transform of the parent entity which is a root entity.
+         * Return GetTransform() if the owner does not have parent.
+         */
+        Transform& GetRootTransform() const;
+
+        /**
          * @brief an abstract function, every inheretid components should define this function with KK_GENERATE_COMPONENT
          * @return the meta data of the class, in other words the list of member variable readable for the engine.
          */

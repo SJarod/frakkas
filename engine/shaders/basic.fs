@@ -19,7 +19,8 @@ struct Material
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
-	vec3 emission;
+	vec3 emissive;
+	vec4 tint;
 	float shininess;
 };
 
@@ -204,11 +205,11 @@ void main()
 
     vec4 texColor = texture(uTexture, vUV);
 
-    vec3 ambientColor  = uMaterial.ambient * lightResult.ambient * texColor.rgb;
-    vec3 diffuseColor  = uMaterial.diffuse * lightResult.diffuse * texColor.rgb;
+    vec3 ambientColor  = uMaterial.ambient * lightResult.ambient * (texColor.rgb + uMaterial.tint.rgb);
+    vec3 diffuseColor  = uMaterial.diffuse * lightResult.diffuse * (texColor.rgb +  uMaterial.tint.rgb);
     vec3 specularColor = uMaterial.specular * lightResult.specular;
-    vec3 emissiveColor = uMaterial.emission * texColor.rgb;
+    vec3 emissiveColor = uMaterial.emissive * (texColor.rgb + uMaterial.tint.rgb);
 
     // Apply light color
-    oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), texColor.a);
+    oColor = vec4((ambientColor + diffuseColor + specularColor + emissiveColor), uMaterial.tint.a * texColor.a);
 }

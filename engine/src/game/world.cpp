@@ -83,7 +83,7 @@ void World::LoadScene(const std::string& i_scenePath,
     engine->graph->SetLoadingParameters(true, i_scenePath, i_loadingScreenPath, i_tips, i_minimumLoadTime);
 }
 
-void World::ReloadScene()
+void World::ReloadScene(const std::string& i_loadingScreenPath)
 {
-    engine->graph->SetLoadingParameters(false);
+    engine->graph->SetLoadingParameters(false, "", i_loadingScreenPath);
 }

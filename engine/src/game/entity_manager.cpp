@@ -37,10 +37,10 @@ Entity* EntityContainer::CloneEntity(const Entity& i_entity)
     outFile.close();
 
     std::ifstream inFile(CloneSerializationFile);
-    Resources::Serializer::CreateAndReadEntity(inFile, *this);
+    Entity* cloneEntity = Resources::Serializer::CreateAndReadEntity(inFile, *this);
     inFile.close();
 
-    return entities.back().get();
+    return cloneEntity;
 }
 
 void Game::EntityContainer::SetEntityParent(Entity& io_child, Entity& io_parent)

@@ -13,6 +13,7 @@ namespace Renderer
 		Vector3 diffuse = { 1.f, 1.f, 1.f };
 		Vector3 specular = { 1.f, 1.f, 1.f };
 		Vector3 emissive = { 0.f, 0.f, 0.f };
+        Vector4 tint = { 0.f, 0.f, 0.f, 1.f };
 		float shininess = 32.f;
 	};
 

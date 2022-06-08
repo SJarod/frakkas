@@ -154,7 +154,7 @@ void Helpers::Edit(Animation::AnimationGraph& io_animGraph)
 		{
 			ImGui::TableNextRow();
 			ImGui::TableNextColumn();
-			ImGui::Text(names[i].data());
+			ImGui::Text("%s", names[i].data());
 
 			if (ImGui::IsItemHovered() && Game::Inputs::IsPressed(Game::EButton::MOUSE_RIGHT))
 			{
@@ -211,6 +211,7 @@ inline void DisplayBone(const Resources::SkeletonNodeData& i_bone, int i_id, Ren
 			{
 				if (ImGui::TreeNodeEx(s.model.mesh.lock()->name.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 				{
+                    ImGui::Checkbox("Render", &s.render);
 					Helpers::Edit(s.transform);
 					if (ImGui::Selectable("Remove socket"))
 					{
@@ -329,11 +330,19 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 	// Edit transform
 	Edit(io_entity.transform);
 
-	/// EDIT COMPONENTS
-	int index = 0, removeIndex = -1;
-	for (const std::unique_ptr<Game::Component>& comp : io_entity.components)
-	{
-		ImGui::PushID(index);
+    /// EDIT COMPONENTS
+    ImGui::Spacing();
+    ImGui::Text("COMPONENTS");
+    ImGui::Separator();
+
+    bool enabled = io_entity.enabled;
+    ImGui::Checkbox("Enable", &enabled);
+    io_entity.enabled = enabled;
+
+    int index = 0, removeIndex = -1;
+    for (const std::unique_ptr<Game::Component>& comp : io_entity.components)
+    {
+        ImGui::PushID(index);
 
 		bool compEnabled = comp->enabled;
 		if (!Edit(reinterpret_cast<unsigned char*>(comp.get()), comp->GetMetaData(), compEnabled))

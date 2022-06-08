@@ -1,8 +1,9 @@
 
 #include "game/entity.hpp"
+#include "player.hpp"
+#include "physic_player.hpp"
 
-#include "game/ui/button.hpp"
-#include "player_movement.hpp"
+#include "ui/button.hpp"
 #include "follow_camera.hpp"
 
 using namespace Game;
@@ -16,9 +17,11 @@ KK_COMPONENT_IMPL_END
 
 void FollowCamera::OnStart()
 {
-    Entity* en = GetEntityContainer().FindEntityWithComponent<PlayerMovement>();
-    if (en)
-        playerTransform = &en->transform;
+    if (Entity* player = GetEntityContainer().FindEntityWithComponent<Player>())
+        playerTransform = &player->transform;
+    else if (Entity* physicPlayer = GetEntityContainer().FindEntityWithComponent<PhysicPlayer>())
+        playerTransform = &physicPlayer->transform;
+
     if (playerTransform)
         Position() = playerTransform->position.get() + offset;
 

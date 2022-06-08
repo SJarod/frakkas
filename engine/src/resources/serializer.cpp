@@ -20,6 +20,7 @@
 using namespace Resources;
 
 std::string Serializer::attribute;
+bool Serializer::skipAttribute = false;
 
 ///////////////////////// READ FUNCTIONS
 
@@ -35,7 +36,8 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream& i_file)
 
     if (attribute.empty() || attribute[0] != '>')
     {
-        Log::Warning("Scene loader can't find an Attribute, process once again. Current value is : '", attribute, "'");
+        if (!attribute.empty())
+            Log::Warning("Scene loader can't find an Attribute, process once again. Current value is : '", attribute, "'");
         return GetAttribute(i_file); // Call Get attribute until we find an attribute.
     }
 
@@ -43,23 +45,26 @@ std::string& Resources::Serializer::GetAttribute(std::ifstream& i_file)
     return attribute;
 }
 
-void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent)
+Game::Entity* Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityContainer& io_entityContainer, Game::Entity* i_parent)
 {
     int childCount = 0;
-    GetAttribute(i_file); // '>entity'
+    if (!skipAttribute) // Skip Attribute is true if last component didn't find a field attribute, so it found 'entity' attribute
+        GetAttribute(i_file); // '>entity'
+
+    skipAttribute = false;
 
     if (attribute != "entity")
-        return;
+        return nullptr;
 
     GetAttribute(i_file); // '>childs'
     if (attribute != "childs")
-        return;
+        return nullptr;
     Read(i_file, &childCount, 1);
 
     std::string entityName;
     GetAttribute(i_file); // '>name'
     if (attribute != "name")
-        return;
+        return nullptr;
     Read(i_file, entityName);
 
     Game::Entity* entity = io_entityContainer.CreateEntity(entityName);
@@ -69,11 +74,14 @@ void Serializer::CreateAndReadEntity(std::ifstream& i_file, Game::EntityContaine
 
     Read(i_file, *entity); // Read components
 
-    i_file.ignore(); // skip lines
+    if (!skipAttribute) // If skip attribute true, the cursor is already at the good place
+        i_file.ignore(); // skip lines
 
     // Load child which are the next written entities, and set this entity as parent.
     for (int i = 0; i < childCount; i++)
         CreateAndReadEntity(i_file, io_entityContainer, entity);
+
+    return entity;
 }
 
 void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
@@ -87,7 +95,8 @@ void Serializer::Read(std::ifstream& i_file, Game::Entity& o_entity)
 
     for (int i = 0; i < componentCount; i++)
     {
-        GetAttribute(i_file); // name of component
+        if (!skipAttribute)
+            GetAttribute(i_file); // name of component
 
         auto& registry = Game::Component::GetRegistry();
         auto it = std::find_if(registry.begin(), registry.end(), [](ClassMetaData* md){return attribute == md->className;});
@@ -124,8 +133,9 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
             continue;
 
         unsigned char* componentData = o_component + desc.offset;
-        if (GetAttribute(i_file) == desc.name)
+        if ((skipAttribute && attribute == desc.name) || GetAttribute(i_file) == desc.name)
         {
+            skipAttribute = false;
             switch (desc.dataType)
             {
                 case EDataType::BOOL:
@@ -152,9 +162,9 @@ void Serializer::Read(std::ifstream& i_file, unsigned char* o_component, const C
             if (desc.onChanged)
                 desc.onChanged(o_component);
         }
-
+        else
+            skipAttribute = true;
     }
-
 }
 
 void Serializer::Read(std::ifstream& i_file, std::string& o_string)

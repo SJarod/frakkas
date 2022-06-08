@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <memory>
+
 class Engine;
 
 namespace Game
@@ -57,11 +60,11 @@ namespace Game
          * @param i_minimumLoadTime Delay the loading time to match the specified time.
          */
         static void LoadScene(const std::string& i_scenePath,
-            const std::string& i_loadingScreenPath,
+            const std::string& i_loadingScreenPath = "",
             const std::string& i_tips = "",
             float i_minimumLoadTime = 0.f);
 
-        static void ReloadScene();
+        static void ReloadScene(const std::string& i_loadingScreenPath = "");
 
     private:
         static std::unique_ptr<WorldData> worldData;

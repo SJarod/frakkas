@@ -405,7 +405,7 @@
 	game/assets\Textures\Dungeons_Texture_03.png
 >animGraph
 >count
-	8
+	6
 >file
 	game/assets\Models\Hero\Hero_Idle_1.fbx
 >file
@@ -415,10 +415,6 @@
 >file
 	game/assets\Models\Hero\Hero_Slash_1.fbx
 >file
-	game/assets\Models\Hero\Hero_Slash_2.fbx
->file
 	game/assets\Models\Hero\Hero_Slash_3.fbx
 >file
 	game/assets\Models\Hero\Hero_Slash_4.fbx
->file
-	game/assets\Models\Hero\Hero_Slash_5.fbx

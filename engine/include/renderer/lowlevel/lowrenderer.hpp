@@ -128,6 +128,7 @@ namespace Renderer
 			bool postProcessOutline = true;
 			//shadow rendering values
 			float shadowDistance = 20.f;
+            bool renderCollider = true;
 
 			std::unique_ptr<Renderer::LowLevel::DepthFramebuffer> depthMapFBO;
 			std::unique_ptr<Renderer::LowLevel::Framebuffer> firstPassFBO;

@@ -6,8 +6,8 @@
 
 #include "resources/texture.hpp"
 #include "maths.hpp"
-#include "game/ui/ui_object.hpp"
-#include "game/ui/image_panel.hpp"
+#include "game/lowcomponent/ui_object.hpp"
+#include "ui/image_panel.hpp"
 
 
 namespace UI
@@ -15,6 +15,9 @@ namespace UI
     class Canvas
     {
     public:
+        static constexpr char defaultLoadingScreen[] = "editor/assets/load_screen_1.png";
+
+
         Canvas();
         ~Canvas() = default;
 
@@ -64,7 +67,6 @@ namespace UI
 
         Game::UIObjectIdentifier maxID = 1;
 
-        const std::string defaultLoadingScreen = "editor/assets/load_screen_1.png";
         mutable Game::ImagePanel loadingScreen;
     };
 }

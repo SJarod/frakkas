@@ -2,11 +2,13 @@
 
 #include <queue>
 #include <filesystem>
+#include <list>
+#include <functional>
 
 #include "game/entity.hpp"
 #include "ui/canvas.hpp"
-#include "game/ui/text.hpp"
-#include "game/ui/panel.hpp"
+#include "ui/text.hpp"
+#include "ui/panel.hpp"
 
 #include "renderer/light.hpp"
 
@@ -28,6 +30,8 @@ namespace Physic
 
 namespace Renderer
 {
+    using OnSceneLoadEvent = std::function<void()>;
+
     namespace LowLevel
     {
         class LowRenderer;
@@ -49,6 +53,8 @@ namespace Renderer
         Game::Entity editorCameraman;
         Game::Camera* editorCamera = nullptr;
         Game::Camera* gameCamera = nullptr;
+
+        std::list<OnSceneLoadEvent> sceneLoadEvents;
 
         static UI::Canvas canvas;
         static UI::Canvas loadingCanvas;

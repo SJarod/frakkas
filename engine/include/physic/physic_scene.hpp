@@ -10,9 +10,7 @@
 #include <Jolt/Physics/Body/BodyManager.h>
 #include <Jolt/Physics/PhysicsSystem.h>
 
-#include "game/collider/collider.hpp"
-
-#include "game/collider/collider.hpp"
+#include "game/lowcomponent/collider.hpp"
 
 #include "utils/update_flags.hpp"
 
@@ -142,5 +140,6 @@ void Physic::PhysicScene::AddCollider(Game::Collider* io_collider, TShapeArgs...
 {
     JPH::Body* body = CreateBody(std::forward<TShapeArgs>(i_shapeArgs)...);
     io_collider->SetPhysicParameters(body, bodyInterface);
+    io_collider->gravityFactor = gravityFactor;
     colliders.emplace_back(io_collider);
 }

@@ -4,7 +4,7 @@
 
 #include "physic/physic_scene.hpp"
 
-#include "game/collider/collider.hpp"
+#include "game/lowcomponent/collider.hpp"
 #include "game/entity.hpp"
 
 
@@ -14,6 +14,7 @@ Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
     :id(i_id)
 {
     parent.set(nullptr);
+    enabled.set(true);
 
     parent.setter = [&](Entity* io_value)
     {
@@ -23,6 +24,29 @@ Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
             entityStore->SetEntityParent(*this, *io_value);
 
         parent.set(io_value);
+    };
+    enabled.setter = [&](bool io_value)
+    {
+        // Avoid endless call with Component::OnEnabled/OnDisable
+        bool prevValue = enabled;
+        enabled.set(io_value);
+
+        if (prevValue && !io_value)
+        {
+            for (int i = components.size()-1; i >= 0; i--)
+                components[i]->enabled = false;
+
+            for (Entity* child : childs)
+                child->enabled = false;
+        }
+        else if (!prevValue && io_value)
+        {
+            for (int i = components.size()-1; i >= 0; i--)
+                components[i]->enabled = true;
+
+            for (Entity* child : childs)
+                child->enabled = true;
+        }
     };
 
     if (i_name.empty())
@@ -111,4 +135,13 @@ void Entity::UnregisterIntoGraph(Component* i_oldComponent) const
 {
     if (id != 0)
         Renderer::Graph::UnregisterComponent(i_oldComponent);
+}
+
+Entity* Entity::GetRootEntity()
+{
+    Entity* rootEntity = this;
+    while (rootEntity->parent.get())
+        rootEntity = rootEntity->parent;
+
+    return rootEntity;
 }

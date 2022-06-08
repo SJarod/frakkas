@@ -17,14 +17,10 @@
 	0.1
 >shadow
 	1
->adapativeBias
-	0
->shadowBias
-	0.005
 >shadowPCF
-	10
->shadowDepth
-	1
+	0
+>shadowDistance
+	30
 
 >entity
 >childs
@@ -35,16 +31,16 @@
 	2
 >transform
 >position
-	-4.28269, 14.8087, 10.5925
+	4.60383, -1.02, 2.02149
 >rotation
-	-0.698132, 0, 0
+	-0.523599, 1.5708, 0
 >scale
 	1, 1, 1
 >Camera
 >enabled
 	1
 >near
-	0.1
+	1
 >far
 	1000
 >fovY
@@ -53,500 +49,9 @@
 >enabled
 	1
 >offset
-	0, 6, 6
+	-8, 6, 0
 >lerpFactor
-	0.08
-
->entity
->childs
-	0
->name
-	Player
->component_count
-	3
->transform
->position
-	6.117, 2.20873, 24.692
->rotation
-	-1.55112, 0.00386661, -0.00018334
->scale
-	1, 1, 1
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralSphere
->textureName
-	game/assets/Textures/gold.jpg
->PlayerMovement
->enabled
-	1
->startPosition
-	0, 0, 0
->speed
-	800
->leftPower
-	0.3
->rightPower
-	0.3
-
->entity
->childs
-	2
->name
-	Items
->component_count
-	0
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
-
->entity
->childs
-	4
->name
-	balls
->component_count
-	0
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
-
->entity
->childs
-	0
->name
-	ball_1
->component_count
-	2
->transform
->position
-	7.97641, 5.85504, 0
->rotation
-	-0, -0, -0
->scale
-	1.5, 1.5, 1.5
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralSphere
->textureName
-	game/assets/Textures/gold.jpg
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	ball_2
->component_count
-	2
->transform
->position
-	24.2896, 5.85504, -16.5249
->rotation
-	-0, -0, -0
->scale
-	1.5, 1.5, 1.5
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralSphere
->textureName
-	game/assets/Textures/gold.jpg
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	ball_3
->component_count
-	2
->transform
->position
-	10.0442, 2.8348, 9.14685
->rotation
-	-0, -0, -0
->scale
-	1.5, 1.5, 1.5
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralSphere
->textureName
-	game/assets/Textures/gold.jpg
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	ball_4
->component_count
-	2
->transform
->position
-	-13.3143, 14.9522, -22.9731
->rotation
-	-0, -0, -0
->scale
-	2.6, 2.6, 2.6
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralSphere
->textureName
-	game/assets/Textures/gold.jpg
->SphereCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	9
->name
-	cubes
->component_count
-	0
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
-
->entity
->childs
-	0
->name
-	cube_1
->component_count
-	2
->transform
->position
-	-6.3438, 4.45343, 8.37746
->rotation
-	-0, -0, -0
->scale
-	2, 2, 2
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_2
->component_count
-	2
->transform
->position
-	-3.97486, 1.92202, -26.826
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_3
->component_count
-	2
->transform
->position
-	-3.97486, -0.322418, -26.826
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_4
->component_count
-	2
->transform
->position
-	-3.97486, 4.11488, -26.826
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_5
->component_count
-	2
->transform
->position
-	-6.23221, -0.322418, -26.826
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_6
->component_count
-	2
->transform
->position
-	-6.31074, 1.93614, -26.826
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_7
->component_count
-	2
->transform
->position
-	-6.23221, -0.322418, -24.0286
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_8
->component_count
-	2
->transform
->position
-	-3.91512, -0.322418, -24.0725
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	0
->name
-	cube_9
->component_count
-	2
->transform
->position
-	-3.73854, 1.77812, -24.15
->rotation
-	-0, -0, -0
->scale
-	1, 1, 1
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/Textures/gold.jpg
->BoxCollider
->enabled
-	1
->isStatic
-	0
->trigger
-	0
-
->entity
->childs
-	5
->name
-	Map
->component_count
-	0
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
+	0.1
 
 >entity
 >childs
@@ -557,41 +62,157 @@
 	2
 >transform
 >position
-	0, -5, 0
+	0, -7.3, 0
 >rotation
-	-0, -0, -0
+	0, 0, 0
 >scale
-	30, 3, 30
+	40, 3.8, 40
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
 	1
->trigger
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
 	0
 >StaticDraw
 >enabled
 	1
->model
->name
+>meshPath
 	ProceduralCube
->textureName
-	game/assets/red.png
+>texturePath
+	white
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	0, 0, 0
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
-	4
->name
-	Walls
->component_count
 	0
+>name
+	Player
+>component_count
+	3
 >transform
 >position
+	4.60384, -0.72, -2.97851
+>rotation
+	1.33646e-08, 0.00709875, 1.55786e-06
+>scale
+	1, 1, 1
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
 	0, 0, 0
+>model.material.tint
+	0.437091, 0.0170334, 0.641593, 1
+>model.material.shininess
+	32
+>PhysicPlayer
+>enabled
+	1
+>speed
+	900
+>jumpForce
+	1200
+>gravityFactor
+	3
+
+>entity
+>childs
+	0
+>name
+	Wall_0
+>component_count
+	1
+>transform
+>position
+	-40, 10, 0
 >rotation
 	0, 0, 0
 >scale
-	1, 1, 1
+	1, 20, 40
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
 
 >entity
 >childs
@@ -602,26 +223,53 @@
 	2
 >transform
 >position
-	31.4247, 9.49087, 0
+	40, 10, 0
 >rotation
-	-0, -0, -0
+	0, 0, 0
 >scale
-	1, 17.4429, 30.3689
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/red.png
+	1, 20, 40
 >BoxCollider
 >enabled
 	1
->isStatic
-	1
->trigger
+>cTrigger
 	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.800885, 0.731578, 0.499667, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -629,28 +277,36 @@
 >name
 	Wall_2
 >component_count
-	2
+	1
 >transform
 >position
-	1.171, 10.037, -31.233
+	0, 10, 40
 >rotation
-	-0, 1.57045, -0
+	0, 1.55334, 0
 >scale
-	1, 17.4429, 30.3689
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/red.png
+	1, 20, 40
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
 	1
->trigger
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
 	0
 
 >entity
@@ -659,67 +315,83 @@
 >name
 	Wall_3
 >component_count
-	2
+	1
 >transform
 >position
-	-29.621, 9.49087, 0
+	0, 10, -40
 >rotation
-	-0, -0, -0
+	0, 1.55334, 0
 >scale
-	1, 17.4429, 30.3689
->StaticDraw
->enabled
-	0
->model
->name
-	ProceduralCube
->textureName
-	game/assets/red.png
+	1, 20, 40
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
 	1
->trigger
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
 	0
 
 >entity
 >childs
 	0
 >name
-	Wall_4
+	Roof
 >component_count
-	2
+	1
 >transform
 >position
-	1.19247, 10.037, 30.7468
+	0, 30, 0
 >rotation
-	-0, 1.57045, -0
+	0, 0, 0
 >scale
-	1, 17.4429, 30.3689
->StaticDraw
->enabled
-	0
->model
->name
-	ProceduralCube
->textureName
-	game/assets/red.png
+	40, 1, 40
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
 	1
->trigger
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
 	0
 
 >entity
 >childs
-	4
->name
-	Slopes
->component_count
 	0
+>name
+	RigidCube_0
+>component_count
+	2
 >transform
 >position
 	0, 0, 0
@@ -727,141 +399,105 @@
 	0, 0, 0
 >scale
 	1, 1, 1
-
->entity
->childs
-	0
->name
-	Slope_1
->component_count
-	2
->transform
->position
-	25.0953, 0, 0
->rotation
-	-0.314159, -0, -0
->scale
-	4.94848, 1, 9.72741
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/blue.png
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
 	1
->trigger
+>posX
 	0
-
->entity
->childs
+>posY
 	0
->name
-	Slope_2
->component_count
-	2
->transform
->position
-	10.5903, 7.54583, -22.6193
->rotation
-	-0.157079, 2.83122e-07, 0.488691
->scale
-	12.936, 1, 7.96853
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
 >StaticDraw
 >enabled
 	1
->model
->name
+>meshPath
 	ProceduralCube
->textureName
-	game/assets/blue.png
->BoxCollider
->enabled
-	1
->isStatic
-	1
->trigger
-	0
-
->entity
->childs
-	0
->name
-	Slope_3
->component_count
-	2
->transform
->position
-	-6.51038, -1.02312, 19.1958
->rotation
-	-0.488692, -0, -0
->scale
-	5.13563, 1, 3.92691
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/blue.png
->BoxCollider
->enabled
-	1
->isStatic
-	1
->trigger
-	0
-
->entity
->childs
-	0
->name
-	Slope_4
->component_count
-	2
->transform
->position
-	-6.51038, -1.02885, -2.45452
->rotation
-	0.488692, -0, -0
->scale
-	5.13563, 1, 3.92691
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/blue.png
->BoxCollider
->enabled
-	1
->isStatic
-	1
->trigger
-	0
-
->entity
->childs
-	3
->name
-	Platforms
->component_count
-	0
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
 	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_0
+>component_count
+	2
+>transform
+>position
+	0, -2.97785, -29.9177
+>rotation
+	0, 0, 0
+>scale
+	5, 1, 5
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -872,26 +508,53 @@
 	2
 >transform
 >position
-	23.6768, 2.63653, -19.5182
+	35.0581, 2.95551, -18.9367
 >rotation
-	-0, -0, -0
+	0, 0, 0
 >scale
-	6.90785, 1.46165, 10.4967
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/yellow.png
+	4, 1, 5
 >BoxCollider
 >enabled
 	1
->isStatic
-	1
->trigger
+>cTrigger
 	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -902,26 +565,53 @@
 	2
 >transform
 >position
-	-12.2569, 8.82485, -22.6482
+	35.0581, 9.55096, -3.55404
 >rotation
-	-0, 1.57045, -0
+	0, 0, 0
 >scale
-	6.90785, 1.46165, 10.4967
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/yellow.png
+	4, 1, 5
 >BoxCollider
 >enabled
 	1
->isStatic
-	1
->trigger
+>cTrigger
 	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
@@ -932,34 +622,2020 @@
 	2
 >transform
 >position
-	-6.43525, -1.48225, 8.38737
+	35.0581, 15.8977, 22.1137
 >rotation
-	-0, -0, -0
+	0, 0, 0
 >scale
-	6.12186, 3.20101, 7.81228
->StaticDraw
->enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/yellow.png
+	3.95444, 1, 10.062
 >BoxCollider
 >enabled
 	1
->isStatic
+>cTrigger
+	0
+>cStatic
 	1
->trigger
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_4
+>component_count
+	2
+>transform
+>position
+	35.0581, 17.2682, -24.0214
+>rotation
+	0, 0, 0
+>scale
+	4, 1, 5
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_5
+>component_count
+	2
+>transform
+>position
+	0, 15, 0
+>rotation
+	0, 0, 0
+>scale
+	5, 1, 5
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_6
+>component_count
+	2
+>transform
+>position
+	-33.3774, 2.9443, 26.783
+>rotation
+	0, 0, 0
+>scale
+	2, 7, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.274336, 0.274336, 0.274336, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_7
+>component_count
+	2
+>transform
+>position
+	-15.5208, 2.9443, 26.783
+>rotation
+	0, 0, 0
+>scale
+	2, 7, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.274336, 0.274336, 0.274336, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_8
+>component_count
+	2
+>transform
+>position
+	-33.3774, 2.9443, -24.2682
+>rotation
+	0, 0, 0
+>scale
+	2, 7, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.274336, 0.274336, 0.274336, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Platform_9
+>component_count
+	2
+>transform
+>position
+	-15.5208, 2.9443, -25.1564
+>rotation
+	0, 0, 0
+>scale
+	2, 7, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.274336, 0.274336, 0.274336, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Slope_0
+>component_count
+	2
+>transform
+>position
+	19.3, -0.8, -19.3
+>rotation
+	0, 0, -0.307178
+>scale
+	12.9, 1, 5.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	1, 0.690265, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Slope_1
+>component_count
+	2
+>transform
+>position
+	36.2, 12.4, 5.4
+>rotation
+	0.467748, 0, 0
+>scale
+	5, 1, 7.7
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	1, 0.690265, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Slope_2
+>component_count
+	2
+>transform
+>position
+	-24.7423, 3.24867, -31.8431
+>rotation
+	0.949458, 0, 0
+>scale
+	11.2, 1, 9
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	1, 0.690265, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Slope_3
+>component_count
+	2
+>transform
+>position
+	-25, 3.24867, 34.1
+>rotation
+	-0.959931, 0, 0
+>scale
+	11.2, 1, 9
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	1, 0.690265, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidSphere_3
+>component_count
+	2
+>transform
+>position
+	36.3923, 11.1768, 16.4318
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
 	0
 
 >entity
 >childs
-	1
->name
-	Triggers
->component_count
 	0
+>name
+	RigidCube_1
+>component_count
+	2
+>transform
+>position
+	6.22955, 0, 17.1146
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_2
+>component_count
+	2
+>transform
+>position
+	34.7928, 7.62775, -16.4049
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 3.4022, 25.783
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_3
+>component_count
+	2
+>transform
+>position
+	36.4619, -1.12682, 12.0728
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_4
+>component_count
+	2
+>transform
+>position
+	36.4619, 3.40199, 12.0728
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 7.92827, 12.0728
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 7.92827, 16.6532
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidSphere_1
+>component_count
+	3
+>transform
+>position
+	0, 18.209, 0
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicBallObject
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 3.04624, 16.7203
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 7.92827, 21.3184
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, 7.92827, 25.8761
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_5
+>component_count
+	2
+>transform
+>position
+	36.4619, -1.12007, 25.8112
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	FootGround
+>component_count
+	2
+>transform
+>position
+	-24.4628, -2.74817, 0.785322
+>rotation
+	0, 0, 0
+>scale
+	11.8743, 1, 24.3694
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	green
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidSphere_0
+>component_count
+	2
+>transform
+>position
+	0, 3.14516, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	red
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	RigidSphere_2
+>component_count
+	3
+>transform
+>position
+	34.4213, 21.7061, -24.1025
+>rotation
+	0, 0, 0
+>scale
+	3, 3, 3
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicBallObject
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	BallTrigger
+>component_count
+	3
+>transform
+>position
+	-0.122023, 0, -29.7606
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	transparent
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicBallTrigger
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	GoalTrigger_2
+>component_count
+	3
+>transform
+>position
+	-24.5878, 3.70365, -24.3296
+>rotation
+	0, 0, 0
+>scale
+	7.9, 6.2, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.982301, 0.204284, 0.720667, 0.455
+>model.material.shininess
+	32
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicGoalTrigger
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	GoalTrigger_1
+>component_count
+	3
+>transform
+>position
+	-24.5878, 3.70365, 25.912
+>rotation
+	0, 0, 0
+>scale
+	7.9, 6.2, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0.982301, 0.204284, 0.720667, 0.455
+>model.material.shininess
+	32
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicGoalTrigger
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	RigidSphere_4
+>component_count
+	3
+>transform
+>position
+	-23.9206, 0.583286, 1.13372
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralIcoSphere
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>SphereCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>PhysicBallObject
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	Slope_4
+>component_count
+	2
+>transform
+>position
+	-0.518108, -4.70016, -19.3
+>rotation
+	0, 0, 0.148353
+>scale
+	12.9, 1, 5.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	1, 0.690265, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Border_1
+>component_count
+	2
+>transform
+>position
+	-11.5, -2.57787, 6.08242
+>rotation
+	0, 0, 0
+>scale
+	1, 2.3, 19.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Border_2
+>component_count
+	2
+>transform
+>position
+	-36.9445, -2.57787, 0.751944
+>rotation
+	0, 0, 0
+>scale
+	1, 2.3, 21.9239
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	blue
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	RigidCube_Ball
+>component_count
+	3
+>transform
+>position
+	36.4619, -1.18867, 21.3184
+>rotation
+	0, 0, 0
+>scale
+	2, 2, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>StaticDraw
+>enabled
+	1
+>meshPath
+	ProceduralCube
+>texturePath
+	black
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+>PhysicBallObject
+>enabled
+	1
+
+>entity
+>childs
+	0
+>name
+	PauseCanvas
+>component_count
+	5
 >transform
 >position
 	0, 0, 0
@@ -967,33 +2643,62 @@
 	0, 0, 0
 >scale
 	1, 1, 1
-
->entity
->childs
+>Panel
+>enabled
 	0
->name
-	Trigger_1
->component_count
-	2
->transform
 >position
-	24.7708, 1.97858, 10.5874
->rotation
-	0, 0, 0
+	0, 0
 >scale
-	4.0317, 3.21927, 0.5
->StaticDraw
+	760, 428
+>tint
+	1, 1, 1, 0.2
+>Panel
 >enabled
-	1
->model
->name
-	ProceduralCube
->textureName
-	game/assets/PolygonNature_01.png
->BoxCollider
+	0
+>position
+	4, 14.1
+>scale
+	250, 114.7
+>tint
+	0.141593, 0.141593, 0.141593, 0.5
+>Button
 >enabled
+	0
+>position
+	6, 17.4
+>scale
+	220, 40
+>tint
+	0, 0, 0, 1
+>text
+	Resume
+>textScale
 	1
->isStatic
+>idle
+	0.8, 0, 0, 1
+>hovered
+	0.8, 0.4, 0.4, 1
+>activated
+	1, 0, 0, 1
+>Button
+>enabled
+	0
+>position
+	7, 29.7
+>scale
+	200, 30
+>tint
+	0, 0, 0, 1
+>text
+	Menu
+>textScale
 	1
->trigger
-	1
+>idle
+	0, 0, 0, 1
+>hovered
+	0.380531, 0.380531, 0.380531, 1
+>activated
+	0.247788, 0.228052, 0.228052, 1
+>PauseTrigger
+>enabled
+	0

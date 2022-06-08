@@ -3,7 +3,7 @@
 #include "helpers/string_helpers.hpp"
 #include "helpers/path_constants.hpp"
 
-#include "game/component_generator.hpp"
+#include "component_generator.hpp"
 
 static constexpr char lowComponentDirectoryPath[] = "game/lowcomponent/";
 static constexpr char templateComponentName[] = "$name";

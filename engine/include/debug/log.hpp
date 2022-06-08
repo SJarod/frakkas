@@ -11,13 +11,6 @@
 
 #include "utils/singleton.hpp"
 
-enum class ELogType
-{
-    INFO,
-    WARNING,
-    ERROR
-};
-
 class Log : public Singleton<Log>
 {
     friend class Singleton<Log>;
@@ -54,6 +47,13 @@ public:
     template <typename... Args>
     static void Error(Args&&... i_logs);
 
+    /**
+    * Print log on console, and save in .log file with label [DEBUG].
+    * @param i_logs The logs to print, it could be any object that works with 'ostream<<' operator.
+    */
+    template <typename... Args>
+    static void Debug(Args&&... i_logs);
+
     static std::vector<std::string>& GetLogList()
     {
         return Instance().logList;
@@ -88,4 +88,10 @@ template <typename... Args>
 void Log::Error(Args&&... i_logs)
 {
     Out("[ERROR] " + StringFormat::GetFormat(std::forward<Args>(i_logs)...));
+}
+
+template <typename... Args>
+void Log::Debug(Args&&... i_logs)
+{
+    Out("[DEBUG] " + StringFormat::GetFormat(std::forward<Args>(i_logs)...));
 }

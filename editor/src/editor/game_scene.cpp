@@ -32,14 +32,11 @@ void GameScene::OnImGuiRender(Engine& io_engine)
         mouseLockPosition = Inputs::GetMousePosition();
         io_engine.SetRunMode(Utils::UpdateFlag_Gaming);
     }
-    else if (focusOnGaming && (Inputs::IsPressed(EButton::MOUSE_RIGHT) || Inputs::IsPressed(EButton::ESCAPE))) // User right click to exit play mode
+    else if (focusOnGaming && (Inputs::IsControlCommandPressed(EButton::P) || Inputs::IsPressed(EButton::ESCAPE))) // User right click to exit play mode
     {
         Engine::SetCursorPosition(mouseLockPosition);
         io_engine.SetRunMode(Utils::UpdateFlag_Editing | Utils::UpdateFlag_Gaming);
     }
-
-    //ImVec2 windowSize = ImGui::GetWindowSize();
-    //io_engine.gameFBO->size = {windowSize.x, windowSize.y};
 
     EditorRender::gameWindowSize = {ImGui::GetWindowSize().x, ImGui::GetWindowSize().y};
 

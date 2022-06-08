@@ -1,88 +1,261 @@
-#include "player_movement.hpp"
+#include "pause_trigger.hpp"
+#include "game_over_trigger.hpp"
+
+#include "player.hpp"
+#include "player_weapon.hpp"
+#include "enemy_mesh_rotation.hpp"
 
 #include "skeleton.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(Skeleton)
 
-    KK_FIELD_PUSH(Skeleton, speed, EDataType::FLOAT)
+    KK_FIELD_PUSH(Skeleton, attackRange, EDataType::FLOAT)
     KK_FIELD_PUSH(Skeleton, attackTime, EDataType::FLOAT)
-    KK_FIELD_PUSH(Skeleton, life, EDataType::INT)
-    KK_FIELD_PUSH(Skeleton, damage, EDataType::INT)
+    KK_FIELD_PUSH(Skeleton, chargingTime, EDataType::FLOAT)
+    KK_FIELD_PUSH(Skeleton, hurtEffectTime, EDataType::FLOAT)
+    KK_FIELD_PUSH(Skeleton, hurtEffectTint, EDataType::FLOAT)
+    KK_FIELD_COUNT(4)
+    KK_FIELD_RANGE(0.f, 1.f)
+    KK_FIELD_PUSH(Skeleton, deathTime, EDataType::FLOAT)
 
 KK_COMPONENT_IMPL_END
 
 void Skeleton::OnStart()
 {
-    // ROOT
-    owner.get()->name = "Skeleton_" + std::to_string(owner.get()->GetID());
+    owner.get()->name = "Skeleton_" + owner.get()->GetStringID();
+    stats = owner.get()->GetComponent<EnemyStats>();
+    life = owner.get()->GetComponent<Life>();
+    life->SetMaxLife(stats->UpdateBaseLife(life->life));
+    rigidBody = owner.get()->GetComponent<SphereCollider>();
+    enemyMeshRotation = owner.get()->GetComponent<EnemyMeshRotation>();
 
-    rb = owner.get()->AddComponent<SphereCollider>();
-    rb->isStatic = false;
-    rb->constraintRotationX = true;
-    rb->constraintRotationY = true;
-    rb->constraintRotationZ = true;
 
-    // CHILD
-    Entity* child = GetEntityContainer().CreateEntity();
-    GetEntityContainer().SetEntityParent(*child, *owner);
-    child->name = "GFX";
+    int index = 0;
+    for (Entity* child : owner.get()->childs)
+    {
+        if (index == 0)
+            animDraw = child->GetComponent<AnimatedDraw>();
+        else if (index == 1)
+            triggerCollider = child->GetComponent<BoxCollider>();
+        else if (index == 2)
+            weaponCollider = child->GetComponent<BoxCollider>();
+        else if (index == 3)
+            SetSounds(child);
+        index++;
+    }
+    weaponCollider->enabled = false;
+    animDraw->skmodel.sockets.front().transform.scale = Vector3(10000, 10000, 10000);
 
-    ad = child->AddComponent<AnimatedDraw>();
-    ad->SetMesh("game/assets/Models/Skeleton/Skeleton.fbx");
-    ad->SetTexture("game/assets/Textures/Dungeons_Texture_01.png", false);
-    ad->SetAnimation("game/assets/Models/Skeleton/Skeleton_Idle.fbx");
-
-    child->transform.position = Vector3(0.f, -0.3f, 0.f);
-    child->transform.scale = Vector3(0.048f, 0.048f, 0.048f);
-
-    Entity* pm = GetEntityContainer().FindEntityWithComponent<PlayerMovement>();
+    Entity* pm = GetEntityContainer().FindEntityWithComponent<Player>();
     if (pm)
         playerTransform = &pm->transform;
-}
+
+    GoToRun();
+ }
 
 void Skeleton::OnUpdate()
 {
-    if (!IsAlive())
-        Death();
+    if (Inputs::IsPressed("pause"))
+        pause = true;
 
-    curAttackTime += Time::GetDeltaTime();
+    if (Time::GetTimeScale() == 0.f)
+        StopSounds();
 
-    if (playerTransform)
+    switch(stats->state)
     {
-        distFromPlayer = Vector3::Distance(playerTransform->position.get(), Position().get());
-
-        if (distFromPlayer >= attackRange)
-        {
-            vecDir = Vector3::VecFromPt(Position().get(), playerTransform->position.get()).Normalize() * speed * Time::GetDeltaTime();
-            translation = Vector3(vecDir.x, rb->velocity.y, vecDir.z);
-            rb->velocity = translation;
-        }
-    }
-
-    if (curAttackTime >= attackTime && distFromPlayer < attackRange)
-    {
-        Attack();
-        curAttackTime = 0.f;
+        case EnemyState::RUNNING: Run(); break;
+        case EnemyState::THINKING: Think(); break;
+        case EnemyState::CHARGING: Charge(); break;
+        case EnemyState::ATTACKING: Attack(); break;
+        case EnemyState::SUFFERING: Suffer(); break;
+        case EnemyState::DYING: Death(); break;
+        default: break;
     }
 }
-
 void Skeleton::OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_otherCollider)
 {
-    if (i_otherCollider.GetID() == "playerSword")
-        --life;
+    if (i_ownerCollider.owner.get()->name == "Collider")
+    {
+        if (auto weapon = i_otherCollider.owner.get()->GetComponent<PlayerWeapon>())
+        {
+            life->Hurt(weapon->damage);
+
+            GoToSuffer();
+        }
+    }
 }
 
-bool Skeleton::IsAlive()
+void Skeleton::GoToRun()
 {
-    return life > 0;
-}
+    StopSounds();
+    walkSound->loop = true;
+    walkSound->Play();
 
-void Skeleton::Death()
+    stats->state = EnemyState::RUNNING;
+
+    animDraw->animGraph.PlayAnimation("Skeleton_Walk.fbx_mixamo.com", true);
+}
+void Skeleton::GoToThink()
 {
+    StopSounds();
+
+    stats->state = EnemyState::THINKING;
+    weaponCollider->enabled = false;
+    enemyMeshRotation->enabled = true;
+
+    rigidBody->velocity = Vector3(0.f, rigidBody->velocity.y, 0.f);
+
+    animDraw->animGraph.PlayAnimation("Skeleton_Idle.fbx_mixamo.com", true);
+}
+void Skeleton::GoToCharge()
+{
+    stats->state = EnemyState::CHARGING;
+    curChargingTime = 0.f;
+
+    enemyMeshRotation->enabled = false;
+
+    animDraw->animGraph.PlayAnimation("Skeleton_Slash.fbx_mixamo.com");
+}
+void Skeleton::GoToAttack()
+{
+    StopSounds();
+    attackSound->Play();
+
+    curAttackTime = 0.f;
+    curThinkingTime = 0.f;
+    stats->state = EnemyState::ATTACKING;
+
+    weaponCollider->enabled = true;
+
+    Position() = Position().get() + enemyMeshRotation->fromTo;
 
 }
+void Skeleton::GoToSuffer()
+{
+    StopSounds();
+    hitSound->Play();
 
+    stats->state = EnemyState::SUFFERING;
+    enemyMeshRotation->enabled = false;
+    rigidBody->velocity = Vector3::zero;
+
+    curHurtEffectTime = 0.f;
+    animDraw->skmodel.material.tint = hurtEffectTint;
+
+    animDraw->animGraph.PlayAnimation("Skeleton_Impact.fbx_mixamo.com");
+}
+void Skeleton::GoToDeath()
+{
+    StopSounds();
+    deathSound->Play();
+
+    triggerCollider->enabled = false;
+    enemyMeshRotation->enabled = false;
+    weaponCollider->enabled = false;
+    rigidBody->velocity = Vector3::zero;
+    stats->SpawnLifeItem();
+
+    stats->state = EnemyState::DYING;
+
+    // Notify player score
+    GetEntityContainer().FindEntityWithComponent<Player>()->GetComponent<Player>()->Scoring(owner.get()->name, stats->score);
+
+    animDraw->animGraph.PlayAnimation("Skeleton_Death.fbx_mixamo.com");
+}
+
+void Skeleton::Run()
+{
+    walkSound->SetSoundPosition(Position().get());
+    if (pause && Time::GetTimeScale() > 0.f) // Re-play sound if it had been stop by pause
+    {
+        walkSound->Play();
+        pause = false;
+    }
+
+    vecDir = Vector3::VecFromPt(Position().get(), playerTransform->position.get()).Normalize() * stats->speed * Time::GetFixedDeltaTime();
+    translation = Vector3(vecDir.x, rigidBody->velocity.y, vecDir.z);
+    rigidBody->velocity = translation;
+
+    distFromPlayer = Vector3::Distance(playerTransform->position.get(), Position().get());
+    if (distFromPlayer < attackRange)
+        GoToThink();
+
+    if (!life->IsAlive())
+        GoToDeath();
+}
+void Skeleton::Think()
+{
+    curThinkingTime += Time::GetDeltaTime() * stats->attackSpeed;
+    distFromPlayer = Vector3::Distance(playerTransform->position.get(), Position().get());
+
+    if (curThinkingTime > 1.f)
+        GoToCharge();
+    else if(distFromPlayer > attackRange + 5.f)
+        GoToRun();
+
+    if (!life->IsAlive())
+        GoToDeath();
+}
+void Skeleton::Charge()
+{
+    curChargingTime += Time::GetDeltaTime();
+
+    if (curChargingTime > chargingTime)
+        GoToAttack();
+
+    if (!life->IsAlive())
+        GoToDeath();
+}
 void Skeleton::Attack()
 {
-    std::cout << "ATTACKING" << std::endl;
+    curAttackTime += Time::GetDeltaTime();
+
+    if (curAttackTime >= attackTime)
+        GoToThink();
+
+    if (!life->IsAlive())
+        GoToDeath();
+
+    if (animDraw->animGraph.player.IsWaiting())
+        animDraw->animGraph.PlayAnimation("Skeleton_Idle.fbx_mixamo.com", true);
+}
+void Skeleton::Suffer()
+{
+    curHurtEffectTime += Time::GetDeltaTime();
+    if (curHurtEffectTime >= hurtEffectTime)
+        animDraw->skmodel.material.tint = {0.f, 0.f, 0.f, 1.f};
+
+    if (!life->IsInvincible())
+        GoToThink();
+
+    if (!life->IsAlive())
+        GoToDeath();
+
+    if (animDraw->animGraph.player.IsWaiting())
+        animDraw->animGraph.PlayAnimation("Skeleton_Idle.fbx_mixamo.com", true);
+}
+void Skeleton::Death()
+{
+    curHurtEffectTime += Time::GetDeltaTime();
+    if (curHurtEffectTime >= hurtEffectTime)
+        animDraw->skmodel.material.tint = {0.f, 0.f, 0.f, 1.f};
+
+    curDeathTime += Time::GetDeltaTime();
+    if (curDeathTime > deathTime)
+        owner.get()->destroy = true;
+}
+
+void Skeleton::StopSounds()
+{
+    walkSound->Pause();
+    attackSound->Stop();
+    hitSound->Stop();
+}
+
+void Skeleton::SetSounds(Entity* i_soundChild)
+{
+    attackSound = i_soundChild->GetComponents<Sound>()[0];
+    walkSound = i_soundChild->GetComponents<Sound>()[1];
+    hitSound = i_soundChild->GetComponents<Sound>()[2];
+    deathSound = i_soundChild->GetComponents<Sound>()[3];
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "game/lowcomponent/animated_draw.hpp"
-#include "game/component_generator.hpp"
+#include "drawable/animated_draw.hpp"
+#include "component_generator.hpp"
 
 enum class EAnimState
 {

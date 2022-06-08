@@ -54,4 +54,4 @@ add_subdirectory(launcher)
 
 add_dependencies(Game Engine)
 add_dependencies(Editor Game)
-add_dependencies(Launcher Game)
+add_dependencies(Frakkarena Game)
