@@ -42,7 +42,7 @@ namespace Game
         static constexpr char itemRateTips[] = "The lower your health is, the greater is your chance to find health item.";
         static constexpr char difficultyTips[] = "The more level you succeeded, The more the enemies are strong.";
         static constexpr char attackComboTips[] = "Your damage increases when you process combo attack, but the third attack stuns you.";
-        static constexpr char comboScoreTips[] = "Your combo factor increase when you kill 5 enemies in a short period! Yaaah!"
+        static constexpr char comboScoreTips[] = "Your combo factor increase when you kill 5 enemies in a short period! Yaaah!";
         static constexpr char stupidDeathTips[] = "Don't die, if you want to live.";
         static constexpr char armorTruthTips[] = "You have an armor, yes."
                                                  "\nBut did you know that it is in paper-craft ?";
@@ -61,7 +61,7 @@ namespace Game
 
         std::vector<const char*> scenePaths = { forestScenePath, desertScenePath, snowScenePath, darkScenePath };
 
-        std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, comboScoreTips, stupidDeathTips, 
+        std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, comboScoreTips, stupidDeathTips,
                                           armorTruthTips, matrixTips, difficultyTips, bnTips, weaponTips, stopTips, bossTips,
                                           frakkasTips, forestTips, snowTips, desertTips, darkTips
         };
