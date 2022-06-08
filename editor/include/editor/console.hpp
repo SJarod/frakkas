@@ -1,8 +1,6 @@
-//
-// Created by m.mehalin on 22/03/2022.
-//
-
 #pragma once
+
+#include <imgui.h>
 
 namespace Editor
 {
@@ -10,11 +8,21 @@ namespace Editor
     {
     public:
         Console() = default;
-        ~Console() = default;
+        ~Console();
 
         /**
         * @summary Display the ImGui panel
         */
         void OnImGuiRender();
+
+    private:
+        ImVector<char*>       items;
+        ImGuiTextFilter       filter;
+        bool                  autoScroll = true;
+        bool                  scrollToBottom = true;
+
+        void AddLog(const std::string& i_log);
+        void ClearLog();
+        void DisplayLogList();
     };
 }

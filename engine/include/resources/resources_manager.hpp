@@ -1,160 +1,145 @@
-//
-// Created by m.mehalin on 23/03/2022.
-//
-
 #pragma once
 
-#include <vector>
+#include <filesystem>
+#include <unordered_map>
 #include <memory>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
+#include "debug/log.hpp"
 
-#include "singleton.hpp"
+#include "utils/singleton.hpp"
+#include "utils/normalize_filepath.hpp"
+#include "multithread/threadpool.hpp"
+
 #include "resources/mesh.hpp"
 #include "resources/texture.hpp"
+#include "resources/skeletal_animation.hpp"
+
+#include "resources/resource.hpp"
 
 using namespace Resources;
 
 namespace Resources
 {
-    class ResourcesManager : public Singleton<ResourcesManager>
-    {
-        friend class Singleton<ResourcesManager>;
+	class ResourcesManager : public Singleton<ResourcesManager>
+	{
+		friend class Singleton<ResourcesManager>;
 
-    public:
-        ResourcesManager() = default;
-        ~ResourcesManager();
+	public:
+		const DefaultTexture defaultTexture;
 
-        /**
-         * Load a model from a 3D model file.
-         * Tell Assimp to load embedded textures if the 3D model file has.
-         *
-         * @param i_filename
-         * @param i_embeddedTexture
-         *
-         * @return Array of std::shared_ptr<Mesh>
-         */
-        static std::vector<std::shared_ptr<Mesh>> LoadModel(const char* i_filename, const bool i_embeddedTexture);
+		~ResourcesManager();
 
-        /**
-         * Procedurally load a cube.
-         *
-         * @return std::shared_ptr<Mesh>
-         */
-        static std::shared_ptr<Mesh> LoadCube();
+		/**
+		* Add a resource to the resources map and return it.
+		* Return an already existing resource if any.
+		*
+		* @param i_name : the resource name or the resource path
+		*/
+		template<class TResource, typename... TExtraParams> requires std::constructible_from<TResource, const std::string, TExtraParams...>
+		static std::shared_ptr<TResource> LoadResource(const std::string& i_name, const TExtraParams&... i_params) noexcept;
 
-        /**
-         * Procedurally load a sphere.
-         *
-         * @param i_radius
-         * @param i_lon
-         * @param i_lat
-         *
-         * @return std::shared_ptr<Mesh>
-         */
-        static std::shared_ptr<Mesh> LoadSphere(const float i_radius = 1.f, const int i_lon = 50, const int i_lat = 25);
+		/**
+		* Get the default texture.
+		*/
+		static const DefaultTexture& GetDefaultTexture();
 
-        /**
-         * Load a texture from texture file.
-         *
-         * @param i_filename
-         * @param i_flip
-         *
-         * @return std::shared_ptr<Texture>
-         */
-        static std::shared_ptr<Texture> LoadTexture(const char* i_filename, const bool i_flip);
+		/**
+		 * Get a reference to the resources map without options for changing it.
+		 */
+		static const std::unordered_map<std::string, std::shared_ptr<Resource>>& ViewAllResources();
 
-        /**
-         * Get the number of loaded mesh.
-         *
-         */
-        static unsigned int GetLoadedMeshCount();
+		/**
+		 * Refresh all resources by reloading them.
+		 */
+		static void Refresh();
 
-        /**
-         * Get the number of loaded texture.
-         *
-         */
-        static unsigned int GetLoadedTextureCount();
+		/**
+		 * Destroy a specific resource given its name.
+		 */
+		static void DestroyThisResource(const std::string& i_name);
 
-    private:
-        /**
-         * Extrat Assimp's mesh data (vertices and textures).
-         * Load mesh's textures if it has embedded textures (specify with a bool).
-         *
-         * @param i_aiMesh (from Assimp)
-         * @param i_aiScene
-         * @param o_mesh
-         * @param i_embeddedTexture
-         */
-        void ProcessAiMesh(const aiMesh& i_aim, const aiScene& i_scene, Mesh& o_mesh, const bool i_embeddedTexture);
+		/**
+		 * Empty the resources manager.
+		 */
+		static void DestroyResources();
 
-        /**
-         * Go through every Assimp node to extract data (meshes).
-         * Tell ProcessAiMesh() to load embedded textures or not.
-         *
-         * @param i_node
-         * @param i_scene
-         * @param i_embeddedTexture
-         */
-        void ProcessAiNode(const aiNode& i_node, const aiScene& i_scene, const bool i_embeddedTexture);
+	private:
+		// mutex for the resources map
+		std::mutex resourceMX;
 
-        /**
-         * Load a model from a file (group of meshes) into Assimp's importer.
-         *
-         * @param io_importer
-         * @param i_path
-         *
-         * @return Success
-         */
-        int LoadCPUModel(Assimp::Importer& io_importer, const char* i_path);
+		// Array of every loaded resource.
+		std::unordered_map<std::string, std::shared_ptr<Resource>> resources;
 
-        /**
-         * Reorder mesh's vertices with its stored indices.
-         *
-         * @param io_mesh
-         */
-        void ParseMesh(Mesh& io_mesh);
+		ResourcesManager() = default;
 
-        /**
-         * Create a mesh GPU side with OpenGL.
-         *
-         * @param io_mesh
-         */
-        void CreateGPUMesh(Mesh& io_mesh);
+		/**
+		 * Try to load the given resource, postpone the load if failed.
+		 */
+		inline void TryLoad(std::shared_ptr<Resource> i_newResource, const std::string& i_name);
+	};
+}
 
-        /**
-         * Load texture data with stb_image.
-         *
-         * @param i_filename
-         * @param i_flip
-         * @param i_type
-         */
-        void LoadCPUTexture(const char* i_filename, const bool i_flip, const TextureType i_type = TextureType::TEXTURE_DIFFUSE);
+template<class TResource, typename... TExtraParams> requires std::constructible_from<TResource, const std::string, TExtraParams...>
+std::shared_ptr<TResource> ResourcesManager::LoadResource(const std::string& i_name, const TExtraParams&... i_params) noexcept
+{
+	if (i_name == "")
+	{
+		Log::Warning("Cannot create unnamed resource");
+		return nullptr;
+	}
 
-        /**
-         * Create a texture GPU side with OpenGL.
-         *
-         * @param io_texture
-         */
-        void CreateGPUTexture(Texture& io_texture);
+    // Normalize name slash if it is a filepath
+    std::string name = i_name;
+    Utils::NormalizeFilepath(name);
 
-        // TODO : textures are not taken
-        // TODO : return vector of textures
-        /**
-         * Load texture from Assimp's meshes.
-         *
-         * @param i_aiMaterial
-         * @param i_aiScene
-         * @param i_aiType
-         * @param i_type
-         */
-        void LoadEmbeddedTexture(const aiMaterial& i_mat, const aiScene& i_scene, const aiTextureType i_aiType, const TextureType i_type);
+	std::shared_ptr<TResource> newResource;
 
-        // Array of every loaded mesh.
-        std::vector<std::shared_ptr<Mesh>> meshes;
+	ResourcesManager& rm = Instance();
 
-        // Array of every loaded textures.
-        std::vector<std::shared_ptr<Texture>> textures;
-    };
+	{
+		std::lock_guard<std::mutex> guard(rm.resourceMX);
+
+		if (rm.resources.find(name.c_str()) != rm.resources.end())
+			return std::dynamic_pointer_cast<TResource>(rm.resources[name.c_str()]);
+
+		newResource = std::make_shared<TResource>(name, i_params...);
+		rm.resources[name.c_str()] = newResource;
+	}
+
+	ThreadPool::AddTask([newResource, name]() {
+		ResourcesManager& rm = Instance();
+		rm.TryLoad(newResource, name);
+		});
+
+	return std::dynamic_pointer_cast<TResource>(newResource);
+}
+
+inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, const std::string& i_name)
+{
+	auto Load = [this, i_newResource, i_name]() {
+		if (!i_newResource->CPULoad())
+		{
+			Log::Warning(i_name, " is an invalid resource or an incorrectly loaded resource, it will be erased from the resources manager.");
+			i_newResource->CPUUnload();
+			DestroyThisResource(i_name);
+		}
+		else
+		{
+			ThreadPool::AddTask([i_newResource]() {
+				i_newResource->GPULoad();
+				i_newResource->loaded.test_and_set(std::memory_order_release);
+				}, false);
+		}
+	};
+
+	if (!i_newResource->DependenciesReady())
+	{
+		ThreadPool::AddTask([this, i_newResource, i_name]() {
+			TryLoad(i_newResource, i_name);
+			});
+	}
+	else
+	{
+		Load();
+	}
 }

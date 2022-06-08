@@ -1,49 +1,83 @@
-//
-// Created by flori on 3/17/2022.
-//
-
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
+#include <queue>
+#include <unordered_map>
+#include <string>
+#include <string_view>
+
+#include <unordered_map>
+
+#include "entity_container.hpp"
 
 namespace Renderer::LowLevel
 {
     class LowRenderer;
-    class Camera;
+}
+
+namespace Resources
+{
+    class Serializer;
 }
 
 namespace Game
 {
-    class EngineEntity;
-
     class EntityManager
     {
     public:
         EntityManager() = default;
         ~EntityManager() = default;
 
+        EntityContainer entityStore;
+
         /**
-         * Update every entities
+         * OnUpdate every entities
          */
         void Update();
 
         /**
-         * @brief Render each entity
-         * @param i_renderer the renderer that will draw the entities
-         * @param i_camera the camera to render, in other words the source view to look at the world
+         * @summary Remove an entity from the entities vector according to its id.
+         * @param i_id  The ID of the entity to remove.
          */
-        void Render(Renderer::LowLevel::LowRenderer& i_renderer, const Renderer::LowLevel::Camera& i_camera);
+        void RemoveEntityAt(const EntityIdentifier& i_id);
 
         /**
-         * @summary move an entity pointer into the entity manager's array,
-         * the function also call the Start() method of the input entity
-         * @param i_entity the fully constructed entity to add, it is an unique pointer so use std::move()
+         * @summary Creates an unique-pointer-empty-entity and emplace it in entities array
+         * @return the created entity, you can add component to it.
          */
-        void AddEntity(std::unique_ptr<EngineEntity> i_entity);
+        Entity* CreateEntity(const std::string_view& i_name = "");
+
+        /**
+         * @return The entity with the input ID, thinks about checking if return value is not nullptr.
+         */
+        Entity* FindEntityWithID(const EntityIdentifier& i_id);
+
+        /**
+         * @brief read all entities from the file, then create and store them in this manager
+         * @param i_file the opened input file
+         */
+        void LoadEntities(std::ifstream& i_file);
+
+        /**
+         * @brief Reset all entities array to 0.
+         */
+        void ClearEntities();
+
+        const std::vector<std::unique_ptr<Entity>>& GetEntities() const;
+        const std::unordered_map<EntityIdentifier, Entity*>& GetRootEntities() const;
 
     private:
+        /**
+         * @brief Remove entity from all arrays, and forget about its existence.
+         * @param io_entity The entity to forget.
+         */
+        void ForgetEntity(Entity& io_entity);
 
-        std::vector<std::unique_ptr<EngineEntity>> entities;
+        /**
+         * @brief Find the entity position in entities array according to its index.
+         * @return The index in the entities array. Return -1 if index out of bound.
+         */
+        int FindEntityIndex(const EntityIdentifier& i_id);
     };
 }

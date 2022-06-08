@@ -51,13 +51,11 @@ void TestVector3()
     Vector3 test_forward = Vector3::forward;
     Vector3 test_backward = Vector3::backward;
 
-    Maths::Constants::piHalf;
-
     Vector3 test(-1.f, 1.f, 0.f);
     Vector3 test2(0.f, 1.f, 1.f);
 
     Vector3 test3(1, 0, 0);
-    Quaternion quat = Quaternion::QuatFromAxisAngle(Vector3(0, 0, 1), Maths::Constants::piHalf);
+    Quaternion quat = Quaternion::QuatFromAxisAngle(Vector3(0, 0, 1), Maths::Constants::halfPi);
 
     float test_dP = Vector3::DotProduct(test, test2);
     Vector3 test_cP = Vector3::CrossProduct(test, test2);
@@ -149,8 +147,13 @@ void TestQuaternion()
             0.f, 0.f, 0.f, 0.f
     };
     Quaternion quatMat = Quaternion::QuatFromMatrix(mat);
-    Quaternion quatEuler = Quaternion::QuatFromEuler(0.f, Maths::Constants::pi, 0.f);
-    Quaternion quatFromAxis = Quaternion::QuatFromAxisAngle(Vector3(0.f, 1.f, 0.f), Maths::Constants::piHalf);
+    Quaternion quatFromEuler = Quaternion::QuatFromEuler(0.f, Maths::Constants::pi, 0.f);
+    Vector3 quatToEuler = quat.QuatToEuler();
+    Quaternion quatFromAxis = Quaternion::QuatFromAxisAngle(Vector3(0.f, 1.f, 0.f), Maths::Constants::halfPi);
+
+    Vector3 vec = Vector3::zero;
+    float axis = 0.f;
+    quat.QuatToAxisAngle(vec, axis);
 
     Quaternion qStart = Quaternion(0.f, 0.f, 0.f, 1.f);
     Quaternion qEnd = Quaternion(0.f, 1.f, 0.f, 1.f);
@@ -170,8 +173,10 @@ void TestQuaternion()
     std::cout << "test_invert : " << quat.Invert() << '\n';
 
     std::cout << "\ntest_fromMat : " << quatMat << '\n';
-    std::cout << "test_fromEuler : " << quatEuler << '\n';
+    std::cout << "test_fromEuler : " << quatFromEuler << '\n';
+    std::cout << "test_toEuler : " << quatToEuler << '\n';
     std::cout << "test_fromAxis : " << quatFromAxis << '\n';
+    std::cout << "test_toAxis : " << "vec = " << vec << " / axis = " << axis << '\n';
 
     std::cout << "\nstarting quaternion : " << qStart << '\n';
     std::cout << "Ending quaternion : " << qEnd << '\n';
@@ -188,10 +193,14 @@ void TestQuaternion()
 
     if (quatMat != Quaternion(0.f, 0.707107, 0.f, 0.707107f))
         std::cout << "ERROR : Quaternion from Matrix is not correct" << std::endl;
-    if (quatEuler != Quaternion(0.f, 1.f, 0.f, 0.f))
+    if (quatFromEuler != Quaternion(0.f, 1.f, 0.f, 0.f))
         std::cout << "ERROR : Quaternion from Euler is not correct" << std::endl;
+    if (quatToEuler != Vector3(3.141595123321442f, 1.5707963057214724f, 3.141595123321442f))
+        std::cout << "ERROR : Quaternion to Euler is not correct" << std::endl;
     if (quatFromAxis != Quaternion(0.f, 0.707107, 0.f, 0.707107))
         std::cout << "ERROR : Quaternion from Axis-Angle is not correct" << std::endl;
+    if (vec != Vector3(0.f, 1.f, 0.f) || axis != 0.f)
+        std::cout << "ERROR : Quaternion to Axis-Angle is not correct" << std::endl;
 
     if (qSLerp != Quaternion(0.f, 0.38268352626028224f, 0.f, 0.9238795917217785f))
         std::cout << "ERROR : SLerp is not correct" << std::endl;
@@ -205,7 +214,7 @@ void TestMatrix4()
     Matrix4 mat = Matrix4::Identity();
     Vector3 v1(1.f, 2.f, 3.f);
 
-    float angle = Maths::Constants::piHalf;
+    float angle = Maths::Constants::halfPi;
     Vector3 v2(angle, angle, angle);
 
     Matrix4 matXRot = mat.RotateX(angle);
@@ -227,6 +236,9 @@ void TestMatrix4()
         1.f, 0.f, 0.f, 0.f
     };
 
+    Matrix4 transpose = m2.Transpose();
+    Matrix4 inverse = m2.Inverse();
+
     Matrix4 m1xm2 = m1 * m2;
 
     float fov = 90.f; // WARNING: The fov should be in radians, but for tests we don't take care about it
@@ -243,8 +255,11 @@ void TestMatrix4()
     //std::cout << "test_ortho : \n" << mat.Orthographic(left, right, bottom, top, near, far) << '\n';
     //std::cout << "test_perspective : \n" << mat.Perspective(fov, aspect, near, far, false) << '\n';
 
+    std::cout << "test_transpose :" << m2.Transpose() << '\n';
+    std::cout << "test_inverse :" << m2.Inverse() << '\n';
+    
     std::cout << std::endl << "test_multiplication m1 : \n" << m1 << std::endl;
-    std::cout << "test_multiplication m2 : \n" << m1 << std::endl;
+    std::cout << "test_multiplication m2 : \n" << m2 << std::endl;
     std::cout << "test_multiplication : \n" << m1xm2 << std::endl;
 
     std::cout << std::endl << "test_rotateX : \n" << matXRot << '\n';
@@ -294,6 +309,20 @@ void TestMatrix4()
             0.f, 0.f, 0.f, 1.f
     };
 
+    Matrix4 transposeAssert = {
+            0.f, 0.f, 1.f, 1.f,
+            0.f, 1.f, 1.f, 0.f,
+            1.f, 1.f, 0.f, 0.f,
+            1.f, 0.f, 0.f, 0.f
+    };
+
+    Matrix4 inverseAssert = {
+            0.f, 0.f, 0.f, 1.f,
+            0.f, 0.f, 1.f,-1.f,
+            0.f, 1.f,-1.f, 1.f,
+            1.f,-1.f, 1.f,-1.f
+    };
+
     Matrix4 projAssert = {
             0.61737f,   0.f,        0.f,    0.f,
             0.f,        0.61737,    0.f,    0.f,
@@ -308,8 +337,13 @@ void TestMatrix4()
             0.f,        0.f,        -1.f,       0.f
     };
 
-    if (multiplyAssert != m1xm2)
+    if (m1xm2 != multiplyAssert)
         std::cout << "ERROR : Matrice multiplication is not correct" << std::endl;
+
+    if (transpose != transposeAssert)
+        std::cout << "ERROR : Matrice transpose is not correct" << std::endl;
+    if (inverse != inverseAssert)
+        std::cout << "ERROR : Matrice inverse is not correct" << std::endl;
 
     if (matXRot != xAssert)
         std::cout << "ERROR : Matrix X Rotation is not correct" << std::endl;
@@ -320,67 +354,35 @@ void TestMatrix4()
     if (matXYZRot != xyzAssert)
         std::cout << "ERROR : Matrix XYZ Rotation is not correct" << std::endl;
 
-    if (projection != projAssert)
-    {
-        std::cout << "ERROR : Projection Matrix from frustrum is not correct" << std::endl;
-        std::cout << "--- Attempted matrix is : \n" << projAssert << std::endl;
-    }
+//    if (projection != projAssert)
+//    {
+//        std::cout << "ERROR : Projection Matrix from frustrum is not correct" << std::endl;
+//        std::cout << "--- Attempted matrix is : \n" << projAssert << std::endl;
+//    }
+//
+//    if (orthographic != orthoAssert)
+//    {
+//        std::cout << "ERROR : Projection Matrix from orthographic is not correct" << std::endl;
+//        std::cout << "--- Attempted matrix is : \n" << orthoAssert << std::endl;
+//    }
 
-    if (orthographic != orthoAssert)
-    {
-        std::cout << "ERROR : Projection Matrix from orthographic is not correct" << std::endl;
-        std::cout << "--- Attempted matrix is : \n" << orthoAssert << std::endl;
-    }
-
-#endif
-}
-
-void TestReferential()
-{
-    std::cout << "\n////////////////////////////// REFERENTIAL" << "\n\n";
-
-    Referential test_constructor1;
-    Referential test_constructor2(Vector3(1.f, 2.f, 3.f), Quaternion::Identity());
-    Referential test_constructor3(Vector3(1.f, 2.f, 3.f), Vector3(4.f, 5.f, 6.f));
-    Referential test_constructor4(Vector3(1.f, 2.f, 3.f), Vector3(8.f, 3.f, 0.f),
-                                      Vector3(0.f, 7.f, 5.f), Vector3(5.f, 2.f, 7.f));
-
-    Referential test_ref(Vector3(1.f, 2.f, 3.f), Vector3(4.f, 5.f, 6.f));
-    Vector3 local(5.f, 7.f, 1.f);
-    Vector3 global(0.f, 2.f, 4.f);
-
-#ifdef LOG_TEST
-    std::cout << "test_constructor1 : " << test_constructor1 << '\n';
-    std::cout << "\ntest_constructor2 : " << test_constructor2 << '\n';
-    std::cout << "\ntest_constructor3 : " << test_constructor3 << '\n';
-    std::cout << "\ntest_constructor4 : " << test_constructor4 << '\n';
-
-    std::cout << "\ntest_ref : " << test_ref << '\n';
-
-
-    std::cout << "\ntest_posLocToGlob : " << test_ref.PosLocalToGlobal(local) << '\n';
-    std::cout << "test_posGlobToLoc : " << test_ref.PosGlobalToLocal(global) << '\n';
-    std::cout << "test_vecLocToGlob : " << test_ref.VectLocalToGlobal(local) << '\n';
-    std::cout << "test_vecGlobToLoc : " << test_ref.VectGlobalToLocal(global) << '\n';
 #endif
 }
 
 int main()
 {
-    auto testCode = 0b111111;
+    auto testCode = 0b00001;
 
-    if (testCode & 0b100000)
+    if (testCode & 0b10000)
         TestVector2();
-    if (testCode & 0b010000)
+    if (testCode & 0b01000)
         TestVector3();
-    if (testCode & 0b001000)
+    if (testCode & 0b00100)
         TestVector4();
-    if (testCode & 0b000100)
+    if (testCode & 0b00010)
         TestQuaternion();
-    if (testCode & 0b000010)
+    if (testCode & 0b00001)
         TestMatrix4();
-    if (testCode & 0b000001)
-        TestReferential();
 
     getchar();
 

@@ -1,17 +1,24 @@
-#include "vector4.hpp"
-#include "quaternion.hpp"
-#include "utils.hpp"
+#include "maths/vector2.hpp"
+#include "maths/vector4.hpp"
+#include "maths/quaternion.hpp"
+#include "maths/utils.hpp"
+#include "maths/vector3.hpp"
+
 
 ////////////////////////////// CONSTRUCTORS
 
 inline Vector3::Vector3()
             : x(0.f), y(0.f), z(0.f)
 {}
-inline Vector3::Vector3(const float& _x, const float& _y, const float& _z)
-            : x(_x), y(_y), z(_z)
+inline Vector3::Vector3(const float& i_x, const float& i_y, const float& i_z)
+            : x(i_x), y(i_y), z(i_z)
 {}
-inline Vector3::Vector3(const Vector4& v4)
-            : x(v4.x), y(v4.y), z(v4.z)
+inline Vector3::Vector3(const Vector4& i_v4)
+            : x(i_v4.x), y(i_v4.y), z(i_v4.z)
+{}
+
+inline Vector3::Vector3(const Vector2& i_v2)
+            : x(i_v2.x), y(i_v2.y), z(0.f)
 {}
 
 ////////////////////////////// VARIABLES
@@ -35,6 +42,17 @@ inline Vector3 Vector3::operator*(const T& k) const
             z * k
     };
 }
+
+template<typename T>
+Vector3 operator*(T i_k, const Vector3& i_v)
+{
+    return{
+            i_v.x * i_k,
+            i_v.y * i_k,
+            i_v.z * i_k,
+    };
+}
+
 inline Vector3 Vector3::operator*(const Vector3& vec) const
 {
     return {
@@ -120,7 +138,7 @@ inline Vector3 Vector3::operator^(const Vector3& vec) const // Cross product
             };
 }
 
-inline Vector3 Vector3::operator+=(Vector3& vec)
+inline Vector3 Vector3::operator+=(const Vector3& vec)
 {
     return {
             x += vec.x,
@@ -129,7 +147,7 @@ inline Vector3 Vector3::operator+=(Vector3& vec)
     };
 }
 
-inline Vector3 Vector3::operator-=(Vector3& vec)
+inline Vector3 Vector3::operator-=(const Vector3& vec)
 {
     return {
             x -= vec.x,
@@ -162,12 +180,12 @@ inline std::ostream& operator<<(std::ostream& o, const Vector3& vec)
 
 inline Vector3 Vector3::Normalize() const
 {
-    float mag = this->Length();
+    float length = Length();
 
-    if (mag == 0.f)
+    if (length == 0.f)
         return *this;
 
-    return *this / mag;
+    return *this / length;
 }
 
 inline Vector3 Vector3::Abs() const
@@ -180,6 +198,16 @@ inline float Vector3::Length() const
     return Maths::Sqrt(x * x + y * y + z * z);
 }
 
+inline float Vector3::SqrLength() const
+{
+    return x * x + y * y + z * z;
+}
+
+inline float Vector3::Distance(const Vector3 &i_vecA, const Vector3 &i_vecB)
+{
+    return Vector3::VecFromPt(i_vecA, i_vecB).Length();
+}
+
 inline float Vector3::DotProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
     return i_vecA.x * i_vecB.x + i_vecA.y * i_vecB.y + i_vecA.z * i_vecB.z;
@@ -187,11 +215,7 @@ inline float Vector3::DotProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 
 inline Vector3 Vector3::CrossProduct(const Vector3 &i_vecA, const Vector3 &i_vecB)
 {
-    return	{
-            i_vecA.y * i_vecB.z - i_vecA.z * i_vecB.y,
-            i_vecA.z * i_vecB.x - i_vecA.x * i_vecB.z,
-            i_vecA.x * i_vecB.y - i_vecA.y * i_vecB.x
-    };
+    return i_vecA ^ i_vecB;
 }
 
 inline Vector3 Vector3::VecFromPt(const Vector3& i_ptA, const Vector3& i_ptB)
@@ -217,4 +241,26 @@ inline Vector3 Vector3::Clamp(const Vector3& i_v, float i_min, float i_max)
     return Vector3(Maths::Clamp(i_v.x, i_min, i_max),
                    Maths::Clamp(i_v.y, i_min, i_max),
                    Maths::Clamp(i_v.z, i_min, i_max));
+}
+
+inline Vector3 Vector3::ClampLength(const Vector3& i_v, float i_min, float i_max)
+{
+    float length = i_v.Length();
+    if (length < i_min)
+        return i_v.Normalize() * i_min;
+    else if (length > i_max)
+        return i_v.Normalize() * i_max;
+
+    return i_v;
+}
+
+inline Vector3 Vector3::LookAt(const Vector3& i_eyePosition, const Vector3& i_targetPosition)
+{
+    Vector3 dir = Vector3::VecFromPt(i_eyePosition, i_targetPosition).Normalize();
+    Quaternion quatRot = Quaternion::VectorToVector(Vector3::backward, dir);
+
+    Vector3 rotation = quatRot.QuatToEuler();
+    rotation.z = 0.f; // discard z rotation because result is a bit awkward with it.
+
+    return rotation;
 }

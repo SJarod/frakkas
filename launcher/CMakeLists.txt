@@ -1,10 +1,17 @@
-add_executable(Launcher launcher.cpp)
-
-target_include_directories(Launcher
-                           PRIVATE ${PROJECT_SOURCE_DIR}/engine/include
-                           PRIVATE ${COMMON_INCLUDE_DIR}
+project(Frakkarena
+        LANGUAGES CXX C
+        VERSION 1.0
+        DESCRIPTION "Launch the game"
 )
 
-target_link_libraries(Launcher PRIVATE EngineFrakkas)
+add_executable(${PROJECT_NAME}
+               ${CMAKE_SOURCE_DIR}/launcher.rc
+               launcher.cpp
+)
 
-set_target_properties(Launcher PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+target_link_libraries(${PROJECT_NAME} PRIVATE Game)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES
+                      RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/build/debug
+                      RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_SOURCE_DIR}/build/release
+)

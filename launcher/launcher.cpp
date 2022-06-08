@@ -1,25 +1,18 @@
-//
-// Created by f.marcellot on 18/03/2022.
-//
 
-#include <iostream>
+#include "register_components.hpp"
+#include "world_data.hpp"
+#include "engine.hpp"
 
-#include "entity.hpp"
-
+#undef main
 int main()
 {
-    bool running = true;
-    int foo = 1;
-    while(running)
-    {
-        /// NEW FRAME
+    Engine engine;
 
-        /// UPDATE
+    Game::RegisterComponents(engine.entityManager);
 
-        /// ENDFRAME
+    Game::World::SetWorldData(std::make_unique<Game::FrakkarenaWorldData>());
 
-        if (foo++ == 3)
-            running = false;
-    }
+    engine.RunGame();
+
     return 0;
 }

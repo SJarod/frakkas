@@ -1,7 +1,7 @@
-#include "vector3.hpp"
-#include "vector4.hpp"
+#include "maths/vector3.hpp"
+#include "maths/vector4.hpp"
 
-#include "constants.hpp"
+#include "maths/constants.hpp"
 
 namespace Maths {
 
@@ -10,9 +10,19 @@ namespace Maths {
         return i_degAngle * (Constants::pi / 180.f);
     }
 
+    inline Vector3 ToRadians(const Vector3& i_degAngles)
+    {
+        return i_degAngles * (Constants::pi / 180.f);
+    }
+
     inline float ToDegrees(float i_radAngle)
     {
         return i_radAngle * (180.f / Constants::pi);
+    }
+
+    inline Vector3 ToDegrees(const Vector3& i_radAngles)
+    {
+        return i_radAngles * (180.f / Constants::pi);
     }
 
     template<typename T>
@@ -60,6 +70,25 @@ namespace Maths {
                        Clamp(i_val.w, i_min, i_max));
     }
 
+    inline int Modulo(int i_val, int i_base)
+    {
+        return i_val % i_base;
+    }
+
+    inline float Modulo(float i_val, float i_base)
+    {
+        return fmod(i_val, i_base);
+    }
+
+    inline Vector3 Modulo(const Vector3& i_val, float i_base)
+    {
+        return {
+                Modulo(i_val.x, i_base),
+                Modulo(i_val.y, i_base),
+                Modulo(i_val.z, i_base)
+        };
+    }
+
     inline float Abs(float i_f)
     {
         return fabs(i_f);
@@ -105,10 +134,15 @@ namespace Maths {
         return atanf(i_f);
     }
 
+    inline float Atan2(float i_f1, float i_f2)
+    {
+        return atan2(i_f1, i_f2);
+    }
+
     template<typename T>
     inline T Lerp(T i_start, T i_reach, float i_factor)
     {
-        i_factor = Clamp(i_factor, 0.f, 1.f);
+        i_factor = Clamp(i_factor, -1.f, 1.f);
         return i_start + i_factor * (i_reach - i_start);
     }
 
