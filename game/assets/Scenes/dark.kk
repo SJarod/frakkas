@@ -26,6 +26,32 @@
 >childs
 	0
 >name
+	GolemSpawner_0
+>component_count
+	1
+>transform
+>position
+	-22.1298, -59.9999, 86.0297
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	8
+>skeletonRatio
+	0
+>golemRatio
+	60
+>nothingRatio
+	40
+
+>entity
+>childs
+	0
+>name
 	SkeletonSpawner_2
 >component_count
 	1
@@ -47,6 +73,32 @@
 	0
 >nothingRatio
 	70
+
+>entity
+>childs
+	0
+>name
+	GolemSpawner_3
+>component_count
+	1
+>transform
+>position
+	94.6537, -60, 85.039
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	8
+>skeletonRatio
+	0
+>golemRatio
+	60
+>nothingRatio
+	40
 
 >entity
 >childs
@@ -296,58 +348,6 @@
 	10, 23, 10
 >lerpFactor
 	0.08
-
->entity
->childs
-	0
->name
-	GolemSpawner_0
->component_count
-	1
->transform
->position
-	-22.1298, -59.9999, 86.0297
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
-	8
->skeletonRatio
-	0
->golemRatio
-	60
->nothingRatio
-	40
-
->entity
->childs
-	0
->name
-	GolemSpawner_3
->component_count
-	1
->transform
->position
-	94.6537, -60, 85.039
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
-	8
->skeletonRatio
-	0
->golemRatio
-	60
->nothingRatio
-	40
 
 >entity
 >childs
@@ -1207,7 +1207,7 @@
 >name
 	PortalManager
 >component_count
-	4
+	3
 >transform
 >position
 	0, 0, 0
@@ -1234,15 +1234,6 @@
 	1
 >volume
 	60
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\Teleportation.wav
->loop
-	0
->volume
-	50
 
 >entity
 >childs

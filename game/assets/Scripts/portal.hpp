@@ -14,7 +14,7 @@ namespace Game
 
     KK_COMPONENT(Portal);
 
-    void ActivatePortal(float i_activationTime, float i_closeTime, Sound* io_openSound, Sound* io_teleportSound);
+    void ActivatePortal(float i_activationTime, float i_closeTime, Sound* io_openSound);
 
 private:
     BoxCollider* triggerCollider = nullptr;
@@ -24,7 +24,6 @@ private:
     float closeTime = 20.f; // Time until the portal close
 
     Sound* openSound = nullptr;
-    Sound* teleportSound = nullptr;
 
     void OnStart() override;
 
