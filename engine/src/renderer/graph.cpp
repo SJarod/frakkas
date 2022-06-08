@@ -436,6 +436,9 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
 
         Log::Info("Load scene ", currentScenePath);
 
+        for (OnSceneLoadEvent& event : sceneLoadEvents)
+            event();
+
         ThreadPool::AddTask([this]() {
             SceneLoadFinished();
             });

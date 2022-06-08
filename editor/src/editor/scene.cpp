@@ -2,15 +2,12 @@
 
 #include "game/inputs_manager.hpp"
 #include "game/entity.hpp"
-#include "sound.hpp"
-#include "drawable/static_draw.hpp"
 
 #include "renderer/graph.hpp"
 #include "renderer/lowlevel/lowrenderer.hpp"
 
 #include "engine.hpp"
 
-#include "helpers/string_helpers.hpp"
 #include "helpers/game_edit.hpp" // This include is for ROTATION_GUIZMO define, don't remove it
 #include "helpers/drop_component.hpp"
 #include "editor/scene.hpp"
