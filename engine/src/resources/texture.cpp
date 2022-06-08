@@ -25,10 +25,9 @@ bool Resources::Texture::CPULoad()
 	}
 	else
 	{
-		if (ResourcesManager::GetDefaultTexture().Found(name))
-			return false;
+		if (!ResourcesManager::GetDefaultTexture().Found(name))
+    		Log::Warning("Could not load texture file : " + name);
 
-		Log::Warning("Could not load texture file : " + name);
 		return false;
 	}
 }
