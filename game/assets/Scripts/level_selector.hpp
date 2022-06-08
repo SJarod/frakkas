@@ -37,11 +37,12 @@ namespace Game
         static constexpr char darkScreen3[] = "game/assets/Textures/LoadingScreens/dark_skeleton_1.png";
         static constexpr char darkScreen4[] = "game/assets/Textures/LoadingScreens/dark_skeleton_2.png";
         // TIPS
-        static constexpr char itemTips[] = "Sometimes, enemies can drop life item when they are killed."
+        static constexpr char itemTips[] = "Sometimes, enemies can drop life item."
                                            "\nIt heals you 5% of your health, and gives you the smile =)";
         static constexpr char itemRateTips[] = "The lower your health is, the greater is your chance to find health item.";
         static constexpr char difficultyTips[] = "The more level you succeeded, The more the enemies are strong.";
         static constexpr char attackComboTips[] = "Your damage increases when you process combo attack, but the third attack stuns you.";
+        static constexpr char comboScoreTips[] = "Your combo factor increase when you kill 5 enemies in a short period! Yaaah!"
         static constexpr char stupidDeathTips[] = "Don't die, if you want to live.";
         static constexpr char armorTruthTips[] = "You have an armor, yes."
                                                  "\nBut did you know that it is in paper-craft ?";
@@ -50,13 +51,21 @@ namespace Game
         static constexpr char weaponTips[] = "Care not to drop your weapon.";
         static constexpr char stopTips[] = "Press 'START' and return to the menu if you need to stop playing"
                                            "\nbecause you are asked to set the table.";
-        static constexpr char bossTips[] = "You have 0.0001% chance to find the lord of the dark world, AkA the final boss.";
+        static constexpr char bossTips[] = "You have 0.0001% chance to find the lord of the Dark world, AkA the final boss.";
         static constexpr char frakkasTips[] = "'Frakkas' name definitely comes from 'fracasser' in french."
                                             "\nIt means the engine breaks everything ! In the good ways...";
+        static constexpr char forestTips[] = "In the green lands, the wind behind your back makes you run faster!";
+        static constexpr char snowTips[] = "at Frozen kingdom, you can't run fast due to snow. Well, who needs to run though?";
+        static constexpr char desertTips[] = "The blinding sun of the desert gives speed to golems. Beware of their attacks!";
+        static constexpr char darkTips[] = "The Dark world is the nursery of golems. Hope your sword can slash rocks...";
 
         std::vector<const char*> scenePaths = { forestScenePath, desertScenePath, snowScenePath, darkScenePath };
-        std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, stupidDeathTips, armorTruthTips, matrixTips,
-                                          difficultyTips, bnTips, weaponTips, stopTips, bossTips, frakkasTips};
+
+        std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, comboScoreTips, stupidDeathTips, 
+                                          armorTruthTips, matrixTips, difficultyTips, bnTips, weaponTips, stopTips, bossTips,
+                                          frakkasTips, forestTips, snowTips, desertTips, darkTips
+        };
+
         std::vector<const char*> forestSceneScreens = { forestScreen2, forestScreen3, forestScreen4};
         std::vector<const char*> snowSceneScreens = { snowScreen1, snowScreen3, snowScreen4};
         std::vector<const char*> desertSceneScreens = { desertScreen1, desertScreen2, desertScreen3, desertScreen4};
