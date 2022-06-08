@@ -57,5 +57,7 @@ namespace Resources
 		DefaultTexture();
 
 		GLuint ChooseColor(const std::string_view& i_color) const;
+
+		bool Found(const std::string_view& i_color) const;
 	};
 }
