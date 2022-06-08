@@ -12,7 +12,6 @@ namespace Game
         float closeTime;
 
         Sound* portalSound = nullptr;
-        Sound* teleportationSound = nullptr;
 
         void OnStart() override;
 

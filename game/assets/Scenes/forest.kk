@@ -133,7 +133,7 @@
 >name
 	PortalManager
 >component_count
-	4
+	3
 >transform
 >position
 	0, 0, 0
@@ -160,15 +160,6 @@
 	1
 >volume
 	60
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\Teleportation.wav
->loop
-	0
->volume
-	50
 
 >entity
 >childs

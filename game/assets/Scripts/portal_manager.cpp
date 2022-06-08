@@ -13,8 +13,7 @@ KK_COMPONENT_IMPL_END
 
 void PortalManager::OnStart()
 {
-    portalSound = owner.get()->GetComponents<Sound>()[0];
-    teleportationSound = owner.get()->GetComponents<Sound>()[1];
+    portalSound = owner.get()->GetComponent<Sound>();
 
     auto portals = GetEntityContainer().FindEntitiesWithComponent<Portal>();
 
@@ -26,5 +25,5 @@ void PortalManager::OnStart()
     portalSound->positionAuto = false; // Prevent sound position change
     portalSound->SetSoundPosition(portal->Position());
 
-    portal->ActivatePortal(activationTime, closeTime, portalSound, teleportationSound);
+    portal->ActivatePortal(activationTime, closeTime, portalSound);
 }

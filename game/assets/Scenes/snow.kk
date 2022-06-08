@@ -52,6 +52,32 @@
 >childs
 	0
 >name
+	Spawner_0
+>component_count
+	1
+>transform
+>position
+	48.079, -60, 62.599
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	3
+>skeletonRatio
+	35
+>golemRatio
+	10
+>nothingRatio
+	55
+
+>entity
+>childs
+	0
+>name
 	Spawner_3
 >component_count
 	1
@@ -1176,7 +1202,7 @@
 >name
 	PortalManager
 >component_count
-	4
+	3
 >transform
 >position
 	0, 0, 0
@@ -1203,15 +1229,6 @@
 	1
 >volume
 	60
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\Teleportation.wav
->loop
-	0
->volume
-	50
 
 >entity
 >childs
@@ -2896,29 +2913,3 @@
 	0, 0, 0, 1
 >model.material.shininess
 	32
-
->entity
->childs
-	0
->name
-	Spawner_0
->component_count
-	1
->transform
->position
-	48.079, -60, 62.599
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
-	3
->skeletonRatio
-	35
->golemRatio
-	10
->nothingRatio
-	55
