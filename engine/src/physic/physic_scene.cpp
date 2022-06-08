@@ -121,7 +121,8 @@ void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_
     auto findPredicate2 = [&i_body2](const Game::Collider* collider) { return i_body2 == collider->GetPhysicBodyID(); };
     Game::Collider* collider2 = *std::find_if(colliders.begin(), colliders.end(), findPredicate2);
 
-    if (!collider1 || !collider2)
+    if (!collider1 || !collider2 ||
+    !collider1->IsStarted() || !collider2->IsStarted())
         return;
 
     collider1->owner.get()->GetRootEntity()->NotifyCollision(i_event, *collider1, *collider2);

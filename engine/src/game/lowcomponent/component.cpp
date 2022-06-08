@@ -50,6 +50,11 @@ void Component::Start()
     }
 }
 
+bool Component::IsStarted() const
+{
+    return isStarted;
+}
+
 void Component::SetOwner(Entity* entity) 
 {
     owner.set(entity);

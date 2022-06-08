@@ -57,6 +57,11 @@ namespace Game
         void Start();
 
         /**
+         * @return true if the component is started. Which means that the component has been updated at least once.
+         */
+        bool IsStarted() const;
+
+        /**
          * @Summary Called every frame in the game loop if component enabled.
          * The common function to write game script.
          */
