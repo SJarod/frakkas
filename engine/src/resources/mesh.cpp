@@ -23,7 +23,12 @@ bool Resources::Mesh::CPULoad()
 {
 	resourceType = EResourceType::MESH;
 
-	if (name == cubeMesh)
+    if (name == quadMesh)
+    {
+        LoadQuad();
+        return true;
+    }
+	else if (name == cubeMesh)
 	{
 		LoadCube();
 		return true;
@@ -209,6 +214,49 @@ void Resources::Mesh::ParseSubmesh(Submesh& io_mesh)
 	{
 		io_mesh.vertices.emplace_back(rawVertices[io_mesh.indices[i]]);
 	}
+}
+
+void Resources::Mesh::LoadQuad()
+{
+    Submesh mesh;
+
+    float ver[] ={
+            -1.f, 1.f, 0.f,
+            1.f, 1.f, 0.f,
+            1.f, -1.f, 0.f,
+            -1.f, -1.f, 0.f,
+    };
+
+    for (int i = 0; i < 4; ++i)
+    {
+        Vertex v;
+        v.position = { ver[i * 3 + 0], ver[i * 3 + 1], ver[i * 3 + 2] };
+        v.normal = {0.f, 0.f, 1.f};
+
+        mesh.vertices.emplace_back(v);
+    }
+
+    unsigned int ind[] = {
+            0, 1, 2,
+            0, 2, 3,
+            2, 1, 0,
+            3, 2, 0
+    };
+
+    for (int i = 0; i < 12; ++i)
+    {
+        mesh.indices.emplace_back(ind[i]);
+    }
+
+    mesh.vertices[0].uv = {0.f, 0.f};
+    mesh.vertices[1].uv = {1.f, 0.f};
+    mesh.vertices[2].uv = {1.f, 1.f};
+    mesh.vertices[3].uv = {0.f, 1.f};
+
+    ParseSubmesh(mesh);
+
+    submeshes.emplace_back(std::make_shared<Submesh>(mesh));
+    ComputeMemorySize();
 }
 
 void Resources::Mesh::LoadCube()

@@ -62,6 +62,11 @@ void Console::OnImGuiRender()
             color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); // red
             has_color = true;
         }
+        else if (strstr(item, "[DEBUG]"))
+        {
+            color = ImVec4(0.1, 0.7f, 1.0f, 1.0f); // blue
+            has_color = true;
+        }
         if (has_color)
             ImGui::PushStyleColor(ImGuiCol_Text, color);
         ImGui::TextUnformatted(item);

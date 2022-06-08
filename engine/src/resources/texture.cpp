@@ -65,14 +65,18 @@ Resources::DefaultTexture::DefaultTexture()
 	std::vector<std::string> colorNames;
 	colorNames.emplace_back("red");
 	colorNames.emplace_back("green");
-	colorNames.emplace_back("blue");
+    colorNames.emplace_back("blue");
+    colorNames.emplace_back("black");
+    colorNames.emplace_back("white");
 	colorNames.emplace_back("transparent");
 
 	std::vector<Vector4> colors;
 	colors.emplace_back(Vector4{ 1.f, 0.f, 0.f, 1.f });
 	colors.emplace_back(Vector4{ 0.f, 1.f, 0.f, 1.f });
 	colors.emplace_back(Vector4{ 0.f, 0.f, 1.f, 1.f });
-	colors.emplace_back(Vector4{ 1.f, 1.f, 1.f, 0.5f });
+    colors.emplace_back(Vector4{ 0.f, 0.f, 0.f, 1.f });
+    colors.emplace_back(Vector4{ 1.f, 1.f, 1.f, 1.f });
+    colors.emplace_back(Vector4{ 1.f, 1.f, 1.f, 0.5f });
 
 	{
 		GLuint tex;
@@ -120,5 +124,5 @@ GLuint DefaultTexture::ChooseColor(const std::string_view& i_color) const
 	if (textures.find(std::string(i_color)) != textures.end())
 		return textures.find(std::string(i_color))->second;
 	else
-		return textures.find("error")->second;
+		return textures.find("transparent")->second;
 }

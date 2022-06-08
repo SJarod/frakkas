@@ -138,7 +138,7 @@ inline Vector3 Vector3::operator^(const Vector3& vec) const // Cross product
             };
 }
 
-inline Vector3 Vector3::operator+=(Vector3& vec)
+inline Vector3 Vector3::operator+=(const Vector3& vec)
 {
     return {
             x += vec.x,
@@ -147,7 +147,7 @@ inline Vector3 Vector3::operator+=(Vector3& vec)
     };
 }
 
-inline Vector3 Vector3::operator-=(Vector3& vec)
+inline Vector3 Vector3::operator-=(const Vector3& vec)
 {
     return {
             x -= vec.x,

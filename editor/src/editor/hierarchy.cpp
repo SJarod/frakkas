@@ -1,12 +1,12 @@
 #include <imgui.h>
 #include <string>
 
-#include "game/lowcomponent/static_draw.hpp"
-#include "game/lowcomponent/camera.hpp"
-#include "game/collider/box_collider.hpp"
-#include "game/collider/sphere_collider.hpp"
-#include "game/ui/text.hpp"
-#include "game/ui/button.hpp"
+#include "drawable/static_draw.hpp"
+#include "camera.hpp"
+#include "collider/box_collider.hpp"
+#include "collider/sphere_collider.hpp"
+#include "ui/text.hpp"
+#include "ui/button.hpp"
 #include "game/entity_manager.hpp"
 
 
@@ -105,7 +105,7 @@ void Hierarchy::RenderEntity(Game::EntityManager& io_entityManager, Game::Entity
     }
     else
     {
-        ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
+        ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
         if (isSelectedEntity) nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
         treeOpen = ImGui::TreeNodeEx(label.c_str(), nodeFlags);
@@ -224,13 +224,15 @@ void Hierarchy::AddEntityPopup(Game::EntityManager& io_entityManager)
         {
             entity = io_entityManager.CreateEntity();
             entity->name = "BoxCollider_" + entity->GetStringID();
-            entity->AddComponent<Game::BoxCollider>();
+            Game::Collider* collider = entity->AddComponent<Game::BoxCollider>();
+            collider->SetStatic();
         }
         else if (ImGui::Selectable("Sphere collider"))
         {
             entity = io_entityManager.CreateEntity();
             entity->name = "SphereCollider_" + entity->GetStringID();
-            entity->AddComponent<Game::SphereCollider>();
+            Game::Collider* collider = entity->AddComponent<Game::SphereCollider>();
+            collider->SetStatic();
         }
         else if (ImGui::Selectable("Camera"))
         {

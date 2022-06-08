@@ -20,8 +20,6 @@ namespace Animation
 	class Animator
 	{
 	private:
-		float playSpeed = 1.f;
-		float playTime = 0.f;
 
 		std::weak_ptr<Resources::SkeletalMesh> owningSkmesh;
 
@@ -56,6 +54,9 @@ namespace Animation
 		void CancelExtraTS(bool i_x = true, bool i_y = true, bool i_z = true, bool i_scale = true);
 
 	public:
+        float playSpeed = 1.f;
+        float playTime = 0.f;
+        
 		/**
 		 * Create the animator, allocating memory for MAX_BONES matrices.
 		 */
@@ -94,6 +95,14 @@ namespace Animation
 		 * @return true if the player is not playing any animation.
 		 */
 		bool IsWaiting() const;
+
+        /**
+         * Is the animator looping an animation ?
+         *
+         * @return true if the player is looping any animation.
+         * @return
+         */
+        bool IsLooping() const;
 
 		/**
 		 * Get the vector of global bone transform matrices.

@@ -1,6 +1,6 @@
 #include <imgui.h>
 
-#include "game/component_generator.hpp"
+#include "component_generator.hpp"
 #include "game/entity_manager.hpp"
 #include "game/entity.hpp"
 
@@ -389,6 +389,10 @@ void Editor::MenuBar::RenderingField(Engine& io_engine)
             ImGui::Checkbox("Post-process", &io_engine.renderer->postProcessOutline);
 
         ImGui::DragFloat("Shadow rendering distance (depending on view frustum)", &io_engine.renderer->shadowDistance);
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("Colliders", &io_engine.renderer->renderCollider);
 
         ImGui::EndMenu();
     }

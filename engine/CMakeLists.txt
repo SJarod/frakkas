@@ -8,16 +8,21 @@ add_library(${PROJECT_NAME} STATIC
 			src/game/entity_manager.cpp
         	src/game/transform.cpp
 			src/game/world.cpp
-            src/game/lowcomponent/static_draw.cpp
-			src/game/lowcomponent/animated_draw.cpp
-			
-			src/game/lowcomponent/camera.cpp
+			src/game/component/drawable/static_draw.cpp
+			src/game/component/drawable/animated_draw.cpp
+			src/game/component/camera.cpp
+			src/game/component/sound.cpp
+			src/game/component/collider/box_collider.cpp
+			src/game/component/collider/sphere_collider.cpp
+			src/game/component/ui/text.cpp
+			src/game/component/ui/button.cpp
+			src/game/component/ui/panel.cpp
+			src/game/component/ui/image_panel.cpp
+			src/game/component/ui/image_button.cpp
+			src/game/lowcomponent/ui_object.cpp
             src/game/lowcomponent/component.cpp
-            src/game/lowcomponent/sound.cpp
 			src/game/lowcomponent/drawable.cpp
-		    src/game/collider/box_collider.cpp
-		    src/game/collider/collider.cpp
-		    src/game/collider/sphere_collider.cpp
+			src/game/lowcomponent/collider.cpp
 			src/game/entity.cpp
             src/game/time_manager.cpp
             src/game/inputs_manager.cpp
@@ -45,15 +50,11 @@ add_library(${PROJECT_NAME} STATIC
 		    src/physic/physic_scene.cpp
 			src/physic/contact_listener.cpp
 			src/physic/layers.cpp
- 			src/game/ui/ui_object.cpp
-		    src/game/ui/text.cpp
-            src/game/ui/button.cpp
-			src/game/ui/panel.cpp
-            src/game/ui/image_panel.cpp
-            src/game/ui/image_button.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME}
+							PUBLIC include
+							PUBLIC include/game/component)
 
 target_link_libraries(${PROJECT_NAME}
 					  PUBLIC glad

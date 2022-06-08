@@ -4,8 +4,8 @@
 
 #include "game/entity.hpp"
 #include "game/entity_manager.hpp"
-#include "game/lowcomponent/sound.hpp"
-#include "game/lowcomponent/static_draw.hpp"
+#include "sound.hpp"
+#include "drawable/static_draw.hpp"
 
 #include "renderer/graph.hpp"
 

@@ -112,6 +112,11 @@ EditorRender::EditorRender(Engine& io_engine)
         camTrs.rotation = rot;
     };
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
+    Renderer::OnSceneLoadEvent onSceneLoadEvent = [&]()
+    {
+        m_hierarchy.selected = nullptr;
+    };
+    io_engine.graph->sceneLoadEvents.emplace_back(onSceneLoadEvent);
 }
 
 void EditorRender::UpdateAndRender(Engine& io_engine)
@@ -127,6 +132,9 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
         ImGui::PushStyleVar(ImGuiStyleVar_Alpha, io_engine.GetRunMode() & Utils::UpdateFlag_Editing ? 0.75f : 0.4f);
 
         stylePushed = true;
+
+        if (!(io_engine.GetRunMode() & Utils::UpdateFlag_Editing))
+            m_hierarchy.selected = nullptr;
     }
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
@@ -159,10 +167,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
     bool reloadScene = false;
     MenuBar::OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
     if (reloadScene)
-    {
-        m_hierarchy.selected = nullptr;
         io_engine.SetRunMode(Utils::UpdateFlag_Editing);
-    }
 
     // Render viewers
     m_debugger.OnImGuiRender();
@@ -184,12 +189,5 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
 
     CheckEngineQuitEvent();
 
-    UpdateImGui();
-
-    io_engine.gameFBO->size = {gameWindowSize.x, gameWindowSize.y};
-}
-
-void EditorRender::UpdateImGui()
-{
-
+    io_engine.gameFBO->size = {gameWindowSize.x - ImGuiWindowPadding, gameWindowSize.y - ImGuiWindowPadding};
 }

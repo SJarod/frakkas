@@ -3,7 +3,7 @@
 #include "maths.hpp"
 #include "game/transform.hpp"
 
-#include "game/component_generator.hpp"
+#include "component_generator.hpp"
 
 namespace Game
 {

@@ -5,7 +5,7 @@ project(Editor
 )
 
 add_executable(${PROJECT_NAME}
-			   ${CMAKE_SOURCE_DIR}/appicon.rc
+			   ${CMAKE_SOURCE_DIR}/editor.rc
                src/main.cpp
 			   src/editor/editor_render.cpp
 			   src/editor/hierarchy.cpp

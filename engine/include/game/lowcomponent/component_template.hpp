@@ -1,7 +1,7 @@
 // REPLACE '$name' BY COMPONENT NAME
 #pragma once
 
-#include "game/component_generator.hpp"
+#include "component_generator.hpp"
 
 namespace Game
 {

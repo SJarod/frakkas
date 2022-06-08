@@ -23,7 +23,6 @@ namespace Renderer
 		std::string textureName = "";
 		bool		flipTexture = false;
 
-		// TODO : vector of Texture
 		std::weak_ptr<Resources::Texture> diffuseTex;
 
 		Model();

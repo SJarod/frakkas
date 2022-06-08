@@ -1,33 +1,28 @@
 #pragma once
 
-#include "game/component_generator.hpp"
+#include "sound.hpp"
+
+#include "component_generator.hpp"
 
 namespace Game
 {
+    class AnimatedDraw;
+
     KK_COMPONENT(MenuScript);
 
-        /// You can remove the functions you don't need.
+        AnimatedDraw* playerAnimation = nullptr;
+
+        Sound* BGM = nullptr;
+        Sound* BGM1 = nullptr;
+        Sound* BGM2 = nullptr;
+        Sound* BGM3 = nullptr;
+        Sound* buttonSound = nullptr;
+
         void OnStart() override;
 
         void OnUpdate() override;
 
-        void OnDestroy()override {};
-
-        void OnEnable() override {};
-
-        void OnDisable() override {};
-
-        void OnCollisionEnter(const Collider& i_ownerCollider, const Collider& i_otherCollider)override {};
-
-        void OnCollisionStay(const Collider& i_ownerCollider, const Collider& i_otherCollider)override {};
-
-        void OnCollisionExit(const Collider& i_ownerCollider, const Collider& i_otherCollider)override {};
-
-        void OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_otherCollider) override {};
-
-        void OnTriggerStay(const Collider& i_ownerCollider, const Collider& i_otherCollider) override {};
-
-        void OnTriggerExit(const Collider& i_ownerCollider, const Collider& i_otherCollider) override {};
+        static void ResetWorldData();
 
     KK_COMPONENT_END
 }

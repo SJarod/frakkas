@@ -1,7 +1,7 @@
 #include "editor/editor_render.hpp"
 
-#include "game/register_components.hpp"
-#include "game/world_data.hpp"
+#include "register_components.hpp"
+#include "world_data.hpp"
 
 #include "engine.hpp"
 

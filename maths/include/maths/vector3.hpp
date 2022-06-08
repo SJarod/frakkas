@@ -53,9 +53,9 @@ struct Vector3
 
     Vector3 operator^(const Vector3& i_vec) const;
 
-    Vector3 operator+=(Vector3& i_vec);
+    Vector3 operator+=(const Vector3& i_vec);
 
-    Vector3 operator-=(Vector3& i_vec);
+    Vector3 operator-=(const Vector3& i_vec);
 
     bool operator==(const Vector3& i_vec) const;
 

@@ -30,11 +30,12 @@ Component::Component()
 {
     enabled.setter = [&](const bool& value)
     {
-        if (value && enabled == false)
-            OnEnable();
-        else if (!value && enabled == true)
-            OnDisable();
+        bool prevValue = enabled.get();
         enabled.set(value);
+        if (value && !prevValue)
+            OnEnable();
+        else if (!value && prevValue)
+            OnDisable();
     };
     owner.setter = std::bind(&Component::SetOwner, this, std::placeholders::_1);
     enabled = true;
@@ -77,6 +78,11 @@ EntityContainer& Component::GetEntityContainer() const
 Transform& Component::GetTransform() const
 {
     return owner.get()->transform;
+}
+
+Transform& Component::GetRootTransform() const
+{
+    return owner.get()->GetRootEntity()->transform;
 }
 
 

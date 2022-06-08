@@ -48,6 +48,7 @@ namespace Resources
 	{
 	public:
 		// Those string are code name to load in-engine shape when call LoadFromInfo()
+        static constexpr char quadMesh[] = "ProceduralQuad";
 		static constexpr char cubeMesh[] = "ProceduralCube";
 		static constexpr char sphereMesh[] = "ProceduralSphere";
 		static constexpr char icoSphereMesh[] = "ProceduralIcoSphere";
@@ -94,6 +95,11 @@ namespace Resources
 		void ParseSubmesh(Submesh& io_submesh);
 
 		////////////////////////////////////////////// PROCEDURAL LOADING
+
+        /**
+         * Procedurally load a quad.
+         */
+        void LoadQuad();
 
 		/**
 		 * Procedurally load a cube.

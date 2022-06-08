@@ -11,10 +11,8 @@
 #include <thread>
 
 #include "game/time_manager.hpp"
-#include "debug/log.hpp"
 
 #include "physic/physic_scene.hpp"
-#include "engine.hpp"
 
 using namespace Physic;
 
@@ -57,7 +55,7 @@ void PhysicScene::Update(Utils::UpdateFlag i_updateMode) const
         physicsSystem->Update(Game::Time::GetDeltaTime(), 1, 1, tempAllocator.get(), jobSystem.get());
 
         for (Game::Collider* collider : colliders)
-            if (!collider->GetTransform().parent || !collider->isStatic) // Collider should not have parent transform, and static doesn't need update
+            if (collider->enabled && !collider->GetTransform().parent && collider->IsDynamic()) // Collider should not have parent transform, and static doesn't need update
                 collider->ApplyPhysicUpdate();
     }
 }
@@ -126,13 +124,12 @@ void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_
     if (!collider1 || !collider2)
         return;
 
-    collider1->owner.get()->NotifyCollision(i_event, *collider1, *collider2);
-    collider2->owner.get()->NotifyCollision(i_event, *collider2, *collider1);
+    collider1->owner.get()->GetRootEntity()->NotifyCollision(i_event, *collider1, *collider2);
+    collider2->owner.get()->GetRootEntity()->NotifyCollision(i_event, *collider2, *collider1);
 }
 
 void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::BodyID& i_body2)
 {
-
     auto findPredicate1 = [&i_body1](const Game::Collider* collider) { return i_body1 == collider->GetPhysicBodyID(); };
     Game::Collider* collider1 = *std::find_if(colliders.begin(), colliders.end(), findPredicate1);
 
@@ -140,7 +137,7 @@ void PhysicScene::NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::Bod
     Game::Collider* collider2 = *std::find_if(colliders.begin(), colliders.end(), findPredicate2);
 
     // Check if collider is trigger or not
-    ECollisionEvent event = collider1->trigger || collider2->trigger ? ECollisionEvent::TRIGGER_EXIT : ECollisionEvent::COLLISION_EXIT;
-    collider1->owner.get()->NotifyCollision(event, *collider1, *collider2);
-    collider2->owner.get()->NotifyCollision(event, *collider2, *collider1);
+    ECollisionEvent event = collider1->IsTrigger() || collider2->IsTrigger() ? ECollisionEvent::TRIGGER_EXIT : ECollisionEvent::COLLISION_EXIT;
+    collider1->owner.get()->GetRootEntity()->NotifyCollision(event, *collider1, *collider2);
+    collider2->owner.get()->GetRootEntity()->NotifyCollision(event, *collider2, *collider1);
 }

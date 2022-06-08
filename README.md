@@ -3,18 +3,23 @@ All rights reserved for Frakkas team.
 # FRAKKAS ENGINE => 'FRAKKARENA'  
 
 ## Summary
-1. [Description](#description)
-2. [Open in an IDE](#open-in-an-ide)
-3. [Update submodules](#update-submodules)
+1. [Frakkas](#frakkas)  
+    1.1 [Description](#description)  
+    1.2 [Open in an IDE](#open-in-an-ide)  
+    1.3 [Update submodules](#update-submodules)  
+2. [Frakkarena](#frakkarena)  
+    2.1 [Controls](#controls)
 
-</br>
+<br>
 
+# Frakkas  
+  
 ## Description
 ---
 
 
 
-</br>
+<br>
 
 ## Open in an IDE
 ---
@@ -22,7 +27,7 @@ All rights reserved for Frakkas team.
 If you are using CLion, just open the project directly with it.  
 In case you are using Visual Studio Community/Enterprise 2022, check our tutorial on our wiki: accessible [here](https://gitlabstudents.isartintra.com/projets/2021_gp_2025_engine_gp_2025_engine-frakkas/-/wikis/Launch%20project%20with%20Visual%20Studio).  
 
-</br>
+<br>
 
 ## Update submodules
 ---
@@ -33,12 +38,40 @@ They are normally automaticaly update with the main CMakeLists.txt but in case y
 2. In each submodule directory located in extern/ (ex: Frakkas/extern/tracy), execute this command in a Git Bash command prompt: `git checkout`
 3. Contact us!
 
-</br>
+<br>
+
+# Frakkarena
+
+## Controls
+
+<br>
+
+- __Xbox gamepad__
+
+Input                          | Action
+-------                        | ------
+Left stick / D-PAD             | Move
+A / B                          | Attack
+Right Trigger / X / Y          | Dash
+Start                          | Play / Pause
+    
+<br>
+
+- __Mouse / Keyboard (QWERTY)__
+
+Input                          | Action
+-------                        | ------
+WASD / Arrows                  | Move
+Space bar / Left click         | Attack
+E / Left Shift / Right click   | Dash
+P / Esc                        | Play / Pause
+
+<br>
 
 ---
 
-Looking for additionnal informations ? Look at our [wiki](https://gitlabstudents.isartintra.com/projets/2021_gp_2025_engine_gp_2025_engine-frakkas/-/wikis/home)!
+Looking for additionnal informations? Look at our [wiki](https://gitlabstudents.isartintra.com/projets/2021_gp_2025_engine_gp_2025_engine-frakkas/-/wikis/home)!
 
-</br>
+<br>
 
 [Head of page](#summary)
