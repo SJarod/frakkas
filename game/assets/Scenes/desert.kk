@@ -295,6 +295,37 @@
 
 >entity
 >childs
+	0
+>name
+	Camera
+>component_count
+	2
+>transform
+>position
+	72.2686, -36.6231, 33.9683
+>rotation
+	-0.959931, -0.785398, 0
+>scale
+	1, 1, 1
+>Camera
+>enabled
+	1
+>near
+	10
+>far
+	1000
+>fovY
+	90
+>FollowCamera
+>enabled
+	1
+>offset
+	10, 23, 10
+>lerpFactor
+	0.08
+
+>entity
+>childs
 	4
 >name
 	GolemClone
@@ -633,40 +664,6 @@
 >childs
 	0
 >name
-	DoorGFX
->component_count
-	1
->transform
->position
-	0, -1, 0
->rotation
-	0, 0, 0
->scale
-	0.35, 0.35, 1
->StaticDraw
->enabled
-	1
->meshPath
-	game/assets/Models/Door.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_04.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
 	PortalManager
 >component_count
 	4
@@ -705,40 +702,6 @@
 	0
 >volume
 	50
-
->entity
->childs
-	0
->name
-	PortalGFX
->component_count
-	1
->transform
->position
-	0, -0.154, 0
->rotation
-	0, 0, 0
->scale
-	0.852, 0.836, 0.6
->StaticDraw
->enabled
-	0
->meshPath
-	ProceduralCube
->texturePath
-	game/assets/Textures/Portal.jpg
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
 
 >entity
 >childs
@@ -1188,37 +1151,6 @@
 	1
 >volume
 	3
-
->entity
->childs
-	0
->name
-	Camera
->component_count
-	2
->transform
->position
-	72.2686, -36.6231, 33.9683
->rotation
-	-0.959931, -0.785398, 0
->scale
-	1, 1, 1
->Camera
->enabled
-	1
->near
-	10
->far
-	1000
->fovY
-	90
->FollowCamera
->enabled
-	1
->offset
-	10, 23, 10
->lerpFactor
-	0.08
 
 >entity
 >childs
@@ -2557,7 +2489,7 @@
 >childs
 	2
 >name
-	Portal_3
+	Portal_4
 >component_count
 	2
 >transform
@@ -2791,3 +2723,112 @@
 	25
 >nothingRatio
 	20
+
+>entity
+>childs
+	2
+>name
+	Portal
+>component_count
+	2
+>transform
+>position
+	-70.7333, -57.4548, -78.4817
+>rotation
+	0, -0.890117, 0
+>scale
+	7, 8, 1.8
+>Portal
+>enabled
+	0
+>BoxCollider
+>enabled
+	0
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	DoorGFX
+>component_count
+	1
+>transform
+>position
+	0, -1, 0
+>rotation
+	0, 0, 0
+>scale
+	0.35, 0.35, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	game/assets/Models/Door.fbx
+>texturePath
+	game/assets/Textures/Dungeons_Texture_04.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	PortalGFX
+>component_count
+	1
+>transform
+>position
+	0, -0.154, 0
+>rotation
+	0, 0, 0
+>scale
+	0.852, 0.836, 0.6
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets/Textures/Portal.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32

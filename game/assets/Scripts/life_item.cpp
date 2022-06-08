@@ -22,7 +22,7 @@ void LifeItem::OnStart()
 
     auto draw = owner.get()->AddComponent<StaticDraw>();
     draw->SetMesh("game/assets/Models/Heart.fbx");
-    draw->SetMesh("red");
+    draw->SetTexture("red", false);
 }
 
 void LifeItem::OnUpdate()

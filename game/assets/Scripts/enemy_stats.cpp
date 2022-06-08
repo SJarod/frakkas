@@ -44,7 +44,7 @@ void EnemyStats::ApplyWorldLevel()
 void EnemyStats::SpawnLifeItem()
 {
     float playerLifeRatio = GetEntityContainer().FindEntityWithComponent<Player>()->GetComponent<Life>()->ratio;
-    float spawnItemProb = (1.f - playerLifeRatio) / 3.f;
+    float spawnItemProb = (1.f - playerLifeRatio) * itemDropRate;
     std::random_device randDevice;
     std::mt19937_64 gen(randDevice());
     std::uniform_real_distribution<> discreteDistri(0.f, 1.f);
@@ -54,6 +54,8 @@ void EnemyStats::SpawnLifeItem()
         Entity* item = GetEntityContainer().CreateEntity("LifeItem");
         item->AddComponent<LifeItem>();
         item->transform.position = Position().get() + Vector3::up * 5.f;
+        item->transform.rotation = Vector3(0.f, -45.f, 0.f);
+        item->transform.scale = Vector3(1.f, 1.f, 2.f);
     }
 }
 

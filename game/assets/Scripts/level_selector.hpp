@@ -19,8 +19,8 @@ namespace Game
 
         // SCENES LOADING SCREEN
         // Forest
+        static constexpr char forestScreen1[] = "game/assets/Textures/LoadingScreens/forest_heart.png";
         static constexpr char forestScreen2[] = "game/assets/Textures/LoadingScreens/forest_player_2.png";
-        static constexpr char forestScreen3[] = "game/assets/Textures/LoadingScreens/forest_fight_1.png";
         static constexpr char forestScreen4[] = "game/assets/Textures/LoadingScreens/forest_skeleton_1.png";
         // Snow
         static constexpr char snowScreen1[] = "game/assets/Textures/LoadingScreens/snow_fight_1.png";
@@ -58,15 +58,16 @@ namespace Game
         static constexpr char snowTips[] = "at Frozen kingdom, you can't run fast due to snow. Well, who needs to run though?";
         static constexpr char desertTips[] = "The blinding sun of the desert gives speed to golems. Beware of their attacks!";
         static constexpr char darkTips[] = "The Dark world is the nursery of golems. Hope your sword can slash rocks...";
+        static constexpr char gamepadTips[] = "We hope you're playing with a controller. Gamepad vibrations are so satisfying!";
 
         std::vector<const char*> scenePaths = { forestScenePath, desertScenePath, snowScenePath, darkScenePath };
 
         std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, comboScoreTips, stupidDeathTips,
                                           armorTruthTips, matrixTips, difficultyTips, bnTips, weaponTips, stopTips, bossTips,
-                                          frakkasTips, forestTips, snowTips, desertTips, darkTips
+                                          frakkasTips, forestTips, snowTips, desertTips, darkTips, gamepadTips
         };
 
-        std::vector<const char*> forestSceneScreens = { forestScreen2, forestScreen3, forestScreen4};
+        std::vector<const char*> forestSceneScreens = { forestScreen1, forestScreen2, forestScreen4};
         std::vector<const char*> snowSceneScreens = { snowScreen1, snowScreen3, snowScreen4};
         std::vector<const char*> desertSceneScreens = { desertScreen1, desertScreen2, desertScreen3, desertScreen4};
         std::vector<const char*> darkSceneScreens = { darkScreen1, darkScreen2, darkScreen3, darkScreen4};
