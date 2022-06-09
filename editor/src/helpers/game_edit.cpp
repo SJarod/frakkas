@@ -143,9 +143,8 @@ void Helpers::Edit(Animation::AnimationGraph& io_animGraph)
 	decorations |= ImGuiTableFlags_RowBg;
 	decorations |= ImGuiTableFlags_BordersV;
 	decorations |= ImGuiTableFlags_BordersH;
-	ImGuiTableFlags scrolling = ImGuiTableFlags_ScrollY;
 
-	if (ImGui::BeginTable("Available animations", 1, features | decorations | scrolling))
+	if (ImGui::BeginTable("Available animations", 1, features | decorations))
 	{
 		bool openDeletePopup = false;
 		static int selected = 0;
