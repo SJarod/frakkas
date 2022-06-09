@@ -59,12 +59,13 @@ namespace Game
         static constexpr char desertTips[] = "The blinding sun of the desert gives speed to golems. Beware of their attacks!";
         static constexpr char darkTips[] = "The Dark world is the nursery of golems. Hope your sword can slash rocks...";
         static constexpr char gamepadTips[] = "We hope you're playing with a controller. Gamepad vibrations are so satisfying!";
+        static constexpr char goldTips[] = "9th June at 7:16 PM is the perfect time to have a toast.";
 
         std::vector<const char*> scenePaths = { forestScenePath, desertScenePath, snowScenePath, darkScenePath };
 
         std::vector<const char*> tips = { itemTips, itemRateTips, attackComboTips, comboScoreTips, stupidDeathTips,
                                           armorTruthTips, matrixTips, difficultyTips, bnTips, weaponTips, stopTips, bossTips,
-                                          frakkasTips, forestTips, snowTips, desertTips, darkTips, gamepadTips
+                                          frakkasTips, forestTips, snowTips, desertTips, darkTips, gamepadTips, goldTips
         };
 
         std::vector<const char*> forestSceneScreens = { forestScreen1, forestScreen2, forestScreen4};
