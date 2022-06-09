@@ -211,6 +211,8 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Came
         drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
     }
 
+    sortedDrawable.clear();
+
     i_renderer.EndFrame();
 
     // post processing
