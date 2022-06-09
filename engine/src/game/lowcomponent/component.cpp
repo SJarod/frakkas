@@ -50,6 +50,11 @@ void Component::Start()
     }
 }
 
+bool Component::IsStarted() const
+{
+    return isStarted;
+}
+
 void Component::SetOwner(Entity* entity) 
 {
     owner.set(entity);
@@ -84,6 +89,3 @@ Transform& Component::GetRootTransform() const
 {
     return owner.get()->GetRootEntity()->transform;
 }
-
-
-

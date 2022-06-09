@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Jolt/Jolt.h>
-
 #include <Jolt/Physics/Collision/ObjectLayer.h>
 #include <Jolt/Physics/Collision/BroadPhase/BroadPhaseLayer.h>
 #include <Jolt/Physics/Collision/ContactListener.h>
@@ -30,7 +29,6 @@ JPH_NAMESPACE_BEGIN
         static constexpr BroadPhaseLayer DISABLE(3);
         static constexpr uint NUM_LAYERS(4);
     }
-
 
     class MyBroadPhaseLayerInterface final : public BroadPhaseLayerInterface
     {

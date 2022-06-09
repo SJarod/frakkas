@@ -44,8 +44,6 @@ void Editor::ResourcesViewer::OnImGuiRender()
 	char buffer[255];
 	if (ImGui::BeginTable("Resources", 4, features | decorations | scrolling))
 	{
-		//if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-		//	ImGui::SetScrollHereY(1.f);
 		ImGui::TableSetupScrollFreeze(4, 1);
 
 		ImGui::TableNextRow(ImGuiTableRowFlags_Headers);

@@ -9,8 +9,6 @@
 #include "renderer/graph.hpp"
 #include "renderer/skeletal_model.hpp"
 
-#include "resources/mesh.hpp"
-
 #include "animation/animation_graph.hpp"
 
 #include "editor/editor_render.hpp"
@@ -20,8 +18,6 @@
 
 #include "helpers/game_edit.hpp"
 
-
-//#define ROTATION_GUIZMO
 /**
  * @brief Useful function to receive resource path from a drag drop imgui event
  * @param i_extensions The list of extension that allowed.
@@ -93,7 +89,7 @@ void Helpers::Edit(Game::Transform& io_transform)
 	DragScalar("XYZ###R", rot.element, 3);
 
 	rot = Maths::Modulo(rot, 360.f);
-	if (trs.colliderComponentCount > 0) // COLLIDERS ARE BROKEN WHEN ABS(Y) >= 90°
+	if (trs.colliderComponentCount > 0) // X and Z rotation change if rot(Y) >= 90°. We prefer to prevent this.
 		rot.y = Maths::Modulo(rot.y, 90.f);
 
 #pragma region Scale edit
@@ -143,9 +139,8 @@ void Helpers::Edit(Animation::AnimationGraph& io_animGraph)
 	decorations |= ImGuiTableFlags_RowBg;
 	decorations |= ImGuiTableFlags_BordersV;
 	decorations |= ImGuiTableFlags_BordersH;
-	ImGuiTableFlags scrolling = ImGuiTableFlags_ScrollY;
 
-	if (ImGui::BeginTable("Available animations", 1, features | decorations | scrolling))
+	if (ImGui::BeginTable("Available animations", 1, features | decorations))
 	{
 		bool openDeletePopup = false;
 		static int selected = 0;
@@ -265,7 +260,8 @@ void Helpers::DisplaySkeleton(Renderer::SkeletalModel& io_skmodel)
 		}
 		if (ImGui::Selectable("Add model"))
 		{
-			io_skmodel.AddSocket(meshName, textureName, false, selected);
+			Game::Transform t;
+			io_skmodel.AddSocket(meshName, textureName, false, selected, t);
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -309,7 +305,6 @@ void Helpers::Edit(Game::Entity& io_entity, ImGuizmo::OPERATION& i_guizmoOperati
 
 	ImGui::Separator();
 
-	//ImGui::Text("Entity: %s", io_entity.name.c_str());
 	Edit(io_entity.name, "Name");
 
 	ImGui::Separator();

@@ -54,7 +54,7 @@ namespace Game
         static constexpr float joystickAxisMinimumValue = 0.2f;
     public:
         Inputs();
-        ~Inputs();
+        ~Inputs() = default;
 
         static bool quit;
 

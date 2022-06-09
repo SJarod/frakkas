@@ -4,7 +4,6 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
-#set(CMAKE_EXE_LINKER_FLAGS "-static")
 set(CMAKE_CXX_STANDARD 20 CACHE STRING "Language standard" FORCE)
 set(CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL "Use the C++ standard" FORCE)
 set(CMAKE_CXX_EXTENSIONS OFF CACHE BOOL "" FORCE)
@@ -22,8 +21,6 @@ add_library(Mathlib INTERFACE)
 target_include_directories(Mathlib
                            INTERFACE include
                            INTERFACE inline)
-
-#set_target_properties(Mathlib PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 if(MATHS_BUILD_EXECUTABLE)
     add_executable(Maths main.cpp)

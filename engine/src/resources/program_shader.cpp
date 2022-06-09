@@ -14,9 +14,7 @@ Resources::Shader::Shader(const std::string& i_name,
 
 	int size = i_defines.size();
 	for (int i = 0; i < size; ++i)
-	{
 		defines.emplace_back(*(i_defines.begin() + i));
-	}
 }
 
 Resources::Shader::Shader(const std::string& i_name,
@@ -29,9 +27,7 @@ Resources::Shader::Shader(const std::string& i_name,
 
 	int size = i_defines.size();
 	for (int i = 0; i < size; ++i)
-	{
 		defines.emplace_back(*(i_defines.begin() + i));
-	}
 }
 
 bool Resources::Shader::GPULoad()
@@ -56,17 +52,15 @@ bool Resources::Shader::GPULoad()
 	std::vector<const char*> uberVertexShaderSources;
 	uberVertexShaderSources.emplace_back(version.c_str());
 	for (const std::string& def : defines)
-	{
 		uberVertexShaderSources.emplace_back(def.c_str());
-	}
+
 	uberVertexShaderSources.emplace_back(vs.c_str());
 
 	std::vector<const char*> uberFragmentShaderSources;
 	uberFragmentShaderSources.emplace_back(version.c_str());
 	for (const std::string& def : defines)
-	{
 		uberFragmentShaderSources.emplace_back(def.c_str());
-	}
+
 	uberFragmentShaderSources.emplace_back(fs.c_str());
 
 	//shaders

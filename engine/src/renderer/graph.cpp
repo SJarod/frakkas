@@ -211,6 +211,8 @@ void Graph::Render(Renderer::LowLevel::LowRenderer& i_renderer, const Game::Came
         drawable->Draw(i_renderer, light, drawable->owner.get()->transform);
     }
 
+    sortedDrawable.clear();
+
     i_renderer.EndFrame();
 
     // post processing
@@ -349,7 +351,7 @@ bool Graph::CreateScene(std::filesystem::path i_scenePath)
 
     auto drawable = en->AddComponent<Game::StaticDraw>();
     drawable->SetMesh(Resources::Mesh::cubeMesh);
-    drawable->SetTexture("game/assets/Textures/gold.jpg", true);
+    drawable->SetTexture("white", false);
 
     en->transform.position = {0.f, -5.f, 0.f};
     en->transform.scale = {10.f, 1.f, 10.f};
@@ -361,7 +363,7 @@ bool Graph::CreateScene(std::filesystem::path i_scenePath)
 
     drawable = en->AddComponent<Game::StaticDraw>();
     drawable->SetMesh(Resources::Mesh::icoSphereMesh);
-    drawable->SetTexture("game/assets/Textures/gold.jpg", true);
+    drawable->SetTexture("red", false);
 
     SaveScene();
 
@@ -385,9 +387,7 @@ void Graph::SceneLoadFinished()
             });
     }
     else
-    {
         ThreadPool::AddTask([this]() { SceneLoadFinished(); });
-    }
 };
 
 void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning)
@@ -435,6 +435,9 @@ void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cle
         SetGameCameraAuto();
 
         Log::Info("Load scene ", currentScenePath);
+
+        for (OnSceneLoadEvent& event : sceneLoadEvents)
+            event();
 
         ThreadPool::AddTask([this]() {
             SceneLoadFinished();

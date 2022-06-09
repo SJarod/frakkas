@@ -1,12 +1,10 @@
 #include <iostream>
 
 #include "renderer/graph.hpp"
-
 #include "physic/physic_scene.hpp"
-
 #include "game/lowcomponent/collider.hpp"
-#include "game/entity.hpp"
 
+#include "game/entity.hpp"
 
 using namespace Game;
 
@@ -25,6 +23,7 @@ Entity::Entity(const EntityIdentifier& i_id, const std::string_view& i_name)
 
         parent.set(io_value);
     };
+
     enabled.setter = [&](bool io_value)
     {
         // Avoid endless call with Component::OnEnabled/OnDisable

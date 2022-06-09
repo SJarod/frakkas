@@ -2,7 +2,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "ImGuizmo.h"
+#include <ImGuizmo.h>
 
 namespace Game
 {
@@ -34,7 +34,5 @@ namespace Editor
          * @param io_selectedEntity The current entity to add component to.
          */
         static void DragDropTargetButton(Game::Entity* io_selectedEntity);
-
-
     };
 }

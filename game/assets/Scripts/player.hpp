@@ -49,7 +49,9 @@ namespace Game
         void GoToWalk();
         void GoToDash();
         void GoToAttack();
+        void GoToSuffer();
         void GoToDeath();
+
 
     private:
         static constexpr char triggerColliderEntityName[] = "Collider";

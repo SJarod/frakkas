@@ -3,9 +3,7 @@
 #include "maths.hpp"
 #include "renderer/model.hpp"
 #include "renderer/point.hpp"
-
 #include "utils/properties.hpp"
-
 #include "debug/log.hpp"
 
 namespace Renderer

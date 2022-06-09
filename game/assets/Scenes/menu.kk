@@ -242,7 +242,7 @@
 >scale
 	350, 70
 >tint
-	0, 0, 0, 1
+	1, 1, 1, 1
 >imageFlip
 	0
 >Texture

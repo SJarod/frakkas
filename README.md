@@ -52,8 +52,9 @@ Input                          | Action
 -------                        | ------
 Left stick / D-PAD             | Move
 A / B                          | Attack
-Right Trigger / X / Y          | Dash
-Start                          | Play / Pause
+Right Trigger / X / Y          | Run
+Start                          | Play / Pause  
+D-PAD                          | Menu navigation  
     
 <br>
 
@@ -63,8 +64,9 @@ Input                          | Action
 -------                        | ------
 WASD / Arrows                  | Move
 Space bar / Left click         | Attack
-E / Left Shift / Right click   | Dash
-P / Esc                        | Play / Pause
+E / Left Shift / Right click   | Run
+P / Esc                        | Play / Pause  
+Arrows / Mouse                 | Menu navigation  
 
 <br>
 

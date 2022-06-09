@@ -8,14 +8,9 @@
 #include "ui/text.hpp"
 #include "ui/button.hpp"
 #include "game/entity_manager.hpp"
-
-
 #include "resources/mesh.hpp"
-
 #include "game/inputs_manager.hpp"
-
 #include "helpers/game_edit.hpp"
-
 #include "utils/dragdrop_constants.hpp"
 
 #include "editor/hierarchy.hpp"

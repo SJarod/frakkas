@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <imgui.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl.h>
@@ -216,8 +214,6 @@ bool Engine::EndFrame()
 
 void Engine::RenderImGui() const
 {
-    ImVec4 clearColor = ImVec4(0.4f, 0.5f, 0.6f, 1.f);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::Render();
@@ -422,5 +418,3 @@ const UI::Canvas& Engine::GetUICanvas() const
 {
     return graph->canvas;
 }
-
-

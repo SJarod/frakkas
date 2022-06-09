@@ -1,7 +1,5 @@
 #include <filesystem>
 
-#include "multithread/threadpool.hpp"
-
 #include "ui/canvas.hpp"
 
 using namespace UI;
@@ -94,9 +92,7 @@ bool Canvas::FadeAway()
     float fdt = Game::Time::GetFixedDeltaTime();
     loadingScreen.tint.w -= fdt;
     for (Game::UIObject* uiObject : objects)
-    {
         uiObject->tint.w -= fdt;
-    }
 
     return loadingScreen.tint.w <= 0.f;
 }

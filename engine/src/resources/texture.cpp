@@ -25,7 +25,9 @@ bool Resources::Texture::CPULoad()
 	}
 	else
 	{
-		Log::Warning("Could not load texture file : " + name);
+		if (!ResourcesManager::GetDefaultTexture().Found(name))
+    		Log::Warning("Could not load texture file : " + name);
+
 		return false;
 	}
 }
@@ -121,8 +123,16 @@ Resources::DefaultTexture::DefaultTexture()
 
 GLuint DefaultTexture::ChooseColor(const std::string_view& i_color) const
 {
-	if (textures.find(std::string(i_color)) != textures.end())
-		return textures.find(std::string(i_color))->second;
+	if (textures.find(i_color.data()) != textures.end())
+		return textures.find(i_color.data())->second;
 	else
 		return textures.find("transparent")->second;
+}
+
+bool DefaultTexture::Found(const std::string_view& i_color) const
+{
+	if (textures.find(i_color.data()) != textures.end())
+		return true;
+	else
+		return false;
 }

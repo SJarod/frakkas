@@ -9,12 +9,8 @@
 #include "animation/animation_graph.hpp"
 
 #include "renderer/light.hpp"
-#include "renderer/model.hpp"
 #include "renderer/skeletal_model.hpp"
 
-#include "resources/mesh.hpp"
-#include "resources/skeletal_mesh.hpp"
-#include "resources/skeletal_animation.hpp"
 #include "resources/serializer.hpp"
 
 using namespace Resources;
@@ -272,14 +268,7 @@ void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
         GetAttribute(i_file);
         Read(i_file, textureName);
 
-        o_skmodel.AddSocket(meshName, textureName, false, id);
-        if (!o_skmodel.sockets.empty())
-        {
-            Renderer::Socket& socket = o_skmodel.sockets.back();
-            socket.transform.position = transform.position.get();
-            socket.transform.rotation = transform.rotation.get();
-            socket.transform.scale = transform.scale.get();
-        }
+        o_skmodel.AddSocket(meshName, textureName, false, id, transform);
     }
 }
 
@@ -332,7 +321,8 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
 
     for (const DataDescriptor& desc : i_metaData.descriptors)
     {
-        if (desc.viewOnly) continue;
+        if (desc.viewOnly)
+            continue;
 
         unsigned char* componentData = i_component + desc.offset;
 
@@ -412,10 +402,8 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     int count = static_cast<int>(files.size());
     Write(io_file, "count", &count, 1);
 
-    for (int i = 0; i < files.size(); ++i)
-    {
-        Write(io_file, "file", &files[i]);
-    }
+    for (auto & file : files)
+        Write(io_file, "file", &file);
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)
@@ -426,7 +414,7 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "count", &count, 1);
 
     std::list<Renderer::Socket> sockets = i_skmodel.sockets;
-    for (std::list<Renderer::Socket>::iterator it = sockets.begin(); it != sockets.end(); ++it)
+    for (auto it = sockets.begin(); it != sockets.end(); ++it)
     {
         Write(io_file, "transform", it->transform);
         Write(io_file, "boneID", &it->boneID, 1);
@@ -438,25 +426,4 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
 char Serializer::Tab()
 {
     return '\t';
-}
-
-unsigned int Resources::Serializer::GetCurrentLine(std::ifstream& i_file)
-{
-    auto originalPos = i_file.tellg();
-
-    i_file.seekg(0);
-
-    int count = 0;
-    std::string line;
-    // Read line one by one, and check cursor position
-    // 'for' loop stop when cursor moves beyond the original position
-    for (; i_file.tellg() < originalPos; count++)
-    {
-        std::getline(i_file, line);
-        std::cout << static_cast<int>(i_file.tellg()) << std::endl;
-    }
-
-    i_file.seekg(originalPos);
-
-    return count;
 }

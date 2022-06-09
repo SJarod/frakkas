@@ -48,7 +48,6 @@ private:
 public:
 	/**
 	 * End the thread pool.
-	 *
 	 */
 	~ThreadPool();
 
@@ -56,22 +55,17 @@ public:
 	 * Set the pool to function or not.
 	 * true : multithread
 	 * false : monothread
-	 *
 	 * @param i_param
 	 */
 	void SetMultithread(const bool i_param);
 
 	/**
 	 * Is the pool functionning in multithread?
-	 *
-	 * @return
 	 */
 	const bool GetMultithreadParam() const;
 
 	/**
 	 * Get the number of threads.
-	 *
-	 * @return
 	 */
 	unsigned int GetThreadsNumber() const;
 
@@ -82,7 +76,6 @@ public:
 
 	/**
 	 * Add a task to the task queue.
-	 *
 	 * @param i_fct : the task
 	 * @param i_parallel : should the task be done in a parallel thread?
 	 */
@@ -90,20 +83,17 @@ public:
 
 	/**
 	 * Remove the first task from the task queue.
-	 *
 	 */
 	void RemoveFirstTask();
 
 	/**
 	 * Choose a task then do it.
-	 *
 	 */
 	void Work(const int i_id = -1);
 
 	/**
 	 * Thread routine.
 	 * Main loop function
-	 *
 	 */
 	void PoolRoutine(const int i_id);
 
@@ -119,20 +109,17 @@ public:
 
 	/**
 	 * Pause this thread for a certain time.
-	 * 
 	 * @param i_time in seconds
 	 */
 	static void Delay(float i_time);
 
 	/**
 	 * Print the thread id.
-	 *
 	 */
 	void PrintThreadId(const int i_id);
 
 	/**
 	 * Get the time to store as the thread pool's starting time.
-	 *
 	 */
 	void SetStartTime();
 
@@ -150,8 +137,6 @@ public:
 
 	/**
 	 * Print the time when the last task was finished.
-	 *
-	 * @return
 	 */
 	float PrintLastWorkingTimeOnce();
 };

@@ -18,7 +18,7 @@ void Portal::OnStart()
     triggerCollider = owner.get()->GetComponent<BoxCollider>();
 }
 
-void Portal::ActivatePortal(float i_activationTime, float i_closeTime, Sound* io_openSound, Sound* io_teleportSound)
+void Portal::ActivatePortal(float i_activationTime, float i_closeTime, Sound* io_openSound)
 {
     // UI
     uiText = owner.get()->AddComponent<Text>();
@@ -29,7 +29,6 @@ void Portal::ActivatePortal(float i_activationTime, float i_closeTime, Sound* io
     activationTime = i_activationTime;
     closeTime = i_closeTime;
     openSound = io_openSound;
-    teleportSound = io_teleportSound;
     enabled = true;
 }
 
@@ -67,14 +66,12 @@ void Portal::OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_o
 {
     if(auto player = i_otherCollider.owner.get()->GetRootEntity()->GetComponent<Player>())
     {
-        teleportSound->Play();
-
         if (auto worldData  = World::GetWorldData<FrakkarenaWorldData>())
         {
 
             worldData->playerLife = player->life->life;
             worldData->level++;
-            worldData->comboScore = worldData->levelComboScore;
+            worldData->comboScore += worldData->levelComboScore;
             worldData->levelComboScore = 0;
             IncreaseRandomStatLevel(worldData, 2);
         }

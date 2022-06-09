@@ -19,7 +19,7 @@ void Time::NewFrame()
 
 float Time::GetTime()
 {
-    return time;
+    return SDL_GetTicks() / 1000.f;
 }
 
 float Time::GetDeltaTime()

@@ -43,7 +43,9 @@ public: \
 	const ClassMetaData& GetMetaData() const override { return MetaData(); };      \
     const std::string& GetID() const override { return MetaData().className; };
 
-
+/**
+ * @brief Same as KK_COMPONENT. However, it will not be shown in the editor, nor serialize.
+ */
 #define KK_PRIVATE_COMPONENT(compClass) \
 \
 class Entity;                                \
@@ -73,7 +75,7 @@ public: \
     const std::string& GetID() const override { return MetaData().className; };
 
 /**
- * Create a component inheriting from a parent component, may be an interface component.
+ * Create a component inheriting from a parent component.
  */
 #define KK_COMPONENT_FROM(compClass, parentCompClass) \
                                 \

@@ -3,7 +3,6 @@
 #include <memory>
 #include <list>
 #include <functional>
-
 #include <SDL.h>
 #include <miniaudio.h>
 
@@ -64,6 +63,7 @@ public:
      * Call all UpdateEvent attached to UpdateEventHandler.
      */
     void RunEditor();
+
     /**
      * Game main loop. Manage frames, Render and Update entities.
      * Call all UpdateEvent attached to UpdateEventHandler.
@@ -75,6 +75,7 @@ public:
      * @param i_flag The new mode to set.
      */
     void SetRunMode(Utils::UpdateFlag i_flag);
+
     /**
      * @return Current run mode.
      */
@@ -87,6 +88,7 @@ public:
      * @param i_visibility The visible state you want
      */
     static void SetCursorVisibility(bool i_visibility = true);
+
     /**
      * Lock cursor position on the window, useful to move the mouse cursor infinitely. Use deltaMotion infos.
      */
@@ -109,6 +111,7 @@ public:
      * @brief Activate keyboard/mouse inputs listening with Inputs class
      */
     void EnableInputs();
+
     /**
      * @brief Deactivate keyboard/mouse inputs listening with Inputs class
      */
@@ -118,10 +121,12 @@ public:
      * @return The editor camera from Graph class. never return nullptr.
      */
     Game::Camera* GetEditorGamera() const;
+
     /**
      * @return The current game camera from Graph class. Can return nullptr.
      */
     Game::Camera* GetGameCamera() const;
+
     /**
      * @return The transform of the editor camera from Graph class.
      */
@@ -160,6 +165,7 @@ private:
 	* Begin a new frame in engine main loop. Inform other libraries and setup engine parameters.
 	*/
     void BeginFrame();
+
     /**
     * End the current frame in engine main loop. Inform other libraries and swap window buffer.
     */
@@ -169,10 +175,4 @@ private:
      * @brief Render and Update the imgui context
      */
     void RenderImGui() const;
-
-
-    /**
-     * Create entities in hard-code to test our project
-     */
-    void CreateTestEntities();
 };

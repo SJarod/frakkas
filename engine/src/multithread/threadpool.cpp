@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <chrono>
 
 #include "debug/log.hpp"
@@ -51,9 +50,7 @@ bool ThreadPool::Clear()
 	ThreadPool& tp = Instance();
 
 	if (!tp.parallelTasks.empty())
-	{
 		return false;
-	}
 	else
 	{
 		for (bool worker : tp.workers)
@@ -155,9 +152,7 @@ void ThreadPool::PollMainThreadTasks()
 	std::lock_guard<std::mutex> guard(tp.mainThreadQueueMX);
 
 	for (Task& task : tp.mainThreadTasks)
-	{
 		task();
-	}
 
 	tp.mainThreadTasks.clear();
 }
@@ -178,8 +173,7 @@ void ThreadPool::Delay(float i_time)
 {
 	float start = Game::Time::GetTime();
 	while (Game::Time::GetTime() - start < i_time)
-	{
-	}
+	{}
 }
 
 void ThreadPool::PrintThreadId(const int i_id)

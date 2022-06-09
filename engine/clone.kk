@@ -3,7 +3,7 @@
 >childs
 	4
 >name
-	GolemClone
+	SkelClone
 >component_count
 	5
 >transform
@@ -13,36 +13,41 @@
 	0, 0, 0
 >scale
 	1, 1, 1
->Golem
+>Skeleton
 >enabled
 	0
 >attackRange
-	20
->chargeTime
-	2.5
+	10
 >attackTime
-	0.5
->riseLegTime
 	1
+>chargingTime
+	0.6
 >hurtEffectTime
 	0.1
 >hurtEffectTint
-	0.7, 0.5, 0, 1
+	0.6, 0.6, 0, 1
 >deathTime
-	4
+	2
+>Life
+>enabled
+	0
+>life
+	3
+>invincibilityTime
+	0.75
 >EnemyStats
 >enabled
 	0
 >baseLife
-	12
+	3
 >baseDamage
-	6
+	3
 >baseSpeed
-	450
+	900
 >baseAttackSpeed
-	0.333
+	0.5
 >baseScore
-	20
+	5
 >increaseRatio
 	0.5
 >SphereCollider
@@ -68,13 +73,6 @@
 	1
 >rotZ
 	1
->Life
->enabled
-	0
->life
-	12
->invincibilityTime
-	0.75
 >EnemyMeshRotation
 >enabled
 	0
@@ -92,14 +90,14 @@
 >rotation
 	0, 0, 0
 >scale
-	0.08, 0.08, 0.08
+	0.048, 0.048, 0.048
 >AnimatedDraw
 >enabled
 	0
 >meshPath
-	game/assets/Models/Golem/Golem.fbx
+	game/assets/Models/Skeleton/Skeleton.fbx
 >texturePath
-	game/assets/Textures/Golem_Texture.png
+	game/assets/Textures/Dungeons_Texture_01.png
 >skmodel.material.ambient
 	0.8, 0.8, 0.8
 >skmodel.material.diffuse
@@ -114,20 +112,33 @@
 	32
 >skmodel
 >count
-	0
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	2.0944, 0, -0.349066
+>scale
+	10000, 10000, 10000
+>boneID
+	27
+>socketMesh
+	game/assets/Models/Skeleton/SkelSword.fbx
+>socketTexture
+	game/assets/Textures/Dungeons_Texture_01.png
 >animGraph
 >count
 	5
 >file
-	game/assets/Models/Golem/Golem_Idle.fbx
+	game/assets/Models/Skeleton/Skeleton_Idle.fbx
 >file
-	game/assets/Models/Golem/Golem_Death.fbx
+	game/assets/Models/Skeleton/Skeleton_Death.fbx
 >file
-	game/assets/Models/Golem/Golem_Stomp.fbx
+	game/assets/Models/Skeleton/Skeleton_Slash.fbx
 >file
-	game/assets/Models/Golem/Golem_Walk.fbx
+	game/assets/Models/Skeleton/Skeleton_Walk.fbx
 >file
-	game/assets/Models/Golem/Golem_Hit.fbx
+	game/assets/Models/Skeleton/Skeleton_Impact.fbx
 
 >entity
 >childs
@@ -138,11 +149,11 @@
 	1
 >transform
 >position
-	0, 7.4, 0
+	0, 4.5, 0
 >rotation
 	0, 0, 0
 >scale
-	4.3, 5.73333, 2.29333
+	1.5, 3, 1
 >BoxCollider
 >enabled
 	0
@@ -171,35 +182,42 @@
 >childs
 	0
 >name
-	AttackGFX
+	WeaponCollider
 >component_count
-	1
+	2
 >transform
 >position
-	0, 0.2, 0
+	0, 4.4, 4.7
 >rotation
-	1.5708, 0, 0
+	0, 0, 0
 >scale
-	7.5, 7.5, 7.5
->StaticDraw
+	1.5, 3.34433, 3.2
+>BoxCollider
 >enabled
 	0
->meshPath
-	ProceduralQuad
->texturePath
-	game/assets/Textures/Golem_Stomp.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	0, 0, 0
->model.material.emissive
-	1, 1, 1
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+>EnemyWeapon
+>enabled
+	0
 
 >entity
 >childs
@@ -207,7 +225,7 @@
 >name
 	Sounds
 >component_count
-	5
+	4
 >transform
 >position
 	0, 0, 0
@@ -219,34 +237,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\golem\Golem_Hit.mp3
->loop
-	0
->volume
-	30
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Roar.mp3
->loop
-	0
->volume
-	50
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Walk.mp3
->loop
-	1
->volume
-	30
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\swords\Hit_Golem.mp3
+	game/assets/Sounds/skeleton/SkeletonTeeth.wav
 >loop
 	0
 >volume
@@ -255,8 +246,26 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\golem\Golem_Death.mp3
+	game/assets/Sounds/skeleton/FootstepSkel.mp3
+>loop
+	1
+>volume
+	70
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/swords/Hit_Skeleton.mp3
 >loop
 	0
 >volume
-	50
+	60
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/skeleton/Skel_Death.mp3
+>loop
+	0
+>volume
+	75
