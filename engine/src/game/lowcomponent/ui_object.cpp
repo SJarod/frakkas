@@ -1,4 +1,3 @@
-
 #include "game/lowcomponent/ui_object.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(UIObject)

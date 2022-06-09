@@ -7,7 +7,6 @@
 #include <filesystem>
 
 #include "maths.hpp"
-
 #include "game/lowcomponent/component.hpp"
 
 struct ClassMetaData;
@@ -100,24 +99,28 @@ namespace Resources
          */
         template<typename TScalarType>
         static void Read(std::ifstream& i_file, TScalarType* o_vector, int i_count = 1);
+
         /**
          * @brief read a string in the next line of i_file
          * @param i_file the opened input file
          * @param o_string the string to build
          */
         static void Read(std::ifstream& i_file, std::string& o_string);
+
         /**
          * @brief read am bool in the next line of i_file
          * @param i_file the opened input file
          * @param o_value the bool to build
          */
         static void Read(std::ifstream& i_file, bool& o_value);
+
         /**
          * @brief read a transform in the next line of i_file
          * @param i_file the opened input file
          * @param o_transform the transform to build
          */
         static void Read(std::ifstream& i_file, Game::Transform& o_transform);
+
         /**
          * @brief read a light in the next line of i_file
          * @param i_file the opened input file
@@ -153,6 +156,7 @@ namespace Resources
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const Game::Entity& i_entity);
+
         /**
          * @brief Write a component in frakkas text format
          * @param io_file the opened output file to write in
@@ -179,26 +183,31 @@ namespace Resources
          */
         template<typename TScalarType>
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const TScalarType* i_vector, int i_count = 1);
+
         /**
          * @brief Write a bool in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, bool i_bool);
+
         /**
          * @brief SaveScene a component in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const std::string& i_string);
+
         /**
          * @brief SaveScene a transform in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Game::Transform& i_transform);
+
         /**
          * @brief SaveScene a light in frakkas text format
          * @param io_file the opened output file to write in
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::Light& i_light);
+
         /**
          * @brief SaveScene an animation graph in frakkas text format
          * @param io_file the opened output file to write in

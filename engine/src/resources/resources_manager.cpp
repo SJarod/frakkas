@@ -1,5 +1,3 @@
-#include <stb_image.h>
-
 #include <assimp/Importer.hpp>
 
 #include "debug/log.hpp"

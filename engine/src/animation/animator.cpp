@@ -1,5 +1,4 @@
 #include "debug/log.hpp"
-
 #include "resources/skeletal_mesh.hpp"
 #include "resources/skeletal_animation.hpp"
 
@@ -45,9 +44,8 @@ void Animation::Animator::UpdatePlayer(const float& deltaTime)
 	playTime += deltaTime * anim->tick * playSpeed + rewindOffset;
 
 	if (loop)
-	{
 		playTime = fmodf(playTime, anim->duration);
-	}
+
 	else if (playTime >= anim->duration)
 	{
 		UnloadAnimation();
@@ -124,9 +122,7 @@ void Animation::Animator::CancelExtraTS(const bool i_x, const bool i_y, const bo
 			invGlobalExtra = (Matrix4::Scale(s) * Matrix4::Translate(t)).Inverse();
 		}
 		else
-		{
 			invGlobalExtra = Matrix4::Translate(t).Inverse();
-		}
 	}
 
 	Matrix4 invRawExtra;

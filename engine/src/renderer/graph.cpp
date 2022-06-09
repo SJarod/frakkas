@@ -387,9 +387,7 @@ void Graph::SceneLoadFinished()
             });
     }
     else
-    {
         ThreadPool::AddTask([this]() { SceneLoadFinished(); });
-    }
 };
 
 void Graph::LoadScene(const std::filesystem::path& i_scenePath, const bool i_cleaning)

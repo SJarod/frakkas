@@ -8,14 +8,11 @@
 #include "drawable/static_draw.hpp"
 
 #include "renderer/graph.hpp"
-
 #include "utils/dragdrop_constants.hpp"
-
 #include "helpers/string_helpers.hpp"
 
 namespace Helpers
 {
-
     /**
      * @brief Read path extension to add a component to the output entity, or load a new scene.
      * @param i_path The input file path dropped.

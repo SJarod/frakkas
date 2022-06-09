@@ -3,15 +3,13 @@
 #include <string>
 #include <unordered_map>
 
-#include "debug/log.hpp"
 #include "engine.hpp"
+#include "debug/log.hpp"
+#include "utils/string_format.hpp"
 
 #include "game/inputs_manager.hpp"
 #include "game/entity.hpp"
-
 #include "game/reflection/data_descriptor.hpp"
-
-#include "utils/string_format.hpp"
 
 #include "editor/editor_render.hpp"
 
@@ -109,6 +107,7 @@ namespace Helpers
      * @param i_label The variable name of the string. Called 'label' for ImGui field.
      * @return true if the user press ENTER while editing text, else return false
      */
+
     bool Edit(std::string& io_string, const char* i_label);
     /**
      * @brief ImGui editing function. Allows the player to change transform parameters.
@@ -179,5 +178,4 @@ namespace Helpers
      * @param io_metaData The class meta data to get access to component field properly.
      */
     void Edit(unsigned char* io_component, const ClassMetaData& io_metaData);
-
 }

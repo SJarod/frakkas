@@ -6,9 +6,7 @@
 
 #include "editor/console.hpp"
 
-
 using namespace Editor;
-
 
 Console::~Console()
 {

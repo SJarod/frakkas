@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "maths.hpp"
-
 #include "resources/resource.hpp"
 
 namespace Resources

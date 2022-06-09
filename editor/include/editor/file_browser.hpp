@@ -4,7 +4,6 @@
 
 #include "resources/texture.hpp"
 
-
 namespace Editor
 {
     class FileBrowser

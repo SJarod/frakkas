@@ -140,7 +140,5 @@ inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, c
 			});
 	}
 	else
-	{
 		Load();
-	}
 }

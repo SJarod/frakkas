@@ -148,9 +148,7 @@ size_t SkeletonNodeData::GetMemorySize() const
 
 	int numChildren = children.size();
 	for (int i = 0; i < numChildren; ++i)
-	{
 		size += children[i].GetMemorySize();
-	}
 
 	return size;
 }
@@ -287,10 +285,7 @@ bool SkeletalAnimationPack::CPULoad()
 const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const std::string_view& i_animationName) const
 {
 	if (animations.find(std::string(i_animationName)) == animations.end())
-	{
-		//Log::Info("No animation named " + std::string(i_animationName));
 		return nullptr;
-	}
 
 	return &animations.find(std::string(i_animationName))->second;
 }
@@ -311,8 +306,3 @@ const SkeletalAnimation* SkeletalAnimationPack::GetAnimation(const unsigned int 
 	return &animations[i];
 }
 #endif
-
-const int SkeletalAnimationPack::GetPackSize() const
-{
-	return animations.size();
-}

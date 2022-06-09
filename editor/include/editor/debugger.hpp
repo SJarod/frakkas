@@ -5,7 +5,6 @@ namespace Renderer
     class Graph;
 }
 
-
 namespace Editor
 {
     /**

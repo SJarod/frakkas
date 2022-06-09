@@ -1,14 +1,12 @@
 #include <Tracy.hpp>
+#include <thread>
 
 #include <Jolt/Jolt.h>
-
 #include <Jolt/RegisterTypes.h>
 #include <Jolt/Core/Factory.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
-
-#include <thread>
 
 #include "game/time_manager.hpp"
 

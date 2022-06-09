@@ -22,10 +22,11 @@ private:
      */
     template<typename TArg, typename... TArgs>
     static void GetFormat(std::stringstream& o_stream, TArg i_firstArg, TArgs&&... i_args);
+
     /**
- * This function end the GetFormat template process.
- * @param i_stream The string stream with all the logs.
- */
+    * This function end the GetFormat template process.
+    * @param i_stream The string stream with all the logs.
+    */
     static void GetFormat(std::stringstream& i_stream) {};
 };
 
@@ -35,7 +36,6 @@ void StringFormat::GetFormat(std::stringstream& o_stream, TArg i_firstArg, TArgs
     o_stream << i_firstArg;
     GetFormat(o_stream, std::forward<TArgs>(i_args)...);
 }
-
 
 template<typename... TArgs>
 std::string StringFormat::GetFormat(TArgs&&... i_args)

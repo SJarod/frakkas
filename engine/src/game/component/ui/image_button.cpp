@@ -1,7 +1,6 @@
 #include <filesystem>
 
 #include "utils/dragdrop_constants.hpp"
-
 #include "resources/texture.hpp"
 #include "resources/resources_manager.hpp"
 
@@ -75,4 +74,3 @@ void OnImageButtonTextureDrop(unsigned char* io_component, void* io_data)
     if (Utils::FindExtension(path->extension().string(), Utils::TextureExtensions))
         image->SetTexture(path->string());
 }
-

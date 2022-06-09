@@ -4,7 +4,6 @@
 
 namespace Helpers
 {
-
     /**
      * @brief Replace all matching string by another string.
      * @param io_str The full string to modify.

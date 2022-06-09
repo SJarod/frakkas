@@ -5,7 +5,6 @@
 
 #include "debug/log.hpp"
 
-
 Log::~Log()
 {
     Instance().logFile.close();

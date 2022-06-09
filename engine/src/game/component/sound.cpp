@@ -1,9 +1,8 @@
-#include "miniaudio.h"
+#include <miniaudio.h>
 
 #include "utils/dragdrop_constants.hpp"
 #include "utils/normalize_filepath.hpp"
 #include "resources/resources_manager.hpp"
-
 #include "engine.hpp"
 
 #include "sound.hpp"

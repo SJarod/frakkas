@@ -1,4 +1,3 @@
-
 #include <Jolt/Jolt.h>
 
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>

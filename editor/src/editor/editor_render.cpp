@@ -1,16 +1,10 @@
 #include <imgui.h>
 #include <ImGuizmo.h>
-#include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl.h>
 
-#include <SDL.h>
-#include <glad/glad.h>
-
 #include "engine.hpp"
-
 #include "renderer/graph.hpp"
 #include "editor/editor_render.hpp"
-
 
 using namespace Editor;
 
@@ -39,11 +33,11 @@ inline void CheckEngineQuitEvent()
             Game::Inputs::quit = true;
             ImGui::CloseCurrentPopup();
         }
+
         ImGui::SameLine();
+
         if (ImGui::Button("Cancel", ImVec2(120, 0)))
-        {
             ImGui::CloseCurrentPopup();
-        }
 
         ImGui::EndPopup();
     }
@@ -111,11 +105,14 @@ EditorRender::EditorRender(Engine& io_engine)
         camTrs.position = camTrs.position.get() + dir * frameSpeed * hold * hold;
         camTrs.rotation = rot;
     };
+
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
+
     Renderer::OnSceneLoadEvent onSceneLoadEvent = [&]()
     {
         hierarchy.selected = nullptr;
     };
+
     io_engine.graph->sceneLoadEvents.emplace_back(onSceneLoadEvent);
 }
 
