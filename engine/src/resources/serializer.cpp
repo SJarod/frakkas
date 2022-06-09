@@ -268,14 +268,7 @@ void Serializer::Read(std::ifstream& i_file, Renderer::SkeletalModel& o_skmodel)
         GetAttribute(i_file);
         Read(i_file, textureName);
 
-        o_skmodel.AddSocket(meshName, textureName, false, id);
-        if (!o_skmodel.sockets.empty())
-        {
-            Renderer::Socket& socket = o_skmodel.sockets.back();
-            socket.transform.position = transform.position.get();
-            socket.transform.rotation = transform.rotation.get();
-            socket.transform.scale = transform.scale.get();
-        }
+        o_skmodel.AddSocket(meshName, textureName, false, id, transform);
     }
 }
 

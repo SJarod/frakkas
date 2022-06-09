@@ -102,7 +102,7 @@ void AnimatedDraw::Draw(Renderer::LowLevel::LowRenderer& i_renderer, const Rende
         if (!socket.render)
             continue;
 
-		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().ChooseColor(texturePath);
+		GLuint texToBeBinded = ResourcesManager::GetDefaultTexture().ChooseColor(socket.model.textureName);
 
 		Resources::Texture* diffuseTex = socket.model.diffuseTex.lock().get();
 		if (diffuseTex != nullptr)
