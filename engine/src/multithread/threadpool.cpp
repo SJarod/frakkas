@@ -51,9 +51,7 @@ bool ThreadPool::Clear()
 	ThreadPool& tp = Instance();
 
 	if (!tp.parallelTasks.empty())
-	{
 		return false;
-	}
 	else
 	{
 		for (bool worker : tp.workers)

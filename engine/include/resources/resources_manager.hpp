@@ -27,7 +27,7 @@ namespace Resources
 	public:
 		const DefaultTexture defaultTexture;
 
-		~ResourcesManager();
+		~ResourcesManager() = default;
 
 		/**
 		* Add a resource to the resources map and return it.

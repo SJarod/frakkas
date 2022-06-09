@@ -148,12 +148,6 @@ Inputs::Inputs()
     negativeJoysticks[SDL_CONTROLLER_AXIS_RIGHTY] = EButton::RIGHT_JOYSTICK_UP;
 }
 
-Inputs::~Inputs()
-{
-    //if (gamepad)
-    //    SDL_GameControllerClose(gamepad);
-}
-
 void Inputs::PollEvent(const InputsEvent& editorEvent)
 {
     SDL_Event event;
@@ -187,7 +181,7 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
 
     EButton button;
     SDL_GameControllerAxis axis;
-    /// INPTUS EVENT
+    /// INPUTS EVENT
     while (SDL_PollEvent(&event))
     {
         if (editorEvent) editorEvent(&event);
@@ -206,9 +200,6 @@ void Inputs::PollEvent(const InputsEvent& editorEvent)
                 buttonStates[button] = EButtonState::RELEASED;
                 break;
 
-            case SDL_MOUSEMOTION:
-                //Log::Info(std::to_string(mouse.deltaMotion.x) + ", " + std::to_string(mouse.deltaMotion.y));
-                break;
             case SDL_MOUSEBUTTONDOWN:
                 switch (event.button.button)
                 {
@@ -389,9 +380,11 @@ bool Inputs::RumbleGamepadPro(float i_time, float i_leftPower, float i_rightPowe
 
     if (gamepad)
     {
+        // Cast
         auto milliDuration = static_cast<Uint32>(i_time * 1000.f);
         auto sdlLeftPower = static_cast<Uint16>(i_leftPower * static_cast<float>(std::numeric_limits<Uint16>::max()));
         auto sdlRightPower = static_cast<Uint16>(i_rightPower * static_cast<float>(std::numeric_limits<Uint16>::max()));
+        // Rumble
         if (SDL_GameControllerRumble(gamepad, sdlLeftPower, sdlRightPower, milliDuration))
             return true;
     }

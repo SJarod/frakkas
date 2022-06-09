@@ -7,11 +7,6 @@
 
 #include "resources/resources_manager.hpp"
 
-Resources::ResourcesManager::~ResourcesManager()
-{
-	// Has DestroyResources() been called?
-}
-
 const DefaultTexture& Resources::ResourcesManager::GetDefaultTexture()
 {
 	return Instance().defaultTexture;

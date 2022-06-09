@@ -19,29 +19,29 @@ namespace Editor
         void OnImGuiRender();
 
     private:
-        std::filesystem::path m_currentDirectory;
-        std::filesystem::path m_deletePath;
+        std::filesystem::path currentDirectory;
+        std::filesystem::path deletePath;
 
-        Resources::Texture m_directoryIcon;
-        Resources::Texture m_fileIcon;
+        Resources::Texture directoryIcon;
+        Resources::Texture fileIcon;
 
-        Resources::Texture m_wavIcon;
-        Resources::Texture m_mp3Icon;
-        Resources::Texture m_objIcon;
-        Resources::Texture m_fbxIcon;
-        Resources::Texture m_gltfIcon;
-        Resources::Texture m_pngIcon;
-        Resources::Texture m_jpgIcon;
-        Resources::Texture m_kkIcon;
-        Resources::Texture m_cppIcon;
-        Resources::Texture m_hppIcon;
+        Resources::Texture wavIcon;
+        Resources::Texture mp3Icon;
+        Resources::Texture objIcon;
+        Resources::Texture fbxIcon;
+        Resources::Texture gltfIcon;
+        Resources::Texture pngIcon;
+        Resources::Texture jpgIcon;
+        Resources::Texture kkIcon;
+        Resources::Texture cppIcon;
+        Resources::Texture hppIcon;
 
         /**
         * @summary Add "Options" field to Main menu bar to modify buttons size and padding
         * @param padding the space between each icon
         * @param thumbnailSize the icon's size
         */
-        void OptionsField(float* padding, float* thumbnailSize);
+        static void OptionsField(float* padding, float* thumbnailSize);
 
         /**
         * @summary Change button texture depending file extension

@@ -294,7 +294,6 @@ void Player::GoToAttack()
 
     // COMBO
     attackStreak = Maths::Modulo(attackStreak++, 3)+1;
-    Log::Info("Streak : ", attackStreak, ", and last attack : ", lastAttackTimer);
 
     // TIMER
     lastAttackTimer = 0.f;

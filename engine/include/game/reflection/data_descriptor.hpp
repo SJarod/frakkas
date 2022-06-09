@@ -14,7 +14,7 @@ enum class EDataType
 	BOOL,
 	STRING,
     ANIMATION, // A table for the animation graph
-    SKELETON,
+    SKELETON, // A tree of bones, to visualize and add model
     NONE_DATA, // A limit between serialized data and editor tools
     TEXT, // A simple text for inspector
     BUTTON // A button for inspector

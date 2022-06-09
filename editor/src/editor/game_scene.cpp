@@ -2,8 +2,6 @@
 
 #include "renderer/lowlevel/lowrenderer.hpp"
 
-#include "helpers/game_edit.hpp"
-
 #include "engine.hpp"
 
 #include "editor/editor_render.hpp"
@@ -13,8 +11,6 @@
 
 using namespace Editor;
 using namespace Game;
-
-void FxTestBed();
 
 void GameScene::OnImGuiRender(Engine& io_engine)
 {

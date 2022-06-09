@@ -4,8 +4,6 @@
 
 #include "debug/log.hpp"
 
-#include "resources/serializer.hpp"
-
 #include "game/transform.hpp"
 #include "game/entity_manager.hpp"
 #include "game/entity.hpp"
