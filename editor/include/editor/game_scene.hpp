@@ -9,6 +9,7 @@ namespace Editor
     public:
         GameScene() = default;
         ~GameScene() = default;
+
         /**
          * Position where the cursor is locked when user begin playing.
          */

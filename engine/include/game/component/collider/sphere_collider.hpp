@@ -14,6 +14,7 @@ namespace Game
 
     private:
         float prevRadius = 1.f;
+
         /**
          * Check collider scale, and create new scaled sphere if needed.
          */

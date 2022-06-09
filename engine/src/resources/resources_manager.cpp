@@ -1,16 +1,9 @@
-#include <stb_image.h>
-
 #include <assimp/Importer.hpp>
 
 #include "debug/log.hpp"
 #include "maths.hpp"
 
 #include "resources/resources_manager.hpp"
-
-Resources::ResourcesManager::~ResourcesManager()
-{
-	// Has DestroyResources() been called?
-}
 
 const DefaultTexture& Resources::ResourcesManager::GetDefaultTexture()
 {
@@ -51,7 +44,8 @@ void Resources::ResourcesManager::DestroyThisResource(const std::string& i_name)
 	std::string name = i_name;
 	rm.resources.erase(name);
 
-	Log::Info(name, " was deleted");
+	if (!rm.defaultTexture.Found(i_name))
+		Log::Info(name, " was deleted");
 }
 
 void Resources::ResourcesManager::DestroyResources()

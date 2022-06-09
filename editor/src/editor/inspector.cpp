@@ -7,9 +7,7 @@
 
 #include "editor/inspector.hpp"
 
-
 using namespace Editor;
-
 
 void Inspector::OnImGuiRender(Game::Entity* io_selectedEntity, ImGuizmo::OPERATION& i_guizmoOperation)
 {

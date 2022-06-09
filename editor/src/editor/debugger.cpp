@@ -1,9 +1,7 @@
 #include <imgui.h>
 
 #include "maths.hpp"
-
 #include "game/time_manager.hpp"
-
 #include "editor/debugger.hpp"
 
 using namespace Editor;
@@ -11,7 +9,6 @@ using namespace Editor;
 void Debugger::OnImGuiRender()
 {
     ImGui::Begin("Debugger");
-
 
 #pragma region Performance
     float newTime = Game::Time::GetTime();
@@ -40,5 +37,6 @@ void Debugger::OnImGuiRender()
 
     ImGui::Text("FPS : %i", FPS);
 #pragma endregion
+
     ImGui::End();
 }

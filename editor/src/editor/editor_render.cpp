@@ -1,16 +1,10 @@
 #include <imgui.h>
 #include <ImGuizmo.h>
-#include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_sdl.h>
 
-#include <SDL.h>
-#include <glad/glad.h>
-
 #include "engine.hpp"
-
 #include "renderer/graph.hpp"
 #include "editor/editor_render.hpp"
-
 
 using namespace Editor;
 
@@ -39,11 +33,11 @@ inline void CheckEngineQuitEvent()
             Game::Inputs::quit = true;
             ImGui::CloseCurrentPopup();
         }
+
         ImGui::SameLine();
+
         if (ImGui::Button("Cancel", ImVec2(120, 0)))
-        {
             ImGui::CloseCurrentPopup();
-        }
 
         ImGui::EndPopup();
     }
@@ -55,7 +49,7 @@ EditorRender::EditorRender(Engine& io_engine)
 
     io.Fonts->AddFontFromFileTTF("editor/assets/Louis_George_Cafe_Bold.ttf", 15.f);
 
-    m_menuBar.FrakkasColors();
+    menuBar.FrakkasColors();
 
     ImGuiStyle& style = ImGui::GetStyle();
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -72,7 +66,7 @@ EditorRender::EditorRender(Engine& io_engine)
     io_engine.updateEventsHandler.emplace_back(editorUpdateEvent);
     UpdateEvent editorCameraUpdateEvent = [&]()
     {
-        if (!m_scene.isMoving) return;
+        if (!scene.isMoving) return;
 
         Game::Transform& camTrs = io_engine.GetEditorCameraTransform();
         float frameSpeed = 20.f * Game::Time::GetRawDeltaTime();
@@ -111,19 +105,19 @@ EditorRender::EditorRender(Engine& io_engine)
         camTrs.position = camTrs.position.get() + dir * frameSpeed * hold * hold;
         camTrs.rotation = rot;
     };
+
     io_engine.updateEventsHandler.emplace_back(editorCameraUpdateEvent);
+
     Renderer::OnSceneLoadEvent onSceneLoadEvent = [&]()
     {
-        m_hierarchy.selected = nullptr;
+        hierarchy.selected = nullptr;
     };
+
     io_engine.graph->sceneLoadEvents.emplace_back(onSceneLoadEvent);
 }
 
 void EditorRender::UpdateAndRender(Engine& io_engine)
 {
-    //Renderer::LowLevel::Framebuffer& io_fbo = *pio_fbo;
-    //Game::EntityManager& i_entityManager = *pi_entityManager;
-
     ImGuizmo::BeginFrame();
 
     bool stylePushed = false;
@@ -134,7 +128,7 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
         stylePushed = true;
 
         if (!(io_engine.GetRunMode() & Utils::UpdateFlag_Editing))
-            m_hierarchy.selected = nullptr;
+            hierarchy.selected = nullptr;
     }
 
     ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
@@ -156,36 +150,36 @@ void EditorRender::UpdateAndRender(Engine& io_engine)
         Editor::EditorRender::editingText = false;
 
     // Edit entities with inputs
-    m_hierarchy.OnImGuiRender(io_engine.entityManager);
-    Inspector::OnImGuiRender(m_hierarchy.selected, guizmoOperation);
+    hierarchy.OnImGuiRender(io_engine.entityManager);
+    Inspector::OnImGuiRender(hierarchy.selected, guizmoOperation);
 
     // Disable inputs if typing
-    if (editingText || !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing) || m_scene.isMoving)
+    if (editingText || !(io_engine.GetRunMode() & Utils::UpdateFlag_Editing) || scene.isMoving)
         io_engine.DisableInputs();
 
     // reload scene if menu bar call scene reloading
     bool reloadScene = false;
-    MenuBar::OnImGuiRender(io_engine, reloadScene, m_hierarchy.selected);
+    MenuBar::OnImGuiRender(io_engine, reloadScene, hierarchy.selected);
     if (reloadScene)
         io_engine.SetRunMode(Utils::UpdateFlag_Editing);
 
     // Render viewers
-    m_debugger.OnImGuiRender();
-    m_resources.OnImGuiRender();
-    m_console.OnImGuiRender();
-    m_fileBrowser.OnImGuiRender();
+    debugger.OnImGuiRender();
+    resources.OnImGuiRender();
+    console.OnImGuiRender();
+    fileBrowser.OnImGuiRender();
 
     // Render scenes
-    if (m_scene.isMoving)
+    if (scene.isMoving)
         io_engine.EnableInputs();
 
-    m_scene.OnImGuiRender(io_engine, m_hierarchy.selected, guizmoOperation);
+    scene.OnImGuiRender(io_engine, hierarchy.selected, guizmoOperation);
 
     if(stylePushed)
         ImGui::PopStyleVar();
 
     io_engine.EnableInputs();
-    m_game.OnImGuiRender(io_engine);
+    game.OnImGuiRender(io_engine);
 
     CheckEngineQuitEvent();
 

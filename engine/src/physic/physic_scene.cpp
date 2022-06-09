@@ -1,14 +1,12 @@
 #include <Tracy.hpp>
+#include <thread>
 
 #include <Jolt/Jolt.h>
-
 #include <Jolt/RegisterTypes.h>
 #include <Jolt/Core/Factory.h>
 #include <Jolt/Physics/Collision/Shape/BoxShape.h>
 #include <Jolt/Physics/Collision/Shape/SphereShape.h>
 #include <Jolt/Physics/Body/BodyCreationSettings.h>
-
-#include <thread>
 
 #include "game/time_manager.hpp"
 
@@ -36,9 +34,6 @@ PhysicScene::PhysicScene()
                         broadPhaseLayerInterface, JPH::MyBroadPhaseCanCollide, JPH::MyObjectCanCollide);
 
     physicsSystem->SetContactListener(contactListener.get());
-
-    // Call if we added many bodies before
-    // physicsSystem->OptimizeBroadPhase();
 
     bodyInterface = &physicsSystem->GetBodyInterfaceNoLock();
 }
@@ -121,7 +116,8 @@ void PhysicScene::NotifyCollision(ECollisionEvent i_event, const JPH::BodyID& i_
     auto findPredicate2 = [&i_body2](const Game::Collider* collider) { return i_body2 == collider->GetPhysicBodyID(); };
     Game::Collider* collider2 = *std::find_if(colliders.begin(), colliders.end(), findPredicate2);
 
-    if (!collider1 || !collider2)
+    if (!collider1 || !collider2 ||
+    !collider1->IsStarted() || !collider2->IsStarted())
         return;
 
     collider1->owner.get()->GetRootEntity()->NotifyCollision(i_event, *collider1, *collider2);

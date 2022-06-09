@@ -35,5 +35,3 @@ namespace Game
 
     KK_COMPONENT_END
 }
-
-

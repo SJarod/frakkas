@@ -32,7 +32,6 @@ Framebuffer::Framebuffer(float i_width, float i_height, ERenderMode i_renderMode
     // attaching textures to the framebuffer's corresponding department
     glNamedFramebufferTexture(FBO, GL_COLOR_ATTACHMENT0, color0, 0);
     glNamedFramebufferTexture(FBO, GL_DEPTH_STENCIL_ATTACHMENT, depthStencil, 0);
-
 }
 
 void Framebuffer::SetSize(const Vector2& i_value)
@@ -366,10 +365,9 @@ void LowRenderer::RenderFinalScreen() const
 		glBindTextureUnit(1, secondPassFBO->GetColor0());
 	}
 	else
-	{
 		finalQuad.shader->SetUniform("postprocess", false);
-	}
-	glBindVertexArray(finalQuad.VAO);
+
+    glBindVertexArray(finalQuad.VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
     Resources::Shader::Unuse();

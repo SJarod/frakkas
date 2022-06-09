@@ -54,7 +54,8 @@ add_library(${PROJECT_NAME} STATIC
 
 target_include_directories(${PROJECT_NAME}
 							PUBLIC include
-							PUBLIC include/game/component)
+							PUBLIC include/game/component
+)
 
 target_link_libraries(${PROJECT_NAME}
 					  PUBLIC glad

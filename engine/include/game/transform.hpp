@@ -5,7 +5,6 @@
 #include "utils/properties.hpp"
 #include "maths.hpp"
 
-
 namespace Resources
 {
     class Serializer;
@@ -49,10 +48,6 @@ namespace Game
          */
         Quaternion GetQuaternionRotation() const;
 
-        //Vector3 GetGlobalPosition() const;
-        //Vector3 GetGlobalRotation() const;
-        //Vector3 GetGlobalScale() const;
-
 		/**
 		 * @brief Get a model matrix from a transform. If model matrix not update, compute the matrix.
 		 * @return Matrix4 model
@@ -60,6 +55,7 @@ namespace Game
 		Matrix4 GetWorldMatrix() const;
 
         void RemoveChild(Transform* childToRemove);
+
         /**
          * Remove all child. Put their parent to nullptr.
          */
@@ -76,12 +72,7 @@ namespace Game
 
         ScaleLockParams scaleLockParams;
 
-        //mutable Vector3 globalPosition;
-        //mutable Vector3 globalRotation;
-        //mutable Vector3 globalScale;
-
         mutable Matrix4 worldMatrix = Matrix4::Identity();
-        //mutable Matrix4 localModelMatrix = Matrix4::Identity();
 
         std::list<Transform*> childs;
 
@@ -89,7 +80,5 @@ namespace Game
          * Compute the model matrix using position, rotation and scale
          */
         void UpdateWorldMatrix() const;
-
-        void DecomposeModelMatrix() const;
-	};
+    };
 }

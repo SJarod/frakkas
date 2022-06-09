@@ -1,8 +1,7 @@
 #include "debug/log.hpp"
-
 #include "game/lowcomponent/collider.hpp"
-
 #include "physic/physic_scene.hpp"
+
 #include "physic/contact_listener.hpp"
 
 JPH::ValidateResult	JPH::MyContactListener::OnContactValidate(const Body& i_body1, const Body& i_body2, const CollideShapeResult& i_collisionResult)

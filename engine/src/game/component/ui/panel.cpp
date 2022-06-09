@@ -1,4 +1,3 @@
-
 #include "ui/panel.hpp"
 
 KK_COMPONENT_IMPL_BEGIN(Panel)

@@ -176,14 +176,17 @@ bool Collider::IsTrigger() const
 {
     return cTrigger;
 }
+
 bool Collider::IsStatic() const
 {
     return cStatic;
 }
+
 bool Collider::IsKinematic() const
 {
     return cKinematic;
 }
+
 bool Collider::IsDynamic() const
 {
     return cDynamic;
@@ -227,18 +230,21 @@ void OnColliderTriggerChanged(unsigned char* io_component)
     if (collider->IsTrigger())
         collider->SetTrigger();
 }
+
 void OnColliderStaticChanged(unsigned char* io_component)
 {
     auto collider = reinterpret_cast<Collider*>(io_component);
     if (collider->IsStatic())
         collider->SetStatic();
 }
+
 void OnColliderKinematicChanged(unsigned char* io_component)
 {
     auto collider = reinterpret_cast<Collider*>(io_component);
     if (collider->IsKinematic())
         collider->SetKinematic();
 }
+
 void OnColliderDynamicChanged(unsigned char* io_component)
 {
     auto collider = reinterpret_cast<Collider*>(io_component);

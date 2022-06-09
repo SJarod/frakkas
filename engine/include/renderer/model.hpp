@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "renderer/render_object.hpp"
-
 #include "game/transform.hpp"
 
 namespace Resources

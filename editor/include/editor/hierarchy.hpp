@@ -39,11 +39,13 @@ namespace Editor
          * @param io_entities The map of entities to render in hierarchy
          */
         void RenderEntitiesHierarchy(Game::EntityManager& io_entityManager, const std::unordered_map<Game::EntityIdentifier, Game::Entity*>& io_entities);
+
         /**
          * @brief Render the entities trees from a list.
          * @param io_entities The list of entities to render in hierarchy
          */
         void RenderEntitiesHierarchy(Game::EntityManager& io_entityManager, const std::list<Game::Entity*>& io_entities);
+
         /**
          * @brief Render the entity as a tree node in the hierarchy.
          * We setup all the possible interaction with this tree node.

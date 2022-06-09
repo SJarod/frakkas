@@ -2,7 +2,6 @@
 
 #include "maths.hpp"
 
-
 namespace Renderer
 {
     class Light

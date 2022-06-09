@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "maths.hpp"
-
 #include "resources/resource.hpp"
 
 namespace Resources
@@ -57,5 +56,7 @@ namespace Resources
 		DefaultTexture();
 
 		GLuint ChooseColor(const std::string_view& i_color) const;
+
+		bool Found(const std::string_view& i_color) const;
 	};
 }

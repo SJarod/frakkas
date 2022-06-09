@@ -32,6 +32,7 @@ namespace Editor
          * Tell the editor if user is moving in the scene or not.
          */
         bool isMoving = false;
+
         /**
          * Position where the cursor is locked when player begin moving.
          */

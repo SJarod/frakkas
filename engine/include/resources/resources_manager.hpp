@@ -27,7 +27,7 @@ namespace Resources
 	public:
 		const DefaultTexture defaultTexture;
 
-		~ResourcesManager();
+		~ResourcesManager() = default;
 
 		/**
 		* Add a resource to the resources map and return it.
@@ -119,7 +119,8 @@ inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, c
 	auto Load = [this, i_newResource, i_name]() {
 		if (!i_newResource->CPULoad())
 		{
-			Log::Warning(i_name, " is an invalid resource or an incorrectly loaded resource, it will be erased from the resources manager.");
+			if (!defaultTexture.Found(i_name))
+				Log::Warning(i_name, " is an invalid resource or an incorrectly loaded resource, it will be erased from the resources manager.");
 			i_newResource->CPUUnload();
 			DestroyThisResource(i_name);
 		}
@@ -139,7 +140,5 @@ inline void ResourcesManager::TryLoad(std::shared_ptr<Resource> i_newResource, c
 			});
 	}
 	else
-	{
 		Load();
-	}
 }

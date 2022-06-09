@@ -13,5 +13,4 @@ namespace Helpers
 	static constexpr char editorDirectoryPath[] = "editor/";
 	static constexpr char buildDirectoryPath[] = "build/";
 #endif
-
 }

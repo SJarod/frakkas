@@ -48,7 +48,7 @@ void Player::OnStart()
     // INPUTS
     Inputs::SetButtonAction("attack", {EButton::SPACE, EButton::MOUSE_LEFT, EButton::GAMEPAD_A, EButton::GAMEPAD_X}, true);
     Inputs::SetButtonAction("pause", {EButton::ESCAPE, EButton::P, EButton::GAMEPAD_START});
-    Inputs::SetButtonAction("dash", {EButton::LEFT_SHIFT, EButton::E, EButton::MOUSE_RIGHT, EButton::GAMEPAD_B, EButton::GAMEPAD_Y, EButton::GAMEPAD_SHOULDER_RIGHT}, true);
+    Inputs::SetButtonAction("dash", {EButton::LEFT_SHIFT, EButton::RIGHT_SHIFT,EButton::E, EButton::MOUSE_RIGHT, EButton::GAMEPAD_B, EButton::GAMEPAD_Y, EButton::GAMEPAD_SHOULDER_RIGHT}, true);
 
     owner.get()->name = "Player";
 
@@ -156,9 +156,7 @@ void Player::OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_o
         if(auto weapon = i_otherCollider.owner.get()->GetComponent<EnemyWeapon>())
         {
             life->Hurt(weapon->damage);
-            curHurtEffectTime = 0.f;
-            animDraw->skmodel.material.tint = {1.f, 0.f, 0.f, 1.f};
-            damageSound->Play();
+            GoToSuffer();
         }
 
         if (auto lifeItem = i_otherCollider.owner.get()->GetComponent<LifeItem>())
@@ -166,6 +164,7 @@ void Player::OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_o
             life->Heal(lifeItem->life);
             i_otherCollider.owner.get()->destroy = true;
             itemSound->Play();
+            Inputs::RumbleGamepadPro(0.1f, 0.f, 0.1f);
         }
     }
 }
@@ -282,6 +281,7 @@ void Player::GoToDash()
     curRecoveryTime = 0.f;
     curDashTime = 0.f;
 
+    Inputs::RumbleGamepadPro(0.05f, 0.f, 0.1f);
     animDraw->animGraph.PlayAnimation("Hero_Run.fbx_mixamo.com", true);
 
     dashSound->Play();
@@ -294,7 +294,6 @@ void Player::GoToAttack()
 
     // COMBO
     attackStreak = Maths::Modulo(attackStreak++, 3)+1;
-    Log::Info("Streak : ", attackStreak, ", and last attack : ", lastAttackTimer);
 
     // TIMER
     lastAttackTimer = 0.f;
@@ -320,10 +319,18 @@ void Player::GoToAttack()
     SetAttackAnimSpeed();
     switch(attackStreak)
     {
-        case 2: animDraw->animGraph.PlayAnimation("Hero_Slash_3.fbx_mixamo.com"); animDraw->animGraph.player.playTime = attack2PlayTime; break;
-        case 3: animDraw->animGraph.PlayAnimation("Hero_Slash_4.fbx_mixamo.com"); break;
+        case 2:
+            animDraw->animGraph.PlayAnimation("Hero_Slash_3.fbx_mixamo.com");
+            animDraw->animGraph.player.playTime = attack2PlayTime;
+            break;
+        case 3:
+            animDraw->animGraph.PlayAnimation("Hero_Slash_4.fbx_mixamo.com");
+            break;
         case 1:
-        default: animDraw->animGraph.PlayAnimation("Hero_Slash_1.fbx_mixamo.com"); animDraw->animGraph.player.playTime = attack1PlayTime; break;
+        default:
+            animDraw->animGraph.PlayAnimation("Hero_Slash_1.fbx_mixamo.com");
+            animDraw->animGraph.player.playTime = attack1PlayTime;
+            break;
     }
 
     std::random_device randDevice;
@@ -343,6 +350,7 @@ void Player::GoToDeath()
 
     state = EPlayerState::DEATH;
     animDraw->animGraph.PlayAnimation("Hero_Death.fbx_mixamo.com");
+    Inputs::RumbleGamepad(timeAfterDeath/4.f, 0.5f);
 
     owner.get()->childs.back()->enabled = false;
     bloodImage->enabled = false;
@@ -388,7 +396,14 @@ void Player::Dash()
     Vector2 dashVelocity = XZVelocity * dashSpeed * Time::GetFixedDeltaTime();
     additionalTranslation = additionalTranslation + Vector3(dashVelocity.x, 0.f, -dashVelocity.y);
 
+    float prevLength = XZVelocity.Length();
+
     Move();
+
+    if (prevLength == 0.f && XZVelocity.Length() > 0.f)
+        animDraw->animGraph.PlayAnimation("Hero_Run.fbx_mixamo.com", true);
+    else if (prevLength > 0.f && XZVelocity.Length() == 0.f)
+        animDraw->animGraph.PlayAnimation("Hero_Idle_1.fbx_mixamo.com", true);
 
     if (curDashTime > dashTime || Inputs::IsReleased("dash"))
         GoToIdle();
@@ -418,6 +433,13 @@ void Player::Attack()
         GoToIdle();
 
     UpdateCombo();
+}
+void Player::GoToSuffer()
+{
+    curHurtEffectTime = 0.f;
+    animDraw->skmodel.material.tint = {1.f, 0.f, 0.f, 1.f};
+    damageSound->Play();
+    Inputs::RumbleGamepadPro(hurtEffectTime, 0.4f, 0.2f);
 }
 void Player::Death()
 {

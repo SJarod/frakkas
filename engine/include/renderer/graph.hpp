@@ -9,7 +9,6 @@
 #include "ui/canvas.hpp"
 #include "ui/text.hpp"
 #include "ui/panel.hpp"
-
 #include "renderer/light.hpp"
 
 namespace Game
@@ -19,7 +18,6 @@ namespace Game
     class Drawable;
     class Collider;
     class Sound;
-
     class EntityManager;
 }
 
@@ -65,6 +63,7 @@ namespace Renderer
          * @param i_newComponent A pointer of the new component to register.
          */
         static void RegisterComponent(Game::Component* i_newComponent);
+
         /**
          * @brief Inform the graph that a component will be removed.
          * If the component is a drawable or a camera, remove it from the graph.
@@ -83,6 +82,7 @@ namespace Renderer
          * @param i_aspectRatio the render's aspect ratio
          */
         void RenderEditor(Renderer::LowLevel::LowRenderer& i_renderer, float i_aspectRatio);
+
         /**
          * @brief Renders each entity, using game camera
          * @param i_renderer the renderer that will draw the entities
@@ -103,6 +103,7 @@ namespace Renderer
          * @param i_cleaning Should the resources be reloaded?
          */
         void ReloadScene(const bool i_cleaning = true);
+
         /**
          * Load a scene from a text file.
          * @param i_scenePath Path of the scene.
@@ -141,7 +142,8 @@ namespace Renderer
         void SaveScene() const;
 
         // Get the scene path from its name (without .kk)
-        static std::filesystem::path GetSceneFullPath(const std::string& i_sceneName) ;
+        static std::filesystem::path GetSceneFullPath(const std::string& i_sceneName);
+
     private:
         Game::EntityManager* entityManager;
         Renderer::LowLevel::LowRenderer* renderer;

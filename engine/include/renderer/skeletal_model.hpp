@@ -66,7 +66,7 @@ namespace Renderer
 		/**
 		 * @brief Add a socket to the socket list.
 		 */
-		void AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID);
+		void AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID, const Game::Transform& i_transform);
 
 		/**
 		 * @brief Remove a socket from the socket list.
