@@ -33,16 +33,28 @@ void Renderer::SkeletalModel::SetTexture(const std::string& i_textureFilename, c
 	diffuseTex = ResourcesManager::LoadResource<Texture>(i_textureFilename, i_flipTexture);
 }
 
-void Renderer::SkeletalModel::AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID)
+void Renderer::SkeletalModel::AddSocket(const std::string& i_meshFilename, const std::string& i_textureFilename, const bool i_flipTexture, int i_boneID, const Game::Transform& i_transform)
 {
-	Socket s;
-	s.boneID = i_boneID;
-	s.model.SetMeshFromFile(i_meshFilename);
-	s.model.SetTexture(i_textureFilename, i_flipTexture);
-	ThreadPool::FinishTasks();
-	if (s.model.mesh.expired())
+	if (skmesh.expired())
 		return;
-	sockets.push_back(s);
+
+	if (skmesh.lock()->loaded.test())
+	{
+		Socket s;
+		s.boneID = i_boneID;
+		s.model.SetMeshFromFile(i_meshFilename);
+		s.model.SetTexture(i_textureFilename, i_flipTexture);
+		s.transform = i_transform;
+		if (s.model.mesh.expired())
+			return;
+		sockets.push_back(s);
+	}
+	else
+	{
+		ThreadPool::AddTask([this, i_meshFilename, i_textureFilename, i_flipTexture, i_boneID, i_transform]() {
+			AddSocket(i_meshFilename, i_textureFilename, i_flipTexture, i_boneID, i_transform);
+			});
+	}
 }
 
 void Renderer::SkeletalModel::RemoveSocket(int i_boneID)

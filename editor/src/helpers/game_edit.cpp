@@ -264,7 +264,8 @@ void Helpers::DisplaySkeleton(Renderer::SkeletalModel& io_skmodel)
 		}
 		if (ImGui::Selectable("Add model"))
 		{
-			io_skmodel.AddSocket(meshName, textureName, false, selected);
+			Game::Transform t;
+			io_skmodel.AddSocket(meshName, textureName, false, selected, t);
 			ImGui::CloseCurrentPopup();
 		}
 
