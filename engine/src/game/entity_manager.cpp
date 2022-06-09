@@ -1,14 +1,13 @@
 #include <fstream>
 
 #include "resources/serializer.hpp"
-
 #include "debug/log.hpp"
 
 #include "game/transform.hpp"
-#include "game/entity_manager.hpp"
 #include "game/entity.hpp"
 #include "game/entity_container.hpp"
 
+#include "game/entity_manager.hpp"
 
 using namespace Game;
 
@@ -71,7 +70,6 @@ void Game::EntityContainer::UnsetEntityParent(Entity& io_child)
 
         parent.childs.remove_if([&io_child](Entity* parent) { return io_child.GetID() == parent->GetID(); }); // remove if ID is the same
     }
-
 }
 
 Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
@@ -90,7 +88,6 @@ Entity* EntityContainer::FindEntityWithID(const EntityIdentifier& i_id)
 
 void EntityManager::Update()
 {
-    //entity->components.insert(entity->components.end(), entity->addedComponents.begin(), entity->addedComponents.end());
     for (int i = entityStore.entities.size()-1; i >= 0; i--)
     {
         Entity* entity = entityStore.entities[i].get();

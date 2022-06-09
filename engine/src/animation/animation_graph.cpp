@@ -22,9 +22,7 @@ void Animation::AnimationGraph::AddAnimationPack(const std::string& i_packName)
 		skpacks.emplace_back(ResourcesManager::LoadResource<SkeletalAnimationPack>(name, i_packName, owningSkmesh.lock()));
 	}
 	else
-	{
 		Log::Info("No skeletal mesh to attach animation to in the graph yet");
-	}
 }
 
 void Animation::AnimationGraph::FindPackAndRemove(const std::string& i_animationName)
@@ -60,9 +58,7 @@ void Animation::AnimationGraph::GetAnimationsName(std::vector<std::string_view>&
 		if (pack.lock())
 		{
 			for (const auto& anim : pack.lock()->GetAnimationsMap())
-			{
 				o_names.emplace_back(anim.first);
-			}
 		}
 	}
 }
@@ -70,9 +66,7 @@ void Animation::AnimationGraph::GetAnimationsName(std::vector<std::string_view>&
 void Animation::AnimationGraph::GetFilesName(std::vector<std::string_view>& o_names) const
 {
 	for (const auto& file : skfiles)
-	{
 		o_names.emplace_back(file);
-	}
 }
 
 bool Animation::AnimationGraph::PlayAnimation(const std::string& i_animationName, const bool i_loop)

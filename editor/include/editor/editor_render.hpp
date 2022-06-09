@@ -9,8 +9,8 @@
 #include "editor/game_scene.hpp"
 #include "editor/debugger.hpp"
 #include "editor/resources_viewer.hpp"
-#include "engine.hpp"
 
+#include "engine.hpp"
 
 namespace Renderer::LowLevel
 {

@@ -41,4 +41,3 @@ void Button::Render(ImDrawList& io_dl, const Vector2& i_origin, const Vector2& i
             event();
     ImGui::PopStyleColor(3);
 }
-

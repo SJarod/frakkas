@@ -3,7 +3,6 @@
 #include <memory>
 
 #include <Jolt/Jolt.h>
-
 #include <Jolt/Core/TempAllocator.h>
 #include <Jolt/Core/JobSystemThreadPool.h>
 #include <Jolt/Physics/PhysicsSettings.h>
@@ -11,9 +10,7 @@
 #include <Jolt/Physics/PhysicsSystem.h>
 
 #include "game/lowcomponent/collider.hpp"
-
 #include "utils/update_flags.hpp"
-
 #include "maths.hpp"
 #include "layers.hpp"
 #include "contact_listener.hpp"
@@ -83,12 +80,14 @@ namespace Physic
          * @return The generated body.
          */
         JPH::Body* CreateBody(const Vector3& i_scale = Vector3(1.f, 1.f, 1.f));
+
         /**
          * @brief Generate a jolt physic body with sphere shape. Added to jolt's BodyInterface.
          * @param i_radius The radius of the sphere.
          * @return The generated body.
          */
         JPH::Body* CreateBody(float i_radius = 1.f);
+
         /**
         * @brief Generate a jolt physic body from a generated shape.
         * @param i_shape The generated input shape.
@@ -122,7 +121,6 @@ namespace Physic
          */
         static void NotifyCollisionExit(const JPH::BodyID& i_body1, const JPH::BodyID& i_body2);
 
-
     private:
         std::unique_ptr<JPH::TempAllocator> tempAllocator = nullptr;
         std::unique_ptr<JPH::JobSystem> jobSystem = nullptr;
@@ -131,7 +129,6 @@ namespace Physic
         JPH::BodyInterface* bodyInterface = nullptr;
 
         JPH::MyBroadPhaseLayerInterface broadPhaseLayerInterface;
-
     };
 }
 

@@ -1,5 +1,3 @@
-#include <cassert>
-
 #include "resources/mesh.hpp"
 #include "resources/resources_manager.hpp"
 
@@ -7,8 +5,7 @@
 
 Renderer::Model::Model()
 	: RenderObject("basicShader", "engine/shaders/basic"), SceneObject("depthmapShader")
-{
-}
+{}
 
 void Renderer::Model::SetMeshFromFile(const std::string& i_meshFilename)
 {

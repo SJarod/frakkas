@@ -89,6 +89,3 @@ Transform& Component::GetRootTransform() const
 {
     return owner.get()->GetRootEntity()->transform;
 }
-
-
-

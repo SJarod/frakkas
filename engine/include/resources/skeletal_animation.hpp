@@ -176,10 +176,5 @@ namespace Resources
          */
         const SkeletalAnimation* GetAnimation(const unsigned int i_index) const;
 #endif
-
-        /**
-         * Get the number of animations.
-         */
-        const int GetPackSize() const;
     };
 }

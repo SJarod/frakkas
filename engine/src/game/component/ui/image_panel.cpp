@@ -1,7 +1,6 @@
 #include <filesystem>
 
 #include "utils/dragdrop_constants.hpp"
-
 #include "resources/texture.hpp"
 #include "resources/resources_manager.hpp"
 

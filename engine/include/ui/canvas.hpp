@@ -10,14 +10,12 @@
 #include "game/lowcomponent/ui_object.hpp"
 #include "ui/image_panel.hpp"
 
-
 namespace UI
 {
     class Canvas
     {
     public:
         static constexpr char defaultLoadingScreen[] = "editor/assets/load_screen_1.png";
-
 
         Canvas();
         ~Canvas() = default;

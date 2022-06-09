@@ -130,14 +130,10 @@ void DropOnStaticDrawComponent(unsigned char* io_component, void* io_dropData)
 	auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
 	std::string extension = path.extension().string();
 	if (Utils::FindExtension(extension, Utils::MeshExtensions))
-	{
 		sd.SetMesh(path.string());
-	}
 
 	if (Utils::FindExtension(extension, Utils::TextureExtensions))
-	{
 		sd.SetTexture(path.string(), false);
-	}
 }
 
 void OnMeshPathUpdate(unsigned char* io_component)

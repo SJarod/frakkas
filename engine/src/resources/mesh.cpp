@@ -114,9 +114,8 @@ bool Resources::Mesh::GPULoad()
 bool Resources::Mesh::GPUUnload()
 {
 	for (auto& smesh : submeshes)
-	{
 		smesh->gpu.Unload();
-	}
+
 	return true;
 }
 
@@ -126,9 +125,7 @@ void Resources::Mesh::ComputeMemorySize()
 	vram = 0;
 
 	for (const std::shared_ptr<Submesh>& smesh : submeshes)
-	{
 		ram += smesh->GetMemorySize();
-	}
 }
 
 void Resources::Mesh::ProcessAiMesh(std::shared_ptr<Submesh>& o_mesh,
@@ -192,9 +189,7 @@ void Resources::Mesh::ProcessAiNode(std::list<std::shared_ptr<Submesh>>& o_meshe
 
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < i_node->mNumChildren; ++i)
-	{
 		ProcessAiNode(o_meshes, i_importer, i_node->mChildren[i]);
-	}
 }
 
 void Resources::Mesh::ParseSubmesh(Submesh& io_mesh)
@@ -205,9 +200,7 @@ void Resources::Mesh::ParseSubmesh(Submesh& io_mesh)
 	// process indices
 	int meshNumFaces = io_mesh.indices.size();
 	for (unsigned int i = 0; i < meshNumFaces; ++i)
-	{
 		io_mesh.vertices.emplace_back(rawVertices[io_mesh.indices[i]]);
-	}
 }
 
 void Resources::Mesh::LoadQuad()
@@ -238,9 +231,7 @@ void Resources::Mesh::LoadQuad()
     };
 
     for (int i = 0; i < 12; ++i)
-    {
         mesh.indices.emplace_back(ind[i]);
-    }
 
     mesh.vertices[0].uv = {0.f, 0.f};
     mesh.vertices[1].uv = {1.f, 0.f};
@@ -292,9 +283,7 @@ void Resources::Mesh::LoadCube()
 	};
 
 	for (int i = 0; i < 36; ++i)
-	{
 		mesh.indices.emplace_back(ind[i]);
-	}
 
 	ParseSubmesh(mesh);
 

@@ -41,9 +41,7 @@ bool SkeletalMesh::CPULoad()
 		Mesh::ComputeMemorySize();
 
 		for (const auto& info : boneInfoMap)
-		{
 			ram += sizeof(info);
-		}
 
 		return true;
 	}
@@ -116,9 +114,8 @@ void SkeletalMesh::ExtractBoneWeightForVertices(std::shared_ptr<Submesh>& o_subm
 			++boneCount;
 		}
 		else
-		{
 			boneID = boneInfoMap[boneName].id;
-		}
+
 		assert(boneID != -1);
 		aiVertexWeight* weights = i_aim.mBones[boneIndex]->mWeights;
 		int numWeights = i_aim.mBones[boneIndex]->mNumWeights;

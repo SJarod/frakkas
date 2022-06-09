@@ -228,9 +228,7 @@ void DropOnAnimatedDrawComponentMesh(unsigned char* io_component, void* io_dropD
 	auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
 	std::string extension = path.extension().string();
 	if (Utils::FindExtension(extension, Utils::MeshExtensions))
-	{
 		ad.SetMesh(path.string());
-	}
 }
 
 void DropOnAnimatedDrawComponentTexture(unsigned char* io_component, void* io_dropData)
@@ -239,9 +237,7 @@ void DropOnAnimatedDrawComponentTexture(unsigned char* io_component, void* io_dr
 	auto path = *reinterpret_cast<std::filesystem::path*>(io_dropData);
 	std::string extension = path.extension().string();
 	if (Utils::FindExtension(extension, Utils::TextureExtensions))
-	{
 		ad.SetTexture(path.string(), false);
-	}
 }
 
 void OnAnimationMeshPathUpdate(unsigned char* io_component)

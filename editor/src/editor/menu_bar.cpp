@@ -15,10 +15,8 @@
 
 #include "editor/menu_bar.hpp"
 
-
 using namespace Editor;
 using namespace Game;
-
 
 void MenuBar::OnImGuiRender(Engine& io_engine, bool& o_loadScene, Game::Entity* io_selectedEntity)
 {
@@ -123,7 +121,7 @@ bool MenuBar::CreateScenePopup(Renderer::Graph& io_graph)
         ImGui::Separator();
 
         static std::string sceneName = "new_scene";
-        Helpers::Edit(sceneName, "Name");                                       // GET SCENE NAME
+        Helpers::Edit(sceneName, "Name");                // GET SCENE NAME
         ImGui::SetItemDefaultFocus();
 
         if (ImGui::Button("Create", ImVec2(120, 0)))
@@ -160,10 +158,10 @@ bool MenuBar::OpenScenePopup(Renderer::Graph& io_graph)
 
         static std::string sceneName = "exemple_scene";
         static bool exist = true;
-        Helpers::Edit(sceneName, "Name");                                   // GET SCENE NAME
+        Helpers::Edit(sceneName, "Name");                   // GET SCENE NAME
         ImGui::SetItemDefaultFocus();
 
-        if (ImGui::Button("Open", ImVec2(120, 0)))                    // OPEN BUTTON
+        if (ImGui::Button("Open", ImVec2(120, 0)))          // OPEN BUTTON
         {
             std::filesystem::path path = Renderer::Graph::GetSceneFullPath(sceneName);
             std::ifstream file(path);
@@ -198,7 +196,6 @@ bool MenuBar::OpenScenePopup(Renderer::Graph& io_graph)
     return false;
 }
 
-
 void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_selectedEntity)
 {
     auto copyFunc = [&io_selectedEntity](){
@@ -209,6 +206,7 @@ void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_
             copyFile.close();
         }
     };
+
     auto pastFunc = [&io_entityManager](){
         std::ifstream copyFile(Helpers::editorDirectoryPath + std::string("assets/clipboard.kk"));
 
@@ -228,6 +226,7 @@ void MenuBar::EditField(Game::EntityManager& io_entityManager, Game::Entity* io_
 
     if(Inputs::IsControlCommandPressed(EButton::C))
         copyFunc();
+
     if(Inputs::IsControlCommandPressed(EButton::V))
         pastFunc();
 }
@@ -347,15 +346,15 @@ void MenuBar::CreateComponentPopup()
         static std::string_view entryState = "none";
 
         static std::string compName = "NewComponent";
-        Helpers::Edit(compName, "Name");                          // EDIT NAME
+        Helpers::Edit(compName, "Name");                    // EDIT NAME
 
         if (ImGui::Button("Create", ImVec2(120, 0)))        // CREATE BUTTON
         {
-            if (!Helpers::IsCamelCase(compName))                      // Bad name
+            if (!Helpers::IsCamelCase(compName))            // Bad name
                 entryState = "Name not correct";
-            else if (!CreateNewComponentScript(compName))       // Can't open file
+            else if (!CreateNewComponentScript(compName))   // Can't open file
                 entryState = "File exists";
-            else                                                            // Create new component
+            else                                            // Create new component
             {
                 compName = "NewComponent";
                 entryState = "none";
@@ -371,7 +370,7 @@ void MenuBar::CreateComponentPopup()
             ImGui::CloseCurrentPopup();
         }
 
-        if (entryState == "File exists")                                    // WARNING POPUP LOG
+        if (entryState == "File exists")                    // WARNING POPUP LOG
             ImGui::Text("The file already exists or can't be located.");
         else if (entryState == "Name not correct")
             ImGui::Text("CamelCase convention not respected.");

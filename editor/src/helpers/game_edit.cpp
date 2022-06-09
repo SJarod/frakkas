@@ -9,8 +9,6 @@
 #include "renderer/graph.hpp"
 #include "renderer/skeletal_model.hpp"
 
-#include "resources/mesh.hpp"
-
 #include "animation/animation_graph.hpp"
 
 #include "editor/editor_render.hpp"
@@ -20,8 +18,6 @@
 
 #include "helpers/game_edit.hpp"
 
-
-//#define ROTATION_GUIZMO
 /**
  * @brief Useful function to receive resource path from a drag drop imgui event
  * @param i_extensions The list of extension that allowed.

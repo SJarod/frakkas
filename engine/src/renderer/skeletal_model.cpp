@@ -1,6 +1,3 @@
-#include <cassert>
-
-#include "debug/log.hpp"
 #include "resources/resources_manager.hpp"
 
 #include "renderer/skeletal_model.hpp"
@@ -8,8 +5,7 @@
 Renderer::SkeletalModel::SkeletalModel()
 	: RenderObject("basicShader_skinning", "engine/shaders/basic", { "#define SKINNING\n" }),
 	SceneObject("depthmapShader_skinning", { "#define SKINNING\n" })
-{
-}
+{}
 
 void Renderer::SkeletalModel::SetSkeletalMeshFromFile(const std::string& i_skmeshFilename)
 {

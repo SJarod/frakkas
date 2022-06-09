@@ -321,7 +321,8 @@ void Serializer::Write(std::ofstream& io_file, unsigned char* i_component, const
 
     for (const DataDescriptor& desc : i_metaData.descriptors)
     {
-        if (desc.viewOnly) continue;
+        if (desc.viewOnly)
+            continue;
 
         unsigned char* componentData = i_component + desc.offset;
 
@@ -402,9 +403,7 @@ void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeNam
     Write(io_file, "count", &count, 1);
 
     for (auto & file : files)
-    {
         Write(io_file, "file", &file);
-    }
 }
 
 void Serializer::Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::SkeletalModel& i_skmodel)

@@ -1,12 +1,9 @@
 #include <imgui.h>
 
 #include "renderer/lowlevel/lowrenderer.hpp"
-
 #include "engine.hpp"
-
 #include "editor/editor_render.hpp"
 #include "ui/canvas.hpp"
-
 #include "editor/game_scene.hpp"
 
 using namespace Editor;
