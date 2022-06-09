@@ -37,7 +37,6 @@ namespace Editor
         static Vector2 mouseLockPosition;
         static Vector2 gameWindowSize;
 
-        void Init(Engine& io_engine);
         /**
          * @brief Create all the editor interface and allow user to edit its game.
          * @param io_engine The engine to edit.
@@ -47,13 +46,13 @@ namespace Editor
     private:
         ImGuizmo::OPERATION guizmoOperation = ImGuizmo::OPERATION::BOUNDS;
 
-        MenuBar m_menuBar;
-        Hierarchy m_hierarchy;
-        Console m_console;
-        FileBrowser m_fileBrowser;
-        Scene m_scene;
-        GameScene m_game;
-        Debugger m_debugger;
-        ResourcesViewer m_resources;
+        MenuBar menuBar;
+        Hierarchy hierarchy;
+        Console console;
+        FileBrowser fileBrowser;
+        Scene scene;
+        GameScene game;
+        Debugger debugger;
+        ResourcesViewer resources;
     };
 }

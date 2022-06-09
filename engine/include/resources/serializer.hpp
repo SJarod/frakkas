@@ -119,13 +119,6 @@ namespace Resources
          */
         static void Read(std::ifstream& i_file, Game::Transform& o_transform);
         /**
-         * @brief read a camera in the next line of i_file
-         * @param i_file the opened input file
-         * @param o_camera the camera to build
-         */
-        static void Read(std::ifstream& i_file, Renderer::LowLevel::Camera& o_camera);
-
-        /**
          * @brief read a light in the next line of i_file
          * @param i_file the opened input file
          * @param o_light the light to build
@@ -202,11 +195,6 @@ namespace Resources
          */
         static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Game::Transform& i_transform);
         /**
-         * @brief SaveScene a camera in frakkas text format
-         * @param io_file the opened output file to write in
-         */
-        static void Write(std::ofstream& io_file, const std::string& i_attributeName, const Renderer::LowLevel::Camera& i_camera);
-        /**
          * @brief SaveScene a light in frakkas text format
          * @param io_file the opened output file to write in
          */
@@ -228,12 +216,6 @@ namespace Resources
          * @return '\t', so a tabulation in character format. Useful to write tabulation with std::cout
          */
         static char Tab();
-
-        /**
-        * @param i_file The opened input file.
-         * @return The current line position of the file cursor.
-         */
-        static unsigned int GetCurrentLine(std::ifstream& i_file);
     };
 }
 

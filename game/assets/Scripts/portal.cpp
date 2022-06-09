@@ -71,7 +71,7 @@ void Portal::OnTriggerEnter(const Collider& i_ownerCollider, const Collider& i_o
 
             worldData->playerLife = player->life->life;
             worldData->level++;
-            worldData->comboScore = worldData->levelComboScore;
+            worldData->comboScore += worldData->levelComboScore;
             worldData->levelComboScore = 0;
             IncreaseRandomStatLevel(worldData, 2);
         }

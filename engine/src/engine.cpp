@@ -216,8 +216,6 @@ bool Engine::EndFrame()
 
 void Engine::RenderImGui() const
 {
-    ImVec4 clearColor = ImVec4(0.4f, 0.5f, 0.6f, 1.f);
-
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::Render();

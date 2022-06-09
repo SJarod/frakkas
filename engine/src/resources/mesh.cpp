@@ -94,7 +94,6 @@ bool Resources::Mesh::GPULoad()
 		glGenVertexArrays(1, &smesh->gpu.VAO);
 		glBindVertexArray(smesh->gpu.VAO);
 
-#if 1
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 		glEnableVertexAttribArray(1);
@@ -105,11 +104,6 @@ bool Resources::Mesh::GPULoad()
 		glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, boneIndices));
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, boneWeights));
-#else
-		glVertexAttrib3f(0, 0.f, 0.f, 0.f);
-		glVertexAttrib3f(1, 0.f, 0.f, 0.f);
-		glVertexAttrib2f(2, 0.f, 0.f);
-#endif
 
 		glBindVertexArray(0);
 	}

@@ -37,9 +37,6 @@ PhysicScene::PhysicScene()
 
     physicsSystem->SetContactListener(contactListener.get());
 
-    // Call if we added many bodies before
-    // physicsSystem->OptimizeBroadPhase();
-
     bodyInterface = &physicsSystem->GetBodyInterfaceNoLock();
 }
 

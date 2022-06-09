@@ -146,9 +146,6 @@ size_t SkeletonNodeData::GetMemorySize() const
 	int size = 0;
 	size += sizeof(SkeletonNodeData);
 
-	//size += sizeof(Matrix4);
-	//size += sizeof(std::string);
-
 	int numChildren = children.size();
 	for (int i = 0; i < numChildren; ++i)
 	{
