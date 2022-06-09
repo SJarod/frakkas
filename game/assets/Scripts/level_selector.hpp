@@ -38,7 +38,7 @@ namespace Game
         static constexpr char darkScreen4[] = "game/assets/Textures/LoadingScreens/dark_skeleton_2.png";
         // TIPS
         static constexpr char itemTips[] = "Sometimes, enemies can drop life item."
-                                           "\nIt heals you 5% of your health, and gives you the smile =)";
+                                           "\nIt heals you 17% of your health, and gives you the smile =)";
         static constexpr char itemRateTips[] = "The lower your health is, the greater is your chance to find health item.";
         static constexpr char difficultyTips[] = "The more level you succeeded, The more the enemies are strong.";
         static constexpr char attackComboTips[] = "Your damage increases when you process combo attack, but the third attack stuns you.";
