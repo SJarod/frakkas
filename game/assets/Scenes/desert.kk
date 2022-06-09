@@ -24,197 +24,21 @@
 
 >entity
 >childs
-	4
->name
-	SkelClone
->component_count
-	5
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Skeleton
->enabled
-	0
->attackRange
-	10
->attackTime
-	1
->chargingTime
-	0.6
->hurtEffectTime
-	0.1
->hurtEffectTint
-	0.6, 0.6, 0, 1
->deathTime
 	2
->Life
->enabled
-	0
->life
-	3
->invincibilityTime
-	0.75
->EnemyStats
->enabled
-	0
->baseLife
-	3
->baseDamage
-	3
->baseSpeed
-	900
->baseAttackSpeed
-	0.5
->baseScore
-	5
->increaseRatio
-	0.5
->SphereCollider
->enabled
-	0
->cTrigger
-	0
->cStatic
-	0
->cKinematic
-	0
->cDynamic
-	1
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	1
->rotY
-	1
->rotZ
-	1
->EnemyMeshRotation
->enabled
-	0
-
->entity
->childs
-	0
 >name
-	GFX
->component_count
-	1
->transform
->position
-	0, -0.3, 0
->rotation
-	0, 0, 0
->scale
-	0.048, 0.048, 0.048
->AnimatedDraw
->enabled
-	0
->meshPath
-	game/assets/Models/Skeleton/Skeleton.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_01.png
->skmodel.material.ambient
-	0.8, 0.8, 0.8
->skmodel.material.diffuse
-	1, 1, 1
->skmodel.material.specular
-	1, 1, 1
->skmodel.material.emissive
-	0, 0, 0
->skmodel.material.tint
-	0, 0, 0, 1
->skmodel.material.shininess
-	32
->skmodel
->count
-	1
->transform
->position
-	0, 0, 0
->rotation
-	2.0944, 0, -0.349066
->scale
-	0, 0, 0
->boneID
-	27
->socketMesh
-	game/assets/Models/Skeleton/SkelSword.fbx
->socketTexture
-	game/assets/Textures/Dungeons_Texture_01.png
->animGraph
->count
-	5
->file
-	game/assets/Models/Skeleton/Skeleton_Idle.fbx
->file
-	game/assets/Models/Skeleton/Skeleton_Death.fbx
->file
-	game/assets/Models/Skeleton/Skeleton_Slash.fbx
->file
-	game/assets/Models/Skeleton/Skeleton_Walk.fbx
->file
-	game/assets/Models/Skeleton/Skeleton_Impact.fbx
-
->entity
->childs
-	0
->name
-	Collider
->component_count
-	1
->transform
->position
-	0, 4.5, 0
->rotation
-	0, 0, 0
->scale
-	1.5, 3, 1
->BoxCollider
->enabled
-	0
->cTrigger
-	0
->cStatic
-	0
->cKinematic
-	1
->cDynamic
-	0
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	0
->rotY
-	0
->rotZ
-	0
-
->entity
->childs
-	0
->name
-	WeaponCollider
+	Portal
 >component_count
 	2
 >transform
 >position
-	0, 4.4, 4.7
+	-70.7333, -57.4548, -78.4817
 >rotation
-	0, 0, 0
+	0, -0.890117, 0
 >scale
-	1.5, 3.34433, 3.2
+	7, 8, 1.8
+>Portal
+>enabled
+	0
 >BoxCollider
 >enabled
 	0
@@ -238,289 +62,36 @@
 	0
 >rotZ
 	0
->EnemyWeapon
->enabled
-	0
 
 >entity
 >childs
 	0
 >name
-	Sounds
->component_count
-	4
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\skeleton\SkeletonTeeth.wav
->loop
-	0
->volume
-	10
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\skeleton\FootstepSkel.mp3
->loop
-	1
->volume
-	70
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\swords\Hit_Skeleton.mp3
->loop
-	0
->volume
-	60
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\skeleton\Skel_Death.mp3
->loop
-	0
->volume
-	75
-
->entity
->childs
-	0
->name
-	Camera
->component_count
-	2
->transform
->position
-	72.2686, -36.6231, 33.9683
->rotation
-	-0.959931, -0.785398, 0
->scale
-	1, 1, 1
->Camera
->enabled
-	1
->near
-	10
->far
-	1000
->fovY
-	90
->FollowCamera
->enabled
-	1
->offset
-	10, 23, 10
->lerpFactor
-	0.08
-
->entity
->childs
-	4
->name
-	GolemClone
->component_count
-	5
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Golem
->enabled
-	0
->attackRange
-	20
->chargeTime
-	1.5
->attackTime
-	0.5
->riseLegTime
-	1
->hurtEffectTime
-	0.1
->hurtEffectTint
-	0.7, 0.5, 0, 1
->deathTime
-	4
->EnemyStats
->enabled
-	0
->baseLife
-	12
->baseDamage
-	6
->baseSpeed
-	450
->baseAttackSpeed
-	0.333
->baseScore
-	20
->increaseRatio
-	0.5
->SphereCollider
->enabled
-	0
->cTrigger
-	0
->cStatic
-	0
->cKinematic
-	0
->cDynamic
-	1
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	1
->rotY
-	1
->rotZ
-	1
->Life
->enabled
-	0
->life
-	12
->invincibilityTime
-	0.75
->EnemyMeshRotation
->enabled
-	0
-
->entity
->childs
-	0
->name
-	GFX
+	DoorGFX
 >component_count
 	1
 >transform
 >position
-	0, -0.3, 0
+	0, -1, 0
 >rotation
 	0, 0, 0
 >scale
-	0.08, 0.08, 0.08
->AnimatedDraw
->enabled
-	0
->meshPath
-	game/assets/Models/Golem/Golem.fbx
->texturePath
-	game/assets/Textures/Golem_Texture.png
->skmodel.material.ambient
-	0.8, 0.8, 0.8
->skmodel.material.diffuse
-	1, 1, 1
->skmodel.material.specular
-	1, 1, 1
->skmodel.material.emissive
-	0, 0, 0
->skmodel.material.tint
-	0, 0, 0, 1
->skmodel.material.shininess
-	32
->skmodel
->count
-	0
->animGraph
->count
-	5
->file
-	game/assets/Models/Golem/Golem_Idle.fbx
->file
-	game/assets/Models/Golem/Golem_Death.fbx
->file
-	game/assets/Models/Golem/Golem_Stomp.fbx
->file
-	game/assets/Models/Golem/Golem_Walk.fbx
->file
-	game/assets/Models/Golem/Golem_Hit.fbx
-
->entity
->childs
-	0
->name
-	Collider
->component_count
-	1
->transform
->position
-	0, 7.4, 0
->rotation
-	0, 0, 0
->scale
-	4.3, 5.73333, 2.29333
->BoxCollider
->enabled
-	0
->cTrigger
-	0
->cStatic
-	0
->cKinematic
-	1
->cDynamic
-	0
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	0
->rotY
-	0
->rotZ
-	0
-
->entity
->childs
-	0
->name
-	AttackGFX
->component_count
-	1
->transform
->position
-	0, 0.2, 0
->rotation
-	1.5708, 0, 0
->scale
-	7.5, 7.5, 7.5
+	0.35, 0.35, 1
 >StaticDraw
 >enabled
-	0
+	1
 >meshPath
-	ProceduralQuad
+	game/assets/Models/Door.fbx
 >texturePath
-	game/assets/Textures/Golem_Stomp.png
+	game/assets/Textures/Dungeons_Texture_04.png
 >model.material.ambient
 	0.8, 0.8, 0.8
 >model.material.diffuse
 	1, 1, 1
 >model.material.specular
-	0, 0, 0
->model.material.emissive
 	1, 1, 1
+>model.material.emissive
+	0, 0, 0
 >model.material.tint
 	0, 0, 0, 1
 >model.material.shininess
@@ -530,69 +101,1420 @@
 >childs
 	0
 >name
-	Sounds
+	PortalGFX
 >component_count
-	5
+	1
 >transform
 >position
-	0, 0, 0
+	0, -0.154, 0
 >rotation
 	0, 0, 0
 >scale
+	0.852, 0.836, 0.6
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets/Textures/Portal.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
 	1, 1, 1
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Hit.mp3
->loop
-	0
->volume
-	30
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Roar.mp3
->loop
-	0
->volume
-	50
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Walk.mp3
->loop
-	1
->volume
-	30
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\swords\Hit_Golem.mp3
->loop
-	0
->volume
-	10
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\golem\Golem_Death.mp3
->loop
-	0
->volume
-	50
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
 
 >entity
 >childs
 	0
 >name
-	PauseCanvas
+	Spawner_3
 >component_count
+	1
+>transform
+>position
+	-84.3309, -58.2331, 129.604
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
 	5
+>skeletonRatio
+	55
+>golemRatio
+	25
+>nothingRatio
+	20
+
+>entity
+>childs
+	0
+>name
+	Spawner_2
+>component_count
+	1
+>transform
+>position
+	106.936, -58.2331, 112.112
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	5
+>skeletonRatio
+	55
+>golemRatio
+	25
+>nothingRatio
+	20
+
+>entity
+>childs
+	0
+>name
+	Spawner_1
+>component_count
+	1
+>transform
+>position
+	110.825, -58.2331, -61.5603
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	5
+>skeletonRatio
+	55
+>golemRatio
+	25
+>nothingRatio
+	20
+
+>entity
+>childs
+	0
+>name
+	Spawner_0
+>component_count
+	1
+>transform
+>position
+	-30.9813, -58.2331, -99.8619
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Spawner
+>enabled
+	1
+>spawnTime
+	5
+>skeletonRatio
+	55
+>golemRatio
+	25
+>nothingRatio
+	20
+
+>entity
+>childs
+	2
+>name
+	Portal_4
+>component_count
+	2
+>transform
+>position
+	64.3554, -57, 94.2961
+>rotation
+	0, -1.2514, 0
+>scale
+	7, 8, 1.8
+>Portal
+>enabled
+	0
+>BoxCollider
+>enabled
+	0
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	DoorGFX
+>component_count
+	1
+>transform
+>position
+	0, -1, 0
+>rotation
+	0, 0, 0
+>scale
+	0.35, 0.35, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	game/assets/Models/Door.fbx
+>texturePath
+	game/assets/Textures/Dungeons_Texture_04.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	PortalGFX
+>component_count
+	1
+>transform
+>position
+	0, -0.154, 0
+>rotation
+	0, 0, 0
+>scale
+	0.852, 0.836, 0.6
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets/Textures/Portal.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	2
+>name
+	Portal_3
+>component_count
+	2
+>transform
+>position
+	65.6931, -57.4549, -47.4205
+>rotation
+	0, 0.0872664, 0
+>scale
+	7, 8, 1.8
+>Portal
+>enabled
+	0
+>BoxCollider
+>enabled
+	0
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	DoorGFX
+>component_count
+	1
+>transform
+>position
+	0, -1, 0
+>rotation
+	0, 0, 0
+>scale
+	0.35, 0.35, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	game/assets/Models/Door.fbx
+>texturePath
+	game/assets/Textures/Dungeons_Texture_04.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	PortalGFX
+>component_count
+	1
+>transform
+>position
+	0, -0.154, 0
+>rotation
+	0, 0, 0
+>scale
+	0.852, 0.836, 0.6
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets/Textures/Portal.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	2
+>name
+	Portal_2
+>component_count
+	2
+>transform
+>position
+	-78.423, -57.4549, 88.4459
+>rotation
+	0, 0.869191, 0
+>scale
+	7, 8, 1.8
+>Portal
+>enabled
+	0
+>BoxCollider
+>enabled
+	0
+>cTrigger
+	1
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	DoorGFX
+>component_count
+	1
+>transform
+>position
+	0, -1, 0
+>rotation
+	0, 0, 0
+>scale
+	0.35, 0.35, 1
+>StaticDraw
+>enabled
+	1
+>meshPath
+	game/assets/Models/Door.fbx
+>texturePath
+	game/assets/Textures/Dungeons_Texture_04.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	PortalGFX
+>component_count
+	1
+>transform
+>position
+	0, -0.154, 0
+>rotation
+	0, 0, 0
+>scale
+	0.852, 0.836, 0.6
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralCube
+>texturePath
+	game/assets/Textures/Portal.jpg
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	1, 1, 1
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Obstacle19
+>component_count
+	1
+>transform
+>position
+	1.02534, -63.0054, -8.85616
+>rotation
+	0, 1.5708, 0
+>scale
+	2, 5.48, 4.2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle18
+>component_count
+	1
+>transform
+>position
+	-5.58386, -63.0054, -49.4243
+>rotation
+	0, 1.5708, 0
+>scale
+	2, 5.48, 4.2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle17
+>component_count
+	1
+>transform
+>position
+	43.578, -63.0054, -46.6276
+>rotation
+	0, 1.5708, 0
+>scale
+	2, 5.48, 4.2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle16
+>component_count
+	1
+>transform
+>position
+	17.7602, -60.5085, -95.5269
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle15
+>component_count
+	1
+>transform
+>position
+	-2.84598, -60.5086, -89.8462
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle14
+>component_count
+	1
+>transform
+>position
+	-39.4787, -60.1102, -83.9095
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle13
+>component_count
+	1
+>transform
+>position
+	-34.3298, -60.1102, -47.7516
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle12
+>component_count
+	1
+>transform
+>position
+	45.4773, -60.1102, -5.73405
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle11
+>component_count
+	1
+>transform
+>position
+	131.681, -62.334, -82.9965
+>rotation
+	0, 1.5708, 0
+>scale
+	2, 5.48, 4
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle10
+>component_count
+	1
+>transform
+>position
+	88.4596, -60.1102, -82.1664
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle9
+>component_count
+	1
+>transform
+>position
+	87.5173, -61.391, -45.6047
+>rotation
+	0, 0, 0
+>scale
+	2, 5.48, 8
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle8
+>component_count
+	1
+>transform
+>position
+	133.914, -60.1102, -53.3855
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle7
+>component_count
+	1
+>transform
+>position
+	101.463, -60.1102, -18.5821
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle6
+>component_count
+	1
+>transform
+>position
+	98.4965, -60.1102, 8.74776
+>rotation
+	0, 0, 0
+>scale
+	2, 6.58, 2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle5
+>component_count
+	1
+>transform
+>position
+	-66.3423, -62.2702, 112.179
+>rotation
+	0, 0, 0
+>scale
+	1.4, 6, 2.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle4
+>component_count
+	1
+>transform
+>position
+	-54.3515, -62.2702, 129.445
+>rotation
+	0, 0, 0
+>scale
+	1.4, 6, 2.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle3
+>component_count
+	1
+>transform
+>position
+	129.794, -60.5256, 55.092
+>rotation
+	0, 0, 0
+>scale
+	8, 7.92113, 8.02
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle2
+>component_count
+	1
+>transform
+>position
+	28.42, -61.4111, 113.465
+>rotation
+	0, 0, 0
+>scale
+	6.3, 7.6, 6.1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Obstacle1
+>component_count
+	1
+>transform
+>position
+	97.5653, -61.0641, 131.507
+>rotation
+	0, 0, 0
+>scale
+	7.1, 7.6, 5.2
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Wall4
+>component_count
+	1
+>transform
+>position
+	-96.3067, -60.2496, 4.46989
+>rotation
+	-0, 1.5708, -0
+>scale
+	146.022, 12.6654, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Wall3
+>component_count
+	1
+>transform
+>position
+	25.0362, -60.9631, -117.735
+>rotation
+	-0, -0, -0
+>scale
+	146.022, 12.6654, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Wall2
+>component_count
+	1
+>transform
+>position
+	157.426, -60.2496, 4.47085
+>rotation
+	-0, 1.5708, -0
+>scale
+	146.022, 12.6654, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Wall1
+>component_count
+	1
+>transform
+>position
+	25.0362, -60.2496, 139.145
+>rotation
+	-0, -0, -0
+>scale
+	146.022, 12.6654, 1
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	Desert
+>component_count
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	0.05, 0.05, 0.05
+>StaticDraw
+>enabled
+	1
+>meshPath
+	game/assets/Maps/Desert_map.fbx
+>texturePath
+	game/assets/Textures/Desert_texture.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	0, 0, 0
+>model.material.emissive
+	0, 0, 0
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	GroundCollider
+>component_count
+	1
+>transform
+>position
+	28.9323, -66.3, 16.2981
+>rotation
+	-0, -0, -0
+>scale
+	165.062, 1, 159.648
+>BoxCollider
+>enabled
+	1
+>cTrigger
+	0
+>cStatic
+	1
+>cKinematic
+	0
+>cDynamic
+	0
+>posX
+	1
+>posY
+	1
+>posZ
+	1
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+
+>entity
+>childs
+	0
+>name
+	GameOverCanvas
+>component_count
+	14
 >transform
 >position
 	0, 0, 0
@@ -604,95 +1526,156 @@
 >enabled
 	0
 >position
-	0, 0
+	10.8, 15.6
 >scale
-	760, 428
+	594.3, 299
 >tint
-	1, 1, 1, 0.2
->Panel
+	0.190265, 0.18774, 0.18774, 0.712
+>Text
 >enabled
 	0
 >position
-	4, 14.1
+	27.6, 19.9
 >scale
-	250, 114.7
+	4.2, 2
 >tint
-	0.141593, 0.141593, 0.141593, 0.5
->Button
->enabled
-	0
->position
-	6, 17.4
->scale
-	220, 40
->tint
-	0, 0, 0, 1
->text
-	Resume
->textScale
-	1
->idle
-	0.8, 0, 0, 1
->hovered
-	0.8, 0.4, 0.4, 1
->activated
 	1, 0, 0, 1
+>text
+	GAME OVER
+>Text
+>enabled
+	0
+>position
+	32, 36.7
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	level : 0 x 1000
+>Text
+>enabled
+	0
+>position
+	28.2, 43
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	skeleton : 0 x 5
+>Text
+>enabled
+	0
+>position
+	30.4, 48
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	golem : 0 x 20
+>Text
+>enabled
+	0
+>position
+	22.9, 53
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	combo bonus : 
+>Text
+>enabled
+	0
+>position
+	55, 37
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	0
+>Text
+>enabled
+	0
+>position
+	55, 43
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	0
+>Text
+>enabled
+	0
+>position
+	55, 48
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	0
+>Text
+>enabled
+	0
+>position
+	55, 53
+>scale
+	1.3, 1
+>tint
+	1, 1, 1, 1
+>text
+	0
+>Text
+>enabled
+	0
+>position
+	38, 61
+>scale
+	1.7, 1
+>tint
+	1, 0.97071, 0.699115, 1
+>text
+	Result : 0
 >Button
 >enabled
 	0
 >position
-	7, 29.7
+	30, 70
 >scale
-	200, 30
+	300, 40
 >tint
 	0, 0, 0, 1
 >text
 	Menu
 >textScale
-	1
+	1.4
 >idle
 	0, 0, 0, 1
 >hovered
-	0.380531, 0.380531, 0.380531, 1
+	0.477876, 0.477876, 0.477876, 1
 >activated
-	0.247788, 0.228052, 0.228052, 1
->PauseTrigger
+	0.336283, 0.327355, 0.327355, 1
+>GameOverTrigger
 >enabled
 	0
-
->entity
->childs
+>ImagePanel
+>enabled
 	0
->name
-	PortalManager
->component_count
-	3
->transform
 >position
-	0, 0, 0
->rotation
-	0, 0, 0
+	66, 36.8
 >scale
-	1, 1, 1
->PortalManager
->enabled
-	1
->activationTime
-	60
->closeTime
-	20
->LevelSelector
->enabled
+	120, 150
+>tint
+	1, 1, 1, 1
+>imageFlip
 	0
->Sound
->enabled
-	1
->soundPath
-	game\assets\Sounds\Portal.wav
->loop
-	1
->volume
-	60
+>Texture
+	game/assets/Textures/RankingLetters_D.png
 
 >entity
 >childs
@@ -1065,7 +2048,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\FootstepHero.mp3
+	game/assets/Sounds/hero/FootstepHero.mp3
 >loop
 	1
 >volume
@@ -1074,7 +2057,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\Hero_Hit_1.mp3
+	game/assets/Sounds/hero/Hero_Hit_1.mp3
 >loop
 	0
 >volume
@@ -1083,7 +2066,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\Hero_Hit_2.wav
+	game/assets/Sounds/hero/Hero_Hit_2.wav
 >loop
 	0
 >volume
@@ -1092,7 +2075,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\swords\Hit_Miss.mp3
+	game/assets/Sounds/swords/Hit_Miss.mp3
 >loop
 	0
 >volume
@@ -1101,7 +2084,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\Hero_Hurt.mp3
+	game/assets/Sounds/hero/Hero_Hurt.mp3
 >loop
 	0
 >volume
@@ -1110,7 +2093,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\Hero_Death.mp3
+	game/assets/Sounds/hero/Hero_Death.mp3
 >loop
 	0
 >volume
@@ -1119,7 +2102,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\hero\Hero_Dash.mp3
+	game/assets/Sounds/hero/Hero_Dash.mp3
 >loop
 	0
 >volume
@@ -1128,7 +2111,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\Pick_Heart.wav
+	game/assets/Sounds/Pick_Heart.wav
 >loop
 	0
 >volume
@@ -1137,7 +2120,7 @@
 >enabled
 	1
 >soundPath
-	game\assets\Sounds\Fire_and_Thunder.mp3
+	game/assets/Sounds/Fire_and_Thunder.mp3
 >loop
 	1
 >volume
@@ -1147,9 +2130,43 @@
 >childs
 	0
 >name
-	GameOverCanvas
+	PortalManager
 >component_count
-	14
+	3
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>PortalManager
+>enabled
+	1
+>activationTime
+	60
+>closeTime
+	20
+>LevelSelector
+>enabled
+	0
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/Portal.wav
+>loop
+	1
+>volume
+	60
+
+>entity
+>childs
+	0
+>name
+	PauseCanvas
+>component_count
+	5
 >transform
 >position
 	0, 0, 0
@@ -1161,1533 +2178,354 @@
 >enabled
 	0
 >position
-	10.8, 15.6
+	0, 0
 >scale
-	594.3, 299
+	760, 428
 >tint
-	0.190265, 0.18774, 0.18774, 0.712
->Text
+	1, 1, 1, 0.2
+>Panel
 >enabled
 	0
 >position
-	27.6, 19.9
+	4, 14.1
 >scale
-	4.2, 2
+	250, 114.7
 >tint
-	1, 0, 0, 1
->text
-	GAME OVER
->Text
->enabled
-	0
->position
-	32, 36.7
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	level : 0 x 1000
->Text
->enabled
-	0
->position
-	28.2, 43
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	skeleton : 0 x 5
->Text
->enabled
-	0
->position
-	30.4, 48
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	golem : 0 x 20
->Text
->enabled
-	0
->position
-	22.9, 53
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	combo bonus : 
->Text
->enabled
-	0
->position
-	55, 37
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	0
->Text
->enabled
-	0
->position
-	55, 43
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	0
->Text
->enabled
-	0
->position
-	55, 48
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	0
->Text
->enabled
-	0
->position
-	55, 53
->scale
-	1.3, 1
->tint
-	1, 1, 1, 1
->text
-	0
->Text
->enabled
-	0
->position
-	38, 61
->scale
-	1.7, 1
->tint
-	1, 0.97071, 0.699115, 1
->text
-	Result : 0
+	0.141593, 0.141593, 0.141593, 0.5
 >Button
 >enabled
 	0
 >position
-	30, 70
+	6, 17.4
 >scale
-	300, 40
+	220, 40
+>tint
+	0, 0, 0, 1
+>text
+	Resume
+>textScale
+	1
+>idle
+	0.8, 0, 0, 1
+>hovered
+	0.8, 0.4, 0.4, 1
+>activated
+	1, 0, 0, 1
+>Button
+>enabled
+	0
+>position
+	7, 29.7
+>scale
+	200, 30
 >tint
 	0, 0, 0, 1
 >text
 	Menu
 >textScale
-	1.4
+	1
 >idle
 	0, 0, 0, 1
 >hovered
-	0.477876, 0.477876, 0.477876, 1
+	0.380531, 0.380531, 0.380531, 1
 >activated
-	0.336283, 0.327355, 0.327355, 1
->GameOverTrigger
+	0.247788, 0.228052, 0.228052, 1
+>PauseTrigger
 >enabled
-	0
->ImagePanel
->enabled
-	0
->position
-	66, 36.8
->scale
-	120, 150
->tint
-	1, 1, 1, 1
->imageFlip
-	0
->Texture
-	game/assets/Textures/RankingLetters_D.png
-
->entity
->childs
-	0
->name
-	GroundCollider
->component_count
-	1
->transform
->position
-	28.9323, -66.3, 16.2981
->rotation
-	-0, -0, -0
->scale
-	165.062, 1, 159.648
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Desert
->component_count
-	1
->transform
->position
-	0, 0, 0
->rotation
-	0, 0, 0
->scale
-	0.05, 0.05, 0.05
->StaticDraw
->enabled
-	1
->meshPath
-	game/assets/Maps/Desert_map.fbx
->texturePath
-	game/assets/Textures/Desert_Texture.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	0, 0, 0
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
-	Wall1
->component_count
-	1
->transform
->position
-	25.0362, -60.2496, 139.145
->rotation
-	-0, -0, -0
->scale
-	146.022, 12.6654, 1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Wall2
->component_count
-	1
->transform
->position
-	157.426, -60.2496, 4.47085
->rotation
-	-0, 1.5708, -0
->scale
-	146.022, 12.6654, 1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Wall3
->component_count
-	1
->transform
->position
-	25.0362, -60.9631, -117.735
->rotation
-	-0, -0, -0
->scale
-	146.022, 12.6654, 1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Wall4
->component_count
-	1
->transform
->position
-	-96.3067, -60.2496, 4.46989
->rotation
-	-0, 1.5708, -0
->scale
-	146.022, 12.6654, 1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle1
->component_count
-	1
->transform
->position
-	97.5653, -61.0641, 131.507
->rotation
-	0, 0, 0
->scale
-	7.1, 7.6, 5.2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle2
->component_count
-	1
->transform
->position
-	28.42, -61.4111, 113.465
->rotation
-	0, 0, 0
->scale
-	6.3, 7.6, 6.1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle3
->component_count
-	1
->transform
->position
-	129.794, -60.5256, 55.092
->rotation
-	0, 0, 0
->scale
-	8, 7.92113, 8.02
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle4
->component_count
-	1
->transform
->position
-	-54.3515, -62.2702, 129.445
->rotation
-	0, 0, 0
->scale
-	1.4, 6, 2.1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle5
->component_count
-	1
->transform
->position
-	-66.3423, -62.2702, 112.179
->rotation
-	0, 0, 0
->scale
-	1.4, 6, 2.1
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle6
->component_count
-	1
->transform
->position
-	98.4965, -60.1102, 8.74776
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle7
->component_count
-	1
->transform
->position
-	101.463, -60.1102, -18.5821
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle8
->component_count
-	1
->transform
->position
-	133.914, -60.1102, -53.3855
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle9
->component_count
-	1
->transform
->position
-	87.5173, -61.391, -45.6047
->rotation
-	0, 0, 0
->scale
-	2, 5.48, 8
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle10
->component_count
-	1
->transform
->position
-	88.4596, -60.1102, -82.1664
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle11
->component_count
-	1
->transform
->position
-	131.681, -62.334, -82.9965
->rotation
-	0, 1.5708, 0
->scale
-	2, 5.48, 4
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle12
->component_count
-	1
->transform
->position
-	45.4773, -60.1102, -5.73405
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle13
->component_count
-	1
->transform
->position
-	-34.3298, -60.1102, -47.7516
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle14
->component_count
-	1
->transform
->position
-	-39.4787, -60.1102, -83.9095
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle15
->component_count
-	1
->transform
->position
-	-2.84598, -60.5086, -89.8462
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle16
->component_count
-	1
->transform
->position
-	17.7602, -60.5085, -95.5269
->rotation
-	0, 0, 0
->scale
-	2, 6.58, 2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle17
->component_count
-	1
->transform
->position
-	43.578, -63.0054, -46.6276
->rotation
-	0, 1.5708, 0
->scale
-	2, 5.48, 4.2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle18
->component_count
-	1
->transform
->position
-	-5.58386, -63.0054, -49.4243
->rotation
-	0, 1.5708, 0
->scale
-	2, 5.48, 4.2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	0
->name
-	Obstacle19
->component_count
-	1
->transform
->position
-	1.02534, -63.0054, -8.85616
->rotation
-	0, 1.5708, 0
->scale
-	2, 5.48, 4.2
->BoxCollider
->enabled
-	1
->cTrigger
-	0
->cStatic
-	1
->cKinematic
-	0
->cDynamic
-	0
->posX
-	1
->posY
-	1
->posZ
-	1
->rotX
-	1
->rotY
-	1
->rotZ
-	1
-
->entity
->childs
-	2
->name
-	Portal_2
->component_count
-	2
->transform
->position
-	-78.423, -57.4549, 88.4459
->rotation
-	0, 0.869191, 0
->scale
-	7, 8, 1.8
->Portal
->enabled
-	0
->BoxCollider
->enabled
-	0
->cTrigger
-	1
->cStatic
-	0
->cKinematic
-	0
->cDynamic
-	0
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	0
->rotY
-	0
->rotZ
 	0
 
 >entity
 >childs
-	0
+	4
 >name
-	DoorGFX
+	GolemClone
 >component_count
-	1
->transform
->position
-	0, -1, 0
->rotation
-	0, 0, 0
->scale
-	0.35, 0.35, 1
->StaticDraw
->enabled
-	1
->meshPath
-	game/assets/Models/Door.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_04.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
-	PortalGFX
->component_count
-	1
->transform
->position
-	0, -0.154, 0
->rotation
-	0, 0, 0
->scale
-	0.852, 0.836, 0.6
->StaticDraw
->enabled
-	0
->meshPath
-	ProceduralCube
->texturePath
-	game/assets/Textures/Portal.jpg
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	2
->name
-	Portal_3
->component_count
-	2
->transform
->position
-	65.6931, -57.4549, -47.4205
->rotation
-	0, 0.0872664, 0
->scale
-	7, 8, 1.8
->Portal
->enabled
-	0
->BoxCollider
->enabled
-	0
->cTrigger
-	1
->cStatic
-	0
->cKinematic
-	0
->cDynamic
-	0
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	0
->rotY
-	0
->rotZ
-	0
-
->entity
->childs
-	0
->name
-	DoorGFX
->component_count
-	1
->transform
->position
-	0, -1, 0
->rotation
-	0, 0, 0
->scale
-	0.35, 0.35, 1
->StaticDraw
->enabled
-	1
->meshPath
-	game/assets/Models/Door.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_04.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
-	PortalGFX
->component_count
-	1
->transform
->position
-	0, -0.154, 0
->rotation
-	0, 0, 0
->scale
-	0.852, 0.836, 0.6
->StaticDraw
->enabled
-	0
->meshPath
-	ProceduralCube
->texturePath
-	game/assets/Textures/Portal.jpg
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	2
->name
-	Portal_4
->component_count
-	2
->transform
->position
-	64.3554, -57, 94.2961
->rotation
-	0, -1.2514, 0
->scale
-	7, 8, 1.8
->Portal
->enabled
-	0
->BoxCollider
->enabled
-	0
->cTrigger
-	1
->cStatic
-	0
->cKinematic
-	0
->cDynamic
-	0
->posX
-	0
->posY
-	0
->posZ
-	0
->rotX
-	0
->rotY
-	0
->rotZ
-	0
-
->entity
->childs
-	0
->name
-	DoorGFX
->component_count
-	1
->transform
->position
-	0, -1, 0
->rotation
-	0, 0, 0
->scale
-	0.35, 0.35, 1
->StaticDraw
->enabled
-	1
->meshPath
-	game/assets/Models/Door.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_04.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
-	PortalGFX
->component_count
-	1
->transform
->position
-	0, -0.154, 0
->rotation
-	0, 0, 0
->scale
-	0.852, 0.836, 0.6
->StaticDraw
->enabled
-	0
->meshPath
-	ProceduralCube
->texturePath
-	game/assets/Textures/Portal.jpg
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
-	0
->name
-	Spawner_0
->component_count
-	1
->transform
->position
-	-30.9813, -58.2331, -99.8619
->rotation
-	0, 0, 0
->scale
-	1, 1, 1
->Spawner
->enabled
-	1
->spawnTime
 	5
->skeletonRatio
-	55
->golemRatio
-	25
->nothingRatio
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Golem
+>enabled
+	0
+>attackRange
 	20
+>chargeTime
+	1.5
+>attackTime
+	0.5
+>riseLegTime
+	1
+>hurtEffectTime
+	0.1
+>hurtEffectTint
+	0.7, 0.5, 0, 1
+>deathTime
+	4
+>EnemyStats
+>enabled
+	0
+>baseLife
+	12
+>baseDamage
+	6
+>baseSpeed
+	450
+>baseAttackSpeed
+	0.333
+>baseScore
+	20
+>increaseRatio
+	0.5
+>SphereCollider
+>enabled
+	0
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+>Life
+>enabled
+	0
+>life
+	12
+>invincibilityTime
+	0.75
+>EnemyMeshRotation
+>enabled
+	0
 
 >entity
 >childs
 	0
 >name
-	Spawner_1
+	GFX
 >component_count
 	1
 >transform
 >position
-	110.825, -58.2331, -61.5603
+	0, -0.3, 0
 >rotation
 	0, 0, 0
 >scale
-	1, 1, 1
->Spawner
+	0.08, 0.08, 0.08
+>AnimatedDraw
 >enabled
-	1
->spawnTime
+	0
+>meshPath
+	game/assets/Models/Golem/Golem.fbx
+>texturePath
+	game/assets/Textures/Golem_Texture.png
+>skmodel.material.ambient
+	0.8, 0.8, 0.8
+>skmodel.material.diffuse
+	1, 1, 1
+>skmodel.material.specular
+	1, 1, 1
+>skmodel.material.emissive
+	0, 0, 0
+>skmodel.material.tint
+	0, 0, 0, 1
+>skmodel.material.shininess
+	32
+>skmodel
+>count
+	0
+>animGraph
+>count
 	5
->skeletonRatio
-	55
->golemRatio
-	25
->nothingRatio
-	20
+>file
+	game/assets/Models/Golem/Golem_Idle.fbx
+>file
+	game/assets/Models/Golem/Golem_Death.fbx
+>file
+	game/assets/Models/Golem/Golem_Stomp.fbx
+>file
+	game/assets/Models/Golem/Golem_Walk.fbx
+>file
+	game/assets/Models/Golem/Golem_Hit.fbx
 
 >entity
 >childs
 	0
 >name
-	Spawner_2
+	Collider
 >component_count
 	1
 >transform
 >position
-	106.936, -58.2331, 112.112
+	0, 7.4, 0
 >rotation
 	0, 0, 0
 >scale
-	1, 1, 1
->Spawner
+	4.3, 5.73333, 2.29333
+>BoxCollider
 >enabled
+	0
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
 	1
->spawnTime
-	5
->skeletonRatio
-	55
->golemRatio
-	25
->nothingRatio
-	20
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
 
 >entity
 >childs
 	0
 >name
-	Spawner_3
+	AttackGFX
 >component_count
 	1
 >transform
 >position
-	-84.3309, -58.2331, 129.604
+	0, 0.2, 0
+>rotation
+	1.5708, 0, 0
+>scale
+	7.5, 7.5, 7.5
+>StaticDraw
+>enabled
+	0
+>meshPath
+	ProceduralQuad
+>texturePath
+	game/assets/Textures/Golem_Stomp.png
+>model.material.ambient
+	0.8, 0.8, 0.8
+>model.material.diffuse
+	1, 1, 1
+>model.material.specular
+	0, 0, 0
+>model.material.emissive
+	1, 1, 1
+>model.material.tint
+	0, 0, 0, 1
+>model.material.shininess
+	32
+
+>entity
+>childs
+	0
+>name
+	Sounds
+>component_count
+	5
+>transform
+>position
+	0, 0, 0
 >rotation
 	0, 0, 0
 >scale
 	1, 1, 1
->Spawner
+>Sound
 >enabled
 	1
->spawnTime
-	5
->skeletonRatio
-	55
->golemRatio
-	25
->nothingRatio
-	20
+>soundPath
+	game/assets/Sounds/golem/Golem_Hit.mp3
+>loop
+	0
+>volume
+	30
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/golem/Golem_Roar.mp3
+>loop
+	0
+>volume
+	50
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/golem/Golem_Walk.mp3
+>loop
+	1
+>volume
+	30
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/swords/Hit_Golem.mp3
+>loop
+	0
+>volume
+	10
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/golem/Golem_Death.mp3
+>loop
+	0
+>volume
+	50
+
+>entity
+>childs
+	0
+>name
+	Camera
+>component_count
+	2
+>transform
+>position
+	72.2686, -36.6231, 33.9683
+>rotation
+	-0.959931, -0.785398, 0
+>scale
+	1, 1, 1
+>Camera
+>enabled
+	1
+>near
+	10
+>far
+	1000
+>fovY
+	90
+>FollowCamera
+>enabled
+	1
+>offset
+	10, 23, 10
+>lerpFactor
+	0.08
 
 >entity
 >childs
@@ -2717,21 +2555,197 @@
 
 >entity
 >childs
-	2
+	4
 >name
-	Portal
+	SkelClone
+>component_count
+	5
+>transform
+>position
+	0, 0, 0
+>rotation
+	0, 0, 0
+>scale
+	1, 1, 1
+>Skeleton
+>enabled
+	0
+>attackRange
+	10
+>attackTime
+	1
+>chargingTime
+	0.6
+>hurtEffectTime
+	0.1
+>hurtEffectTint
+	0.6, 0.6, 0, 1
+>deathTime
+	2
+>Life
+>enabled
+	0
+>life
+	3
+>invincibilityTime
+	0.75
+>EnemyStats
+>enabled
+	0
+>baseLife
+	3
+>baseDamage
+	3
+>baseSpeed
+	900
+>baseAttackSpeed
+	0.5
+>baseScore
+	5
+>increaseRatio
+	0.5
+>SphereCollider
+>enabled
+	0
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	0
+>cDynamic
+	1
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	1
+>rotY
+	1
+>rotZ
+	1
+>EnemyMeshRotation
+>enabled
+	0
+
+>entity
+>childs
+	0
+>name
+	GFX
+>component_count
+	1
+>transform
+>position
+	0, -0.3, 0
+>rotation
+	0, 0, 0
+>scale
+	0.048, 0.048, 0.048
+>AnimatedDraw
+>enabled
+	0
+>meshPath
+	game/assets/Models/Skeleton/Skeleton.fbx
+>texturePath
+	game/assets/Textures/Dungeons_Texture_01.png
+>skmodel.material.ambient
+	0.8, 0.8, 0.8
+>skmodel.material.diffuse
+	1, 1, 1
+>skmodel.material.specular
+	1, 1, 1
+>skmodel.material.emissive
+	0, 0, 0
+>skmodel.material.tint
+	0, 0, 0, 1
+>skmodel.material.shininess
+	32
+>skmodel
+>count
+	1
+>transform
+>position
+	0, 0, 0
+>rotation
+	2.0944, 0, -0.349066
+>scale
+	0, 0, 0
+>boneID
+	27
+>socketMesh
+	game/assets/Models/Skeleton/SkelSword.fbx
+>socketTexture
+	game/assets/Textures/Dungeons_Texture_01.png
+>animGraph
+>count
+	5
+>file
+	game/assets/Models/Skeleton/Skeleton_Idle.fbx
+>file
+	game/assets/Models/Skeleton/Skeleton_Death.fbx
+>file
+	game/assets/Models/Skeleton/Skeleton_Slash.fbx
+>file
+	game/assets/Models/Skeleton/Skeleton_Walk.fbx
+>file
+	game/assets/Models/Skeleton/Skeleton_Impact.fbx
+
+>entity
+>childs
+	0
+>name
+	Collider
+>component_count
+	1
+>transform
+>position
+	0, 4.5, 0
+>rotation
+	0, 0, 0
+>scale
+	1.5, 3, 1
+>BoxCollider
+>enabled
+	0
+>cTrigger
+	0
+>cStatic
+	0
+>cKinematic
+	1
+>cDynamic
+	0
+>posX
+	0
+>posY
+	0
+>posZ
+	0
+>rotX
+	0
+>rotY
+	0
+>rotZ
+	0
+
+>entity
+>childs
+	0
+>name
+	WeaponCollider
 >component_count
 	2
 >transform
 >position
-	-70.7333, -57.4548, -78.4817
+	0, 4.4, 4.7
 >rotation
-	0, -0.890117, 0
+	0, 0, 0
 >scale
-	7, 8, 1.8
->Portal
->enabled
-	0
+	1.5, 3.34433, 3.2
 >BoxCollider
 >enabled
 	0
@@ -2755,71 +2769,57 @@
 	0
 >rotZ
 	0
+>EnemyWeapon
+>enabled
+	0
 
 >entity
 >childs
 	0
 >name
-	DoorGFX
+	Sounds
 >component_count
-	1
+	4
 >transform
 >position
-	0, -1, 0
+	0, 0, 0
 >rotation
 	0, 0, 0
 >scale
-	0.35, 0.35, 1
->StaticDraw
+	1, 1, 1
+>Sound
 >enabled
 	1
->meshPath
-	game/assets/Models/Door.fbx
->texturePath
-	game/assets/Textures/Dungeons_Texture_04.png
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
-
->entity
->childs
+>soundPath
+	game/assets/Sounds/skeleton/SkeletonTeeth.wav
+>loop
 	0
->name
-	PortalGFX
->component_count
-	1
->transform
->position
-	0, -0.154, 0
->rotation
-	0, 0, 0
->scale
-	0.852, 0.836, 0.6
->StaticDraw
+>volume
+	10
+>Sound
 >enabled
+	1
+>soundPath
+	game/assets/Sounds/skeleton/FootstepSkel.mp3
+>loop
+	1
+>volume
+	70
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/swords/Hit_Skeleton.mp3
+>loop
 	0
->meshPath
-	ProceduralCube
->texturePath
-	game/assets/Textures/Portal.jpg
->model.material.ambient
-	0.8, 0.8, 0.8
->model.material.diffuse
-	1, 1, 1
->model.material.specular
-	1, 1, 1
->model.material.emissive
-	0, 0, 0
->model.material.tint
-	0, 0, 0, 1
->model.material.shininess
-	32
+>volume
+	60
+>Sound
+>enabled
+	1
+>soundPath
+	game/assets/Sounds/skeleton/Skel_Death.mp3
+>loop
+	0
+>volume
+	75

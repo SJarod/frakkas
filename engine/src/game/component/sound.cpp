@@ -1,7 +1,7 @@
 #include "miniaudio.h"
 
 #include "utils/dragdrop_constants.hpp"
-
+#include "utils/normalize_filepath.hpp"
 #include "resources/resources_manager.hpp"
 
 #include "engine.hpp"
@@ -29,7 +29,7 @@ KK_COMPONENT_IMPL_END
 void Sound::SetSoundPath(std::filesystem::path i_path)
 {
     UnloadSound();
-    soundPath = i_path.make_preferred().string();
+    soundPath = Utils::NormalizeFilepath(i_path.string());
     LoadSound();
 }
 
