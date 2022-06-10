@@ -17,7 +17,11 @@ All rights reserved for Frakkas team.
 ## Description
 ---
 
-
+The project's goal is to produce a game from an adapted homemade game engine. The project lasted 4 months, and we are a group of 3 second-year Game Programmer students, supervised by a fifth-year student.  
+  
+Our engine is called **_Frakkas_**, and our game **_Frakkarena_**. The game is a Top-Down Survival Beat'em up in a fantasy world, with a toon aspect. That was cool to code this game with the engine, and we could make whatever other type of game thanks to an efficient entity/component system.  
+  
+In short,  **_Frakkas_** is a 3D casual game engine, with animations, shadows, and toon shading.  
 
 <br>
 
