@@ -50,7 +50,7 @@ They are normally automaticaly update with the main CMakeLists.txt but in case y
 
 <br>
 
-- __Xbox gamepad__
+- __Gamepad _(Xbox binding)___
 
 Input                          | Action
 -------                        | ------
@@ -60,7 +60,19 @@ Right Trigger / X / Y          | Run
 Start                          | Play / Pause  
 D-PAD                          | Menu navigation  
     
-<br>
+<br>  
+
+- __Gamepad _(PS4 binding)___
+
+Input                                   | Action
+-------                                 | ------
+Left stick / D-PAD                      | Move
+cross / circle                          | Attack
+Right Trigger / square / triangle       | Run
+Options                                 | Play / Pause  
+D-PAD                                   | Menu navigation  
+
+<br>  
 
 - __Mouse / Keyboard (QWERTY)__
 
