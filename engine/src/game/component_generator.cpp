@@ -106,12 +106,12 @@ bool CreateNewComponentScript(const std::string& compName)
 	outCMake.close();
 
     /// UPDATE COMPONENT REGISTER
-    std::string registerPath = Helpers::gameDirectoryPath + std::string("include/") + Helpers::gameDirectoryPath + std::string("register_components.hpp");
+    std::string registerPath = Helpers::gameDirectoryPath + std::string("include/register_components.hpp");
     std::ifstream inRegisterSource(registerPath);
 
     if (!inRegisterSource.is_open())
     {
-        Log::Warning("Could not open component register file \"game/include/game/register_components.hpp\"");
+        Log::Warning("Could not open component register file \"game/include/register_components.hpp\"");
         return false;
     }
 
