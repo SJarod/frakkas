@@ -55,10 +55,10 @@ They are normally automaticaly update with the main CMakeLists.txt but in case y
 Input                          | Action
 -------                        | ------
 Left stick / D-PAD             | Move
-A / B                          | Attack
-Right Trigger / X / Y          | Run
+A / X                          | Attack
+Right Trigger / B / Y          | Run
 Start                          | Play / Pause  
-D-PAD                          | Menu navigation  
+D-PAD / A                      | Menu navigation  
     
 <br>  
 
@@ -67,10 +67,10 @@ D-PAD                          | Menu navigation
 Input                                   | Action
 -------                                 | ------
 Left stick / D-PAD                      | Move
-cross / circle                          | Attack
-Right Trigger / square / triangle       | Run
+cross / square                          | Attack
+Right Trigger / circle / triangle       | Run
 Options                                 | Play / Pause  
-D-PAD                                   | Menu navigation  
+D-PAD / cross                           | Menu navigation  
 
 <br>  
 
@@ -82,7 +82,7 @@ WASD / Arrows                  | Move
 Space bar / Left click         | Attack
 E / Left Shift / Right click   | Run
 P / Esc                        | Play / Pause  
-Arrows / Mouse                 | Menu navigation  
+Arrows / Mouse / Space         | Menu navigation  
 
 <br>
 
